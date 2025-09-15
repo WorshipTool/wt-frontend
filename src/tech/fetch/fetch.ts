@@ -3,13 +3,13 @@ import { FunctionProps } from '@/types/common.types'
 
 const SAFE_API_HOSTS = ['chvalotce.cz', 'localhost', 'worship.cz', 'fly.dev']
 
-const isSafeUrl = (url: string): boolean => {
+export const isSafeUrl = (url: string): boolean => {
 	try {
 		const parsedUrl = new URL(url)
+		const topDomain = parsedUrl.hostname.split('.').slice(-2).join('.')
 		return (
 			parsedUrl.hostname === 'localhost' ||
-			(SAFE_API_HOSTS.includes(parsedUrl.hostname) &&
-				parsedUrl.protocol === 'https:')
+			(SAFE_API_HOSTS.includes(topDomain) && parsedUrl.protocol === 'https:')
 		)
 	} catch (e) {
 		return false
