@@ -3,9 +3,9 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "NEXT_PUBLIC_FRONTEND_URL=https://preview.chvalotce.cz next dev -p 5500 -H test-chvalotce.cz",
+		"dev": "next dev -p 5500 -H test-chvalotce.cz",
 		"build": "next build",
-		"start": "NEXT_PUBLIC_FRONTEND_URL=https://preview.chvalotce.cz next start -p 5500 -H test-chvalotce.cz",
+		"start": "next start -p 5500 -H test-chvalotce.cz",
 		"lint": "next lint",
 		"generate-api": "bash ./src/api/generate_api.sh",
 		"check-types": "tsc --noEmit",
