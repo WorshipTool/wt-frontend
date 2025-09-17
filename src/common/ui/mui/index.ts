@@ -20,6 +20,7 @@ export {
 	Pagination,
 	Paper,
 	Select,
+	Stack,
 	Step,
 	StepContent,
 	StepLabel,
