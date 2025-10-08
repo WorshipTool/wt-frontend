@@ -5,9 +5,11 @@ import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useApiState } from '@/tech/ApiState'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default function CreateNewPlaylistButton() {
 	const { turnOn } = useCurrentPlaylist()
+	const tPlaylist = useTranslations('playlist')
 
 	const { createPlaylist: createWithoutName } = usePlaylistsGeneral()
 	const navigate = useSmartNavigate()
@@ -34,12 +36,12 @@ export default function CreateNewPlaylistButton() {
 			variant="contained"
 			onClick={createPlaylist}
 			color="primarygradient"
-			tooltip="Vytvořit nový playlist"
+			tooltip={tPlaylist('createNewPlaylist')}
 			sx={{
 				height: '100%',
 			}}
 		>
-			Vytvořit
+			{tPlaylist('create')}
 		</Button>
 	)
 }

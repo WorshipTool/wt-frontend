@@ -4,6 +4,7 @@ import AppSongSelectSpecifierProvider from '@/app/components/components/AppSongS
 import OutsideLinkBlocker from '@/common/ui/Link/OutsideLinkBlocker'
 import { routesPaths, SmartAllParams } from '@/routes'
 import { urlMatchPatterns } from '@/routes/tech/routes.tech'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 type Props = {
@@ -11,8 +12,10 @@ type Props = {
 }
 export default function TeamClientProviders(props: Props) {
 	const { alias } = useInnerTeam()
+	const t = useTranslations('teams.providers')
+	
 	return (
-		<AppSongSelectSpecifierProvider teamsOptionLabel="Z jiných týmů">
+		<AppSongSelectSpecifierProvider teamsOptionLabel={t('songSelect.teamsOption')}>
 			<OutsideLinkBlocker
 				condition={({ url, params: p }) => {
 					const isTeam = urlMatchPatterns(url, routesPaths.team, true)
@@ -31,8 +34,8 @@ export default function TeamClientProviders(props: Props) {
 
 					return false
 				}}
-				popupTitle="Opouštíte prostředí týmu"
-				popupMessage="Link vede mimo tým, který máte otevřený. Opravdu chcete pokračovat?"
+				popupTitle={t('outsideLinkBlocker.title')}
+				popupMessage={t('outsideLinkBlocker.message')}
 			>
 				{props.children}
 			</OutsideLinkBlocker>

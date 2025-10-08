@@ -4,9 +4,12 @@ import AdminOption from '@/common/components/admin/AdminOption'
 import Popup from '@/common/components/Popup/Popup'
 import { Button, TextInput, Typography } from '@/common/ui'
 import { useApiState } from '@/tech/ApiState'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function TeamPeopleAdminOption() {
+	const t = useTranslations('teams.people')
+	const tCommon = useTranslations('common')
 	const [popupOpen, setPopupOpen] = useState(false)
 
 	const [email, setEmail] = useState('')
@@ -32,7 +35,7 @@ export default function TeamPeopleAdminOption() {
 	return (
 		<>
 			<AdminOption
-				label="Přidat nového člena"
+				label={t('addNewMember')}
 				onClick={() => setPopupOpen(true)}
 			/>
 
@@ -40,8 +43,8 @@ export default function TeamPeopleAdminOption() {
 				open={popupOpen}
 				onClose={() => setPopupOpen(false)}
 				onSubmit={onClick}
-				title="Přidat uživatele"
-				subtitle="Přidejte uživatele do týmu pomocí jeho emailu"
+				title={t('addUser')}
+				subtitle={t('addUserSubtitle')}
 				actions={[
 					<Button
 						key={'cancel'}
@@ -51,7 +54,7 @@ export default function TeamPeopleAdminOption() {
 						size="small"
 						disabled={apiState.loading}
 					>
-						Zrušit
+						{tCommon('cancel')}
 					</Button>,
 					<Button
 						key={'cancel'}
@@ -61,13 +64,13 @@ export default function TeamPeopleAdminOption() {
 						size="small"
 						loading={apiState.loading}
 					>
-						Přidat
+						{tCommon('add')}
 					</Button>,
 				]}
 			>
 				{apiState.error && (
 					<Typography color="error">
-						Nastala chyba. Zkontroluj, zda je zadaný správný email...
+						{t('addUserError')}
 					</Typography>
 				)}
 				<TextInput

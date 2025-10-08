@@ -6,12 +6,14 @@ import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { BasicVariantPack } from '@/types/song'
 import { ChevronRight } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type Props = {
 	pack: BasicVariantPack
 }
 
 export default function ApprovalItem({ pack }: Props) {
+	const t = useTranslations('admin')
 	const { songPublishingApi } = useApi()
 
 	const { fetchApiState, apiState } = useApiState()
@@ -47,7 +49,7 @@ export default function ApprovalItem({ pack }: Props) {
 			</Link>
 			<Box display={'flex'} gap={1}>
 				<Button small color="error" outlined onClick={onRejectClick}>
-					Odmítnout
+					{t('approval.reject')}
 				</Button>
 				<Button
 					small
@@ -57,7 +59,7 @@ export default function ApprovalItem({ pack }: Props) {
 						...parseVariantAlias(pack.packAlias),
 					}}
 				>
-					Pokračovat
+					{t('approval.continue')}
 				</Button>
 			</Box>
 		</Box>

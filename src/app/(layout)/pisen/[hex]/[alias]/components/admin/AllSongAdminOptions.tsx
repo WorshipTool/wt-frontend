@@ -5,8 +5,10 @@ import OnlyAdmin from '@/common/components/admin/OnlyAdmin'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { AdminPanelSettings } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default function AllSongAdminOptions() {
+	const t = useTranslations('song.admin')
 	const { variant } = useInnerPackSong()
 	const prop = useSmartParams('variant')
 	const navigate = useSmartNavigate()
@@ -35,8 +37,8 @@ export default function AllSongAdminOptions() {
 			{/* <AdminAdvancedInfoOption /> */}
 
 			<AdminOption
-				label="Pokročilé možnosti"
-				subtitle="Admin nastavení"
+				label={t('advancedOptions')}
+				subtitle={t('adminSettings')}
 				onClick={goToAdmin}
 				icon={<AdminPanelSettings />}
 			/>

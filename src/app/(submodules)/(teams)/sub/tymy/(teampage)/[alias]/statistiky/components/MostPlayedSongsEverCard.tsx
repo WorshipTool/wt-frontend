@@ -4,6 +4,7 @@ import TeamStatisticsCard from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[
 import { getStatisticsColorFromString } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/statistiky/tech/statistics.tech'
 import { useTheme } from '@/common/ui'
 import { BarChart } from '@mui/x-charts'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 type DataItem = {
@@ -18,6 +19,8 @@ type MostPlayedSongsEverCardProps = {
 export default function MostPlayedSongsEverCard(
 	props: MostPlayedSongsEverCardProps
 ) {
+	const t = useTranslations('teams.statistics')
+	
 	const dataset: DataItem[] = useMemo(() => {
 		return props.data
 			.map((item) => {
@@ -35,8 +38,8 @@ export default function MostPlayedSongsEverCard(
 
 	return (
 		<TeamStatisticsCard
-			label="10 nejhranějších chval"
-			rightLabel="Za posledních 90 dní"
+			label={t('mostPlayedSongs')}
+			rightLabel={t('timeFrame90')}
 		>
 			<BarChart
 				dataset={dataset}
@@ -59,7 +62,7 @@ export default function MostPlayedSongsEverCard(
 					{
 						dataKey: 'playedCount',
 						// label: 'Počet přehrání',
-						valueFormatter: (v) => v + ' přehrání',
+						valueFormatter: (v) => v + ' ' + t('plays'),
 					},
 				]}
 				layout="horizontal"

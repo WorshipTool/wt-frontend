@@ -14,12 +14,14 @@ import { getRouteUrlWithParams } from '@/routes/tech/transformer.tech'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { Link, PersonAdd } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useCallback, useMemo, useState } from 'react'
 import { TeamPageTitle } from '../components/TopPanel/components/TeamPageTitle'
 
 export default SmartTeamPage(TeamPeoplePage)
 function TeamPeoplePage() {
+	const t = useTranslations('teams.people')
 	const [popupOpen, setPopupOpen] = useState(false)
 
 	const { alias } = useSmartParams('teamPeople')
@@ -45,7 +47,7 @@ function TeamPeoplePage() {
 		navigator.clipboard.writeText(link)
 		setCopied(true)
 
-		enqueueSnackbar('Odkaz byl zkopírován do schránky')
+		enqueueSnackbar(t('linkCopied'))
 	}, [enqueueSnackbar, joinCode])
 
 	const onClose = () => {
@@ -56,14 +58,14 @@ function TeamPeoplePage() {
 	return (
 		<Box display={'flex'} flexDirection={'column'} gap={4}>
 			<TeamPageTitle>
-				Lidé
+				{t('people')}
 				<Button
 					size="small"
 					variant="outlined"
 					endIcon={<PersonAdd />}
 					onClick={() => setPopupOpen(true)}
 				>
-					Pozvat
+					{t('invite')}
 				</Button>
 			</TeamPageTitle>
 			<TeamPeopleAdminOption />
@@ -72,8 +74,8 @@ function TeamPeoplePage() {
 			<Popup
 				open={popupOpen}
 				onClose={onClose}
-				title="Pozvat"
-				subtitle="Pozvěte nové členy do týmu"
+				title={t('invite')}
+				subtitle={t('inviteNewMembers')}
 				width={400}
 				actions={
 					<>
@@ -83,10 +85,10 @@ function TeamPeoplePage() {
 							startIcon={<Link />}
 							onClick={onCopyJoinLinkClick}
 						>
-							{!copied ? 'Zkopírovat odkaz' : 'Odkaz zkopírován'}
+							{!copied ? t('copyLink') : t('linkCopied')}
 						</Button>
 						<Button size="small" variant="contained" type="reset">
-							Hotovo
+							{t('done')}
 						</Button>
 					</>
 				}

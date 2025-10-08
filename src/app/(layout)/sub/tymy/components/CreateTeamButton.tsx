@@ -9,6 +9,7 @@ import { Typography } from '@/common/ui/Typography'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useApiState } from '@/tech/ApiState'
 import { grey } from '@mui/material/colors'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function CreateTeamButton() {
@@ -23,6 +24,9 @@ export default function CreateTeamButton() {
 	const [teamName, setTeamName] = useState('')
 
 	const navigate = useSmartNavigate()
+
+	const t = useTranslations('teams')
+	const tCommon = useTranslations('common')
 
 	const onClick = () => {
 		setPopupOpen(true)
@@ -55,19 +59,19 @@ export default function CreateTeamButton() {
 				onClose={() => setPopupOpen(false)}
 				onReset={onCancel}
 				width={300}
-				title="Vytvořit tým"
-				subtitle={'Vytvořte soukromý tým'}
+				title={t('createTeam')}
+				subtitle={t('createPrivateTeam')}
 				actions={
 					<>
 						<Button
-							title="Zrušit"
+							title={tCommon('cancel')}
 							color="grey.700"
 							// size="small"
 							variant="text"
 							type="reset"
 						/>
 						<Button
-							title="Vytvořit"
+							title={t('createTeam')}
 							color="primary"
 							// size="small"
 							loading={apiState.loading}
@@ -78,7 +82,7 @@ export default function CreateTeamButton() {
 			>
 				<Box display={'flex'} flexDirection={'column'} gap={1}>
 					<TextField
-						placeholder="Zadejte název týmu"
+						placeholder={t('enterTeamName')}
 						value={teamName}
 						onChange={setTeamName}
 						autoFocus
@@ -92,15 +96,15 @@ export default function CreateTeamButton() {
 					{apiState.error && (
 						<>
 							<Typography color="error">
-								Nastala chyba. Prosím, zkontrolujte název týmu
+								{t('errorMessage')}
 							</Typography>
 						</>
 					)}
 				</Box>
 			</Popup>
 			<Button
-				title="Vyzkoušet"
-				subtitle="Vytvořit tým"
+				title={t('tryOut')}
+				subtitle={t('createTeam')}
 				color="secondary"
 				sx={{
 					width: 150,

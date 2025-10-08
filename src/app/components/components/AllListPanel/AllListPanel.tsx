@@ -1,6 +1,9 @@
+'use client'
 import { Box, Button, Typography } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 
 export default function AllListPanel() {
+	const tHome = useTranslations('home')
 	return (
 		<Box
 			display={'flex'}
@@ -14,13 +17,6 @@ export default function AllListPanel() {
 				overflow: 'hidden',
 			}}
 		>
-			{/* <Typography>Nebo si vyberte ze </Typography>
-			<Button size="small" variant="text" to="songsList">
-				Seznamu
-			</Button>
-			<Typography>všech písní ve zpěvníku</Typography> */}
-			{/* <Typography>Seznam všech písní ve zpěvníku</Typography> */}
-
 			<Button
 				variant="text"
 				sx={{
@@ -33,9 +29,9 @@ export default function AllListPanel() {
 				// color="primarygradient"
 			>
 				<Typography small color="grey.500">
-					procházet
+					{tHome('allList.browse')}
 				</Typography>
-				Seznam všech písní
+				{tHome('allList.title')}
 			</Button>
 		</Box>
 	)

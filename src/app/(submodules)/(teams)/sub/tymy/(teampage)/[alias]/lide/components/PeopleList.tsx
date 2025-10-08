@@ -10,10 +10,12 @@ import { UserGuid } from '@/interfaces/user'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { useSnackbar } from 'notistack'
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 type PeopleListDto = {}
 
 export default function PeopleList(props: PeopleListDto) {
+	const t = useTranslations('teams.people')
 	// ApiStates and items
 	const { teamMembersApi } = useApi()
 	const { alias: teamAlias } = useSmartParams('teamPeople')
@@ -83,7 +85,7 @@ export default function PeopleList(props: PeopleListDto) {
 				console.log(e)
 			}
 			await fetchData()
-			enqueueSnackbar('Role byla nastavena.')
+			enqueueSnackbar(t('roleWasSet'))
 		},
 		[teamGuid]
 	)
@@ -155,7 +157,7 @@ export default function PeopleList(props: PeopleListDto) {
 								alignItems={'center'}
 								height={10}
 							>
-								<Tooltip label="Vybrat vše" placement="left">
+								<Tooltip label={t('selectAll')} placement="left">
 									<Checkbox
 										size="small"
 										onChange={onAllChange}
@@ -165,13 +167,13 @@ export default function PeopleList(props: PeopleListDto) {
 							</Box>
 						)}
 						<Box />
-						<Typography color="grey.500">Jméno</Typography>
-						{!hideEmail && <Typography color="grey.500">Email</Typography>}
-						<Typography color="grey.500">Role</Typography>
+						<Typography color="grey.500">{t('name')}</Typography>
+						{!hideEmail && <Typography color="grey.500">{t('email')}</Typography>}
+						<Typography color="grey.500">{t('role')}</Typography>
 						{!hideActions && (
 							<>
 								<Box />
-								<Typography color="grey.500">Akce</Typography>
+								<Typography color="grey.500">{t('actions')}</Typography>
 							</>
 						)}
 					</>
@@ -181,7 +183,7 @@ export default function PeopleList(props: PeopleListDto) {
 						height: 5,
 					}}
 				/>
-				<Tooltip label="Ty" placement="left">
+				<Tooltip label={t('you')} placement="left">
 					<Box
 						display={'grid'}
 						sx={{
@@ -247,7 +249,7 @@ export default function PeopleList(props: PeopleListDto) {
 						<>
 							{selectable && <Box />}
 							<Box />
-							<Typography italic>Nikdo další tu není</Typography>
+							<Typography italic>{t('noOthersHere')}</Typography>
 						</>
 					)}
 				</Box>

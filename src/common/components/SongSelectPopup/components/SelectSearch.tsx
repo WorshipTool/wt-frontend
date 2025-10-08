@@ -1,6 +1,7 @@
 import { Box } from '@/common/ui'
 import { TextField } from '@/common/ui/TextField/TextField'
 import { Search } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import './SelectSearch.styles.css'
 
 type SelectSearchProps = {
@@ -9,6 +10,7 @@ type SelectSearchProps = {
 }
 
 export const SelectSearch = (props: SelectSearchProps) => {
+	const t = useTranslations('search')
 	const onChangeHandler = (value: string) => {
 		props.onChange?.(value)
 	}
@@ -21,7 +23,7 @@ export const SelectSearch = (props: SelectSearchProps) => {
 			gap={1}
 		>
 			<TextField
-				placeholder="Vyhledej píseň"
+				placeholder={t('searchSong')}
 				sx={{
 					'& input': {
 						textAlign: 'right',

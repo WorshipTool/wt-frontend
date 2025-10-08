@@ -14,6 +14,7 @@ import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import useWorshipCzVersion from '@/hooks/worshipcz/useWorshipCzVersion'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import ContainerGrid, {
 	containerMaxWidth,
@@ -29,6 +30,7 @@ export default function HomeDesktop() {
 	const theme = useTheme()
 	const phoneVersion = useMediaQuery(theme.breakpoints.down(700))
 	const isMobile = phoneVersion
+	const tHome = useTranslations('home')
 
 	const scrollPointRef = useRef(null)
 
@@ -118,6 +120,10 @@ export default function HomeDesktop() {
 	const gapString = `calc(max(${paddingX}px, (100vw - ${containerMaxWidth}px) / 2) )`
 
 	const shapeSizeString = `calc(max(50vw, 50vh) * 1.35)`
+	const heroLead = tHome('hero.lead')
+	const heroTitle = tHome('hero.title')
+	const heroSubtitle = tHome('hero.subtitle')
+	const heroSubtitleLower = tHome('hero.subtitleLower')
 	return (
 		<>
 			<Box
@@ -135,7 +141,7 @@ export default function HomeDesktop() {
 			>
 				<Image
 					src={getAssetUrl('/gradient-shapes/shape1.svg')}
-					alt={'Tvar na pozadí'}
+					alt={tHome('backgroundShape')}
 					fill
 					style={{
 						filter: 'brightness(1)',
@@ -143,7 +149,7 @@ export default function HomeDesktop() {
 				/>
 				<Image
 					src={getAssetUrl('/gradient-shapes/shape2.svg')}
-					alt={'Tvar na pozadí'}
+					alt={tHome('backgroundShape')}
 					fill
 					style={{
 						filter: 'brightness(1.1)',
@@ -258,10 +264,10 @@ export default function HomeDesktop() {
 												{useWorshipVersion ? (
 													<Box>
 														<Typography variant="h3" strong={200}>
-															Jsi-li ovce, tak...
+															{heroLead}
 														</Typography>
 														<Typography variant="h1" strong={900} noWrap>
-															Chval Otce
+															{heroTitle}
 														</Typography>
 
 														<>
@@ -276,17 +282,17 @@ export default function HomeDesktop() {
 																	paddingLeft: 1,
 																}}
 															>
-																Na worship.cz
+																{heroSubtitle}
 															</Typography>
 														</>
 													</Box>
 												) : (
 													<>
 														<Typography variant="h3" strong={200}>
-															Jsi-li ovce, tak...
+															{heroLead}
 														</Typography>
 														<Typography variant="h1" strong={900} noWrap>
-															Chval Otce
+															{heroTitle}
 														</Typography>
 													</>
 												)}
@@ -299,16 +305,16 @@ export default function HomeDesktop() {
 												}}
 											>
 												<Typography variant="h4" strong={200}>
-													Jsi-li ovce, tak...
+													{heroLead}
 												</Typography>
 												<Typography variant="h3" strong={900} noWrap>
-													Chval Otce
+													{heroTitle}
 												</Typography>
 
 												{useWorshipVersion && (
 													<>
 														<Typography variant="h4" strong={200} noWrap>
-															na worship.cz
+															{heroSubtitleLower}
 														</Typography>
 													</>
 												)}

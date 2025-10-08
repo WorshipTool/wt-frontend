@@ -3,6 +3,7 @@ import { Box, Button, Typography } from '@/common/ui'
 import { BasicVariantPack } from '@/types/song'
 import { Restore } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
+import { useTranslations } from 'next-intl'
 import { Gap } from '../../../../../../../common/ui/Gap'
 import useAuth from '../../../../../../../hooks/auth/useAuth'
 import { useApiState } from '../../../../../../../tech/ApiState'
@@ -18,6 +19,7 @@ export default function DeletedInfoPanel({
 }: DeletedInfoPanelProps) {
 	const { isAdmin, apiConfiguration } = useAuth()
 	const { enqueueSnackbar } = useSnackbar()
+	const t = useTranslations('song')
 
 	const { songDeletingApi } = useApi()
 	const {
@@ -30,7 +32,7 @@ export default function DeletedInfoPanel({
 				return songDeletingApi.restore(variant.packGuid)
 			},
 			() => {
-				enqueueSnackbar(`Píseň ${(variant.title && ' ') || ''}byla obnovena.`)
+				enqueueSnackbar(t('deleted.restored', { title: variant.title || '' }))
 				reloadSong?.()
 			}
 		)
@@ -43,7 +45,7 @@ export default function DeletedInfoPanel({
 				alignItems: 'center',
 			}}
 		>
-			<Typography color="error">Tato píseň byla smazána.</Typography>
+			<Typography color="error">{t('deleted.message')}</Typography>
 			<Gap value={2} horizontal />
 			{isAdmin() && (
 				<>
@@ -51,11 +53,10 @@ export default function DeletedInfoPanel({
 						variant="contained"
 						color="secondary"
 						startIcon={<Restore />}
-						// loadingIndicator="Obnovování..."
 						loading={loading}
 						onClick={restore}
 					>
-						Obnovit
+						{t('deleted.restore')}
 					</Button>
 				</>
 			)}

@@ -13,6 +13,7 @@ import {
 	Settings,
 	Subscriptions,
 } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { ComponentProps, useMemo } from 'react'
 
 type MenuItem = ComponentProps<typeof MenuItem>
@@ -38,31 +39,33 @@ export const useTeamLeftMenuItems = () => {
 
 	const showPeople = isManager
 
+	const tTeam = useTranslations('teamPage.leftPanel.menu')
+
 	const items: MenuItem[] = useMemo(
 		() => [
 			{
-				title: 'Přehled',
+				title: tTeam('overview'),
 				icon: <Dashboard />,
 				to: 'team',
 				toParams: { alias },
 				id: 'overview',
 			},
 			{
-				title: 'Seznam písní',
+				title: tTeam('songlist'),
 				icon: <QueueMusic />,
 				to: 'teamSongbook',
 				toParams: { alias },
 				id: 'songlist',
 			},
 			{
-				title: 'Playlisty',
+				title: tTeam('playlists'),
 				icon: <Subscriptions />,
 				to: 'teamPlaylists',
 				toParams: { alias },
 				id: 'playlists',
 			},
 			{
-				title: 'Statistiky',
+				title: tTeam('statistics'),
 				icon: <Analytics />,
 				to: 'teamStatistics',
 				toParams: { alias },
@@ -71,7 +74,7 @@ export const useTeamLeftMenuItems = () => {
 				id: 'statistics',
 			},
 			{
-				title: 'Lidé',
+				title: tTeam('people'),
 				icon: <People />,
 				to: 'teamPeople',
 				toParams: { alias },
@@ -79,7 +82,7 @@ export const useTeamLeftMenuItems = () => {
 				id: 'people',
 			},
 			{
-				title: 'Nastavení',
+				title: tTeam('settings'),
 				icon: <Settings />,
 				to: 'teamSettings',
 				toParams: { alias },
@@ -87,7 +90,7 @@ export const useTeamLeftMenuItems = () => {
 				id: 'settings',
 			},
 		],
-		[hasPermissionToEdit, alias, showStatistics]
+		[hasPermissionToEdit, alias, showPeople, showStatistics, tTeam]
 	)
 
 	return items

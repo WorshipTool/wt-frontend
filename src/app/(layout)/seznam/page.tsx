@@ -10,9 +10,11 @@ import { useApiStateEffect } from '@/tech/ApiState'
 import { useApi } from '../../../api/tech-and-hooks/useApi'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
+import { useTranslations } from 'next-intl'
 
 export default SmartPage(List)
 function List() {
+	const t = useTranslations('songsList')
 	const [page, setPage] = useSmartUrlState('songsList', 's', {
 		parse: (v) => parseInt(v),
 		stringify: (v) => (v as number).toString(),
@@ -47,7 +49,7 @@ function List() {
 				<Gap value={3} />
 				<Box display={'flex'}>
 					<Typography variant="h4" strong>
-						Seznam všech písní
+						{t('title')}
 					</Typography>
 				</Box>
 				<Pager

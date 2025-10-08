@@ -3,9 +3,11 @@ import { useInnerPack } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerP
 import VerifyButton from '@/app/(layout)/sub/admin/pisen/[hex]/[alias]/components/VerifyButton'
 import Popup from '@/common/components/Popup/Popup'
 import { Button, Typography } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function AdminVerifyButton() {
+	const t = useTranslations('admin')
 	const variant = useInnerPack()
 	const [verifyPopupOpen, setVerifyPopupOpen] = useState(false)
 	return (
@@ -18,17 +20,17 @@ export default function AdminVerifyButton() {
 					width: 'fit-content',
 				}}
 			>
-				Spravovat ověření
+				{t('songAdmin.manageVerification')}
 			</Button>
 
 			<Popup
 				open={verifyPopupOpen}
 				onClose={() => setVerifyPopupOpen(false)}
-				title="Manuální ověření"
+				title={t('songAdmin.manualVerification')}
 				subtitle={variant.title}
 				actions={[
 					<Button key={'cancel'} type="reset" size="small" variant="text">
-						Zrušit
+						{t('songAdmin.cancel')}
 					</Button>,
 					<VerifyButton variant={variant} key={'action'} />,
 				]}
@@ -37,14 +39,14 @@ export default function AdminVerifyButton() {
 				{variant.verified !== null ? (
 					<>
 						{variant.verified ? (
-							<Typography>Píseň je manualně ověřena.</Typography>
+							<Typography>{t('songAdmin.songManuallyVerified')}</Typography>
 						) : (
-							<Typography>Píseň je manualně zamítnuta.</Typography>
+							<Typography>{t('songAdmin.songManuallyRejected')}</Typography>
 						)}
 					</>
 				) : (
 					<>
-						<Typography>Píseň není manualně ověřena</Typography>
+						<Typography>{t('songAdmin.songNotManuallyVerified')}</Typography>
 					</>
 				)}
 			</Popup>

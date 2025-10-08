@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@/common/ui'
 import { InputBase, Paper, styled } from '@/common/ui/mui'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import React, { useMemo } from 'react'
 import DefaultStyle from '../../../../common/components/SheetDisplay/styles/DefaultStyle'
 
@@ -17,6 +18,8 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function UploadSheetEditable(props: UploadSheetEditableProps) {
+	const t = useTranslations('upload.sheet')
+	const tCommon = useTranslations('common')
 	const [editable, setEditable] = React.useState(false)
 
 	const [title, setTitle] = React.useState(props.title)
@@ -50,10 +53,10 @@ export default function UploadSheetEditable(props: UploadSheetEditableProps) {
 						}}
 						size="small"
 					>
-						Zahodit
+						{tCommon('discard')}
 					</Button>
 					<Typography strong={200}>
-						Nalezeno v <strong>{props.originalFile.name}</strong>
+						{t('foundIn', { fileName: props.originalFile.name })}
 					</Typography>
 
 					<Button
@@ -65,7 +68,7 @@ export default function UploadSheetEditable(props: UploadSheetEditableProps) {
 							}
 						}}
 					>
-						{editable ? 'Uložit' : 'Upravit'}
+						{editable ? tCommon('save') : tCommon('edit')}
 					</Button>
 				</Box>
 			</Box>
@@ -93,14 +96,14 @@ export default function UploadSheetEditable(props: UploadSheetEditableProps) {
 				}}
 			>
 				<StyledInput
-					placeholder="Název písně"
+					placeholder={t('titlePlaceholder')}
 					value={title}
 					onChange={(e) => {
 						setTitle(e.target.value)
 					}}
 				/>
 				<StyledInput
-					placeholder="Obsah písně"
+					placeholder={t('contentPlaceholder')}
 					value={sheetData}
 					multiline
 					onChange={(e) => {

@@ -29,7 +29,7 @@ export const getSmartDateAgoString = (
 	// If less than 1 hour, 'Před x minutami'
 	// If less than 1 day, 'Před x hodinami'
 	// If less than 2 days, 'Včera'
-	// If less than 7 days, 'Před x dny'
+	// If less than 7 days, 'x days ago'
 	// Else 'date'
 
 	prefix = prefix || ''

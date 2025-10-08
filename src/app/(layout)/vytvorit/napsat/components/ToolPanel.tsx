@@ -1,6 +1,7 @@
 import { Box, Button, ButtonGroup, Typography } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { AutofpsSelect } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 const Container = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[200],
@@ -20,9 +21,11 @@ interface ToolPaneProps {
 }
 
 export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
+	const t = useTranslations('songEditor')
+	
 	return (
 		<Container>
-			<Typography strong>Označit</Typography>
+			<Typography strong>{t('mark')}</Typography>
 
 			<ButtonGroup>
 				<Button
@@ -31,9 +34,9 @@ export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
 					}}
 					variant="contained"
 					size="small"
-					tooltip="Označit sloku"
+					tooltip={t('markVerse')}
 				>
-					Sloka
+					{t('verse')}
 				</Button>
 				<Button
 					onClick={() => {
@@ -42,9 +45,9 @@ export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
 					variant="contained"
 					size="small"
 					color="success"
-					tooltip="Označit refrén"
+					tooltip={t('markChorus')}
 				>
-					Refrén
+					{t('chorus')}
 				</Button>
 				<Button
 					onClick={() => {
@@ -53,9 +56,9 @@ export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
 					variant="contained"
 					size="small"
 					color="secondary"
-					tooltip="Označit bridge"
+					tooltip={t('markBridge')}
 				>
-					Bridge
+					{t('bridge')}
 				</Button>
 			</ButtonGroup>
 			<Box flex={1} />
@@ -67,7 +70,7 @@ export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
 				size="small"
 				startIcon={<AutofpsSelect />}
 			>
-				Vlož akord
+				{t('insertChord')}
 			</Button>
 		</Container>
 	)

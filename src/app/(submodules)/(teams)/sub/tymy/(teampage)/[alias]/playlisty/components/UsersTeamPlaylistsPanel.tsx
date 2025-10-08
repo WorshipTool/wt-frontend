@@ -12,8 +12,10 @@ import { Typography } from '@/common/ui/Typography'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { getSmartDateAgoString } from '@/tech/date/date.tech'
 import { Schedule } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default function UsersTeamPlaylistsPanel() {
+	const t = useTranslations('teams.playlists')
 	const { playlists: usersPlaylists } = useUsersTeamPlaylists()
 	const { alias: teamAlias } = useInnerTeam()
 
@@ -26,24 +28,23 @@ export default function UsersTeamPlaylistsPanel() {
 	})
 
 	const getRecentString = (date: Date) =>
-		getSmartDateAgoString(date, 'Upraveno', 20)
+		getSmartDateAgoString(date, t('lastUpdated'), 20)
 
 	return (
 		<Box display={'flex'} flexDirection={'column'}>
 			<Box display={'flex'} gap={1} alignItems={'center'}>
 				<Schedule />
 				<Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-					Tvé nedávné{' '}
+					{t('yourRecent')}{' '}
 					<InfoButton expandedWidth={300} lineCount={2}>
-						Zde najdeš své poslední playlisty, které ale ostatní lidé v týmu
-						nemusí vidět.
+						{t('yourRecentDescription')}
 					</InfoButton>
 				</Typography>
 			</Box>
 			<Gap />
 			<Box display={'flex'} gap={1} flexWrap={'wrap'} alignItems={'center'}>
 				{playlists.slice(0, 5).map((playlist) => (
-					<Tooltip key={playlist.guid} label="Otevřít playlist">
+					<Tooltip key={playlist.guid} label={t('openPlaylist')}>
 						<Clickable
 							key={playlist.guid}
 							onClick={() =>

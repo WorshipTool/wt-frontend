@@ -6,6 +6,7 @@ import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useMemo } from 'react'
 
 type TeamLeftPanelProps = {}
@@ -19,6 +20,7 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 		uncollapsable,
 		setHidden,
 	} = useTeamSideBar()
+	const tLeftPanel = useTranslations('teamPage.leftPanel')
 
 	useEffect(() => {
 		setHidden(false)
@@ -55,7 +57,7 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 							<IconButton
 								onClick={() => setCollapsedManually(!collapsed)}
 								color="inherit"
-								tooltip={'Rozbalit menu'}
+								tooltip={tLeftPanel('expand')}
 								tooltipPlacement="right"
 							>
 								{collapsed ? <ChevronRight /> : <ChevronLeft />}
@@ -64,7 +66,7 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 							<Button
 								onClick={() => setCollapsedManually(!collapsed)}
 								color="inherit"
-								tooltip={'Sbalit menu'}
+								tooltip={tLeftPanel('collapse')}
 								tooltipPlacement="right"
 								startIcon={<ChevronLeft />}
 								variant="text"
@@ -72,7 +74,7 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 									minWidth: 150,
 								}}
 							>
-								Sbalit menu
+								{tLeftPanel('collapse')}
 							</Button>
 						)}
 					</Box>

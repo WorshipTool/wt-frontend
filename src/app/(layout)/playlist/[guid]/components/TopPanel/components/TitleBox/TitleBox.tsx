@@ -3,17 +3,19 @@ import { Box, Tooltip, useTheme } from '@/common/ui'
 import { TextField } from '@/common/ui/TextField/TextField'
 import { Typography } from '@/common/ui/Typography'
 import { grey } from '@mui/material/colors'
+import { useTranslations } from 'next-intl'
 import './TitleBox.styles.css'
 
 export default function TitleBox() {
 	const { title, rename, canUserEdit } = useInnerPlaylist()
+	const t = useTranslations('playlist')
 
 	const theme = useTheme()
 	return (
 		<div>
 			{canUserEdit ? (
 				<>
-					<Tooltip label="Přejmenovat" placement="bottom">
+					<Tooltip label={t('rename')} placement="bottom">
 						<TextField
 							sx={{
 								borderColor: `${grey[400]}`,
@@ -24,7 +26,7 @@ export default function TitleBox() {
 									display: 'none',
 								},
 							}}
-							placeholder="Název playlistu"
+							placeholder={t('playlistNamePlaceholder')}
 							value={title}
 							className={'playlist-title-box'}
 							onChange={rename}

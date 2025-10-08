@@ -3,10 +3,12 @@ import JoinTeamPopup from '@/app/(layout)/sub/tymy/components/JoinTeamPopup'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function JoinGroupPanel() {
 	const [open, setOpen] = useState(false)
+	const tTeams = useTranslations('teams')
 
 	return (
 		<>
@@ -26,7 +28,7 @@ export default function JoinGroupPanel() {
 					gap={2}
 				>
 					<Typography size={'1.2rem'}>
-						Připoj se k existujímu týmu pomocí kódu
+						{tTeams('joinPanel.cta')}
 					</Typography>
 					<Button
 						color="primarygradient"
@@ -34,7 +36,7 @@ export default function JoinGroupPanel() {
 							setOpen(true)
 						}}
 					>
-						Připojit se
+						{tTeams('joinPanel.button')}
 					</Button>
 				</Box>
 			</Box>

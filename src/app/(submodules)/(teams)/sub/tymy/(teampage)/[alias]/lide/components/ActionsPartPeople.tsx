@@ -5,6 +5,7 @@ import { Box } from '@/common/ui'
 import { IconButton } from '@/common/ui/IconButton'
 import { usePermission } from '@/hooks/permissions/usePermission'
 import { Done, Edit, PersonRemove } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type RightSideItemProps = {
 	data: TeamMemberDto
@@ -16,6 +17,7 @@ type RightSideItemProps = {
 }
 
 export default function ActionsPartPeople(props: RightSideItemProps) {
+	const t = useTranslations('teams.people')
 	const onEditClick = () => {
 		props.onEditableChange(true)
 	}
@@ -42,7 +44,7 @@ export default function ActionsPartPeople(props: RightSideItemProps) {
 					<IconButton
 						onClick={onDoneClick}
 						color="success"
-						tooltip="Uložit roli"
+						tooltip={t('saveRole')}
 					>
 						<Done />
 					</IconButton>
@@ -51,7 +53,7 @@ export default function ActionsPartPeople(props: RightSideItemProps) {
 				<IconButton
 					onClick={onEditClick}
 					disabled={props.selectable || !setRolePermission}
-					tooltip="Změnit roli"
+					tooltip={t('changeRole')}
 				>
 					<Edit />
 				</IconButton>
@@ -60,7 +62,7 @@ export default function ActionsPartPeople(props: RightSideItemProps) {
 				<IconButton
 					disabled={props.selectable || !kickPermission}
 					onClick={props.onRemove}
-					tooltip="Odebrat z týmu"
+					tooltip={t('removeFromTeam')}
 				>
 					<PersonRemove />
 				</IconButton>

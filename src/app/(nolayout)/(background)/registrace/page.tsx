@@ -9,6 +9,7 @@ import { StandaloneCard } from '@/common/ui/StandaloneCard'
 import { TextInput } from '@/common/ui/TextInput'
 import { Typography } from '@/common/ui/Typography'
 import { useSmartParams } from '@/routes/useSmartParams'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import useAuth from '../../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
@@ -34,12 +35,15 @@ function SignUp() {
 
 	const params = useSmartParams('signup')
 
+	const t = useTranslations('auth.signup')
+	const tCommon = useTranslations('common')
+
 	const onSignupClick = () => {
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
-				setErrorMessage('Účet s tímto emailem již existuje')
+				setErrorMessage(t('emailExists'))
 			} else {
 				await login({ email, password })
 				navigate('home', {
@@ -61,8 +65,8 @@ function SignUp() {
 		>
 			<LogoTitle />
 			<StandaloneCard
-				title="Vytvořte si účet"
-				subtitle="A používejte aplikaci naplno"
+				title={t('title')}
+				subtitle={t('subtitle')}
 			>
 				<Box
 					display={'flex'}
@@ -96,7 +100,7 @@ function SignUp() {
 							}}
 							color="grey.600"
 						>
-							Nebo
+							{tCommon('or')}
 						</Typography>
 					</Box>
 					{errorMessage != '' && (
@@ -115,14 +119,14 @@ function SignUp() {
 							<Box display={'flex'} flexDirection={'row'} gap={2}>
 								<TextInput
 									required
-									title="Jméno"
+									title={t('firstName')}
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
 								/>
 								<TextInput
 									required
-									title="Příjmení"
+									title={t('lastName')}
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
@@ -130,7 +134,7 @@ function SignUp() {
 							</Box>
 							<TextInput
 								required
-								title="Email"
+								title={t('email')}
 								value={email}
 								onChange={(m) => setEmail(m)}
 								type="email"
@@ -138,7 +142,7 @@ function SignUp() {
 							/>
 							<TextInput
 								required
-								title="Heslo"
+								title={t('password')}
 								value={password}
 								onChange={(m) => setPassword(m)}
 								type="password"
@@ -161,7 +165,7 @@ function SignUp() {
 								}}
 								color={'primarygradient'}
 							>
-								Vytvořit účet
+								{t('signupButton')}
 							</Button>
 						</Box>
 						<Gap />
@@ -171,7 +175,7 @@ function SignUp() {
 							alignItems={'center'}
 							justifyContent={'center'}
 						>
-							<Typography size={'0.9rem'}>Už máte účet?</Typography>
+							<Typography size={'0.9rem'}>{t('haveAccount')}</Typography>
 							<Button
 								size={'small'}
 								variant="text"
@@ -181,7 +185,7 @@ function SignUp() {
 									previousPage: params.previousPage,
 								}}
 							>
-								Přihlásit se
+								{t('login')}
 							</Button>
 						</Box>
 					</form>

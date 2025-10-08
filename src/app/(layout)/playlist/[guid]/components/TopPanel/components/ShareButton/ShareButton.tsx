@@ -7,10 +7,12 @@ import { getRouteUrlWithParams } from '@/routes/tech/transformer.tech'
 import { Share } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function ShareButton() {
 	const { guid, title, save } = useInnerPlaylist()
 	const url = useMemo(() => getRouteUrlWithParams('playlist', { guid }), [guid])
+	const t = useTranslations('playlist')
 
 	const { enqueueSnackbar } = useSnackbar()
 
@@ -29,13 +31,13 @@ export default function ShareButton() {
 		}
 		navigator.clipboard.writeText(url)
 
-		enqueueSnackbar('Odkaz zkopírován do schránky', {})
+		enqueueSnackbar(t('linkCopiedToClipboard'), {})
 	}
 
 	return isSmall ? (
 		<>
 			<SmartPortalMenuItem
-				title={'Sdílet'}
+				title={t('share')}
 				icon={<Share />}
 				onClick={onShare}
 			/>
@@ -47,7 +49,7 @@ export default function ShareButton() {
 			size={'small'}
 			onClick={onShare}
 		>
-			Sdílet
+			{t('share')}
 		</Button>
 	)
 }

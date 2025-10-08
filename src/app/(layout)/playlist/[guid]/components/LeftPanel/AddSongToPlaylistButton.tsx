@@ -4,12 +4,14 @@ import { Box, Tooltip } from '@/common/ui'
 import { Fab } from '@/common/ui/mui'
 import { BasicVariantPack } from '@/types/song'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export const OPEN_PLAYLIST_ADD_SONG_POPUP_EVENT_NAME =
 	'openPlaylistAddSongPopup'
 
 export default function AddSongToPlaylistButton() {
+	const t = useTranslations('playlist')
 	const { addItem, items, canUserEdit, ...playlist } = useInnerPlaylist()
 
 	const anchorRef = useRef<HTMLButtonElement>(null)
@@ -69,7 +71,7 @@ export default function AddSongToPlaylistButton() {
 	return !canUserEdit ? null : (
 		<>
 			<Box sx={{}}>
-				<Tooltip label="Přidat píseň do playlistu">
+				<Tooltip label={t('addSongToPlaylist')}>
 					<Fab onClick={onClick} ref={anchorRef} size="medium" color="primary">
 						<Add />
 					</Fab>
