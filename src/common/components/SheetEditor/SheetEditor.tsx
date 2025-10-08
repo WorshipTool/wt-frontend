@@ -2,6 +2,7 @@ import ToolPanel from '@/app/(layout)/vytvorit/napsat/components/ToolPanel'
 import { useSheetEditorTempData } from '@/common/components/SheetEditor/useSheetEditorTempData'
 import { Box } from '@/common/ui'
 import { InputBase, styled, SxProps } from '@/common/ui/mui'
+import { useTranslations } from 'next-intl'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const TitleInput = styled(InputBase)(({ theme }) => ({
@@ -24,11 +25,12 @@ interface SheetEditorProps {
 }
 
 export default function SheetEditor(props: SheetEditorProps) {
+	const t = useTranslations('songEditor')
 	//TODO: maybe remove this line
-	const { title: t, sheetData: sd } = useSheetEditorTempData(
+	const { title: tempTitle, sheetData: sd } = useSheetEditorTempData(
 		!props.useExampleData
 	)
-	const [title, _setTitle] = useState(props.startTitle || t)
+	const [title, _setTitle] = useState(props.startTitle || tempTitle)
 	const [sheetData, _setSheetData] = useState(props.startSheetData || sd)
 
 	const sheetInputRef: any = useRef(null)
@@ -106,7 +108,7 @@ export default function SheetEditor(props: SheetEditorProps) {
 	return (
 		<Box display={'flex'} flexDirection={'column'} flex={1} sx={props.sx}>
 			<TitleInput
-				placeholder="Zadejte název písně"
+				placeholder={t('titlePlaceholder')}
 				inputRef={titleInputRef}
 				value={title}
 				onChange={(e) => {
@@ -114,7 +116,7 @@ export default function SheetEditor(props: SheetEditorProps) {
 				}}
 			/>
 			<SheetInput
-				placeholder="Zde je místo pro obsah písně..."
+				placeholder={t('contentPlaceholder')}
 				inputRef={sheetInputRef}
 				multiline
 				value={sheetData}

@@ -15,6 +15,7 @@ import { usePermission } from '@/hooks/permissions/usePermission'
 import { UserGuid } from '@/interfaces/user'
 import { ExpandMore } from '@mui/icons-material'
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 type SelectedPeopleActionsProps = {
 	selected: UserGuid[]
@@ -25,6 +26,7 @@ type SelectedPeopleActionsProps = {
 export default function SelectedPeopleActions(
 	props: SelectedPeopleActionsProps
 ) {
+	const t = useTranslations('teams.people')
 	const [open, setOpen] = useState(false)
 	const [roleMenuOpen, setRoleMenuOpen] = useState(false)
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -98,7 +100,7 @@ export default function SelectedPeopleActions(
 			...(kickPermission
 				? [
 						{
-							title: 'Odebrat z týmu',
+							title: t('removeFromTeam'),
 							onClick: () => setPopupOpen(true),
 							disabled: !kickPermission || disabledAction,
 						},
@@ -107,7 +109,7 @@ export default function SelectedPeopleActions(
 			...(setRolePermission
 				? [
 						{
-							title: 'Nastavit roli na',
+							title: t('setRoleTo'),
 							onClick: onChangeRoleClick,
 							disabled: !setRolePermission || disabledAction,
 						},
@@ -132,7 +134,7 @@ export default function SelectedPeopleActions(
 					disabled={props.selected.length === 0}
 					endIcon={moreIcon}
 				>
-					Akce
+					{t('actions')}
 				</Button>
 			)}
 
@@ -140,7 +142,7 @@ export default function SelectedPeopleActions(
 				{menuItems.map((item, index) => (
 					<Tooltip
 						key={item.title + ''}
-						label={disabledAction ? 'Nelze upravit sebe ani vlastníka' : ''}
+						label={disabledAction ? t('cannotEditSelfOrOwner') : ''}
 						placement="left"
 					>
 						<MenuItem {...item} />
@@ -162,8 +164,8 @@ export default function SelectedPeopleActions(
 			<Popup
 				open={popupOpen}
 				onClose={() => setPopupOpen(false)}
-				title="Opravdu odebrat?"
-				subtitle="Opravdu chcete odebrat označené lidi ze skupiny?"
+				title={t('confirmRemove')}
+				subtitle={t('confirmRemoveSelectedPeople')}
 				actions={[
 					<>
 						<Button
@@ -174,9 +176,9 @@ export default function SelectedPeopleActions(
 								setPopupOpen(false)
 							}}
 						>
-							Zrušit
+							{t('cancel')}
 						</Button>
-						<Tooltip label={includesMe ? 'Nelze odebrát sám sebe' : ''}>
+						<Tooltip label={includesMe ? t('cannotRemoveSelf') : ''}>
 							<Button
 								size="small"
 								color="error"
@@ -185,7 +187,7 @@ export default function SelectedPeopleActions(
 								}}
 								disabled={disabledAction}
 							>
-								Odebrat
+								{t('remove')}
 							</Button>
 						</Tooltip>
 					</>,

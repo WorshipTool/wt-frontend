@@ -5,6 +5,8 @@ import PopupProvider from '@/common/components/Popup/PopupProvider'
 import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from '../../i18n-config'
 
 import Analytics from '@/app/components/components/analytics/Analytics'
 import HeadersProviders from '@/app/providers/HeadersProviders'
@@ -13,16 +15,16 @@ import './globals.css'
 
 export const metadata: Metadata = {
 	title: 'Chvalotce.cz',
-	description: 'Uživatelsky přívětivá platforma s křesťanskými chválami',
+	description: 'User-friendly platform for Christian worship songs',
 	keywords: [
-		'zpěvník',
-		'chvály',
-		'akordy',
-		'píseň',
-		'text',
+		'songbook',
+		'worship',
+		'chords',
+		'song',
+		'lyrics',
 		'playlist',
-		'křesťanské',
-		'hudba',
+		'christian',
+		'music',
 	],
 	manifest: '/src/app/manifest.json',
 	verification: {
@@ -30,25 +32,29 @@ export const metadata: Metadata = {
 	},
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const messages = await getMessages()
+
 	return (
-		<html lang="cs">
+		<html lang="en">
 			<HeadersProviders />
 			<Analytics />
 			<body>
 				<AppRouterCacheProvider>
-					<AppProviders>
-						{children}
-						<PopupProvider />
-						<DragTemplatesContainer />
-						<AdminOptionsProvider />
+					<NextIntlClientProvider messages={messages} locale="en">
+						<AppProviders>
+							{children}
+							<PopupProvider />
+							<DragTemplatesContainer />
+							<AdminOptionsProvider />
 
-						<UnavailableMessage />
-					</AppProviders>
+							<UnavailableMessage />
+						</AppProviders>
+					</NextIntlClientProvider>
 				</AppRouterCacheProvider>
 			</body>
 		</html>

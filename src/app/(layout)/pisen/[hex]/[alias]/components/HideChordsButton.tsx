@@ -1,4 +1,7 @@
+'use client'
+
 import { Box, Button } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 
 type HideChordsButtonProps = {
 	hiddenValue: boolean
@@ -6,6 +9,7 @@ type HideChordsButtonProps = {
 }
 
 export default function HideChordsButton(props: HideChordsButtonProps) {
+	const tHide = useTranslations('songPage.hideChords')
 	return (
 		<Box sx={{ color: 'grey.500' }} display={'flex'}>
 			<Button
@@ -16,7 +20,7 @@ export default function HideChordsButton(props: HideChordsButtonProps) {
 				}}
 				variant="text"
 			>
-				{props.hiddenValue ? 'Zobrazit akordy' : 'Skrýt akordy'}
+				{props.hiddenValue ? tHide('show') : tHide('hide')}
 			</Button>
 		</Box>
 	)

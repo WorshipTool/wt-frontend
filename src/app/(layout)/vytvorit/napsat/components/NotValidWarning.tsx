@@ -1,10 +1,12 @@
 import { ListItemText } from '@/common/ui/mui'
+import { useTranslations } from 'next-intl'
 
 export default function NotValidWarning() {
+	const t = useTranslations('create.validation')
 	return (
 		<ListItemText
-			primary={'Neplatný obsah'}
-			secondary={'Obsah musí být delší a mít alespoň dva řádky'}
+			primary={t('invalidContent')}
+			secondary={t('contentRequirements')}
 		/>
 	)
 }

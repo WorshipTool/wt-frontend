@@ -2,6 +2,7 @@
 import { Typography, useTheme } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { Grid } from '@/common/ui/mui/Grid'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import ContainerGrid from '../../../../common/components/ContainerGrid'
 import SongListCards, {
@@ -23,9 +24,9 @@ export default function RecommendedSongsList({
 	listType = 'row',
 }: RecommendedSongsListProps) {
 	const theme = useTheme()
-	const { data, isLoading, isError, isSuccess } = useRecommendedSongs()
+	const tHome = useTranslations('home')
+	const { data, isLoading, isError } = useRecommendedSongs()
 
-	// const navigate = useSmartNavigate()
 	const [init, setInit] = useState(false)
 	useEffect(() => {
 		setInit(true)
@@ -37,16 +38,12 @@ export default function RecommendedSongsList({
 				width: '100%',
 			}}
 		>
-			{
-				<Typography strong key={'idea'}>
-					Nějaký nápad:
-				</Typography>
-			}
+			<Typography strong key={'idea'}>
+				{tHome('recommended.idea')}
+			</Typography>
 
 			{isError && (
-				<>
-					<Typography>Při načítání se vyskytla chyba...</Typography>
-				</>
+				<Typography>{tHome('recommended.error')}</Typography>
 			)}
 
 			<GridContainer
@@ -54,7 +51,7 @@ export default function RecommendedSongsList({
 				columns={{ xs: 1, sm: 2, md: 4 }}
 				sx={{ padding: 0 }}
 			>
-				{!init || isLoading ? (
+				{(!init || isLoading) && (
 					<Grid
 						container
 						columns={{ xs: 1, md: 2, lg: 4 }}
@@ -69,7 +66,7 @@ export default function RecommendedSongsList({
 							</Grid>
 						))}
 					</Grid>
-				) : null}
+				)}
 				<SongListCards
 					data={data.slice(0, 4)}
 					variant={listType}

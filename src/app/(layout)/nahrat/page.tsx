@@ -16,6 +16,7 @@ import { handleApiCall } from '@/tech/fetch/handleApiCall'
 import { copyToClipboard } from '@/tech/string/copy.tech'
 import { AutoAwesome, ContentCopy } from '@mui/icons-material'
 import axios from 'axios'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import UploadPanel from './components/UploadPanel/UploadPanel'
@@ -47,6 +48,9 @@ function Upload() {
 	const { fetchApiState: fetchUploading, apiState: apiStateUploading } =
 		useApiState<AddFileToParseQueueOutDto>()
 	const { parserApi } = useApi()
+
+	const t = useTranslations('upload')
+	const tCommon = useTranslations('common')
 
 	const parseFiles = async (files: File[]) => {
 		if (!user) {
@@ -143,7 +147,7 @@ function Upload() {
 		const data = sheet.data
 		copyToClipboard(data)
 
-		enqueueSnackbar('Data písně zkopírovány.')
+		enqueueSnackbar(t('songDataCopied'))
 	}
 
 	return (
@@ -179,24 +183,24 @@ function Upload() {
 					!result ? (
 						<Box display={'flex'} gap={1}>
 							{apiStateUploading.loading
-								? 'Nahrávání'
+								? t('uploading')
 								: status === ParserStatus.Queued
-								? 'Čekání ve frontě'
+								? t('queueing')
 								: status === ParserStatus.Started
-								? 'Zpracovávání souborů'
+								? t('processing')
 								: status === ParserStatus.Finished
-								? 'Zpracováno'
+								? t('processed')
 								: status === ParserStatus.Failed
-								? 'Nastala chyba'
-								: 'Počkejte prosím'}
+								? t('errorOccurred')
+								: t('pleaseWait')}
 						</Box>
 					) : (
 						<Box display={'flex'} gap={1}>
-							Zpracováno
+							{t('processed')}
 							{result.useAi && (
 								<>
 									<Chip
-										label={'S pomocí AI'}
+										label={t('withAI')}
 										size="small"
 										color="success"
 										icon={<AutoAwesome />}
@@ -266,7 +270,7 @@ function Upload() {
 												startIcon={<ContentCopy />}
 												onClick={() => copy(a)}
 											>
-												Zkopírovat
+												{t('copy')}
 											</Button>
 										</Box>
 									</Box>

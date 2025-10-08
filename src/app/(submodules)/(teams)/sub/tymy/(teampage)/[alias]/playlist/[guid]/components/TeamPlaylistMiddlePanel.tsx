@@ -5,9 +5,11 @@ import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/u
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 export default function TeamPlaylistMiddlePanel() {
+	const t = useTranslations('teams.playlist')
 	const { items, loading } = useInnerPlaylist()
 	const { alias } = useInnerTeam()
 
@@ -33,9 +35,9 @@ export default function TeamPlaylistMiddlePanel() {
 										alias,
 										'title-alias': parsedAlias.alias,
 									}}
-									tooltip="Otevřít píseň mimo playlist"
+									tooltip={t('openSongTooltip')}
 								>
-									Otevřít
+									{t('open')}
 								</Button>
 							}
 						/>

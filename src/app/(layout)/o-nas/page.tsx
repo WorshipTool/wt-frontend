@@ -1,9 +1,10 @@
-'use server'
+'use client'
 import SectionLabelPill from '@/app/(layout)/o-nas/components/SectionLabelPill'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
+import { useTranslations } from 'next-intl'
 
 import Image from 'next/image'
 
@@ -29,6 +30,7 @@ import './styles.css'
 export default SmartPage(Page, ['transparentToolbar', 'containLayout'])
 
 function Page() {
+	const t = useTranslations('about')
 	return (
 		<Box>
 			<ToolbarChanger />
@@ -51,17 +53,17 @@ function Page() {
 				>
 					<Box display={'flex'} flexDirection={'column'} gap={1}>
 						<Box display={'flex'}>
-							<SectionLabelPill label="Kdo jsme?" />
+							<SectionLabelPill label={t('whoAreWe')} />
 						</Box>
 						<Box display={'flex'} flexDirection={'column'}>
 							<Typography className="about-title" variant="h1" strong={600}>
-								Platforma
+								{t('platform')}
 							</Typography>
 							<Typography className="about-title" variant="h1">
-								s křesťanskými
+								{t('withChristianPraises')}
 							</Typography>
 							<Typography className="about-title" variant="h1">
-								chválami
+								{t('praises')}
 							</Typography>
 						</Box>
 					</Box>
@@ -73,8 +75,7 @@ function Page() {
 						color="grey.500"
 						variant="h3"
 					>
-						Jsme uživatelsky přívětivá platforma, která nabízí široký výběr
-						chval ale především moderní nástroje
+						{t('description')}
 					</Typography>
 					<Box display={'flex'}>
 						<MoreButton />
@@ -117,7 +118,7 @@ function Page() {
 				>
 					<Image
 						src={'/assets/sheeps/ovce1.svg'}
-						alt="Ovce"
+						alt={t('graphics.introSheepAlt')}
 						fill
 						style={{
 							transform: 'translateY(15%)',
@@ -158,7 +159,7 @@ function Page() {
 					minWidth={300}
 				>
 					<Box display={'flex'} flexDirection={'column'} gap={1}>
-						<Typography variant="h2">Velká a aktuální databáze</Typography>
+						<Typography variant="h2">{t('database.title')}</Typography>
 
 						<Typography
 							variant="h4"
@@ -167,8 +168,7 @@ function Page() {
 							}}
 							color="grey.500"
 						>
-							Základem celé aplikace je seznam chval. Tento seznam se snažíme
-							držet co největší a dobře strukturovaný.
+							{t('database.description')}
 						</Typography>
 					</Box>
 					<Box
@@ -211,8 +211,8 @@ function Page() {
 					>
 						<AboutInfoDatabase
 							order={0}
-							title="Vše na jednom místě"
-							text="Seskupujeme písně z jiných zpěvníků, abyste mohli hledat na jednom místě"
+							title={t('database.allInOne.title')}
+							text={t('database.allInOne.description')}
 						/>
 					</Box>
 					<Box
@@ -224,10 +224,8 @@ function Page() {
 					>
 						<AboutInfoDatabase
 							order={1}
-							title="Neustálá aktualizace"
-							text="Náš algoritmus automaticky 
-                                        přidává nové písně, takže databáze 
-                                        je vždy aktuální"
+							title={t('database.constantUpdate.title')}
+							text={t('database.constantUpdate.description')}
 						/>
 					</Box>
 					<Box
@@ -239,9 +237,8 @@ function Page() {
 					>
 						<AboutInfoDatabase
 							order={2}
-							title="Váše písně"
-							text="Databáze je otevřená 
-                                        - sami můžete přidávat chvály, veřejně či soukromě"
+							title={t('database.yourSongs.title')}
+							text={t('database.yourSongs.description')}
 						/>
 					</Box>
 				</Box>
@@ -258,27 +255,27 @@ function Page() {
 					alignItems={'center'}
 					gap={1}
 				>
-					<Typography variant="h2">Nástroje</Typography>
+					<Typography variant="h2">{t('tools.title')}</Typography>
 					<Typography variant="h4" color="grey.600" align="center">
-						Zdarma nabízíme nástroje, které se vám můžou hodit
+						{t('tools.description')}
 					</Typography>
 				</Box>
 
 				<Gap value={2} />
 				<Box display={'flex'} flexDirection={'row'} gap={2} flexWrap={'wrap'}>
 					<AboutToolCard
-						title="Chytré vyhledávání"
-						text="Najděte své písně podle jejich názvu nebo i textu"
+						title={t('tools.smartSearch.title')}
+						text={t('tools.smartSearch.description')}
 						icon={<SmartButton />}
 						button={
 							<Button size="small" variant="outlined" to="home">
-								Vyzkoušet
+								{t('tools.smartSearch.tryIt')}
 							</Button>
 						}
 					/>
 					<AboutToolCard
-						title="Týmy"
-						text="Sestavte si pro váš chválící tým prostředí, kde se snadno připravíte na společné hraní"
+						title={t('tools.teams.title')}
+						text={t('tools.teams.description')}
 						icon={<Groups2 />}
 						button={
 							<Button
@@ -287,18 +284,18 @@ function Page() {
 								color="primarygradient"
 								to="teams"
 							>
-								Dozvědět se víc
+								{t('tools.teams.learnMore')}
 							</Button>
 						}
 					/>
 
 					<AboutToolCard
-						title="Tvorba playlistů"
-						text="Vytvořte si z písní vlastní playlist, který lze snadno sdílet s ostatními"
+						title={t('tools.playlists.title')}
+						text={t('tools.playlists.description')}
 						icon={<LibraryMusic />}
 						button={
 							<Button size="small" variant="outlined" to="usersPlaylists">
-								Vyzkoušet
+								{t('tools.playlists.tryIt')}
 							</Button>
 						}
 					/>
@@ -312,11 +309,10 @@ function Page() {
 				<Box display={'flex'} flexDirection={'row'} gap={2} flexWrap={'wrap'}>
 					<Box display={'flex'} flexDirection={'column'} flex={2} gap={1}>
 						<Typography variant="h2" noWrap>
-							Proč, kdo a jak?
+							{t('whyWhoHow.title')}
 						</Typography>
 						<Typography variant="h4" color="grey.600">
-							Celý projekt byl vytvořen z nějakého důvodu. Podívejte se na
-							krátké video
+							{t('whyWhoHow.description')}
 						</Typography>
 					</Box>
 					<Video
@@ -366,21 +362,20 @@ function Page() {
 							>
 								<Image
 									src={'/assets/icons/send-money.svg'}
-									alt="Poslat peníze"
+									alt={t('supportCard.iconAlt')}
 									width={40}
 									height={40}
 								/>
 								<Typography variant="h2" noWrap>
-									Podpořte nás
+									{t('supportCard.title')}
 								</Typography>
 							</Box>
 							<Typography variant="h4" color="grey.600" align="center">
-								Celou aplikaci jsme vytvářeli ve svém volném času, zadarmo. Za
-								jakoukoliv finanční podporu budeme rádi.
+								{t('supportCard.description')}
 							</Typography>
 						</Box>
 						<Box display={'flex'}>
-							<Button color={'secondary'}>Finančně podpořit</Button>
+							<Button color={'secondary'}>{t('supportCard.button')}</Button>
 						</Box>
 					</Box>
 				)}

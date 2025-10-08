@@ -2,6 +2,7 @@ import Menu from '@/common/components/Menu/Menu'
 import { Box } from '@/common/ui'
 import { Typography } from '@/common/ui/Typography'
 import { ArrowDropDown } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export type FavouritesOrderOptions = 'addedAt' | 'title'
@@ -19,12 +20,13 @@ type FavouritesOrderSelectProps = {
 export default function FavouritesListOrderSelect(
 	props: FavouritesOrderSelectProps
 ) {
+	const t = useTranslations('account.favourites')
 	const [open, setOpen] = useState(false)
 	const [anchor, setAnchor] = useState<null | HTMLElement>(null)
 
 	const items: Item[] = [
-		{ label: 'Data přidání', type: 'addedAt' },
-		{ label: 'Názvu', type: 'title' },
+		{ label: t('sortBy.dateAdded'), type: 'addedAt' },
+		{ label: t('sortBy.title'), type: 'title' },
 	]
 	const [selected, setSelected] = useState<Item>(
 		props.startValue
@@ -35,7 +37,7 @@ export default function FavouritesListOrderSelect(
 	return (
 		<Box display={'flex'} gap={1}>
 			<Typography color="grey.500" thin>
-				Seřadit podle:
+				{t('sortBy.label')}
 			</Typography>
 			<Typography
 				strong

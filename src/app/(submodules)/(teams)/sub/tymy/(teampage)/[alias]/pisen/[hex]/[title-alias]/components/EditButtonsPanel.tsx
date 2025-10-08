@@ -11,6 +11,7 @@ import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ExtendedVariantPack } from '@/types/song'
 import { BorderColor, Edit, FileCopy } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import { VariantPackAlias } from '../../../../../../../../../../../interfaces/variant/songVariant.types'
 
@@ -29,6 +30,7 @@ export default function EditButtonsPanel({
 	variant,
 	...props
 }: EditButtonsPanelProps) {
+	const t = useTranslations('teams.song')
 	const { selection, reload, guid: teamGuid, alias: teamAlias } = useInnerTeam()
 
 	const playlistItemGuid = useMemo(() => {
@@ -107,14 +109,14 @@ export default function EditButtonsPanel({
 						// onClick={() => setInEditMode(true)}
 						startIcon={icon}
 						onClick={onEditButtonClick}
-						tooltip="Upravit píseň pro tento tým"
+						tooltip={t('editTooltip')}
 					>
-						Upravit
+						{t('edit')}
 					</Button>
 				) : (
 					<SmartPortalMenuItem
-						title={'Upravit'}
-						subtitle="Upravit píseň pro tento tým"
+						title={t('edit')}
+						subtitle={t('editTooltip')}
 						onClick={onEditButtonClick}
 						icon={icon}
 					/>
@@ -132,7 +134,7 @@ export default function EditButtonsPanel({
 						onClick={onCancel}
 						disabled={props.saving}
 					>
-						Zrušit
+						{t('cancel')}
 					</Button>
 					<Button
 						color="secondary"
@@ -140,7 +142,7 @@ export default function EditButtonsPanel({
 						onClick={onSave}
 						loading={props.saving}
 					>
-						Uložit
+						{t('save')}
 					</Button>
 				</Box>
 			)}
@@ -150,7 +152,7 @@ export default function EditButtonsPanel({
 				onClose={() => setCopyPopupOpen(false)}
 				onSubmit={createCopy}
 				icon={<FileCopy />}
-				title="Krok před úpravou"
+				title={t('copyTitle')}
 				width={400}
 				actions={
 					<>
@@ -161,18 +163,16 @@ export default function EditButtonsPanel({
 							type="reset"
 							disabled={apiState.loading}
 						>
-							Zrušit
+							{t('cancel')}
 						</Button>
 						<Button size="small" type="submit" loading={apiState.loading}>
-							{!apiState.loading ? 'Pokračovat' : 'Kopírování...'}
+							{!apiState.loading ? t('continue') : t('copying')}
 						</Button>
 					</>
 				}
 			>
 				<Typography>
-					Píseň, kterou chcete upravit je přidaná z veřejného zpěvníku. Pokud
-					chcete píseň upravit, vytvoříme vám kopii této písně, kterou si můžete
-					upravit.
+					{t('copyDescription')}
 				</Typography>
 			</Popup>
 		</>

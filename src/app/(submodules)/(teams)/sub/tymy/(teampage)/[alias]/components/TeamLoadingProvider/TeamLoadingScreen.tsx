@@ -1,5 +1,6 @@
 import { Background } from '@/common'
 import { Box, CircularProgress, Image } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 import './team.loading.styles.css'
 
 type TeamLoadingScreenProps = {
@@ -12,7 +13,7 @@ export default function TeamLoadingScreen({
 	isVisible,
 	...props
 }: TeamLoadingScreenProps) {
-	// const url = getImage
+	const t = useTranslations('teams.loading')
 
 	return (
 		<div
@@ -41,7 +42,7 @@ export default function TeamLoadingScreen({
 			>
 				{props.teamLogoUrl ? (
 					<Box className={'logo-image'}>
-						<Image src={props.teamLogoUrl} alt="Logo týmu" />
+						<Image src={props.teamLogoUrl} alt={t('logoAlt')} />
 					</Box>
 				) : (
 					<Box>

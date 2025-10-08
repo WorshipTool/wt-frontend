@@ -10,6 +10,7 @@ import { copyToClipboard } from '@/tech/string/copy.tech'
 import { ExtendedVariantPack } from '@/types/song'
 import { CopyAll, NewReleases, Verified } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import React, { useCallback, useMemo, useState } from 'react'
 import { SongDto } from '../../../../../../../api/dtos'
@@ -41,6 +42,7 @@ export default function SongAdvancedAdminOptions({
 	editedTitle,
 	anyChange,
 }: AddToPlaylistButtonProps) {
+	const t = useTranslations('song.admin')
 	const { isAdmin, user, apiConfiguration } = useAuth()
 
 	const [open, setOpen] = React.useState(false)
@@ -67,7 +69,7 @@ export default function SongAdvancedAdminOptions({
 
 		copyToClipboard(data)
 
-		enqueueSnackbar('Data písně byla zkopírována do schránky')
+		enqueueSnackbar(t('dataCopied'))
 	}
 
 	const addCreator = () => {
@@ -83,8 +85,8 @@ export default function SongAdvancedAdminOptions({
 	const Option = useMemo(
 		() => (
 			<AdminOption
-				title="Pokročilé možnosti"
-				subtitle="Možnosti k písni"
+				title={t('advancedOptions')}
+				subtitle={t('songOptions')}
 				onClick={handleClick}
 				stayOpenedOnClick
 			/>
@@ -114,7 +116,7 @@ export default function SongAdvancedAdminOptions({
 				<PublishButton variant={variant} />
 				{variant.public && (
 					<CustomMenuItem
-						title="Spravovat manuální ověření"
+						title={t('manageManualVerification')}
 						icon={variant.verified ? <Verified /> : <NewReleases />}
 						onClick={() => setVerifyPopupOpen(true)}
 					/>
@@ -147,7 +149,7 @@ export default function SongAdvancedAdminOptions({
 					]}
 
 				<CustomMenuItem
-					title={'Zkopírovat'}
+					title={t('copy')}
 					onClick={onCopyClick}
 					icon={<CopyAll fontSize="small" />}
 				/>
@@ -156,11 +158,11 @@ export default function SongAdvancedAdminOptions({
 			<Popup
 				open={verifyPopupOpen}
 				onClose={() => setVerifyPopupOpen(false)}
-				title="Manuální ověření"
+				title={t('manualVerification')}
 				subtitle={variant.title}
 				actions={[
 					<Button key={'cancel'} type="reset" size="small" variant="text">
-						Zrušit
+{t('cancel')}
 					</Button>,
 					<VerifyButton variant={variant} key={'action'} />,
 				]}

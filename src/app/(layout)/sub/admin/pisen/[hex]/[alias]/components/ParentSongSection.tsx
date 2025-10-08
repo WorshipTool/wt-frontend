@@ -8,8 +8,10 @@ import { Link } from '@/common/ui/Link/Link'
 import { czechConjugation } from '@/tech/string/string.tech'
 import { BasicVariantPack } from '@/types/song'
 import { useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function ParentSongSection() {
+	const t = useTranslations('admin')
 	const { data, loading } = useInnerSong()
 	const [isPopupOpen, setPopupOpen] = useState(false)
 	const { songManagementApi } = useApi() // Corrected to use the `useApi` hook properly
@@ -51,11 +53,11 @@ export default function ParentSongSection() {
 	return loading || !data ? null : (
 		<Box sx={{ position: 'relative' }}>
 			<Typography small>
-				Parent píseň{' '}
+				{t('parentSong')}{' '}
 				{`- ${data.packs.length - 1} ${czechConjugation(
-					'další varianta',
-					'další varianty',
-					'dalších variant',
+					t('additionalVariant'),
+					t('additionalVariants'),
+					t('additionalVariantsGenitive'),
 					data.packs.length - 1
 				)}`}
 			</Typography>
@@ -73,10 +75,10 @@ export default function ParentSongSection() {
 					small
 					outlined
 				>
-					Vybrat jinou píseň
+					{t('selectDifferentSong')}
 				</Button>
 				<Button onClick={addToEmptyFamily} small outlined>
-					Přidat do prázdné rodiny
+					{t('addToEmptyFamily')}
 				</Button>
 			</Box>
 
@@ -85,7 +87,7 @@ export default function ParentSongSection() {
 				onClose={() => setPopupOpen(false)}
 				onSubmit={onSubmit}
 				anchorRef={anchorRef}
-				submitLabel="Přidat do rodiny"
+				submitLabel={t('addToFamily')}
 				disableMultiselect
 			/>
 		</Box>

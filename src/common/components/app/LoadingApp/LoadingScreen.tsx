@@ -1,6 +1,9 @@
+'use client'
+
 import SvgIcon from '@/assets/icon.svg'
 import { Box, Typography } from '@/common/ui'
 // import { AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Gap } from '../../../ui/Gap/Gap'
 import { Background } from '../Background'
 import './LoadingScreen.styles.css'
@@ -14,6 +17,7 @@ type LoadingScreenProps = {
 export default function LoadingScreen({
 	isVisible = true,
 }: LoadingScreenProps) {
+	const t = useTranslations('loadingScreen')
 	return (
 		<>
 			{/* <AnimatePresence> */}
@@ -59,7 +63,7 @@ export default function LoadingScreen({
                 /> */}
 						<Gap value={2} />
 						<Typography className="loadingText">
-							Načítání aplikace...
+							{t('message')}
 						</Typography>
 					</Box>
 				</div>

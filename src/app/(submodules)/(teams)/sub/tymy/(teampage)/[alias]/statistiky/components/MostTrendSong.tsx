@@ -4,6 +4,7 @@ import { getStatisticsColorFromString } from '@/app/(submodules)/(teams)/sub/tym
 import OnlyAdmin from '@/common/components/admin/OnlyAdmin'
 import { Box, Typography, useTheme } from '@/common/ui'
 import { BarChart } from '@mui/x-charts'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 type DataItem = {
@@ -16,6 +17,7 @@ type MostTrendSongProps = {
 }
 
 export default function MostTrendSong(props: MostTrendSongProps) {
+	const t = useTranslations('teams.statistics')
 	const theme = useTheme()
 	const dataset: DataItem[] = useMemo(() => {
 		const data = [
@@ -36,13 +38,13 @@ export default function MostTrendSong(props: MostTrendSongProps) {
 
 	return (
 		<TeamStatisticsCard
-			label="Trendy písně"
-			rightLabel="V rámci posledních 40 dnů"
+			label={t('trendingSongs')}
+			rightLabel={t('timeFrame')}
 		>
 			{dataset.length > 0 ? (
 				<>
 					<Box display={'flex'} flexWrap={'wrap'} gap={0.5}>
-						<Typography>Nejvíce trend chvála je</Typography>
+						<Typography>{t('mostTrendSong')}</Typography>
 						<Typography
 							strong
 							color={getStatisticsColorFromString(dataset[0].songTitle)}
@@ -85,11 +87,11 @@ export default function MostTrendSong(props: MostTrendSongProps) {
 				</>
 			) : (
 				<>
-					<Typography italic>Data nejsou k dispozici</Typography>
+					<Typography italic>{t('noDataAvailable')}</Typography>
 					<Box display={'flex'}>
 						<OnlyAdmin notCollapse>
 							<Typography italic small>
-								Pro zobrazení trendů je potřeba mít alespoň 1 píseň odehranou
+								{t('needAtLeastOneSong')}
 							</Typography>
 						</OnlyAdmin>
 					</Box>

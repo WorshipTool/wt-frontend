@@ -8,6 +8,7 @@ import { Avatar } from '@/common/ui/mui'
 import { useUserProfileImage } from '@/hooks/useUserProfileImage'
 import { AddBox, Apps, Login } from '@mui/icons-material'
 import { SxProps, Theme, styled } from '@mui/system'
+import { useTranslations } from 'next-intl'
 import React, { useEffect, useMemo, useState } from 'react'
 import UploadFileInput from '../../../../../app/(layout)/nahrat/components/UploadFileInput'
 import useAuth from '../../../../../hooks/auth/useAuth'
@@ -23,13 +24,21 @@ const Container = styled(Box)(({ theme }) => ({
 	gap: 0,
 }))
 
-function ProfileImage({ size, sx }: { size: number; sx?: SxProps }) {
+function ProfileImage({
+	size,
+	sx,
+	alt,
+}: {
+	size: number
+	sx?: SxProps
+	alt: string
+}) {
 	const pictureUrl = useUserProfileImage()
 	return (
 		<Box sx={{ ...sx }}>
 			<Avatar
 				src={pictureUrl}
-				alt="Profilový obrázek"
+				alt={alt}
 				sx={{
 					width: size,
 					height: size,
@@ -49,10 +58,11 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 	const { isLoggedIn, loading } = useAuth()
 
 	const { transparent, whiteVersion } = useToolbar()
+	const tNavigation = useTranslations('navigation')
 
 	const shadowColor = useMemo(() => {
 		return transparent && !whiteVersion ? '#ffffff44' : '#00000044'
-	}, [transparent])
+	}, [transparent, whiteVersion])
 
 	const iconStyle: SxProps<Theme> = {
 		filter: `drop-shadow(4px 4px 2px ${shadowColor})`,
@@ -114,7 +124,7 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 				{isLoggedIn() ? (
 					<>
 						<IconButton
-							tooltip={'Přidat novou píseň'}
+							tooltip={tNavigation('tooltips.addSong')}
 							color={'inherit'}
 							sx={iconButtonStyle}
 							// to="addMenu"
@@ -124,7 +134,7 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 							<AddBox sx={iconStyle} fontSize={fontSize} />
 						</IconButton>
 						<IconButton
-							tooltip="Nástroje"
+							tooltip={tNavigation('tooltips.tools')}
 							color={'inherit'}
 							sx={{ ...iconButtonStyle }}
 							onClick={onToolsMenuClick}
@@ -149,12 +159,16 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 							}}
 						>
 							<IconButton
-								tooltip="Účet"
+								tooltip={tNavigation('tooltips.account')}
 								color="inherit"
 								sx={iconButtonStyle}
 								onClick={onAccountClick}
 							>
-								<ProfileImage size={26} sx={iconStyle} />
+								<ProfileImage
+									size={26}
+									sx={iconStyle}
+									alt={tNavigation('alt.profileImage')}
+								/>
 							</IconButton>
 						</Box>
 
@@ -168,7 +182,7 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 					</>
 				) : (
 					<>
-						<Tooltip title={'Příhlásit se'}>
+						<Tooltip title={tNavigation('tooltips.login')}>
 							<Button
 								variant="text"
 								color={'inherit'}
@@ -184,7 +198,7 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 								loading={loading}
 								loadingPosition="end"
 							>
-								Přihlásit se
+								{tNavigation('login')}
 							</Button>
 						</Tooltip>
 					</>

@@ -8,6 +8,7 @@ import { TextField } from '@/common/ui/TextField/TextField'
 import { Typography } from '@/common/ui/Typography'
 import useAuth from '@/hooks/auth/useAuth'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import './styles.css'
@@ -27,11 +28,13 @@ function Page() {
 
 	const { sendResetLink } = useAuth()
 
+	const t = useTranslations('auth.resetPassword')
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
 		if (email === '') {
-			setError('Email musí být vyplněn.')
+			setError(t('emailRequired'))
 			return
 		}
 
@@ -53,7 +56,7 @@ function Page() {
 		>
 			{!done ? (
 				<Card
-					title="Resetování hesla"
+					title={t('title')}
 					sx={{
 						minWidth: 300,
 					}}
@@ -64,34 +67,34 @@ function Page() {
 								<Typography color={'error'}>{error}</Typography>
 							)}
 							<Typography>
-								Na váš email pošleme odkaz, který vám umožní změnit heslo
+								{t('subtitle')}
 							</Typography>
 							<Gap />
 							<Box>
 								<Typography>Email</Typography>
 								<TextField
 									className="text-field-edit"
-									placeholder="Zadejte email"
+									placeholder={t('enterEmail')}
 									type="email"
 									value={email}
 									onChange={(value) => setEmail(value)}
 								/>
 							</Box>
 							<Button variant="contained" color="primary" type="submit">
-								Poslat reset link
+								{t('sendResetLink')}
 							</Button>
 						</Box>
 					</form>
 				</Card>
 			) : (
 				<Card
-					title="Link odeslán"
+					title={t('linkSent')}
 					sx={{
 						minWidth: 300,
 					}}
 				>
 					<Typography>
-						Nyní běžte do emailu a klikněte na vygenerovaný odkaz.
+						{t('linkSentMessage')}
 					</Typography>
 				</Card>
 			)}

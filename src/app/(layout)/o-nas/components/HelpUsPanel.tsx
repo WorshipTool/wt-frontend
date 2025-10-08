@@ -1,9 +1,11 @@
 'use client'
 import { Box, Button, Typography } from '@/common/ui'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
+import { useTranslations } from 'next-intl'
 
 export default function HelpUsPanel() {
 	const navigate = useSmartNavigate()
+	const tAbout = useTranslations('about')
 
 	const onJoinClick = () => {
 		navigate('contact', {
@@ -20,15 +22,15 @@ export default function HelpUsPanel() {
 		>
 			<Box display={'flex'} flexDirection={'column'}>
 				<Typography variant="h2" noWrap>
-					Chcete nám pomoct?
+					{tAbout('helpPanel.title')}
 				</Typography>
 				<Typography variant="h4" color="grey.600">
-					Chtěli byste se k projektu jakýmkoliv způsobem připojit?
+					{tAbout('helpPanel.description')}
 				</Typography>
 			</Box>
 			<Box display={'flex'}>
 				<Button color={'primarygradient'} onClick={onJoinClick}>
-					Chci se připojit
+					{tAbout('helpPanel.join')}
 				</Button>
 			</Box>
 		</Box>

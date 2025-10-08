@@ -1,3 +1,4 @@
+'use client'
 import { JoinTeamOutDto } from '@/api/generated'
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import {
@@ -9,6 +10,7 @@ import { Button, TextInput, Typography } from '@/common/ui'
 import { useLiveMessage } from '@/hooks/sockets/useLiveMessage'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useApiState } from '@/tech/ApiState'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
@@ -22,6 +24,7 @@ export default function JoinTeamPopup(props: Props) {
 
 	const [joinCode, setJoinCode] = useState('')
 	const { enqueueSnackbar } = useSnackbar()
+	const tTeams = useTranslations('teams')
 
 	const { fetchApiState, apiState } = useApiState<JoinTeamOutDto>()
 
@@ -41,7 +44,7 @@ export default function JoinTeamPopup(props: Props) {
 				})
 
 				if (data.newMember) {
-					enqueueSnackbar('Vítej v týmu!')
+					enqueueSnackbar(tTeams('joinPopup.success'))
 					send(NEW_TEAM_MEMBER_MESSAGE_NAME, {})
 				}
 			}
@@ -52,12 +55,12 @@ export default function JoinTeamPopup(props: Props) {
 			open={props.open}
 			onClose={props.onClose}
 			onSubmit={onJoinClick}
-			title="Připojit se k týmu"
-			subtitle="Připoj se k existujícímu týmu pomocí kódu"
+			title={tTeams('joinPopup.title')}
+			subtitle={tTeams('joinPopup.subtitle')}
 			actions={
 				<>
 					<Button sx={{}} type="submit" loading={apiState.loading}>
-						Připojit se
+						{tTeams('joinPopup.joinButton')}
 					</Button>
 				</>
 			}
@@ -65,12 +68,12 @@ export default function JoinTeamPopup(props: Props) {
 			{apiState.error && (
 				<Typography color="red">
 					{apiState.error.status === 404
-						? 'Skupina s tímto kódem neexistuje'
-						: 'Neznámá chyba'}
+						? tTeams('joinPopup.errors.notFound')
+						: tTeams('joinPopup.errors.unknown')}
 				</Typography>
 			)}
 			<TextInput
-				placeholder="Zadejte kód"
+				placeholder={tTeams('joinPopup.placeholder')}
 				value={joinCode}
 				onChange={setJoinCode}
 				autoFocus

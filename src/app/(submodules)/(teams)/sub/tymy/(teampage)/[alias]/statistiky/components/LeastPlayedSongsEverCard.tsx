@@ -3,6 +3,7 @@ import { GetTeamStatisticsOutDto } from '@/api/generated'
 import TeamStatisticsCard from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/statistiky/components/TeamStatisticsCard'
 import { getStatisticsColorFromString } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/statistiky/tech/statistics.tech'
 import { BarChart } from '@mui/x-charts'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 type DataItem = {
@@ -17,6 +18,8 @@ type LeastPlayedSongsEverCardProps = {
 export default function LeastPlayedSongsEverCard(
 	props: LeastPlayedSongsEverCardProps
 ) {
+	const t = useTranslations('teams.statistics')
+	
 	const dataset: DataItem[] = useMemo(() => {
 		return props.data
 			.map((item) => {
@@ -32,8 +35,8 @@ export default function LeastPlayedSongsEverCard(
 
 	return (
 		<TeamStatisticsCard
-			label="10 nejméně hraných písní"
-			rightLabel="Za celou dobu"
+			label={t('leastPlayedSongs')}
+			rightLabel={t('allTime')}
 		>
 			<BarChart
 				dataset={dataset}

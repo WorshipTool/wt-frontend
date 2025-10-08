@@ -5,12 +5,14 @@ import TextField from '@mui/material/TextField'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiState } from '@/tech/ApiState'
 import Autocomplete from '@mui/material/Autocomplete'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 type Props = {
 	onChange?: (values: string[]) => void
 }
 export default function CreatorAutoComplete(props: Props) {
+	const t = useTranslations('common')
 	const api = useApi('songCreatorsApi')
 	const { fetchApiState, apiState } = useApiState<CreatorAutocompleteDto>()
 	const [input, setInput] = useState<string>('')
@@ -41,8 +43,8 @@ export default function CreatorAutoComplete(props: Props) {
 				<TextField
 					{...params}
 					variant="standard"
-					label="Autoři"
-					placeholder="Jméno autora"
+					label={t('authors')}
+					placeholder={t('authorName')}
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 

@@ -1,11 +1,15 @@
+'use client'
 import { Checkbox } from '@/common/ui/Checkbox'
 import { Card } from '@/ui/Card/Card'
+import { useTranslations } from 'next-intl'
 
 export default function PrintOptionsPanel() {
+	const t = useTranslations('print')
+	
 	return (
 		<Card
-			title="Možnosti"
-			subtitle="Pokročilé nastavení tisku"
+			title={t('options')}
+			subtitle={t('advancedPrintSettings')}
 			// icon={<Settings />}
 			sx={{
 				// backgroundColor: grey[100],
@@ -16,7 +20,7 @@ export default function PrintOptionsPanel() {
 			}}
 		>
 			{/* <Typography>ahoj</Typography> */}
-			<Checkbox label="Zobrazit akordy" checked />
+			<Checkbox label={t('showChords')} checked />
 		</Card>
 	)
 }

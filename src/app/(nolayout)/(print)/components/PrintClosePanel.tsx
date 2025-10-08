@@ -3,8 +3,10 @@ import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
 import { Close, Info } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default function PrintClosePanel() {
+	const t = useTranslations('print')
 	const height = 56
 	return (
 		<>
@@ -37,7 +39,7 @@ export default function PrintClosePanel() {
 					}}
 				>
 					<Info color="secondary" />
-					<Typography>Po vytištění můžete okno zavřít</Typography>
+					<Typography>{t('afterPrintingCanClose')}</Typography>
 				</Box>
 				<Box
 					flex={1}
@@ -53,7 +55,7 @@ export default function PrintClosePanel() {
 						variant="outlined"
 						color="inherit"
 					>
-						Zavřít a vrátit se zpět
+						{t('closeAndGoBack')}
 					</Button>
 				</Box>
 			</Box>

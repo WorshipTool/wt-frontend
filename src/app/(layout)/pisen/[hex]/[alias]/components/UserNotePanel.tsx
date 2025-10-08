@@ -9,11 +9,13 @@ import { TextField } from '@/common/ui/TextField/TextField'
 import { Typography } from '@/common/ui/Typography'
 import { useApiState, useApiStateEffect } from '@/tech/ApiState'
 import { AddComment, Edit } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 export default function UserNotePanel() {
 	const { songNotesApi } = useApi()
 	const { packGuid } = useInnerPack()
+	const t = useTranslations('userNote')
 
 	const [{ data, loading: getLoading }, reload] =
 		useApiStateEffect(async () => {
@@ -101,7 +103,7 @@ export default function UserNotePanel() {
 						onClick={() => {
 							setAdding(true)
 						}}
-						tooltip="Přidat soukromou poznámku"
+						tooltip={t('add')}
 					>
 						<AddComment />
 					</IconButton>
@@ -126,12 +128,12 @@ export default function UserNotePanel() {
 						gap={1}
 						alignItems={'center'}
 					>
-						<Typography>Soukromá poznámka</Typography>
+						<Typography>{t('title')}</Typography>
 						{
 							<IconButton
 								onClick={() => setAdding(true)}
 								size="small"
-								tooltip="Upravit soukromou poznámku"
+								tooltip={t('edit')}
 								disabled={adding || loading}
 								sx={{
 									opacity: adding ? 0 : 1,
@@ -159,7 +161,7 @@ export default function UserNotePanel() {
 										width: '100%',
 										minHeight: 64,
 									}}
-									placeholder="Napište vaší poznámku"
+									placeholder={t('placeholder')}
 									multiline
 									disabled={loading}
 								/>
@@ -172,21 +174,21 @@ export default function UserNotePanel() {
 										color="grey.700"
 										disabled={loading}
 									>
-										Zrušit
+										{t('cancel')}
 									</Button>
 									<Button
 										onClick={onSave}
 										size="small"
 										tooltip={
 											isButtonDeleting
-												? 'Smazat soukromou poznámku'
-												: 'Uložit soukromou poznámku'
+												? t('deleteTooltip')
+												: t('saveTooltip')
 										}
 										variant="contained"
 										color={isButtonDeleting ? 'error' : 'primary'}
 										disabled={(isContentEmpty && !isButtonDeleting) || loading}
 									>
-										{isButtonDeleting ? 'Smazat' : 'Uložit  '}
+										{isButtonDeleting ? t('delete') : t('save')}
 									</Button>
 								</Box>
 							</Box>

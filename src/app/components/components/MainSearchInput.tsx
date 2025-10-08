@@ -5,6 +5,7 @@ import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { AutoAwesome } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled } from '@mui/system'
+import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
@@ -36,6 +37,7 @@ export const MAIN_SEARCH_EVENT_NAME = 'search_event_5jh14'
 
 export default function MainSearchInput(props: MainSearchInputProps) {
 	const theme = useTheme()
+	const t = useTranslations('search')
 	const inputRef = useRef<HTMLInputElement>()
 
 	const [earlyFocused, setEarlyFocused] = useState(false)
@@ -84,7 +86,7 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 			<SearchContainer>
 				<SearchIcon />
 				<SearchInput
-					placeholder="Hledej podle názvu nebo části textu"
+					placeholder={t('searchByTitleOrText')}
 					onChange={(e) => props.onChange(e.target.value)}
 					autoFocus
 					value={props.value}

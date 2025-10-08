@@ -1,6 +1,7 @@
 import AdminPanel from '@/app/(layout)/ucet/components/AdminPanel/AdminPanel'
 import { Box, Typography } from '@/common/ui'
 import { Tab, Tabs } from '@/common/ui/mui'
+import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 import useAuth from '../../../../hooks/auth/useAuth'
 import BasicInfo from './BasicInfo'
@@ -11,6 +12,8 @@ export default function TabsPanel() {
 	const { isLoggedIn, user, isTrustee, isAdmin } = useAuth()
 
 	const [tabValue, setTabValue] = useState(1)
+
+	const t = useTranslations('account')
 
 	const onTabChange = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue)
@@ -34,11 +37,11 @@ export default function TabsPanel() {
 				sx={{ borderRight: 1, borderColor: 'divider' }}
 			>
 				<Typography variant="h6" sx={{ marginBottom: 3 }}>
-					Váš účet
+					{t('title')}
 				</Typography>
 
-				<Tab label="Informace" />
-				<Tab label="Změnit heslo" />
+				<Tab label={t('tabs.info')} />
+				<Tab label={t('tabs.changePassword')} />
 				{isAdmin() && <Tab label="ejdmin" />}
 			</Tabs>
 			<div

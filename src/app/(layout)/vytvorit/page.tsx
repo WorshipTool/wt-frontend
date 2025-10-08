@@ -4,11 +4,14 @@ import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import FlagProtected from '@/common/providers/FeatureFlags/FlagProtected'
 import { Box } from '@/common/ui'
 import { Edit, UploadFile } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import AddMenuItem from './components/AddMenuItem'
 
 export default SmartPage(AddMenu)
 
 function AddMenu() {
+	const t = useTranslations('upload')
+
 	return (
 		<>
 			<Box
@@ -34,14 +37,14 @@ function AddMenu() {
 				>
 					<FlagProtected flag={'enable_file_parser'}>
 						<AddMenuItem
-							title="Nahrát soubor"
-							subtitle="Automaticky převeďte píseň z obrázku"
+							title={t('uploadFile')}
+							subtitle={t('uploadFileSubtitle')}
 							icon={<UploadFile fontSize="inherit" />}
 							to="upload"
 						/>
 					</FlagProtected>
 					<AddMenuItem
-						title="Sepsat ručně"
+						title={t('writeManually')}
 						// subtitle='Použijte editor pro psaní textu písně'
 						icon={<Edit fontSize="inherit" />}
 						iconSize={40}

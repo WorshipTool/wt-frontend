@@ -4,6 +4,7 @@ import { Link } from '@/common/ui/Link/Link'
 import { ListItemIcon, ListItemText, MenuItem } from '@/common/ui/mui'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { Launch } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import React, { MouseEvent } from 'react'
 
 interface PlaylistMenuItemProps {
@@ -22,6 +23,8 @@ export default function PlaylistMenuItem({
 	title,
 	...props
 }: PlaylistMenuItemProps) {
+	const t = useTranslations('playlist')
+	
 	const openPlaylist = (e: React.MouseEvent) => {
 		e.stopPropagation()
 	}
@@ -59,7 +62,7 @@ export default function PlaylistMenuItem({
 						>
 							<IconButton
 								// onClick={openPlaylist}
-								tooltip="Otevřít v nové záložce"
+								tooltip={t('openInNewTab')}
 								size="small"
 								sx={{
 									marginY: '-5px',

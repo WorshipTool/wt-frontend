@@ -14,6 +14,7 @@ import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { ExitToApp } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 type PeopleListItemProps = {
 	data: TeamMemberDto
@@ -28,6 +29,7 @@ type PeopleListItemProps = {
 }
 
 export default function PeopleListItem(props: PeopleListItemProps) {
+	const t = useTranslations('teams.people')
 	const fullName = `${props.data.firstName} ${props.data.lastName}`
 	const [_editable, setEditable] = useState(false)
 
@@ -51,7 +53,7 @@ export default function PeopleListItem(props: PeopleListItemProps) {
 		setPopupOpen(false)
 		if (props.me) {
 			navigate('teams', {})
-			enqueueSnackbar('Opustil jsi tým')
+			enqueueSnackbar(t('leftTeam'))
 		}
 	}, [])
 
@@ -118,11 +120,11 @@ export default function PeopleListItem(props: PeopleListItemProps) {
 					<Box display={'flex'} flexDirection={'row'} justifyContent={'end'}>
 						<Tooltip
 							label={
-								isCreator ? 'Nelze opustit skupinu, které jsi vlastníkem' : ''
+								isCreator ? t('cannotLeaveOwnedTeam') : ''
 							}
 						>
 							<Button
-								tooltip="Opustit tým"
+								tooltip={t('leaveTeam')}
 								color="error"
 								size="small"
 								variant="outlined"
@@ -130,7 +132,7 @@ export default function PeopleListItem(props: PeopleListItemProps) {
 								disabled={props.selectable || isCreator}
 								onClick={() => setPopupOpen(true)}
 							>
-								Odejít
+								{t('leave')}
 							</Button>
 						</Tooltip>
 					</Box>
@@ -138,11 +140,11 @@ export default function PeopleListItem(props: PeopleListItemProps) {
 			<Popup
 				open={popupOpen}
 				onClose={() => setPopupOpen(false)}
-				title={props.me ? 'Opustit skupinu?' : 'Odebrat z týmu?'}
+				title={props.me ? t('leaveTeamConfirm') : t('removeFromTeamConfirm')}
 				subtitle={
 					props.me
-						? 'Opravdu chceš opustit tuto skupinu? '
-						: 'Opravdu chceš odebrat tohoto člena z týmu?'
+						? t('leaveTeamDescription')
+						: t('removeFromTeamDescription')
 				}
 				actions={
 					<>
@@ -154,10 +156,10 @@ export default function PeopleListItem(props: PeopleListItemProps) {
 							size="small"
 							onClick={onRemove}
 						>
-							{props.me ? 'Opustit' : 'Odebrat'}
+							{props.me ? t('leave') : t('remove')}
 						</Button>
 						<Button size="small" type="reset">
-							Zrušit
+							{t('cancel')}
 						</Button>
 					</>
 				}

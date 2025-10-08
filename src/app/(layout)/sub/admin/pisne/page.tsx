@@ -9,6 +9,7 @@ import useSongSearchPaginated from '@/hooks/song/useSongSearchPaginated'
 import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 export default SmartPage(Page, [
 	'fullWidth',
@@ -22,6 +23,9 @@ function Page() {
 	const [useSmartSearch, setUseSmartSearch] = useState(false)
 
 	const { search, loadNext, songs } = useSongSearchPaginated()
+
+	const t = useTranslations('navigation')
+	const tButtons = useTranslations('buttons')
 
 	useEffect(() => {
 		search(searchString || '', useSmartSearch)
@@ -37,7 +41,7 @@ function Page() {
 				gap: 2,
 			}}
 		>
-			<AdminBreadItem label="Písně" to="adminSongs" toParams={{}} />
+			<AdminBreadItem label={t('songs')} to="adminSongs" toParams={{}} />
 
 			{/* <Typography strong>Písně</Typography> */}
 
@@ -68,7 +72,7 @@ function Page() {
 			) : (
 				<Box display={'flex'}>
 					<Button to="adminCreateSong" startIcon={<Add />}>
-						Vytvořit píseň
+						{tButtons('addNewSong')}
 					</Button>
 				</Box>
 			)}
