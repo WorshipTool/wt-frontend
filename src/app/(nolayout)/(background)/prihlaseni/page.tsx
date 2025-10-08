@@ -9,6 +9,7 @@ import { Gap } from '@/common/ui/Gap'
 import { StandaloneCard } from '@/common/ui/StandaloneCard'
 import { TextInput } from '@/common/ui/TextInput'
 import { Typography } from '@/common/ui/Typography'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { LoginResultDTO } from '../../../../api/dtos/dtosAuth'
 import useAuth from '../../../../hooks/auth/useAuth'
@@ -22,6 +23,8 @@ export default SmartPage(Login, {
 })
 
 function Login() {
+	const t = useTranslations('auth.login')
+	const tCommon = useTranslations('common')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -87,7 +90,7 @@ function Login() {
 		login({ email, password }, (result: LoginResultDTO) => {
 			setInProgress(false)
 			if (!result.user) {
-				setErrorMessage('Špatný email nebo heslo')
+				setErrorMessage(t('wrongCredentials'))
 				return
 			}
 			if (params?.previousPage) {
@@ -120,8 +123,8 @@ function Login() {
 		>
 			<LogoTitle />
 			<StandaloneCard
-				title="Přihlaste se"
-				subtitle={params.message || 'A používejte aplikaci naplno'}
+				title={t('title')}
+				subtitle={params.message || t('subtitle')}
 			>
 				<Box
 					display={'flex'}
@@ -155,7 +158,7 @@ function Login() {
 							}}
 							color="grey.600"
 						>
-							Nebo
+							{tCommon('or')}
 						</Typography>
 					</Box>
 					<Box color={'grey.800'}>
@@ -176,24 +179,24 @@ function Login() {
 							}}
 						>
 							<TextInput
-								title="Email"
+								title={t('email')}
 								value={email}
 								onChange={(e) => setEmail(e)}
 								error={!isEmailOk}
 								disabled={inProgress}
 								type="email"
-								placeholder="Zadejte e-mail"
+								placeholder={t('enterEmail')}
 								required
 							/>
 							<Gap />
 							<TextInput
-								title="Heslo"
+								title={t('password')}
 								value={password}
 								onChange={(e) => setPassword(e)}
 								error={!isPasswordOk}
 								disabled={inProgress}
 								type="password"
-								placeholder="Zadejte heslo"
+								placeholder={t('enterPassword')}
 								required
 							/>
 							<Box
@@ -208,7 +211,7 @@ function Login() {
 									color="grey.600"
 									onClick={resetPassword}
 								>
-									Zapomněli jste heslo?
+									{t('forgotPassword')}
 								</Button>
 							</Box>
 							<Gap />
@@ -226,7 +229,7 @@ function Login() {
 									}}
 									color="primarygradient"
 								>
-									Přihlásit se
+									{t('loginButton')}
 								</Button>
 							</Box>
 							<Gap />
@@ -236,7 +239,7 @@ function Login() {
 								alignItems={'center'}
 								justifyContent={'center'}
 							>
-								<Typography size={'0.9rem'}>Nemáte ještě účet?</Typography>
+								<Typography size={'0.9rem'}>{t('noAccount')}</Typography>
 								<Button
 									size={'small'}
 									variant="text"
@@ -245,7 +248,7 @@ function Login() {
 										previousPage: params.previousPage,
 									}}
 								>
-									Vytvořte si ho
+									{t('createAccount')}
 								</Button>
 							</Box>
 						</form>
@@ -346,13 +349,13 @@ function Login() {
 									color="grey.600"
 									onClick={resetPassword}
 								>
-									Zapomněli jste heslo?
+									{t('forgotPassword')}
 								</Button>
 							</Box>
 							<Gap />
 							<Box>
 								<Button type="submit" loading={inProgress} variant="contained">
-									Přihlásit se
+									{t('loginButton')}
 								</Button>
 							</Box>
 						</form>

@@ -4,8 +4,10 @@ import { InnerSongProvider } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useI
 import AdminBreadItem from '@/app/(layout)/sub/admin/components/AdminBreadItem'
 import { LayoutProps } from '@/common/types'
 import { SongGuid } from '@/types/song'
+import { getTranslations } from 'next-intl/server'
 
 export default async function layout(props: LayoutProps<'adminSong'>) {
+	const t = await getTranslations('admin.layout')
 	const { songGettingApi } = await useServerApi()
 	const data = await songGettingApi.getSongDataByGuid(props.params.songGuid)
 
@@ -16,7 +18,7 @@ export default async function layout(props: LayoutProps<'adminSong'>) {
 			startData={formatted}
 			songGuid={props.params.songGuid as SongGuid}
 		>
-			<AdminBreadItem label="Písně" to="adminSongs" toParams={{}} />
+			<AdminBreadItem label={t('songs')} to="adminSongs" toParams={{}} />
 			<AdminBreadItem
 				label={data.title}
 				to={'adminSong'}

@@ -3,6 +3,7 @@ import { GetTeamStatisticsOutDto } from '@/api/generated'
 import BarChartRow from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/statistiky/components/BarChartRow'
 import TeamStatisticsCard from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/statistiky/components/TeamStatisticsCard'
 import { Box, Gap } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 type DataItem = {
@@ -15,6 +16,8 @@ type EverySongPlayedCardProps = {
 }
 
 export default function EverySongPlayedCard(props: EverySongPlayedCardProps) {
+	const t = useTranslations('teams.statistics')
+	
 	const dataset: DataItem[] = useMemo(() => {
 		return props.data.map((item) => {
 			return {
@@ -27,7 +30,7 @@ export default function EverySongPlayedCard(props: EverySongPlayedCardProps) {
 	const maxValue = Math.max(...dataset.map((item) => item.playedCount))
 
 	return (
-		<TeamStatisticsCard label="Kolikrát se co hrálo" rightLabel="Za celou dobu">
+		<TeamStatisticsCard label={t('howManyTimesPlayed')} rightLabel={t('allTime')}>
 			{/* <BarChart
 				dataset={dataset}
 				yAxis={[
@@ -40,7 +43,7 @@ export default function EverySongPlayedCard(props: EverySongPlayedCardProps) {
 					{
 						dataKey: 'playedCount',
 						// label: 'Počet přehrání',
-						valueFormatter: (v) => v + ' přehrání',
+						valueFormatter: (v) => v + ' ' + t('plays'),
 					},
 				]}
 				layout="horizontal"
@@ -68,7 +71,7 @@ export default function EverySongPlayedCard(props: EverySongPlayedCardProps) {
 						label={item.songTitle}
 						value={item.playedCount}
 						maxValue={maxValue}
-						tooltip={`Hrálo se ${item.playedCount} krát`}
+						tooltip={t('playedXTimes', { count: item.playedCount })}
 					/>
 				))}
 			</Box>

@@ -7,6 +7,7 @@ import { Clickable } from '@/common/ui/Clickable'
 import { Image } from '@/common/ui/Image'
 import { Link } from '@/common/ui/Link/Link'
 import { Typography } from '@/common/ui/Typography'
+import { useTranslations } from 'next-intl'
 
 type TeamPanelTitleProps = {
 	collapsed: boolean
@@ -16,6 +17,7 @@ export default function TeamPanelTitle(props: TeamPanelTitleProps) {
 	const { name, alias } = useInnerTeam()
 	const { hasLogo, logoUrl } = useTeamLogo()
 	const { darkMode } = useTeamSideBar()
+ 	const tLeftPanel = useTranslations('teamPage.leftPanel')
 	return (
 		<Box>
 			<Box
@@ -43,7 +45,7 @@ export default function TeamPanelTitle(props: TeamPanelTitleProps) {
 					</Link>
 				)}
 				<Typography color={darkMode ? 'grey.300' : 'grey.800'} noWrap>
-					Chválící tým
+					{tLeftPanel('title')}
 				</Typography>
 				<Link
 					to="team"

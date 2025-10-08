@@ -1,6 +1,8 @@
+'use client'
+
 import SendToApproval from '@/app/(layout)/pisen/[hex]/[alias]/components/components/SendToApproval'
 import Menu from '@/common/components/Menu/Menu'
-import { Divider, IconButton, Tooltip, useTheme } from '@/common/ui'
+import { Divider, IconButton, Tooltip } from '@/common/ui'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { ExtendedVariantPack } from '@/types/song'
 import { MoreVert } from '@mui/icons-material'
@@ -9,6 +11,7 @@ import React, { useState } from 'react'
 import { SongDto } from '../../../../../../../api/dtos'
 import useAuth from '../../../../../../../hooks/auth/useAuth'
 import DeleteButton from './DeleteButton'
+import { useTranslations } from 'next-intl'
 
 type SongsOptionsButtonProps = {
 	reloadSong: () => void
@@ -28,6 +31,7 @@ export const SONG_OPTIONS_BUTTON_ID = 'song-options-button'
 export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 	const [open, setOpen] = React.useState(false)
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+	const tOptions = useTranslations('songPage.optionsMenu')
 
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setOpen(true)
@@ -40,14 +44,12 @@ export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 	}
 
 	const { isAdmin, isLoggedIn, isTrustee } = useAuth()
-	const theme = useTheme()
-
 	const [childrenCount, setChildrenCount] = useState(0)
 
 	return (
 		<>
 			{childrenCount > 0 && (
-				<Tooltip title={'Další možnosti'}>
+				<Tooltip title={tOptions('more')}>
 					<IconButton onClick={handleClick}>
 						<MoreVert />
 					</IconButton>

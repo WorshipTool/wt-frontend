@@ -2,10 +2,12 @@
 import { Box } from '@/common/ui'
 import { Typography } from '@/common/ui/Typography'
 import { ExpandMore } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type MoreProps = {}
 
 export default function More(props: MoreProps) {
+	const tAbout = useTranslations('about')
 	const onMoreClick = () => {
 		const toY = window.innerHeight - 56
 
@@ -30,7 +32,7 @@ export default function More(props: MoreProps) {
 			}}
 			onClick={onMoreClick}
 		>
-			<Typography strong>Zjistit více</Typography>
+			<Typography strong>{tAbout('more.label')}</Typography>
 			<ExpandMore
 				sx={{
 					transform: 'scaleX(2) translateY(-10px)',

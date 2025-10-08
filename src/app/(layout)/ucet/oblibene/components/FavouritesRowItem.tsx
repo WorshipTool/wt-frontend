@@ -11,6 +11,7 @@ import {
 	PlaylistRemove,
 } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 
 type FavouritesRowItemProps = {
@@ -19,6 +20,7 @@ type FavouritesRowItemProps = {
 }
 
 export default function FavouritesRowItem(props: FavouritesRowItemProps) {
+	const t = useTranslations('favourites')
 	const variantPack = props.data.data.pack
 
 	const hintText = useMemo(() => {
@@ -103,7 +105,7 @@ export default function FavouritesRowItem(props: FavouritesRowItemProps) {
 							<Box display={'flex'} gap={1}>
 								<Typography strong>{variantPack.title}</Typography>
 								{props.data.teamName && (
-									<Tooltip label="Píseň vytvořena v rámci týmu">
+									<Tooltip label={t('songCreatedInTeam')}>
 										<Chip
 											label={props.data.teamName}
 											size="small"
@@ -145,13 +147,13 @@ export default function FavouritesRowItem(props: FavouritesRowItemProps) {
 				onClose={() => setOpen(false)}
 				items={[
 					{
-						title: 'Otevřít',
+						title: t('open'),
 						onClick: onOpenClick,
 						icon: <KeyboardArrowLeft />,
 					},
 					{
-						title: 'Odebrat',
-						subtitle: 'Odebrat z oblíbených',
+						title: t('remove'),
+						subtitle: t('removeFromFavourites'),
 						onClick: onRemove,
 						icon: <PlaylistRemove />,
 						disabled: loading,

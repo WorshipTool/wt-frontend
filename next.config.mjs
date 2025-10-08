@@ -1,11 +1,14 @@
 import nextRoutes from 'nextjs-routes/config'
+import createNextIntlPlugin from 'next-intl/plugin'
+
 const withRoutes = nextRoutes()
+const withNextIntl = createNextIntlPlugin('./src/i18n.ts')
 
 // @ts-check
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (phase, { defaultConfig }) => {
 	/** @type {import('next').NextConfig} */
-	const nextConfig = withRoutes({
+	const nextConfig = withNextIntl(withRoutes({
 		webpack(config) {
 			config.module.rules.push({
 				test: /\.svg$/,
@@ -78,6 +81,6 @@ export default (phase, { defaultConfig }) => {
 		},
 		reactStrictMode: false,
 		output: 'standalone',
-	})
+	}))
 	return nextConfig
 }

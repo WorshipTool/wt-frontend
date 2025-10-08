@@ -7,6 +7,7 @@ import { ROLES } from '@/interfaces/user'
 import { useApiState } from '@/tech/ApiState'
 import { Edit, Save } from '@mui/icons-material'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function BasicInfo() {
@@ -19,6 +20,9 @@ export default function BasicInfo() {
 	const { authApi } = useApi()
 
 	const { fetchApiState, apiState } = useApiState<boolean>()
+
+	const t = useTranslations('account.basicInfo')
+	const tCommon = useTranslations('common')
 
 	const onSaveClick = () => {
 		const data = {
@@ -75,7 +79,7 @@ export default function BasicInfo() {
 								small
 								onClick={() => setEditMode(true)}
 							>
-								Upravit
+								{tCommon('edit')}
 							</Button>
 						</Box>
 					) : (
@@ -91,7 +95,7 @@ export default function BasicInfo() {
 								startIcon={<Save />}
 								loading={apiState.loading}
 							>
-								Uložit
+								{tCommon('save')}
 							</Button>
 							<Button
 								small
@@ -99,7 +103,7 @@ export default function BasicInfo() {
 								onClick={onCancelClick}
 								disabled={apiState.loading}
 							>
-								Zrušit
+								{tCommon('cancel')}
 							</Button>
 						</Box>
 					)}
@@ -114,7 +118,7 @@ export default function BasicInfo() {
 					alignItems={'center'}
 				>
 					<Box>
-						<Typography>Křestní jméno</Typography>
+						<Typography>{t('firstName')}</Typography>
 						<TextField
 							size="small"
 							fullWidth
@@ -124,7 +128,7 @@ export default function BasicInfo() {
 						/>
 					</Box>
 					<Box>
-						<Typography>Příjmení</Typography>
+						<Typography>{t('lastName')}</Typography>
 						<TextField
 							size="small"
 							fullWidth
@@ -137,7 +141,7 @@ export default function BasicInfo() {
 
 				<Gap />
 
-				<Typography>Email</Typography>
+				<Typography>{t('email')}</Typography>
 				<TextField size="small" fullWidth value={info.email} disabled />
 			</Card>
 		</>

@@ -9,6 +9,7 @@ import { Typography } from '@/common/ui/Typography'
 import { useUsersPlaylists } from '@/hooks/playlist/useUsersPlaylists'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { MoreHoriz } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useState } from 'react'
 
 type SelectPlaylistMenuProps = {
@@ -22,6 +23,8 @@ type SelectPlaylistMenuProps = {
 const MAX_PLAYLIST_COUNT = 4
 
 export default function SelectPlaylistMenu(props: SelectPlaylistMenuProps) {
+	const t = useTranslations('playlist')
+	
 	// Playlist list
 	const { playlists: _playlists, loading } = useUsersPlaylists()
 	const playlists = _playlists?.sort((a, b) =>
@@ -73,12 +76,12 @@ export default function SelectPlaylistMenu(props: SelectPlaylistMenuProps) {
 						<ListItemIcon>
 							<CircularProgress size={`1rem`} color="inherit" />
 						</ListItemIcon>
-						<ListItemText>Načítání...</ListItemText>
+						<ListItemText>{t('loading')}</ListItemText>
 					</MenuItem>
 				) : (
 					playlists?.length === 0 && (
 						<MenuItem disabled key={'no-playlists-title-aflkj'}>
-							<ListItemText>Nemáte žádné playlisty</ListItemText>
+							<ListItemText>{t('noPlaylists')}</ListItemText>
 						</MenuItem>
 					)
 				)}
@@ -101,15 +104,15 @@ export default function SelectPlaylistMenu(props: SelectPlaylistMenuProps) {
 							<ListItemIcon>
 								<MoreHoriz fontSize="small" />
 							</ListItemIcon>
-							<ListItemText>Další</ListItemText>
+							<ListItemText>{t('more')}</ListItemText>
 						</MenuItem>,
 					]}
 			</Menu>
 			<Popup
 				open={popupOpen}
 				onClose={() => setPopupOpen(false)}
-				title="Přidat do playlistu"
-				subtitle="Vyberte playlist ze seznamu"
+				title={t('addToPlaylist')}
+				subtitle={t('selectPlaylistFromList')}
 				actions={
 					<>
 						<Box />
@@ -118,7 +121,7 @@ export default function SelectPlaylistMenu(props: SelectPlaylistMenuProps) {
 							variant="text"
 							color="grey.700"
 						>
-							Zavřít
+							{t('close')}
 						</Button>
 					</>
 				}

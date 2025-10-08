@@ -1,5 +1,8 @@
+'use client'
+
 import { Divider } from '@/common/ui'
 import { ListItemText, Menu, MenuItem } from '@/common/ui/mui'
+import { useTranslations } from 'next-intl'
 import useAuth from '../../../../../hooks/auth/useAuth'
 import { Gap } from '../../../../ui/Gap'
 import { Link } from '../../../../ui/Link/Link'
@@ -16,6 +19,7 @@ export default function AccountMenu({
 	onClose,
 }: AccountMenuProps) {
 	const { logout, user } = useAuth()
+	const tNavigation = useTranslations('navigation')
 
 	const onLogoutClick = () => {
 		logout()
@@ -44,14 +48,14 @@ export default function AccountMenu({
 				<MenuItem onClick={onClose}>
 					<ListItemText
 						primary={user?.firstName + ' ' + user?.lastName}
-						secondary={'Spravovat účet'}
+						secondary={tNavigation('accountMenu.manageAccount')}
 					/>
 				</MenuItem>
 			</Link>
 			<Gap value={0.5} />
 			<Divider />
 			<Gap value={0.5} />
-			<MenuItem onClick={onLogoutClick}>Odhlásit se</MenuItem>
+			<MenuItem onClick={onLogoutClick}>{tNavigation('logout')}</MenuItem>
 		</Menu>
 	)
 }

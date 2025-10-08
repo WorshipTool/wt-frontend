@@ -10,6 +10,7 @@ import { Typography } from '@/common/ui/Typography'
 import { useSmartUrlState } from '@/hooks/urlstate/useUrlState'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { KeyboardArrowRight } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 type NextMonthItemProps = {
@@ -17,6 +18,8 @@ type NextMonthItemProps = {
 }
 
 export default function NextMonthItem(props: NextMonthItemProps) {
+	const t = useTranslations('teams.playlists.events')
+	
 	const [openedEventGuid, setOpenedEventGuid] = useSmartUrlState(
 		'teamPlaylists',
 		'openedEvent',
@@ -145,7 +148,7 @@ export default function NextMonthItem(props: NextMonthItemProps) {
 						}}
 					>
 						<IconButton
-							tooltip="Otevřít detail"
+							tooltip={t('openDetail')}
 							onClick={(e) => {
 								e.stopPropagation()
 								setOpen(true)

@@ -7,6 +7,7 @@ import { Box, Image } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { getAssetUrl } from '@/tech/paths.tech'
+import { getTranslations } from 'next-intl/server'
 import JoinGroupPanel from './components/JoinGroupPanel'
 import './teams.styles.css'
 
@@ -14,7 +15,9 @@ export default SmartPage(Page, {
 	transparentToolbar: true,
 })
 
-function Page() {
+async function Page() {
+	const t = await getTranslations('teams')
+
 	return (
 		<Box position={'relative'}>
 			<TeamsToolbarChanger />
@@ -25,17 +28,14 @@ function Page() {
 				<Box display={'flex'} flexDirection={'column'} gap={4}>
 					<Box display={'flex'} flexDirection={'column'} gap={1}>
 						<Box display={'flex'}>
-							<SectionLabelPill label="Chválící týmy" />
+							<SectionLabelPill label={t('title')} />
 						</Box>
 						<Box display={'flex'} flexDirection={'column'}>
 							<Typography strong className="about-title" variant="h1">
-								Zjednodušte si
+								{t('simplifyWork')}
 							</Typography>
 							<Typography className="about-title" variant="h1">
-								práci ve vašem
-							</Typography>
-							<Typography className="about-title" variant="h1">
-								chválícím týmu
+								{t('inYourWorshipTeam')}
 							</Typography>
 						</Box>
 					</Box>
@@ -47,8 +47,7 @@ function Page() {
 						strong={400}
 						color="grey.500"
 					>
-						<strong>Zdarma</strong> nabízíme <strong>nástroje</strong>, které
-						vám <strong>usnadní přípravu</strong> na společné hraní
+						{t('freeToolsDescription')}
 					</Typography>
 				</Box>
 				<Box
@@ -67,7 +66,7 @@ function Page() {
 					>
 						<Image
 							src={'/assets/gradient-shapes/shape1.svg'}
-							alt="Náhodný tvar na pozadí"
+							alt={t('backgroundShape')}
 							width={500}
 							height={500}
 						/>
@@ -79,7 +78,7 @@ function Page() {
 					>
 						<Image
 							src={'/assets/gradient-shapes/shape2.svg'}
-							alt="Náhodný tvar na pozadí"
+							alt={t('backgroundShape')}
 							width={500}
 							height={500}
 							style={{
@@ -112,7 +111,7 @@ function Page() {
 						>
 							<Image
 								src={getAssetUrl('team-preview.png')}
-								alt="Ukázka obrazovky týmu"
+								alt={t('teamScreenPreview')}
 								fill
 								priority
 							/>

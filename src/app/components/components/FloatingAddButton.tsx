@@ -2,9 +2,9 @@ import { Box, Tooltip } from '@/common/ui'
 import { Fab } from '@/common/ui/mui'
 import { Add } from '@mui/icons-material'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Link } from '../../../common/ui/Link/Link'
 import useAuth from '../../../hooks/auth/useAuth'
-import { useSmartNavigate } from '../../../routes/useSmartNavigate'
 
 interface FloatingAddButtonProps {
 	extended?: boolean
@@ -14,7 +14,8 @@ export default function FloatingAddButton({
 	extended,
 }: FloatingAddButtonProps) {
 	const { isLoggedIn } = useAuth()
-	const navigate = useSmartNavigate()
+	const tNavigation = useTranslations('navigation')
+	const tHome = useTranslations('home')
 
 	const transition = 'all 0.2s ease'
 	const titleWidth = '90px'
@@ -33,7 +34,7 @@ export default function FloatingAddButton({
 							opacity: 0,
 						}}
 					>
-						<Tooltip title={'Přidat novou píseň'} placement="left">
+						<Tooltip title={tNavigation('tooltips.addSong')} placement="left">
 							<Fab
 								sx={{
 									position: 'fixed',
@@ -80,7 +81,7 @@ export default function FloatingAddButton({
 											  }),
 									}}
 								>
-									Vytvořit
+									{tHome('floatingAdd.label')}
 								</Box>
 							</Fab>
 						</Tooltip>

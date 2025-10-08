@@ -7,6 +7,7 @@ import { Typography } from '@/common/ui/Typography'
 import useAuth from '@/hooks/auth/useAuth'
 import { LOGIN_METHOD_TYPE } from '@/interfaces/user'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useMemo, useState } from 'react'
 import './styles.css'
@@ -24,6 +25,8 @@ export default function ChangePassword() {
 
 	const { enqueueSnackbar } = useSnackbar()
 
+	const t = useTranslations('account.passwordChange')
+
 	const usingPasswordMethod = useMemo(() => {
 		return user?.loginMethods.includes(LOGIN_METHOD_TYPE.Email)
 	}, [user])
@@ -32,22 +35,22 @@ export default function ChangePassword() {
 		e.preventDefault()
 
 		if (!user) {
-			setError('Něco se pokazilo.')
+			setError(t('errors.somethingWrong'))
 			return
 		}
 
 		if (oldPassword === '' || newPassword === '' || newPasswordAgain === '') {
-			setError('Všechna pole musí být vyplněna.')
+			setError(t('errors.allFieldsRequired'))
 			return
 		}
 
 		if (oldPassword === newPassword) {
-			setError('Nové heslo nesmí být stejné jako staré.')
+			setError(t('errors.samePassword'))
 			return
 		}
 
 		if (newPassword !== newPasswordAgain) {
-			setError('Nová hesla se neshodují.')
+			setError(t('errors.passwordMismatch'))
 			return
 		}
 
@@ -56,11 +59,11 @@ export default function ChangePassword() {
 
 			await login({ email: user.email, password: newPassword })
 
-			enqueueSnackbar('Heslo bylo úspěšně změněno.', { variant: 'success' })
+			enqueueSnackbar(t('success'), { variant: 'success' })
 			reset()
 		} catch (e) {
 			setError(
-				'Něco se pokazilo. Zkontrolujte, zda jste správně zadal/a staré heslo.'
+				t('errors.wrongOldPassword')
 			)
 		}
 	}
@@ -73,15 +76,15 @@ export default function ChangePassword() {
 	}
 
 	return usingPasswordMethod ? (
-		<Card title="Změna hesla">
+		<Card title={t('title')}>
 			<form onSubmit={handleSubmit}>
 				<Box className={'form-div'}>
 					<Typography color={'error'}>{error}</Typography>
 					<Box>
-						<Typography>Staré heslo</Typography>
+						<Typography>{t('oldPassword')}</Typography>
 						<TextField
 							className="text-field-edit"
-							placeholder="Zadejte původní heslo"
+							placeholder={t('enterOldPassword')}
 							type="password"
 							value={oldPassword}
 							onChange={(value) => setOldPassword(value)}
@@ -89,35 +92,35 @@ export default function ChangePassword() {
 					</Box>
 					<Gap />
 					<Box>
-						<Typography>Nové heslo</Typography>
+						<Typography>{t('newPassword')}</Typography>
 						<TextField
 							className="text-field-edit"
-							placeholder="Zadejte nové heslo"
+							placeholder={t('enterNewPassword')}
 							type="password"
 							value={newPassword}
 							onChange={(value) => setNewPassword(value)}
 						/>
 					</Box>
 					<Box>
-						<Typography>Nové heslo znovu</Typography>
+						<Typography>{t('newPasswordAgain')}</Typography>
 						<TextField
 							className="text-field-edit"
-							placeholder="Zadejte nové heslo"
+							placeholder={t('enterNewPassword')}
 							type="password"
 							value={newPasswordAgain}
 							onChange={(value) => setNewPasswordAgain(value)}
 						/>
 					</Box>
 					<Button variant="contained" color="primary" type="submit">
-						Změnit heslo
+						{t('changePasswordButton')}
 					</Button>
 				</Box>
 			</form>
 		</Card>
 	) : (
-		<Card title="Změna hesla">
+		<Card title={t('title')}>
 			<Typography>
-				Jsi přihlašen pomocí Google, nemáš heslo, které bys mohl změnit {':('}
+				{t('googleAccountMessage')}
 			</Typography>
 		</Card>
 	)

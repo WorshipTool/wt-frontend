@@ -18,7 +18,6 @@ import { NextResponse } from 'next/server'
 
 export const config = {
 	// Exclude everything with dot in the path
-
 	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets).*)'],
 }
 
@@ -31,7 +30,6 @@ const excludedPaths = ['/_next', '/static', '/manifest', '/public']
  */
 export async function middleware(request: NextRequest) {
 	const {
-		cookies,
 		nextUrl: { pathname },
 	} = request
 
@@ -96,7 +94,7 @@ const setResponse = async (
 
 const checkSubdomain = async (
 	request: NextRequest,
-	user?: UserDto
+	_user?: UserDto
 ): Promise<NextResponse | true> => {
 	const url = request.nextUrl.clone()
 	const host = request.headers.get('host')

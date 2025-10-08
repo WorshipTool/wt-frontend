@@ -1,8 +1,11 @@
+'use client'
+
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { Button } from '@/common/ui'
 import { ListItemIcon, ListItemText, MenuItem } from '@/common/ui/mui'
 import { Edit, Save } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { isSheetDataValid } from '../../../../../../../tech/sheet.tech'
 
@@ -18,11 +21,12 @@ interface EditButtonProps {
 
 export default function EditButton(props: EditButtonProps) {
 	const { enqueueSnackbar } = useSnackbar()
+	const tEdit = useTranslations('songPage.editButton')
 
 	const onClick = async () => {
 		if (props.inEditMode) {
 			if (props.sheetData === '' || props.title === '') {
-				enqueueSnackbar('Nelze uložit píseň s prázdným polem')
+				enqueueSnackbar(tEdit('errorEmpty'))
 				return
 			}
 		}
@@ -38,7 +42,7 @@ export default function EditButton(props: EditButtonProps) {
 					<ListItemIcon>
 						<Edit />
 					</ListItemIcon>
-					<ListItemText primary="Upravit" />
+					<ListItemText primary={tEdit('edit')} />
 				</MenuItem>
 			)}
 		</>
@@ -48,16 +52,16 @@ export default function EditButton(props: EditButtonProps) {
 			color={props.inEditMode ? 'info' : 'secondary'}
 			startIcon={props.inEditMode ? <Save /> : <Edit />}
 			loading={props.loading}
-			// loadingIndicator="Ukládání..."
+			// loadingIndicator="Saving..."
 			disabled={
 				(props.inEditMode && !props.anyChange) ||
 				(props.inEditMode && !isSheetDataValid(props.sheetData))
 			}
 			onClick={onClick}
 		>
-			{props.inEditMode ? 'Uložit' : 'Upravit'}
+			{props.inEditMode ? tEdit('save') : tEdit('edit')}
 		</Button>
 	) : (
-		<SmartPortalMenuItem title={'Upravit'} onClick={onClick} icon={<Edit />} />
+		<SmartPortalMenuItem title={tEdit('edit')} onClick={onClick} icon={<Edit />} />
 	)
 }

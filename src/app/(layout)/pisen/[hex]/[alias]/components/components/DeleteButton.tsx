@@ -1,3 +1,5 @@
+'use client'
+
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import Popup from '@/common/components/Popup/Popup'
 import { Button, CircularProgress } from '@/common/ui'
@@ -5,6 +7,7 @@ import { ListItemIcon, ListItemText, MenuItem } from '@/common/ui/mui'
 import { Typography } from '@/common/ui/Typography'
 import { ExtendedVariantPack } from '@/types/song'
 import { Delete } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useSnackbar } from 'notistack'
 import React from 'react'
@@ -22,6 +25,8 @@ export default function DeleteButton({
 	asMenuItem,
 }: DeleteButtonProps) {
 	const { enqueueSnackbar } = useSnackbar()
+	const tDelete = useTranslations('songPage.delete')
+	const tCommon = useTranslations('common')
 	const [loading, setLoading] = React.useState(false)
 	const navigate = useRouter()
 
@@ -36,7 +41,7 @@ export default function DeleteButton({
 
 	const onClick = async () => {
 		if (variant.verified) {
-			enqueueSnackbar('Nelze smazat veřejnou píseň.')
+			enqueueSnackbar(tDelete('cannotDeletePublished'))
 			return
 		}
 
@@ -50,7 +55,10 @@ export default function DeleteButton({
 				return songDeletingApi._delete(variant.packGuid)
 			},
 			(result) => {
-				enqueueSnackbar(`Píseň ${(variant.title && ' ') || ''}byla smazána.`)
+				const message = variant.title
+					? tDelete('successWithTitle', { title: variant.title })
+					: tDelete('success')
+				enqueueSnackbar(message)
 				reloadSong?.()
 
 				// back in history
@@ -79,13 +87,13 @@ export default function DeleteButton({
 							<CircularProgress size={`1rem`} color="inherit" />
 						</ListItemIcon>
 						<ListItemText
-							primary={'Odstraňování...'}
-							secondary={'Odstranit píseň...'}
+							primary={tDelete('menu.removing')}
+							secondary={tDelete('menu.removeSong')}
 						/>
 					</MenuItem>
 				) : variant.deleted ? (
 					<MenuItem>
-						<ListItemText>Smazáno</ListItemText>
+						<ListItemText>{tDelete('menu.deleted')}</ListItemText>
 					</MenuItem>
 				) : (
 					<MenuItem
@@ -97,7 +105,10 @@ export default function DeleteButton({
 						<ListItemIcon>
 							<Delete color="error" />
 						</ListItemIcon>
-						<ListItemText primary={'Odstranit'} secondary={'Odstranit píseň'} />
+						<ListItemText
+							primary={tDelete('menu.remove')}
+							secondary={tDelete('menu.removeSubtitle')}
+						/>
 					</MenuItem>
 				)
 			) : (
@@ -106,24 +117,24 @@ export default function DeleteButton({
 					color={'error'}
 					// startIcon={<Remove/>}
 					loading={loading}
-					// loadingIndicator="Mazání..."
+					// loadingIndicator="Deleting..."
 					onClick={async () => {
 						onClick()
 					}}
 					disabled={variant.deleted}
 				>
-					{variant.deleted ? 'Smazáno' : 'Smazat'}
+					{variant.deleted ? tDelete('button.deleted') : tDelete('button.delete')}
 				</Button>
 			)}
 
 			<Popup
 				open={dialogOpen}
 				onClose={noClick}
-				title={'Opravdu chcete smazat píseň?'}
+				title={tDelete('dialog.title')}
 				actions={
 					<>
 						<Button variant="outlined" onClick={noClick} disabled={fetching}>
-							Ne
+							{tCommon('no')}
 						</Button>
 						<Button
 							loading={fetching}
@@ -131,15 +142,15 @@ export default function DeleteButton({
 							color="error"
 							onClick={yesClick}
 						>
-							Ano
+							{tCommon('yes')}
 						</Button>
 					</>
 				}
 			>
 				<Typography>
 					{fetching
-						? 'Probíhá odstraňování písně...'
-						: 'Píseň se smaže natrvalo.'}
+						? tDelete('dialog.removing')
+						: tDelete('dialog.confirmation')}
 				</Typography>
 			</Popup>
 		</>

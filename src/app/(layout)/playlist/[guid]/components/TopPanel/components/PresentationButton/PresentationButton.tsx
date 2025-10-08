@@ -5,6 +5,7 @@ import { Button } from '@/common/ui/Button'
 import { useMediaQuery } from '@/common/ui/mui'
 import { RoutesKeys, SmartAllParams } from '@/routes'
 import { ViewCarousel } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type PresentationButtonProps<T extends RoutesKeys> = {
 	to: T
@@ -15,6 +16,7 @@ export default function PresentationButton<T extends RoutesKeys>(
 	props: PresentationButtonProps<T>
 ) {
 	const { guid, save, items } = useInnerPlaylist()
+	const t = useTranslations('playlist')
 
 	const theme = useTheme()
 	const isSmall = useMediaQuery(theme.breakpoints.down('lg'))
@@ -24,7 +26,7 @@ export default function PresentationButton<T extends RoutesKeys>(
 	return isSmall ? (
 		<>
 			<SmartPortalMenuItem
-				title={'Prezentace'}
+				title={t('presentation')}
 				onClick={save}
 				disabled={disabled}
 				to={props.to}
@@ -42,7 +44,7 @@ export default function PresentationButton<T extends RoutesKeys>(
 				onClick={save}
 				disabled={disabled}
 			>
-				Prezentace
+				{t('presentation')}
 			</Button>
 		</>
 	)

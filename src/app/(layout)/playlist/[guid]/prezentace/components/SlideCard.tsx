@@ -2,6 +2,7 @@
 import { Box, CircularProgress, Typography } from '@/common/ui'
 import { Sheet } from '@pepavlin/sheet-api'
 import { Section } from '@pepavlin/sheet-api/lib/models/song/section'
+import { useTranslations } from 'next-intl'
 import {
 	useCallback,
 	useEffect,
@@ -14,7 +15,7 @@ import { useChangeDelayer } from '../../../../../../hooks/changedelay/useChangeD
 import { PlaylistItemDto } from '../../../../../../interfaces/playlist/playlist.types'
 import { sectionNameToText } from '../../../../../../tech/sectionNameToText'
 
-const sectionPart = (section: Section, fontSize: number) => {
+const sectionPart = (section: Section, fontSize: number, t: (key: string) => string) => {
 	const lines = section.lines
 
 	return (
@@ -29,7 +30,7 @@ const sectionPart = (section: Section, fontSize: number) => {
 							color: 'red',
 						}}
 					>
-						{sectionNameToText(section.name).toUpperCase()}
+						{sectionNameToText(section.name, t).toUpperCase()}
 					</Typography>
 				</>
 			)}
@@ -83,6 +84,8 @@ interface SlideCardProps {
 
 const DEFAULT_FONT_SIZE = 20
 export default function SlideCard({ item, order }: SlideCardProps) {
+	const t = useTranslations('common.sections')
+	
 	// Sheet
 	const [sheet, setSheet] = useState<Sheet>()
 
@@ -249,7 +252,7 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 									: undefined
 							}
 						>
-							{sectionPart(section, size)}
+							{sectionPart(section, size, t)}
 						</Box>
 					)
 				})}

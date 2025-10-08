@@ -1,8 +1,11 @@
+'use client'
+
 import { Box, Typography } from '@/common/ui'
 import { alpha, styled } from '@/common/ui/mui'
 import { Add, Remove } from '@mui/icons-material'
 import { Gap } from '../../../../../../common/ui/Gap'
 import { IconButton } from '../../../../../../common/ui/IconButton'
+import { useTranslations } from 'next-intl'
 
 const StyledButton = styled(IconButton)(({ theme }) => ({
 	color: 'black',
@@ -26,6 +29,7 @@ export default function TransposePanel({
 	transpose: (i: number) => void
 	disabled?: boolean
 }) {
+	const tTranspose = useTranslations('songPage.transpose')
 	return (
 		<Container>
 			{/* {disabled ? (
@@ -42,7 +46,7 @@ export default function TransposePanel({
 					size={'small'}
 					uppercase
 				>
-					Transpozice
+					{tTranspose('title')}
 				</Typography>
 				<Gap horizontal value={0.5} />
 				<StyledButton
@@ -51,7 +55,7 @@ export default function TransposePanel({
 						transpose(1)
 					}}
 					size="small"
-					tooltip="Zvýšit o půltón"
+					tooltip={tTranspose('increase')}
 				>
 					<Add />
 				</StyledButton>
@@ -61,7 +65,7 @@ export default function TransposePanel({
 						transpose(-1)
 					}}
 					size="small"
-					tooltip="Snížit o půltón"
+					tooltip={tTranspose('decrease')}
 				>
 					<Remove />
 				</StyledButton>

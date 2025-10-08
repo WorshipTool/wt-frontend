@@ -9,6 +9,7 @@ import { StandaloneCard } from '@/common/ui/StandaloneCard'
 import { TextInput } from '@/common/ui/TextInput'
 import { Typography } from '@/common/ui/Typography'
 import { useSmartParams } from '@/routes/useSmartParams'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 export default SmartPage(ContactPage)
@@ -16,6 +17,7 @@ export default SmartPage(ContactPage)
 const FEEDBACK_DIV_ID = 'feedback'
 
 function ContactPage() {
+	const t = useTranslations('contact')
 	const [sent, setSent] = useState(false)
 	const [loading, setLoading] = useState(false)
 
@@ -33,9 +35,7 @@ function ContactPage() {
 				.getElementById(FEEDBACK_DIV_ID)
 				?.scrollIntoView({ behavior: 'smooth' })
 
-			setMessage(
-				'Dobrý den,\nrád bych se podílel na vytváření této aplikace. Jaké mám možnosti?'
-			)
+			setMessage(t('form.wantToJoinMessage'))
 		}
 
 		setFirst(false)
@@ -75,8 +75,8 @@ function ContactPage() {
 			marginTop={3}
 		>
 			<StandaloneCard
-				title="Kontakt"
-				subtitle="Chcete se na něco zeptat nebo máte nějaký nápad? Rádi od vás uslyšíme."
+				title={t('title')}
+				subtitle={t('subtitle')}
 			>
 				<Box
 					display={'flex'}
@@ -85,7 +85,7 @@ function ContactPage() {
 					fontSize={'1.1rem'}
 					flexWrap={'wrap'}
 				>
-					<Typography size={'inherit'}>Napište nám na</Typography>
+					<Typography size={'inherit'}>{t('writeToUs')}</Typography>
 					<Typography strong size={'inherit'}>
 						{MAIL.MAIN}
 					</Typography>
@@ -93,12 +93,12 @@ function ContactPage() {
 			</StandaloneCard>
 
 			<StandaloneCard
-				title={wantToJoin ? 'Chcete nám pomoci?' : 'Zpětná vazba'}
+				title={wantToJoin ? t('wantToHelp') : t('feedback')}
 				variant="secondary"
 				subtitle={
 					wantToJoin
-						? 'Rádi byste se připojili k vytváření této aplikace? Napište nám pomocí formuláře.'
-						: 'Líbí se vám naše aplikace, nebo máte nějaké přípomínky? Napište nám pomocí formuláře.'
+						? t('wantToJoinDescription')
+						: t('feedbackDescription')
 				}
 			>
 				{!sent ? (
@@ -124,9 +124,9 @@ function ContactPage() {
 								flexWrap={'wrap'}
 							>
 								<TextInput
-									placeholder="Zadejte vaše jméno"
+									placeholder={t('form.enterName')}
 									required
-									title="Vaše jméno"
+									title={t('form.yourName')}
 									onChange={(e) => setName(e)}
 									value={name}
 									disabled={loading}
@@ -137,8 +137,8 @@ function ContactPage() {
 									}}
 								/>
 								<TextInput
-									title="Váš e-mail"
-									placeholder="Zadejte váš e-mail"
+									title={t('form.yourEmail')}
+									placeholder={t('form.enterEmail')}
 									type="email"
 									required
 									onChange={(e) => setEmail(e)}
@@ -152,8 +152,8 @@ function ContactPage() {
 								/>
 							</Box>
 							<TextInput
-								title="Zpráva"
-								placeholder="Napište zprávu"
+								title={t('form.message')}
+								placeholder={t('form.writeMessage')}
 								required
 								multiline
 								sx={{
@@ -168,7 +168,7 @@ function ContactPage() {
 							/>
 							<Box display={'flex'}>
 								<Button type="submit" loading={loading}>
-									Poslat zprávu
+									{t('form.sendMessage')}
 								</Button>
 							</Box>
 						</Box>
@@ -180,9 +180,9 @@ function ContactPage() {
 							size="small"
 							variant="text"
 							color="grey.500"
-							tooltip="Napsat další zprávu"
+							tooltip={t('form.writeAnother')}
 						>
-							Zpráva byla odeslána... Děkujeme za váš názor.
+							{t('form.messageSent')}
 						</Button>
 					</>
 				)}

@@ -13,6 +13,7 @@ import { useApiState } from '@/tech/ApiState'
 import { getSmartDateAgoString } from '@/tech/date/date.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Delete, KeyboardArrowLeft, MoreHoriz } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useState } from 'react'
 import { BasicVariantPack } from '../../../../../api/dtos'
@@ -27,6 +28,7 @@ interface MySongItemProps {
 }
 
 export default function MySongItem(props: MySongItemProps) {
+	const t = useTranslations('mySongs')
 	const [openMenu, setOpenMenu] = useState(false)
 	const [anchor, setAnchor] = useState<null | HTMLElement>(null)
 
@@ -171,7 +173,7 @@ export default function MySongItem(props: MySongItemProps) {
 						}}
 					>
 						<Typography thin color="grey.500">
-							{props.variant.public ? 'Veřejné' : 'Soukromé'}
+							{props.variant.public ? t('public') : t('private')}
 						</Typography>
 					</Box>
 
@@ -193,14 +195,14 @@ export default function MySongItem(props: MySongItemProps) {
 				onClose={() => setOpenMenu(false)}
 				items={[
 					{
-						title: 'Otevřít',
+						title: t('open'),
 						onClick: () => {
 							openVariant()
 						},
 						icon: <KeyboardArrowLeft />,
 					},
 					{
-						title: <Typography color="error">Smazat</Typography>,
+						title: <Typography color="error">{t('delete')}</Typography>,
 						onClick: () => {
 							setOpenDialog(true)
 						},
@@ -213,12 +215,12 @@ export default function MySongItem(props: MySongItemProps) {
 			<Popup
 				open={openDialog}
 				onClose={() => setOpenDialog(false)}
-				title="Opravdu chcete odstranit píseň?"
+				title={t('deleteDialog.title')}
 				width={400}
 				actions={
 					<>
 						<Button variant="outlined" type="reset" disabled={apiState.loading}>
-							Zrušit
+							{t('deleteDialog.cancel')}
 						</Button>
 						<Button
 							loading={apiState.loading}
@@ -229,14 +231,13 @@ export default function MySongItem(props: MySongItemProps) {
 							color="error"
 							variant="contained"
 						>
-							Smazat
+							{t('deleteDialog.delete')}
 						</Button>
 					</>
 				}
 			>
 				<Typography>
-					Chcete opravdu smazat píseň <strong>{props.variant.title}</strong>?
-					Tato akce je nevratná.
+					{t('deleteDialog.confirmMessage', { title: props.variant.title })}
 				</Typography>
 			</Popup>
 		</>

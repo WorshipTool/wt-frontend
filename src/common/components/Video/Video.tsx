@@ -1,4 +1,5 @@
 import { Box } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 import { CSSProperties } from 'react'
 
 export type VideoProps = {
@@ -10,6 +11,8 @@ export type VideoProps = {
 }
 
 export function Video(props: VideoProps) {
+	const t = useTranslations('common')
+	
 	return (
 		<Box
 			style={{
@@ -32,9 +35,9 @@ export function Video(props: VideoProps) {
                     src="/path/to/captions.vtt"
                     kind="subtitles"
                     srcLang="cs"
-                    label="Čeština"
+                    label="Czech"
                 /> */}
-				Your browser does not support the video.
+				{t('videoNotSupported')}
 			</video>
 		</Box>
 	)

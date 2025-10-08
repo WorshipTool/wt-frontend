@@ -6,9 +6,11 @@ import { Button } from '@/common/ui/Button'
 import { SmartAllParams, routesPaths } from '@/routes'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
 import { Print } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default function PrintButton() {
 	const { guid, save, items } = useInnerPlaylist()
+	const t = useTranslations('playlist')
 
 	const onPrint = async () => {
 		await save()
@@ -44,7 +46,7 @@ export default function PrintButton() {
 			onClick={onPrint}
 			disabled={disabled}
 		>
-			Tiskout
+			{t('print')}
 		</Button>
 	)
 }

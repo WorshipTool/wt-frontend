@@ -4,6 +4,7 @@ import { IconButton } from '@/common/ui/IconButton'
 import { AutoAwesome } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, InputBase, SxProps, styled } from '@mui/material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import OnChangeDelayer from '../../providers/ChangeDelayer/ChangeDelayer'
@@ -36,6 +37,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ value, onChange, sx, ...props }: SearchBarProps) {
+	const t = useTranslations('search')
 	const inputRef = useRef()
 
 	const onChangeHandler = (e: any) => {
@@ -82,7 +84,7 @@ export function SearchBar({ value, onChange, sx, ...props }: SearchBarProps) {
 			/>
 			<SearchIcon />
 			<SearchInput
-				placeholder="Hledej podle názvu nebo části textu"
+				placeholder={t('searchByTitleOrText')}
 				autoFocus={!isMobile}
 				value={value}
 				onChange={onChangeHandler}

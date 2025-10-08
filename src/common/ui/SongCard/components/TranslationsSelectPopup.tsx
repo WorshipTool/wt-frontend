@@ -5,6 +5,7 @@ import {
 	ToLinkProps,
 } from '@/common/ui/SongCard/SongVariantCard'
 import { BasicVariantPack } from '@/types/song'
+import { useTranslations } from 'next-intl'
 
 type Props = {
 	open: boolean
@@ -15,12 +16,14 @@ type Props = {
 }
 
 export default function TranslationsSelectPopup(props: Props) {
+	const t = useTranslations('song.translations')
+
 	return (
 		<>
 			<Popup
 				open={props.open}
 				onClose={props.onClose}
-				title="Vybrat jiný překlad"
+				title={t('selectOther')}
 			>
 				<Box
 					maxHeight={600}

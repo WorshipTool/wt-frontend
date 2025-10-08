@@ -2,12 +2,14 @@
 import { Box, Button, Checkbox, Gap, Typography } from '@/common/ui'
 import { useSmartSearchParam } from '@/routes/useSmartSearchParam'
 import { Print } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type PlaylistPrintOptionsProps = {
 	onPrint: () => void
 }
 
 export default function PlaylistPrintOptions(props: PlaylistPrintOptionsProps) {
+	const t = useTranslations('print')
 	const [checked, setChecked] = useSmartSearchParam(
 		'playlistPrint',
 		'landscapeMode',
@@ -30,12 +32,12 @@ export default function PlaylistPrintOptions(props: PlaylistPrintOptionsProps) {
 				boxShadow: 1,
 			}}
 		>
-			<Typography strong>Možnosti tisku</Typography>
+			<Typography strong>{t('printOptions')}</Typography>
 
 			<Checkbox
 				onChange={(e, v) => onChange(v)}
 				checked={checked === true}
-				label="Použít zobrazení na šířku"
+				label={t('useLandscapeView')}
 			/>
 
 			<Gap value={1} />
@@ -48,7 +50,7 @@ export default function PlaylistPrintOptions(props: PlaylistPrintOptionsProps) {
 					variant={'outlined'}
 					onClick={props.onPrint}
 				>
-					Tisk
+					{t('print')}
 				</Button>
 			</Box>
 		</Box>

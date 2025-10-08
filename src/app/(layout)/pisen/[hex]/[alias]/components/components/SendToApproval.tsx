@@ -1,3 +1,5 @@
+'use client'
+
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import { useInnerPack } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
 import MenuItem from '@/common/components/Menu/MenuItem'
@@ -5,12 +7,15 @@ import Popup from '@/common/components/Popup/Popup'
 import { Button } from '@/common/ui'
 import { useApiState } from '@/tech/ApiState'
 import { Publish } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { enqueueSnackbar } from 'notistack'
 import { useState } from 'react'
 
 export default function SendToApproval() {
 	const [open, setOpen] = useState(false)
 	const { packGuid } = useInnerPack()
+	const tSend = useTranslations('songPage.sendToApproval')
+	const tCommon = useTranslations('common')
 
 	const { songPublishingApi } = useApi()
 
@@ -23,7 +28,7 @@ export default function SendToApproval() {
 			})
 		)
 
-		enqueueSnackbar('Píseň byla úspěšně zveřejněna a odeslána ke schválení.')
+		enqueueSnackbar(tSend('success'))
 		setOpen(false)
 		window.location.reload()
 	}
@@ -32,9 +37,9 @@ export default function SendToApproval() {
 		<>
 			<MenuItem
 				key={'send-to-approval item'}
-				title={'Zveřejnit'}
+				title={tSend('menuTitle')}
 				icon={<Publish />}
-				subtitle="Poslat píseň ke zveřejnění"
+				subtitle={tSend('menuSubtitle')}
 				onClick={() => {
 					setOpen(true)
 				}}
@@ -44,11 +49,11 @@ export default function SendToApproval() {
 				key={'send-to-approval popup'}
 				open={open}
 				onClose={() => setOpen(false)}
-				title="Zveřejnit"
+				title={tSend('dialogTitle')}
 				onSubmit={send}
 				actions={[
 					<Button type="reset" outlined key={'cancel'}>
-						Zrušit
+						{tCommon('cancel')}
 					</Button>,
 					<Button
 						type="submit"
@@ -56,11 +61,11 @@ export default function SendToApproval() {
 						loading={apiState.loading}
 						key={'send'}
 					>
-						Ano, zveřejnit
+						{tSend('confirm')}
 					</Button>,
 				]}
 			>
-				Chcete píseň zveřejnit aby jí viděli ostatní uživatelé?
+				{tSend('question')}
 			</Popup>
 		</>
 	)

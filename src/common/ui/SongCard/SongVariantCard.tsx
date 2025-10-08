@@ -14,6 +14,7 @@ import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import { memo, useEffect, useMemo, useState } from 'react'
 import { BasicVariantPack } from '../../../api/dtos'
 import useAuth from '../../../hooks/auth/useAuth'
@@ -76,6 +77,7 @@ export const SongVariantCard = memo(function S({
 	flexibleHeight: flexibleHeght = true,
 	...props
 }: SongCardProps) {
+	const t = useTranslations('common')
 	const { user, isAdmin } = useAuth()
 	const theme = useTheme()
 
@@ -164,7 +166,7 @@ export const SongVariantCard = memo(function S({
 						>
 							{user && (
 								<IconButton
-									tooltip="Preferuji tento překlad"
+									tooltip={t('preferThisTranslation')}
 									small
 									sx={{
 										opacity: isLiked || isOver ? 1 : 0,
@@ -291,7 +293,7 @@ export const SongVariantCard = memo(function S({
 								{showPrivate || showYourPublic ? (
 									<CustomChip
 										icon={showPrivate ? <Lock /> : <Public />}
-										label={showPrivate ? 'Soukromé' : 'Vytvořeno vámi'}
+										label={showPrivate ? t('private') : t('createdByYou')}
 										color={
 											showPrivate
 												? theme.palette.grey[600]
@@ -305,12 +307,12 @@ export const SongVariantCard = memo(function S({
 									/>
 								) : null}
 								{createdByLoaderEnabled && data.createdByLoader ? (
-									<Typography size={'small'}>Nahráno programem</Typography>
+									<Typography size={'small'}>{t('uploadedByProgram')}</Typography>
 								) : null}
 
 								{publishedDateEnabled && data.publishedAt ? (
 									<Typography size={'small'}>
-										Přidáno {data.publishedAt.toLocaleDateString('cs-CZ')}
+										{t('addedOn')} {data.publishedAt.toLocaleDateString('cs-CZ')}
 									</Typography>
 								) : null}
 							</Box>

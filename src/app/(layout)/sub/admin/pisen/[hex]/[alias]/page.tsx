@@ -18,6 +18,7 @@ import { getTranslationData } from '@/common/ui/SongCard/components/tech'
 import { makeVariantAlias } from '@/tech/song/variant/variant.utils'
 import { SongLanguage } from '@/types/song'
 import { OpenInNew } from '@mui/icons-material'
+import { getTranslations } from 'next-intl/server'
 
 export default SmartPage(Page, [
 	'fullWidth',
@@ -28,6 +29,7 @@ export default SmartPage(Page, [
 
 async function Page(pageProps: PageProps<'adminPack'>) {
 	const { songGettingApi } = await useServerApi()
+	const t = await getTranslations('admin')
 
 	const alias = makeVariantAlias(pageProps.params.hex, pageProps.params.alias)
 	const data = await songGettingApi.getVariantDataByAlias(alias)
@@ -69,7 +71,7 @@ async function Page(pageProps: PageProps<'adminPack'>) {
 						<Typography>{translationData.message}</Typography>
 					)}
 
-					{main.createdByLoader && <Typography>Nahráno programem</Typography>}
+					{main.createdByLoader && <Typography>{t('songInfo.uploadedByProgram')}</Typography>}
 
 					<ParentSongSection />
 				</Box>
@@ -83,12 +85,12 @@ async function Page(pageProps: PageProps<'adminPack'>) {
 				<PublishAdminButton />
 			</Box>
 
-			<AdminSectionCollapsible title="Rozšiřující informace">
-				<AdminItem title="Jazyk">{main.language as SongLanguage}</AdminItem>
-				<AdminItem title="Vyhovuje GG filtru">
-					{main.ggValidated ? 'Ano' : 'Ne'}
+			<AdminSectionCollapsible title={t('songInfo.extendedInfo')}>
+				<AdminItem title={t('songInfo.language')}>{main.language as SongLanguage}</AdminItem>
+				<AdminItem title={t('songInfo.ggFilterCompliant')}>
+					{main.ggValidated ? t('songInfo.yes') : t('songInfo.no')}
 				</AdminItem>
-				<AdminItem title="Veřejné" value={main.public ? 'Ano' : 'Ne'} />
+				<AdminItem title={t('songInfo.public')} value={main.public ? t('songInfo.yes') : t('songInfo.no')} />
 				<Gap />
 
 				<AdminItem title="PackGuid" value={main.packGuid} />
@@ -118,7 +120,7 @@ async function Page(pageProps: PageProps<'adminPack'>) {
 					}}
 					// small
 				>
-					Přejít na píseň
+					{t('goToSong')}
 				</Button>
 			</Box>
 		</Box>

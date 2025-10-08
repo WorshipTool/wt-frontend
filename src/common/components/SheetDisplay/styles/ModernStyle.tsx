@@ -2,6 +2,7 @@ import { Box, Typography } from '@/common/ui'
 import { signature } from '@pepavlin/sheet-api/lib/models/note'
 import { Section } from '@pepavlin/sheet-api/lib/models/song/section'
 import { Segment } from '@pepavlin/sheet-api/lib/models/song/segment'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import { sectionNameToText } from '../../../../tech/sectionNameToText'
 import { SheetStyleComponentType } from './config'
@@ -55,10 +56,12 @@ const SectionComponent = ({
 	section: Section
 	signature?: signature
 }) => {
+	const t = useTranslations('common.sections')
+	
 	const sectionName = useMemo(() => {
 		if (!section.name) return undefined
-		return sectionNameToText(section.name)
-	}, [section])
+		return sectionNameToText(section.name, t)
+	}, [section, t])
 
 	const hasChords = useMemo(() => {
 		return true

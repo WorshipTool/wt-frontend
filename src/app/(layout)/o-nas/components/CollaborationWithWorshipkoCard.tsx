@@ -2,8 +2,11 @@
 import { Box, Image, Typography } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
 import { getAssetUrl } from '@/tech/paths.tech'
+import { useTranslations } from 'next-intl'
 
 export default function CollaborationWithWorshipkoCard() {
+	const tAbout = useTranslations('about')
+	const tFooter = useTranslations('footer')
 	// const navigate = useSmartNavigate()
 
 	// const onJoinClick = () => {
@@ -35,11 +38,11 @@ export default function CollaborationWithWorshipkoCard() {
 					gap={2}
 				>
 					<Typography variant="h5" noWrap thin>
-						Vytvořeno ve spolupráci s
+						{tAbout('collaboration.title')}
 					</Typography>
 					<Image
 						src={getAssetUrl('worshipko.png')}
-						alt={'Logo worshipko.com'}
+						alt={tFooter('logoAlt')}
 						height={70}
 						width={240}
 						style={{

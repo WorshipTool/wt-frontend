@@ -23,6 +23,7 @@ import {
 import axios from 'axios'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 enum ParserStatus {
 	Queued = 0,
@@ -39,6 +40,9 @@ type ProgressObject = {
 
 const INPUT_ID = 'parse-image-admin-input'
 export default function ParseAdminOption() {
+	const t = useTranslations('admin')
+	const tCommon = useTranslations('common')
+	const tUpload = useTranslations('upload')
 	const { isAdmin, user, apiConfiguration } = useAuth()
 	const onClick = () => {
 		//open file input
@@ -125,14 +129,14 @@ export default function ParseAdminOption() {
 
 		const eventSource = new EventSource(url)
 
-		// Listener pro průběžné hodnoty (např. procenta)
+		// Listener for progress values (e.g. percentages)
 		eventSource.addEventListener('progress', (event) => {
 			const p: ProgressObject = JSON.parse(fixParserJsonString(event.data))
 			setProgress(p.progress)
 			setStatus(p.status)
 		})
 
-		// Listener pro finální výsledek
+		// Listener for final result
 		eventSource.addEventListener('final', (event) => {
 			const result: ParserSongDataResult = JSON.parse(
 				fixParserJsonString(event.data)
@@ -143,7 +147,7 @@ export default function ParseAdminOption() {
 			setLoading(false)
 		})
 
-		// Listener pro případ chyby
+		// Listener for error cases
 		eventSource.addEventListener('error', (event) => {
 			console.error('Stream error:', event)
 			eventSource.close()
@@ -157,14 +161,14 @@ export default function ParseAdminOption() {
 		const data = sheet.data
 		copyToClipboard(data)
 
-		enqueueSnackbar('Data písně zkopírovány.')
+		enqueueSnackbar(tUpload('songDataCopied'))
 	}
 
 	return (
 		<>
 			<AdminOption
-				title="Parsovat soubor"
-				subtitle="Vybrat soubor ke zpracování"
+				title={t('parseFile')}
+				subtitle={t('selectFileToProcess')}
 				icon={<CameraEnhance />}
 				onClick={onClick}
 			/>
@@ -192,24 +196,24 @@ export default function ParseAdminOption() {
 					!result ? (
 						<Box display={'flex'} gap={1}>
 							{apiStateUploading.loading
-								? 'Nahrávání'
+								? tUpload('uploading')
 								: status === ParserStatus.Queued
-								? 'Čekání ve frontě'
+								? tUpload('queueing')
 								: status === ParserStatus.Started
-								? 'Zpracovávání souborů'
+								? tUpload('processing')
 								: status === ParserStatus.Finished
-								? 'Zpracováno'
+								? tUpload('processed')
 								: status === ParserStatus.Failed
-								? 'Nastala chyba'
-								: 'Počkejte prosím'}
+								? tUpload('errorOccurred')
+								: tUpload('pleaseWait')}
 						</Box>
 					) : (
 						<Box display={'flex'} gap={1}>
-							Zpracováno
+							{tUpload('processed')}
 							{result.useAi && (
 								<>
 									<Chip
-										label={'S pomocí AI'}
+										label={tUpload('withAI')}
 										size="small"
 										color="success"
 										icon={<AutoAwesome />}
@@ -277,7 +281,7 @@ export default function ParseAdminOption() {
 												startIcon={<ContentCopy />}
 												onClick={() => copy(a)}
 											>
-												Zkopírovat
+												{tUpload('copy')}
 											</Button>
 										</Box>
 									</Box>
@@ -291,7 +295,7 @@ export default function ParseAdminOption() {
 			{apiStateUploading.data && (
 				<AdminOption
 					icon={<MenuOpen />}
-					title="Otevřít zpracovaná data"
+					title={t('openProcessedData')}
 					onClick={() => setOpen(true)}
 					notify
 				/>

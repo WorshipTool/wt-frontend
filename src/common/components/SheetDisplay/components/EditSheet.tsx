@@ -2,6 +2,7 @@
 import { Box } from '@/common/ui'
 import { InputBase, styled } from '@/common/ui/mui'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 interface EditSheetProps {
@@ -16,6 +17,8 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function EditSheet(props: EditSheetProps) {
+	const t = useTranslations('song')
+	
 	const [sheetData, setSheetData] = React.useState(
 		props.sheet.getOriginalSheetData()
 	)
@@ -34,7 +37,7 @@ export default function EditSheet(props: EditSheetProps) {
 			}}
 		>
 			<StyledInput
-				placeholder="Název písně"
+				placeholder={t('songTitlePlaceholder')}
 				value={title}
 				onChange={(e) => {
 					setTitle(e.target.value)
@@ -42,7 +45,7 @@ export default function EditSheet(props: EditSheetProps) {
 				}}
 			/>
 			<StyledInput
-				placeholder="Obsah písně"
+				placeholder={t('songContentPlaceholder')}
 				value={sheetData}
 				multiline
 				onChange={(e) => {

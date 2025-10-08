@@ -1,10 +1,12 @@
 import { IconButton, Tooltip } from '@/common/ui'
 import { AutoMode, FiberManualRecord, Numbers } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { useApi } from '../../../../../../api/tech-and-hooks/useApi'
 import { Card } from '../../../../../../common/ui/Card/Card'
 
 export default function CurrentSongCount() {
+	const t = useTranslations('admin')
 	const { songGettingApi } = useApi()
 	const [songCount, setSongCount] = useState<number>()
 
@@ -33,8 +35,8 @@ export default function CurrentSongCount() {
 	}, [autoRefresh])
 	return (
 		<Card
-			title="Aktuální počet písní"
-			subtitle={songCount?.toString() ?? 'Načítání...'}
+			title={t('songCount.title')}
+			subtitle={songCount?.toString() ?? t('songCount.loading')}
 			icon={
 				<>
 					<Numbers />
@@ -47,7 +49,7 @@ export default function CurrentSongCount() {
 						onClick={() => setAutoRefresh((a) => !a)}
 					>
 						{autoRefresh ? (
-							<Tooltip title={'Auto-refresh je zapnutý'}>
+							<Tooltip title={t('songCount.autoRefreshEnabled')}>
 								<AutoMode color="primary" />
 							</Tooltip>
 						) : (

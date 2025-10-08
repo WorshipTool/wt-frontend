@@ -12,6 +12,7 @@ import {
 import { Chip } from '@/common/ui/mui'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { Lan, LastPage, Refresh } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 type BridgeServiceData = {
@@ -23,6 +24,7 @@ type BridgeServiceData = {
 	external: boolean
 }
 export default function BridgeServicesPanel() {
+	const t = useTranslations('admin')
 	const { bridgeApi } = useApi()
 	const [apiState, refresh] = useApiStateEffect<BridgeServiceData[]>(
 		async () => {
@@ -52,7 +54,7 @@ export default function BridgeServicesPanel() {
 
 	return (
 		<Card
-			title="Připojené programy"
+			title={t('bridgeServices.title')}
 			icon={<Lan />}
 			sx={{ position: 'relative' }}
 		>
@@ -104,9 +106,9 @@ export default function BridgeServicesPanel() {
 								</Box>
 							</Box>
 							<Box display={'flex'} alignItems={'center'} gap={1}>
-								<Typography small>Před {Math.floor(ago / 1000)}s</Typography>
+								<Typography small>{t('bridgeServices.timeAgo', { seconds: Math.floor(ago / 1000) })}</Typography>
 								{s.external && (
-									<Tooltip title="Externí">
+									<Tooltip title={t('bridgeServices.external')}>
 										<LastPage fontSize="small" />
 									</Tooltip>
 								)}
@@ -119,7 +121,7 @@ export default function BridgeServicesPanel() {
 			{filteredData.length === 0 && (
 				<Box display={'flex'} justifyContent={'center'}>
 					<Typography italic size={'small'}>
-						Žádné připojené programy...
+						{t('bridgeServices.noConnectedPrograms')}
 					</Typography>
 				</Box>
 			)}
@@ -133,7 +135,7 @@ export default function BridgeServicesPanel() {
 							variant="text"
 							size="small"
 						>
-							Zobrazit vše
+							{t('bridgeServices.showAll')}
 						</Button>
 					</Box>
 				</>

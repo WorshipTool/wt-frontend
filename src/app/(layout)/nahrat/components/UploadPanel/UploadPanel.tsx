@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@/common/ui'
 import { Paper } from '@/common/ui/mui'
 import { CloudUpload } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import React, { useRef } from 'react'
 import { Gap } from '../../../../../common/ui/Gap'
 import UploadFileInput from '../UploadFileInput'
@@ -14,6 +15,8 @@ export default function UploadPanel(props: UploadPanelProps) {
 	const inputRef = useRef(null)
 
 	const [draggingOver, setDraggingOver] = React.useState(false)
+
+	const t = useTranslations('upload')
 
 	const uploadFiles = (files: File[]) => {
 		if (props.onUpload) props.onUpload(files)
@@ -80,7 +83,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 									alignItems: 'center',
 								}}
 							>
-								<Typography>Sem přetáhněte soubory k nahrání</Typography>
+								<Typography>{t('dragAndDrop')}</Typography>
 							</Box>
 						</Box>
 					) : (
@@ -116,7 +119,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 							display: draggingOver ? 'none' : 'block',
 						}}
 					>
-						Vybrat soubory
+						{t('selectFiles')}
 					</Button>
 				</Box>
 
@@ -132,7 +135,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 					}}
 					width={200}
 				>
-					<Typography color={'grey'}>Formáty: png, jpg, jpeg, pdf</Typography>
+					<Typography color={'grey'}>{t('supportedFormats')}: png, jpg, jpeg, pdf</Typography>
 				</Box>
 			</Paper>
 			<UploadFileInput

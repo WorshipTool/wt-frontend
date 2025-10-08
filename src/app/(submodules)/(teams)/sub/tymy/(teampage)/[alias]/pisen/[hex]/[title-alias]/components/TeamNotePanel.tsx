@@ -13,12 +13,14 @@ import { Typography } from '@/common/ui/Typography'
 import { usePermission } from '@/hooks/permissions/usePermission'
 import { useApiState, useApiStateEffect } from '@/tech/ApiState'
 import { StickyNote2 } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 export default function TeamNotePanel() {
 	const { teamSongNotesApi } = useApi()
 	const { packGuid } = useInnerPack()
 	const { guid: teamGuid, notes: allTeamNotes } = useInnerTeam()
+	const t = useTranslations('song.teamNote')
 
 	const [{ data, loading: getLoading }, reload] =
 		useApiStateEffect(async () => {
@@ -112,7 +114,7 @@ export default function TeamNotePanel() {
 			{hasPermissionToEdit && !hasNote && !adding && !loading && (
 				<MoreTeamSongOption>
 					<MenuItem
-						title={'Přidat sdílenou poznámku'}
+						title={t('add')}
 						icon={<StickyNote2 />}
 						onClick={() => {
 							setAdding(true)
@@ -124,7 +126,7 @@ export default function TeamNotePanel() {
 			{hasPermissionToEdit && hasNote && !adding && !loading && (
 				<MoreTeamSongOption>
 					<MenuItem
-						title={'Upravit sdílenou poznámku'}
+						title={t('edit')}
 						icon={<StickyNote2 />}
 						onClick={() => setAdding(true)}
 					/>
@@ -182,7 +184,7 @@ export default function TeamNotePanel() {
                                     fontSize: '1.2rem',
                                 }}
                             /> */}
-							<Typography>Sdílená poznámka</Typography>
+							<Typography>{t('title')}</Typography>
 						</Box>
 						<Box display={'flex'} flexDirection={'column'}>
 							{adding ? (
@@ -197,7 +199,7 @@ export default function TeamNotePanel() {
 											width: '100%',
 											minHeight: 64,
 										}}
-										placeholder="Napište sdílenou poznámku"
+										placeholder={t('placeholder')}
 										multiline
 										disabled={loading}
 									/>
@@ -214,15 +216,15 @@ export default function TeamNotePanel() {
 											color="grey.700"
 											disabled={loading}
 										>
-											Zrušit
+											{t('cancel')}
 										</Button>
 										<Button
 											onClick={onSave}
 											size="small"
 											tooltip={
 												isButtonDeleting
-													? 'Smazat sdílenou poznámku'
-													: 'Uložit sdílenou poznámku'
+													? t('deleteTooltip')
+													: t('saveTooltip')
 											}
 											variant="contained"
 											color={isButtonDeleting ? 'error' : 'primary'}
@@ -230,7 +232,7 @@ export default function TeamNotePanel() {
 												(isContentEmpty && !isButtonDeleting) || loading
 											}
 										>
-											{isButtonDeleting ? 'Smazat' : 'Uložit  '}
+											{isButtonDeleting ? t('delete') : t('save')}
 										</Button>
 									</Box>
 								</Box>

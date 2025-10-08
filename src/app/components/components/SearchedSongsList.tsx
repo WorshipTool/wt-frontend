@@ -2,6 +2,7 @@
 import { Box, Button, LinearProgress, Typography } from '@/common/ui'
 import { Sync } from '@mui/icons-material'
 import { grey } from '@mui/material/colors'
+import { useTranslations } from 'next-intl'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ContainerGrid from '../../../common/components/ContainerGrid'
 import { Gap } from '../../../common/ui/Gap/Gap'
@@ -25,6 +26,7 @@ const SearchedSongsList = memo(function S({
 	useSmartSearch,
 }: SearchedSongsListProps) {
 	const loadNextLevelRef = useRef(null)
+	const tHome = useTranslations('home')
 
 	const [loading, setLoading] = useState<boolean>(false)
 	const [nextLoading, setNextLoading] = useState<boolean>(false)
@@ -100,7 +102,7 @@ const SearchedSongsList = memo(function S({
 		<ContainerGrid direction="column">
 			<>
 				<Typography strong key={'results'}>
-					Výsledky vyhledávání:
+					{tHome('search.resultsTitle')}
 				</Typography>
 
 				{!loading && songs.length > 0 && (
@@ -141,7 +143,7 @@ const SearchedSongsList = memo(function S({
 								variant="text"
 								startIcon={<Sync />}
 							>
-								Načíst další
+								{tHome('search.loadMore')}
 							</Button>
 						</Box>
 					</>
@@ -150,7 +152,7 @@ const SearchedSongsList = memo(function S({
 
 			{!loading && songs.length < 1 && (
 				<>
-					<Typography>Nic jsme nenašli...</Typography>
+					<Typography>{tHome('search.noResults')}</Typography>
 				</>
 			)}
 

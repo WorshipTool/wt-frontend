@@ -7,6 +7,7 @@ import { PlaylistItemGuid } from '@/interfaces/playlist/playlist.types'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Add, Edit, Remove } from '@mui/icons-material'
 import { Chord, Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import { memo } from 'react'
 
 type TopPlaylistItemPanelProps = {
@@ -25,6 +26,8 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 	...props
 }: TopPlaylistItemPanelProps) {
 	const { setItemKeyChord, removeItem, canUserEdit } = useInnerPlaylist()
+	const tPlaylist = useTranslations('playlist')
+	const tCommon = useTranslations('common')
 
 	const transpose = async (value: number) => {
 		const c = props.sheet.getKeyChord()
@@ -60,7 +63,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 							transpose(1)
 						}}
 						color="inherit"
-						alt="Transpose up"
+						alt={tPlaylist('transposeUp')}
 					>
 						<Add />
 					</IconButton>
@@ -69,7 +72,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 							transpose(-1)
 						}}
 						color="inherit"
-						alt="Transpose down"
+						alt={tPlaylist('transposeDown')}
 					>
 						<Remove />
 					</IconButton>
@@ -83,7 +86,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 				{!props.inEditMode ? (
 					!canUserEdit ? null : (
 						<Button
-							tooltip="Vytvořit úpravu písně pro tento playlist"
+							tooltip={tPlaylist('createEditForPlaylist')}
 							variant="outlined"
 							size="small"
 							startIcon={<Edit />}
@@ -91,7 +94,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 								props.setInEditMode(true)
 							}}
 						>
-							Upravit
+							{tCommon('edit')}
 						</Button>
 					)
 				) : (
@@ -101,16 +104,16 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 							variant="text"
 							color="grey.800"
 							onClick={props.onCancel}
-							tooltip="Zrušit aktuální úpravy"
+							tooltip={tCommon('cancelCurrentEdits')}
 						>
-							Zrušit
+							{tCommon('cancel')}
 						</Button>
 						<Button
 							size="small"
 							onClick={props.onSave}
-							tooltip="Uložit aktuální stav písně"
+							tooltip={tCommon('saveCurrentState')}
 						>
-							Uložit
+							{tCommon('save')}
 						</Button>
 					</>
 				)}
@@ -127,7 +130,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 							onClick={onRemove}
 							size="small"
 						>
-							Odebrat z playlistu
+							{tPlaylist('removeFromPlaylist')}
 						</Button>
 					</Box>
 				)}
@@ -141,7 +144,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 							}}
 							size="small"
 						>
-							Otevřít
+							{tCommon('open')}
 						</Button>
 					))}
 			</Box>

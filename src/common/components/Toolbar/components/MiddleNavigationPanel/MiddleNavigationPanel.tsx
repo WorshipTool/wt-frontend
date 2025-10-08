@@ -11,6 +11,7 @@ import { IconButton } from '@/common/ui/IconButton'
 import { useSmartMatch } from '@/routes/useSmartMatch'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { ArrowDropUp, Menu } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -24,11 +25,12 @@ type NavigationItems = [
 export default function MiddleNavigationPanel() {
 	const { hledat: searchString } = useSmartParams('home')
 	const isHome = useSmartMatch('home')
+	const tNavigation = useTranslations('navigation')
 
 	const navigationItems: NavigationItems = useMemo(
 		() => [
 			{
-				title: 'Hledat',
+				title: tNavigation('search'),
 				to: 'home',
 				toParams: { hledat: isHome ? searchString || '' : '' },
 				enabled: false,
@@ -36,11 +38,11 @@ export default function MiddleNavigationPanel() {
 					window.dispatchEvent(new Event(MAIN_SEARCH_EVENT_NAME))
 				},
 			},
-			{ title: 'O nás', to: 'about' },
-			{ title: 'Chválící týmy', to: 'teams' },
-			{ title: 'Kontakt', to: 'contact' },
+			{ title: tNavigation('aboutUs'), to: 'about' },
+			{ title: tNavigation('worshipTeams'), to: 'teams' },
+			{ title: tNavigation('contact'), to: 'contact' },
 		],
-		[isHome, searchString]
+		[isHome, searchString, tNavigation]
 	)
 
 	const { hideMiddleNavigation, _setTempSolid, transparent } = useToolbar()
@@ -160,7 +162,7 @@ export default function MiddleNavigationPanel() {
 									setShowMobileMenu(false)
 								}}
 							>
-								Zavřít menu
+								{tNavigation('closeMenu')}
 							</Button>
 						</Box>
 					</Box>,

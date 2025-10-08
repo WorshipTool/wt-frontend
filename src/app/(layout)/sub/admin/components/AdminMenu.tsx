@@ -12,6 +12,7 @@ import {
 	Schedule,
 	Tag,
 } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type ItemProps = {
 	label: string
@@ -61,6 +62,8 @@ function Item(props: ItemProps) {
 }
 
 export default function AdminMenu() {
+	const t = useTranslations('admin')
+
 	return (
 		<Box
 			sx={{
@@ -70,31 +73,31 @@ export default function AdminMenu() {
 			}}
 		>
 			<Item
-				label="Dashboard"
+				label={t('menu.dashboard')}
 				icon={<Dashboard fontSize="small" />}
 				to={'admin'}
 			/>
 			<Item
-				label="Přidat píseň"
+				label={t('menu.addSong')}
 				icon={<Add fontSize="small" />}
 				to={'adminCreateSong'}
 			/>
 			<Item
-				label="Písně"
+				label={t('menu.songs')}
 				icon={<MusicNote fontSize="small" />}
 				to={'adminSongs'}
 			/>
 			<Item
-				label="Čeká ke schválení"
+				label={t('menu.pendingApproval')}
 				icon={<Publish fontSize="small" />}
 				to="adminPublishApproval"
 			/>
 			<Item
-				label="Poslední"
+				label={t('menu.recent')}
 				icon={<Schedule fontSize="small" />}
 				to="adminLastAdded"
 			/>
-			<Item label="Tagy" icon={<Tag fontSize="small" />} disabled />
+			<Item label={t('menu.tags')} icon={<Tag fontSize="small" />} disabled />
 		</Box>
 	)
 }

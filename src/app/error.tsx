@@ -3,11 +3,14 @@
 import { ErrorPageProps } from '@/common/types'
 import { Box, Button, Typography } from '@/common/ui'
 import { LockPerson } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useMemo } from 'react'
 
 type ErrorType = 'forbidden' | 'default'
 
 export default function Error({ error, reset }: ErrorPageProps) {
+	const t = useTranslations('errors')
+	const tCommon = useTranslations('common')
 	const errorType: ErrorType = useMemo(() => {
 		return error.message.includes('Forbidden') ? 'forbidden' : 'default'
 	}, [error])
@@ -39,15 +42,15 @@ export default function Error({ error, reset }: ErrorPageProps) {
 						}}
 					/>
 					<Typography align="center" variant="h6">
-						K zobrazení obsahu nemáte dostatečná oprávnění!
+						{t('forbidden')}
 					</Typography>
 				</>
 			) : (
 				<>
 					<Typography align="center" variant="h3">
-						Někde nastala chyba!
+						{t('serverError')}
 					</Typography>
-					<Button onClick={reset}>Zkusit znovu</Button>
+					<Button onClick={reset}>{tCommon('tryAgain')}</Button>
 				</>
 			)}
 		</Box>

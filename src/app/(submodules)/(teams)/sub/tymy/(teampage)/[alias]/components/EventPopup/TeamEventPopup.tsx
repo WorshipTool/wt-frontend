@@ -37,6 +37,7 @@ import dayjs from 'dayjs'
 import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
 import { useUserProfileImage } from '../../../../../../../../../hooks/useUserProfileImage'
+import { useTranslations } from 'next-intl'
 type Member = TeamEventMemberData
 export type TeamEventPopupData = {
 	guid?: string
@@ -70,6 +71,7 @@ export default function TeamEventPopup({
 	...props
 }: TeamEventPopupProps) {
 	const theme = useTheme()
+	const t = useTranslations('teams.events')
 
 	const [editable, setEditable] = useState(editableProp)
 	useEffect(() => {
@@ -191,7 +193,7 @@ export default function TeamEventPopup({
 			if (await addEvent(allData)) {
 				onReset()
 				props.onClose()
-				enqueueSnackbar('Událost byla vytvořena')
+				enqueueSnackbar(t('eventCreated'))
 				props.onSubmit?.()
 				reloadPermissions()
 			}
@@ -260,7 +262,7 @@ export default function TeamEventPopup({
 									<Button
 										key={'deletebutton'}
 										color="error"
-										tooltip="Smazat událost a ponechat playlist"
+										tooltip={t('deleteEventTooltip')}
 										variant={deleteSecond ? 'contained' : 'text'}
 										onClick={async () => {
 											if (deleteSecond) {
@@ -273,7 +275,7 @@ export default function TeamEventPopup({
 											}
 										}}
 									>
-										{deleteSecond ? 'Opravdu smazat?' : 'Smazat'}
+										{deleteSecond ? t('confirmDelete') : t('delete')}
 									</Button>
 								),
 								<Box key={'gap1'} />,
@@ -291,7 +293,7 @@ export default function TeamEventPopup({
 										type="reset"
 										loading={props.submitting}
 									>
-										Zrušit
+										{t('cancel')}
 									</Button>
 
 									<Button
@@ -300,7 +302,7 @@ export default function TeamEventPopup({
 										disabled={!canSubmit}
 										loading={props.submitting}
 									>
-										{props.createMode ? 'Vytvořit' : 'Uložit'}
+										{props.createMode ? t('create') : t('save')}
 									</Button>
 								</Box>,
 						  ]
@@ -311,14 +313,14 @@ export default function TeamEventPopup({
 									key={'playlist'}
 									variant={editable ? 'outlined' : 'contained'}
 									endIcon={<OpenInNew />}
-									tooltip="Otevřít playlist přiřazený k této události"
+									tooltip={t('openPlaylistTooltip')}
 									color={editable ? undefined : 'primarygradient'}
 									to="teamPlaylist"
 									toParams={{ alias: alias, guid: playlist.guid }}
 									target="_blank"
 									disabled={props.submitting}
 								>
-									Otevřít playlist
+									{t('openPlaylist')}
 								</Button>,
 								<Box key={'gap3'} />,
 						  ]
@@ -371,7 +373,7 @@ export default function TeamEventPopup({
 							/>
 						)}
 						<Typography size={'small'}>
-							{props.createMode ? 'Vytvoření události' : 'Detail události'}
+							{props.createMode ? t('createEvent') : t('eventDetail')}
 						</Typography>
 
 						<Box
@@ -410,7 +412,7 @@ export default function TeamEventPopup({
 									setEditable(true)
 								}}
 							>
-								Upravit
+								{t('edit')}
 							</Button>
 						)}
 					</Box>
@@ -423,11 +425,11 @@ export default function TeamEventPopup({
 						<Box display={'flex'} flexDirection={'column'}>
 							<>
 								<TeamEventPopupEditableInput
-									placeholder="Název události"
+									placeholder={t('eventNamePlaceholder')}
 									tooltip={
 										props.createMode
-											? 'Pojmenovat událost'
-											: 'Přejmenovat událost'
+											? t('nameEventTooltip')
+											: t('renameEventTooltip')
 									}
 									value={title}
 									editable={editable}
@@ -436,11 +438,11 @@ export default function TeamEventPopup({
 								/>
 							</>
 							<Gap value={0.5} />
-							<Tooltip label="Změnit popisek" disabled={!editable}>
+							<Tooltip label={t('changeDescriptionTooltip')} disabled={!editable}>
 								{editable || (description && description?.length > 0) ? (
 									<TextField
-										placeholder="Přidejte popisek"
-										// tooltip="Změnit popisek"
+										placeholder={t('addDescriptionPlaceholder')}
+										// tooltip="Change description"
 										value={description}
 										sx={{
 											fontWeight: 400,
@@ -474,11 +476,11 @@ export default function TeamEventPopup({
 
 						{/* Details */}
 						<Grid container spacing={3} padding={1}>
-							<EventPopupGridRow label="Datum">
+							<EventPopupGridRow label={t('date')}>
 								{/* <Typography strong>25.7. 2024 9:00</Typography> */}
 								<Box display={'flex'} flexDirection={'row'} gap={1}>
 									<DatePicker
-										label={'Datum akce'}
+										label={t('eventDateLabel')}
 										slotProps={{
 											popper: {
 												disablePortal: true,
@@ -503,7 +505,7 @@ export default function TeamEventPopup({
 										>
 											<Warning color="warning" fontSize="small" />
 											<Typography size={'small'}>
-												Jedná se o datum v minulosti
+												{t('pastDateWarning')}
 											</Typography>
 										</Box>
 									) : null}
@@ -511,7 +513,7 @@ export default function TeamEventPopup({
 							</EventPopupGridRow>
 
 							{/* Leader*/}
-							<EventPopupGridRow label="Vedoucí">
+							<EventPopupGridRow label={t('leader')}>
 								<Box
 									display={'flex'}
 									flexDirection={'row'}
@@ -531,9 +533,9 @@ export default function TeamEventPopup({
 									)}
 
 									{editable && !leader && (
-										<Tooltip label="Zvolit vedoucího">
+										<Tooltip label={t('chooseLeaderTooltip')}>
 											<Chip
-												label={'Zvolit'}
+												label={t('choose')}
 												variant="outlined"
 												icon={<Add />}
 												// size="small"
@@ -552,7 +554,7 @@ export default function TeamEventPopup({
 							</EventPopupGridRow>
 
 							{/* Members */}
-							<EventPopupGridRow label="Členové">
+							<EventPopupGridRow label={t('members')}>
 								{members?.map((member, index) => (
 									<TeamEventMemberChip
 										key={member.userGuid}
@@ -562,9 +564,9 @@ export default function TeamEventPopup({
 									/>
 								))}
 								{editable && (
-									<Tooltip label="Přidat člena">
+									<Tooltip label={t('addMemberTooltip')}>
 										<Chip
-											label="Přidat"
+											label={t('add')}
 											icon={<Add />}
 											// size="small"
 											onClick={openMemberSelect}
@@ -605,9 +607,9 @@ export default function TeamEventPopup({
 								)}
 
 								{editable && !playlist && (
-									<Tooltip label="Vybrat playlist ze seznamu">
+									<Tooltip label={t('selectPlaylistTooltip')}>
 										<Chip
-											label={'Zvolit'}
+											label={t('choose')}
 											variant="outlined"
 											icon={<Add />}
 											// size="small"

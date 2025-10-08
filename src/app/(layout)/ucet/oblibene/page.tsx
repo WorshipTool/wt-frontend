@@ -13,6 +13,7 @@ import {
 	PlaylistGuid,
 	PlaylistItemDto,
 } from '@/interfaces/playlist/playlist.types'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
 export default SmartPage(page, ['middleWidth', 'topPadding'])
@@ -24,6 +25,7 @@ export type FavouriteItem = {
 }
 
 function page() {
+	const t = useTranslations('account.favourites')
 	const { selectionGuid, items: bsItems } = useFavourites()
 
 	const { items: allItems } = useSelection(selectionGuid as PlaylistGuid)
@@ -71,11 +73,11 @@ function page() {
 					}}
 				>
 					{/* <Favorite /> */}
-					Mé oblíbené
+{t('title')}
 				</Typography>
 
 				<Typography thin color="grey.500">
-					Celkem {items.length} písní
+{t('totalSongs', { count: items.length })}
 				</Typography>
 				<Box flex={1} />
 
@@ -93,7 +95,7 @@ function page() {
 						textAlign: 'center',
 					}}
 				>
-					Nemáte žádné oblíbené písně.
+{t('noFavourites')}
 				</Typography>
 			) : (
 				<></>
