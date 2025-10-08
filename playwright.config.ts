@@ -12,11 +12,11 @@ export default defineConfig({
 	testDir: './tests/e2e',
 	grep:
 		suite === 'smoke'
-			? /tests\/e2e\/smoke\/|@smoke/
+			? /tests\/e2e\/(smoke|full)\/|@smoke|@full/
 			: suite === 'smoke-only'
 			? /tests\/e2e\/smoke\/|@smoke/
 			: suite === 'critical'
-			? /tests\/e2e\/(smoke|critical)\/|@critical|@smoke/
+			? /tests\/e2e\/(smoke|critical|full)\/|@critical|@smoke|@full/
 			: suite === 'critical-only'
 			? /tests\/e2e\/(critical)\/|@critical/
 			: suite === 'full-only'
