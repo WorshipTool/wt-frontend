@@ -68,7 +68,7 @@ export const breakpoints = {
 		if (value === undefined) {
 			throw new Error(`Invalid breakpoint key: ${key}`)
 		}
-		return `@media (max-width: ${value - 0.02}px)` // Oprava pro přesnost na 1px
+		return `@media (max-width: ${value - 0.02}px)` // Fix for 1px precision
 	},
 	between(startKey: Breakpoints, endKey: Breakpoints) {
 		const startValue = this.values[startKey]

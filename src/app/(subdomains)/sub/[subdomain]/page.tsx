@@ -4,12 +4,14 @@ import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box, Typography } from '@/common/ui'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useSmartParams } from '@/routes/useSmartParams'
+import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 
 const INTERVAL = 5000
 export default SmartPage(SubdomainPage)
 function SubdomainPage() {
 	const a = useSmartParams('subdomain')
+	const t = useTranslations('subdomain')
 
 	const navigate = useSmartNavigate()
 
@@ -34,9 +36,9 @@ function SubdomainPage() {
 			<Typography uppercase variant="h3" strong>
 				{a.subdomain + '?'}
 			</Typography>
-			<Typography>Na této subdoméně jsme nic nenašli.</Typography>
+			<Typography>{t('notFound')}</Typography>
 			<Typography italic>
-				Za chvíli budete přesměrováni na domovskou stránku...
+				{t('redirectingHome')}
 			</Typography>
 		</Box>
 	)

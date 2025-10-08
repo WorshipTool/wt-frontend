@@ -4,6 +4,7 @@ import LastAddedPanel from '@/app/components/components/LastAddedPanel/LastAdded
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Box, Image, Typography } from '@/common/ui'
 import { getAssetUrl } from '@/tech/paths.tech'
+import { useTranslations } from 'next-intl'
 
 type Props = {
 	mobileVersion: boolean
@@ -12,6 +13,7 @@ type Props = {
 export default function RightSheepPanel(props: Props) {
 	const sheepSize = 140
 	const showLastAdded = useFlag('show_last_added_songs')
+	const t = useTranslations('suggestions')
 	return (
 		<Box
 			sx={{
@@ -31,7 +33,7 @@ export default function RightSheepPanel(props: Props) {
 			>
 				<Image
 					src={getAssetUrl('/sheeps/ovce3.svg')}
-					alt="Ovečka"
+					alt={t('sheep')}
 					width={sheepSize}
 					height={sheepSize}
 				/>
@@ -48,10 +50,10 @@ export default function RightSheepPanel(props: Props) {
 					}}
 				>
 					<Typography variant="h5" strong>
-						Nemáš nápad?
+						{t('noIdea')}
 					</Typography>
 					<Typography>
-						Vyber si chválu z nápadů níže nebo ze seznamu všech písní
+						{t('chooseSuggestion')}
 					</Typography>
 				</Box>
 			)}

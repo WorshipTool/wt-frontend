@@ -4,12 +4,15 @@ import { InfoButton } from '@/common/ui/InfoButton'
 import { Link } from '@/common/ui/Link/Link'
 import { Typography } from '@/common/ui/Typography'
 import { Abc, Link as LinkIcon } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 type InvitationPanelProps = {
 	joinCode: string
 }
 
 export default function InvitationPanel(props: InvitationPanelProps) {
+	const t = useTranslations('teams.people.invitation')
+
 	return (
 		<Box display={'flex'} flexDirection={'column'} gap={4}>
 			<Box flex={1}>
@@ -21,17 +24,17 @@ export default function InvitationPanel(props: InvitationPanelProps) {
 				>
 					<Abc fontSize="large" />
 					<Gap horizontal value={0.5} />
-					<Typography strong>Pomocí kódu</Typography>
+					<Typography strong>{t('byCode.title')}</Typography>
 					<InfoButton expandedWidth={300} lineCount={2}>
-						Na stránce{' '}
+						{t('byCode.info.start')}{' '}
 						<Link to="teams" params={{}}>
-							{"'týmy'"}
+							{t('byCode.info.teamsLink')}
 						</Link>{' '}
-						lze po kliknutí na tlačítko {"'Připojit se'"} zadat kód.
+						{t('byCode.info.end')}
 					</InfoButton>
 				</Box>
 				<Typography color="grey.700">
-					Jako vedoucí jim poskytněte kód, kterým se mohou připojit {'-> '}
+					{t('byCode.description')}{' -> '}
 					<strong>
 						<i>{props.joinCode}</i>
 					</strong>
@@ -45,10 +48,10 @@ export default function InvitationPanel(props: InvitationPanelProps) {
 					alignItems={'center'}
 				>
 					<LinkIcon />
-					<Typography strong>Pomocí odkazu</Typography>
+					<Typography strong>{t('byLink.title')}</Typography>
 				</Box>
 				<Typography color="grey.700">
-					Pošlete jim odkaz, který je přímo připojí k týmu.
+					{t('byLink.description')}
 				</Typography>
 			</Box>
 		</Box>

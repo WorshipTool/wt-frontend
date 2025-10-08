@@ -11,6 +11,7 @@ import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { usePermission } from '@/hooks/permissions/usePermission'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 type NextMonthPanelProps = {
@@ -20,6 +21,7 @@ type NextMonthPanelProps = {
 }
 
 export default function NextMonthPanel(props: NextMonthPanelProps) {
+	const t = useTranslations('teams.playlists')
 	const [open, setOpen] = useState(false)
 
 	const theme = useTheme()
@@ -32,7 +34,7 @@ export default function NextMonthPanel(props: NextMonthPanelProps) {
 
 	return !hasPermissionToAdd && props.events.length === 0 ? null : (
 		<Box>
-			<Typography variant="h6">Nadcházející</Typography>
+			<Typography variant="h6">{t('upcoming')}</Typography>
 			<Gap />
 			<Box display={'flex'} flexDirection={'row'} gap={1} flexWrap={'wrap'}>
 				{props.events.map((item, index) => (
@@ -41,7 +43,7 @@ export default function NextMonthPanel(props: NextMonthPanelProps) {
 
 				{hasPermissionToAdd && (
 					<Clickable onClick={() => setOpen(true)}>
-						<Tooltip label="Naplánovat playlist">
+						<Tooltip label={t('schedulePlaylist')}>
 							<Box
 								sx={{
 									width: theme.spacing(22),
@@ -57,7 +59,7 @@ export default function NextMonthPanel(props: NextMonthPanelProps) {
 								}}
 							>
 								<Add />
-								<Typography>Naplánovat</Typography>
+								<Typography>{t('schedule')}</Typography>
 							</Box>
 						</Tooltip>
 					</Clickable>

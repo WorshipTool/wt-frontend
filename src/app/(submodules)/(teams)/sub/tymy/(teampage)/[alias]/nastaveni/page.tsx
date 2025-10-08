@@ -17,12 +17,15 @@ import { Typography } from '@/common/ui/Typography'
 import { usePermission } from '@/hooks/permissions/usePermission'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { Delete } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useEffect, useMemo, useState } from 'react'
 
 export default SmartTeamPage(TeamSettingsPage)
 
 function TeamSettingsPage() {
+	const t = useTranslations('teams.settings')
+	const tCommon = useTranslations('common')
 	const {
 		name: _name,
 		joinCode: _joinCode,
@@ -99,17 +102,17 @@ function TeamSettingsPage() {
 			teamGuid: guid,
 		})
 		navigate('teams', {})
-		enqueueSnackbar('Tým byl odstraněn')
+		enqueueSnackbar(t('teamDeleted'))
 	}
 
 	const [deletePopupOpen, setDeletePopupOpen] = useState(false)
 
 	return (
 		<Box display={'flex'} flexDirection={'column'} gap={1}>
-			<TeamPageTitle>Nastavení</TeamPageTitle>
+			<TeamPageTitle>{t('title')}</TeamPageTitle>
 
 			<TeamEditableCard
-				title="Základní informace"
+				title={t('basicInfo')}
 				onCancel={onCancel}
 				onSave={onSave}
 				editable={Boolean(hasPermissionToEdit)}
@@ -129,13 +132,13 @@ function TeamSettingsPage() {
 								maxWidth={300}
 							>
 								<TeamEditableField
-									label="Název týmu"
+									label={t('teamName')}
 									value={name}
 									editable={editMode}
 									onChange={setName}
 								/>
 								<TeamEditableField
-									label="Připojovací kód"
+									label={t('joinCode')}
 									value={joinCode}
 									editable={editMode}
 									onChange={setJoinCode}
@@ -193,7 +196,7 @@ function TeamSettingsPage() {
 					<Popup
 						open={deletePopupOpen}
 						onClose={() => setDeletePopupOpen(false)}
-						title="Jste si jistí?"
+						title={t('confirmDelete')}
 						icon={<Delete />}
 						actions={[
 							<Button
@@ -207,9 +210,9 @@ function TeamSettingsPage() {
 							<Button
 								key={'cancel'}
 								type="reset"
-								tooltip="Zavřít vyskakovací okno bez jakékoliv akce"
+								tooltip={t('closePopupTooltip')}
 							>
-								Zrušit
+								{tCommon('cancel')}
 							</Button>,
 						]}
 						width={400}

@@ -4,11 +4,13 @@ import { Box } from '@/common/ui'
 import { Card } from '@/common/ui/Card/Card'
 import { Typography } from '@/common/ui/Typography'
 import { BugReport, Build, PrecisionManufacturing } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { Gap } from '../../common/ui/Gap/Gap'
 
 export default function UnavailableMessage() {
 	const [isUnavailable, setIsUnvailable] = useState(false)
+	const t = useTranslations('maintenance')
 
 	const flagEnabled = useCloudConfig(
 		'basic',
@@ -91,12 +93,12 @@ export default function UnavailableMessage() {
 					</Box>
 					<Gap value={2} />
 					<Typography variant="h4" strong>
-						{'Na stránce se zrovna pracuje.'}
+						{t('workInProgress')}
 					</Typography>
 					<Gap />
 					<Typography variant="h5" strong={100}>
-						Omlouváme se, stránka je dočasně nedostupná. <br />
-						Prosíme, zkuste to znovu za <b>hodinu</b>.
+						{t('temporarilyUnavailable')} <br />
+						{t('tryAgainLater')}
 					</Typography>
 				</Card>
 			)}

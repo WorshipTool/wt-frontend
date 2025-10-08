@@ -1,6 +1,8 @@
 import { Link } from '@/common/ui/Link/Link'
+import { useTranslations } from 'next-intl'
 
 export default function ErrorPage() {
+	const t = useTranslations('errors')
 	return (
 		<div
 			style={{
@@ -20,12 +22,10 @@ export default function ErrorPage() {
 				}}
 			>
 				<h1>
-					<strong>Stránka nenalezena</strong>
+					<strong>{t('notFound')}</strong>
 				</h1>
 				<p style={{ textAlign: 'center' }}>
-					Zdá se, že jsi zabloudil do neprobádaných končin aplikace.
-					<br />
-					Můžeš zkusit jít cestou zpět na hlavní stránku.
+					{t('notFoundDescription')}
 				</p>
 
 				<Link
@@ -34,7 +34,7 @@ export default function ErrorPage() {
 						hledat: '',
 					}}
 				>
-					JÍT DOMŮ
+					{t('goHome')}
 				</Link>
 			</div>
 		</div>

@@ -7,9 +7,11 @@ import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useApiState } from '@/tech/ApiState'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useCallback } from 'react'
 
 export default function UsersTeamPlaylistsAddButton() {
+	const t = useTranslations('teams.playlists')
 	const { playlistEditingApi, teamEditingApi } = useApi()
 	const { alias, guid } = useInnerTeam()
 
@@ -46,7 +48,7 @@ export default function UsersTeamPlaylistsAddButton() {
 		)
 	}, [guid, navigate])
 	return (
-		<Clickable tooltip="Vytvořit playlist" onClick={() => onCreateClick()}>
+		<Clickable tooltip={t('createNew')} onClick={() => onCreateClick()}>
 			<Box
 				sx={{
 					// padding: 2,
@@ -70,7 +72,7 @@ export default function UsersTeamPlaylistsAddButton() {
 		// <Box>
 		// 	<Button
 		// 		onClick={onCreateClick}
-		// 		tooltip="Vytvořit playlist"
+		// 		tooltip="Create playlist"
 		// 		color="grey.300"
 		// 		sx={{
 		// 			height: theme.spacing(10),

@@ -6,50 +6,50 @@ import { Button } from '@/common/ui'
 import { PackTranslationType } from '@/types/song'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
-
-const OPTIONS: { label: string; value: PackTranslationType }[] = [
-	{ label: 'Originál', value: PackTranslationType.Original },
-	{ label: 'Překlad', value: PackTranslationType.Translation },
-	{
-		label: 'Oficiální překlad',
-		value: PackTranslationType.OfficialTranslation,
-	},
-	{ label: 'Neznámé', value: PackTranslationType.Unknown },
-]
+import { useTranslations } from 'next-intl'
 
 export default function SetTranslationTypeAdminButton() {
 	const [open, setOpen] = useState(false)
+	const t = useTranslations('admin')
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { packGuid } = useInnerPack()
 	const { songManagementApi } = useApi()
+
+	const OPTIONS: { label: string; value: PackTranslationType }[] = [
+		{ label: t('translationType.original'), value: PackTranslationType.Original },
+		{ label: t('translationType.translation'), value: PackTranslationType.Translation },
+		{
+			label: t('translationType.officialTranslation'),
+			value: PackTranslationType.OfficialTranslation,
+		},
+		{ label: t('translationType.unknown'), value: PackTranslationType.Unknown },
+	]
 
 	const onOptionClick = async (value: PackTranslationType) => {
 		await songManagementApi.setTranslationType({
 			packGuid: packGuid,
 			translationType: value,
 		})
-		const label = OPTIONS.find((o) => o.value === value)?.label
-		enqueueSnackbar('Typ překladu nastaven na ' + label)
+		const label = OPTIONS.find((o) => o.value === value)?.label || ''
+		enqueueSnackbar(t('translationType.setTo', { type: label }))
 		setOpen(false)
 	}
 
 	return (
 		<>
 			<Button
-				// title={'Nastavit typ'}
-				// subtitle="Zvolit typ překladu"
 				onClick={() => setOpen(true)}
 				small
 				sx={{
 					width: 'fit-content',
 				}}
 			>
-				Zvolit typ překladu
+				{t('translationType.chooseType')}
 			</Button>
 
 			<Popup
-				title={'Zvol typ překladu'}
+				title={t('translationType.selectType')}
 				open={open}
 				onClose={() => setOpen(false)}
 			>

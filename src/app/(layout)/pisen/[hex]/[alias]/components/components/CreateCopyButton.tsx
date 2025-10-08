@@ -1,13 +1,16 @@
+'use client'
+
 import { VariantPackAlias } from '@/api/dtos'
 import { useInnerPackSong } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
 import { useDownSize } from '@/common/hooks/useDownSize'
-import { Button, CircularProgress, Gap, Tooltip, useTheme } from '@/common/ui'
+import { Button, CircularProgress, Gap, Tooltip } from '@/common/ui'
 import { ListItemIcon, ListItemText, MenuItem } from '@/common/ui/mui'
 import useAuth from '@/hooks/auth/useAuth'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { VariantPackGuid } from '@/types/song'
 import { EggAlt } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import { PostCreateCopyOutDto } from '../../../../../../../api/generated'
 import { useApi } from '../../../../../../../api/tech-and-hooks/useApi'
@@ -21,6 +24,7 @@ export type CreateCopyButtonProps = {
 
 export default function CreateCopyButton(props: CreateCopyButtonProps) {
 	const { songAddingApi } = useApi()
+	const tCopy = useTranslations('songPage.createCopy')
 
 	const { fetchApiState, apiState } = useApiState<PostCreateCopyOutDto>()
 	const navigate = useSmartNavigate()
@@ -42,9 +46,7 @@ export default function CreateCopyButton(props: CreateCopyButtonProps) {
 		)
 	}
 
-	const theme = useTheme()
-
-	const isSmall = useDownSize('lg')
+const isSmall = useDownSize('lg')
 	const icon = <EggAlt color="inherit" />
 
 	const { user } = useAuth()
@@ -66,14 +68,14 @@ export default function CreateCopyButton(props: CreateCopyButtonProps) {
 						icon
 					)}
 				</ListItemIcon>
-				<ListItemText primary="Vytvořit kopii" />
+				<ListItemText primary={tCopy('menu')} />
 			</MenuItem>
 			<Gap value={0.5} />
 		</>
 	) : (
 		<>
 			{!isSmall && showAsButton ? (
-				<Tooltip title={'Vytvořit soukromou kopii písně'}>
+				<Tooltip title={tCopy('tooltip')}>
 					<Button
 						color="success"
 						variant="contained"
@@ -81,14 +83,14 @@ export default function CreateCopyButton(props: CreateCopyButtonProps) {
 						loading={apiState.loading}
 						onClick={onClick}
 					>
-						Vytvořit úpravu
+						{tCopy('button')}
 					</Button>
 				</Tooltip>
 			) : (
 				<>
 					<SmartPortalMenuItem
-						title={'Vytvořit úpravu'}
-						subtitle="Vytvoří soukromou kopii písně,"
+						title={tCopy('button')}
+						subtitle={tCopy('subtitle')}
 						icon={icon}
 						onClick={onClick}
 					/>

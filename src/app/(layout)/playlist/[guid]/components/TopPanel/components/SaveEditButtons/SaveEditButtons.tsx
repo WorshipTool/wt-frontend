@@ -4,9 +4,11 @@ import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlayl
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
+import { useTranslations } from 'next-intl'
 
 export default function SaveEditButtons() {
 	const { undo, redo, hasUndo, hasRedo, save, isSaved } = useInnerPlaylist()
+	const t = useTranslations('playlist')
 
 	return (
 		<Box
@@ -23,7 +25,7 @@ export default function SaveEditButtons() {
 			</IconButton>
 
 			<Button variant="text" color="inherit" disabled={isSaved} onClick={save}>
-				{isSaved ? 'Uloženo' : 'Uložit'}
+				{isSaved ? t('saved') : t('save')}
 			</Button>
 		</Box>
 	)

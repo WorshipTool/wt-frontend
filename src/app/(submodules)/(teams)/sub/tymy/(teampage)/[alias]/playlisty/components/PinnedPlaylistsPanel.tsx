@@ -12,9 +12,11 @@ import { usePermission } from '@/hooks/permissions/usePermission'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useApiState, useApiStateEffect } from '@/tech/ApiState'
 import { PushPin } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useCallback, useMemo, useState } from 'react'
 
 export default function PinnedPlaylistsPanel() {
+	const t = useTranslations('teams.playlists')
 	const [open, setOpen] = useState(false)
 	const [anchor, setAnchor] = useState<HTMLElement | null>(null)
 
@@ -123,7 +125,7 @@ export default function PinnedPlaylistsPanel() {
 					</Typography>
 				)} */}
 				{hasPermissionToAdd && !pinApiState.loading && (
-					<Clickable tooltip="Připnout nový playlist" onClick={handleOpen}>
+					<Clickable tooltip={t('pinNewPlaylist')} onClick={handleOpen}>
 						<Box
 							sx={{
 								width: theme.spacing(22),
@@ -139,7 +141,7 @@ export default function PinnedPlaylistsPanel() {
 							}}
 						>
 							<PushPin />
-							<Typography>Připnout playlist</Typography>
+							<Typography>{t('pinPlaylist')}</Typography>
 						</Box>
 					</Clickable>
 				)}

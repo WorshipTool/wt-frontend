@@ -9,6 +9,7 @@ import { useDownSize } from '@/common/hooks/useDownSize'
 import { Box } from '@/common/ui'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { Analytics, DarkMode, LightMode } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 
 export default function TeamClientLayout(props: Props) {
 	const isSmall = useDownSize('sm')
+	const t = useTranslations('teams.layout')
 
 	const { darkMode, setDarkMode } = useTeamSideBar()
 
@@ -35,17 +37,17 @@ export default function TeamClientLayout(props: Props) {
 			{isSmall && <TeamBottomPanel />}
 
 			<AdminOption
-				title="Přepnout režim menu"
+				title={t('adminOptions.toggleMenuMode.title')}
 				subtitle={
-					darkMode ? 'Přepnout na světlý režim' : 'Přepnout na tmavý režim'
+					darkMode ? t('adminOptions.toggleMenuMode.toLightMode') : t('adminOptions.toggleMenuMode.toDarkMode')
 				}
 				icon={darkMode ? <LightMode /> : <DarkMode />}
 				onClick={() => setDarkMode(!darkMode)}
 			/>
 
 			<AdminOption
-				label={'Statistiky'}
-				subtitle="Zobrazit stránku Statistiky"
+				label={t('adminOptions.statistics.label')}
+				subtitle={t('adminOptions.statistics.subtitle')}
 				icon={<Analytics />}
 				onClick={() => {
 					navigate('teamStatistics', { alias })

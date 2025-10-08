@@ -9,6 +9,7 @@ import { Box, Button, Tooltip } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useTranslations } from 'next-intl'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApi } from '../../../../api/tech-and-hooks/useApi'
@@ -33,6 +34,9 @@ function Create() {
 		fetchApiState,
 		apiState: { loading: posting, error },
 	} = useApiState<PostCreateVariantOutDto>()
+
+	const t = useTranslations('upload')
+	const tCommon = useTranslations('common')
 
 	const sheetInputRef: any = useRef(null)
 	const titleInputRef: any = useRef(null)
@@ -126,7 +130,7 @@ function Create() {
 						<Box display={'flex'} justifyContent={'start'}>
 							<Box flex={1}>
 								<Box display={'flex'}>
-									<Tooltip title={'Přidat'}>
+									<Tooltip title={t('createTooltip')}>
 										<Button
 											variant={'contained'}
 											color={'primary'}
@@ -138,7 +142,7 @@ function Create() {
 											}
 											onClick={onPostClick}
 										>
-											Vytvořit {'(neveřejně)'}
+											{t('createPrivately')}
 											{posting && (
 												<CircularProgress
 													color={'inherit'}

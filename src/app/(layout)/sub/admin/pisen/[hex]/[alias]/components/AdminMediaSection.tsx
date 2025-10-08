@@ -5,13 +5,15 @@ import AddMediaAdminButton from '@/app/(layout)/sub/admin/pisen/[hex]/[alias]/co
 import MediaPlayer from '@/common/components/media/MediaPlayer'
 import { Gap } from '@/common/ui'
 import { Masonry } from '@/common/ui/Masonry'
+import { useTranslations } from 'next-intl'
 
 type Props = {
 	data: GetVariantDataOutDto
 }
 export default function AdminMediaSection({ data }: Props) {
+	const t = useTranslations('admin')
 	return (
-		<AdminSectionCollapsible title="Nahrávky">
+		<AdminSectionCollapsible title={t('mediaSection')}>
 			<Gap />
 			<AddMediaAdminButton />
 

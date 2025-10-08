@@ -1,0 +1,1012 @@
+{
+	"common": {
+		"yes": "Yes",
+		"no": "No",
+		"cancel": "Cancel",
+		"save": "Save",
+		"delete": "Delete",
+		"edit": "Edit",
+		"print": "Print",
+		"send": "Send",
+		"search": "Search",
+		"remove": "Remove",
+		"add": "Add",
+		"close": "Close",
+		"back": "Back",
+		"next": "Next",
+		"loading": "Loading...",
+		"error": "Error",
+		"success": "Success",
+		"discard": "Discard",
+		"open": "Open",
+		"tryAgain": "Try again",
+		"or": "Or",
+		"preferThisTranslation": "I prefer this translation",
+		"private": "Private",
+		"createdByYou": "Created by you",
+		"uploadedByProgram": "Uploaded by program",
+		"addedOn": "Added on",
+		"authors": "Authors",
+		"authorName": "Author name",
+		"backgroundAlt": "Background",
+		"cancelCurrentEdits": "Cancel current edits",
+		"saveCurrentState": "Save current state",
+		"sections": {
+			"verse": "Verse",
+			"chorus": "Chorus",
+			"bridge": "Bridge"
+		}
+	},
+	"navigation": {
+		"home": "Home",
+		"songs": "Songs",
+		"playlists": "Playlists",
+		"teams": "Teams",
+		"about": "About",
+		"contact": "Contact",
+		"account": "Account",
+		"login": "Sign In",
+		"logout": "Sign Out",
+		"signup": "Sign Up",
+		"search": "Search",
+		"aboutUs": "About Us",
+		"worshipTeams": "Worship Teams",
+		"closeMenu": "Close menu",
+		"tooltips": {
+			"addSong": "Add new song",
+			"tools": "Tools",
+			"account": "Account",
+			"login": "Sign In"
+		},
+		"alt": {
+			"profileImage": "Profile image"
+		},
+		"toolsMenu": {
+			"playlists": "Playlists",
+			"mySongs": "My songs",
+			"favourites": "Favourites",
+			"outsideTeam": "Outside team"
+		},
+		"accountMenu": {
+			"manageAccount": "Manage account"
+		}
+	},
+	"footer": {
+		"links": {
+			"searchSong": "Search song",
+			"songList": "Song list",
+			"about": "About",
+			"teams": "Teams",
+			"feedback": "Feedback",
+			"reportBug": "Report a bug",
+			"contact": "Contact"
+		},
+		"cooperation": "In cooperation with",
+		"logoAlt": "Logo worshipko.com",
+		"createdWith": "Created with",
+		"rightsReserved": "© All rights reserved"
+	},
+	"home": {
+		"backgroundShape": "Background shape",
+		"hero": {
+			"lead": "Welcome to...",
+			"title": "HallelujahHub",
+			"subtitle": "Your worship companion",
+			"subtitleLower": "your worship companion"
+		},
+		"recommended": {
+			"idea": "Need an idea?",
+			"error": "Something went wrong while loading..."
+		},
+		"allList": {
+			"browse": "browse",
+			"title": "List of all songs"
+		},
+		"lastAdded": {
+			"title": "Recently added"
+		},
+		"floatingAdd": {
+			"label": "Create"
+		},
+		"search": {
+			"resultsTitle": "Search results:",
+			"loadMore": "Load more",
+			"noResults": "We didn't find anything..."
+		}
+	},
+	"about": {
+		"title": "About",
+		"subtitle": "Platform for Christian worship songs",
+		"whoAreWe": "Who are we?",
+		"platform": "Platform",
+		"withChristianPraises": "for Christian",
+		"praises": "worship songs",
+		"description": "We are a user-friendly platform that offers a wide selection of worship songs and modern tools",
+		"database": {
+			"title": "Large and Current Database",
+			"description": "The foundation of the entire application is a list of worship songs. We strive to keep this list as comprehensive and well-structured as possible.",
+			"allInOne": {
+				"title": "Everything in One Place",
+				"description": "We group songs from different songbooks so you can search in one place"
+			},
+			"constantUpdate": {
+				"title": "Constant Updates",
+				"description": "Our algorithm automatically adds new songs, so the database is always current"
+			},
+			"yourSongs": {
+				"title": "Your Songs",
+				"description": "The database is open - you can add worship songs yourself, publicly or privately"
+			}
+		},
+		"tools": {
+			"title": "Tools",
+			"description": "We offer free tools that you might find useful",
+			"smartSearch": {
+				"title": "Smart Search",
+				"description": "Find your songs by their title or even lyrics",
+				"tryIt": "Try it"
+			},
+			"teams": {
+				"title": "Teams",
+				"description": "Set up an environment for your worship team where you can easily prepare for playing together",
+				"learnMore": "Learn more"
+			},
+			"playlists": {
+				"title": "Playlist Creation",
+				"description": "Create your own playlist from songs that can be easily shared with others",
+				"tryIt": "Try it"
+			}
+		},
+		"whyWhoHow": {
+			"title": "Why, Who and How?",
+			"description": "The entire project was created for a reason. Watch a short video"
+		},
+		"helpUs": {
+			"title": "Support Us",
+			"description": "We created the entire application in our free time, for free. We would be grateful for any financial support.",
+			"supportFinancially": "Support financially"
+		},
+		"collaboration": {
+			"title": "Created in cooperation with"
+		},
+		"more": {
+			"button": "Learn more",
+			"label": "Find out more"
+		},
+		"helpPanel": {
+			"title": "Want to help us?",
+			"description": "Would you like to join the project in any way?",
+			"join": "I want to join"
+		},
+		"graphics": {
+			"introSheepAlt": "Sheep",
+			"bubbleAlt": "Speech bubble",
+			"sheepAlt": "Little sheep",
+			"speech": "Sooo big"
+		},
+		"supportCard": {
+			"iconAlt": "Send money",
+			"title": "Support us",
+			"description": "We created the entire application in our free time, for free. We would be grateful for any financial support.",
+			"button": "Support financially"
+		}
+	},
+	"contact": {
+		"title": "Contact",
+		"subtitle": "Want to ask something or have an idea? We'd love to hear from you.",
+		"writeToUs": "Write to us at",
+		"wantToHelp": "Want to help us?",
+		"feedback": "Feedback",
+		"wantToJoinDescription": "Would you like to join the creation of this application? Write to us using the form.",
+		"feedbackDescription": "Do you like our application, or do you have any comments? Write to us using the form.",
+		"form": {
+			"yourName": "Your name",
+			"enterName": "Enter your name",
+			"yourEmail": "Your email",
+			"enterEmail": "Enter your email",
+			"message": "Message",
+			"writeMessage": "Write message",
+			"sendMessage": "Send message",
+			"messageSent": "Message was sent... Thank you for your feedback.",
+			"writeAnother": "Write another message",
+			"wantToJoinMessage": "Hello,\\nI would like to participate in creating this application. What are my options?"
+		}
+	},
+	"auth": {
+		"login": {
+			"title": "Sign In",
+			"subtitle": "And use the app to the fullest",
+			"email": "Email",
+			"enterEmail": "Enter email",
+			"password": "Password",
+			"enterPassword": "Enter password",
+			"loginButton": "Sign In",
+			"forgotPassword": "Forgot password?",
+			"noAccount": "Don't have an account yet?",
+			"createAccount": "Create one",
+			"signUp": "Sign up",
+			"wrongCredentials": "Wrong email or password"
+		},
+		"signup": {
+			"title": "Create an account",
+			"subtitle": "And use the app to the fullest",
+			"firstName": "First name",
+			"lastName": "Last name",
+			"email": "Email",
+			"password": "Password",
+			"confirmPassword": "Confirm password",
+			"signupButton": "Create account",
+			"haveAccount": "Already have an account?",
+			"login": "Sign in",
+			"emailExists": "Account with this email already exists"
+		},
+		"resetPassword": {
+			"title": "Password Reset",
+			"subtitle": "We'll send a link to your email that will allow you to change your password",
+			"sendResetLink": "Send reset link",
+			"linkSent": "Link sent",
+			"linkSentMessage": "Now go to your email and click on the generated link.",
+			"emailRequired": "Email must be filled in.",
+			"enterEmail": "Enter email"
+		}
+	},
+	"playlist": {
+		"myPlaylists": "My Playlists",
+		"createNew": "Create New",
+		"create": "Create",
+		"createNewPlaylist": "Create New Playlist",
+		"addToPlaylist": "Add to Playlist",
+		"removeFromPlaylist": "Remove from Playlist",
+		"addSongToPlaylist": "Add song to playlist",
+		"createEditForPlaylist": "Edit song for playlist",
+		"save": "Save",
+		"saved": "Saved",
+		"share": "Share",
+		"linkCopiedToClipboard": "Link copied to clipboard",
+		"presentation": "Presentation",
+		"rename": "Rename",
+		"playlistNamePlaceholder": "Playlist name",
+		"print": "Print",
+		"openInNewTab": "Open in new tab",
+		"loading": "Loading...",
+		"noPlaylists": "No playlists",
+		"more": "More",
+		"selectPlaylistFromList": "Select playlist from list",
+		"close": "Close",
+		"transpose": {
+			"up": "Transpose up",
+			"down": "Transpose down"
+		},
+		"search": {
+			"placeholder": "Search songs..."
+		}
+	},
+	"song": {
+		"transpose": "Transpose",
+		"print": "Print",
+		"edit": "Edit",
+		"delete": "Delete",
+		"createCopy": "Create Copy",
+		"addToPlaylist": "Add to Playlist",
+		"source": "Source",
+		"author": "Author",
+		"language": "Language",
+		"public": "Public",
+		"validated": "Validated",
+		"hidChords": "Hide Chords",
+		"teamNote": "Team Note",
+		"openInNewWindow": "Open in new window",
+		"deleted": {
+			"restored": "Song {title} has been restored",
+			"message": "This song has been deleted",
+			"restore": "Restore"
+		},
+		"admin": {
+			"advancedOptions": "Advanced Options",
+			"adminSettings": "Admin Settings",
+			"showTranslations": "Show Other Translations",
+			"translationsList": "Translations List",
+			"otherVersions": "Other versions of this song",
+			"dataCopied": "Song data copied to clipboard",
+			"songOptions": "Song options",
+			"manageManualVerification": "Manage manual verification",
+			"copy": "Copy",
+			"manualVerification": "Manual verification",
+			"cancel": "Cancel"
+		},
+		"translations": {
+			"selectOther": "Select other translation"
+		},
+		"songAdmin": {
+			"mediaSection": "Media Section"
+		}
+	},
+	"songPage": {
+		"topPanel": {
+			"cannotEditPublished": "Cannot edit a published song.",
+			"updateSuccess": {
+				"withTitle": "Song {title} has been updated.",
+				"withoutTitle": "Song has been updated."
+			}
+		},
+		"editButton": {
+			"errorEmpty": "Cannot save a song with an empty field",
+			"edit": "Edit",
+			"save": "Save"
+		},
+		"createCopy": {
+			"menu": "Create copy",
+			"tooltip": "Create a private copy of the song",
+			"button": "Create edit",
+			"subtitle": "Creates a private copy of the song."
+		},
+		"optionsMenu": {
+			"more": "More options"
+		},
+		"sendToApproval": {
+			"menuTitle": "Publish",
+			"menuSubtitle": "Send the song for publishing",
+			"dialogTitle": "Publish",
+			"confirm": "Yes, publish",
+			"success": "Song has been published and sent for approval.",
+			"question": "Do you want to publish the song so other users can see it?"
+		},
+		"delete": {
+			"cannotDeletePublished": "Cannot delete a public song.",
+			"successWithTitle": "Song {title} has been deleted.",
+			"success": "Song has been deleted.",
+			"menu": {
+				"removing": "Deleting...",
+				"removeSong": "Delete song...",
+				"deleted": "Deleted",
+				"remove": "Delete",
+				"removeSubtitle": "Delete song"
+			},
+			"button": {
+				"deleted": "Deleted",
+				"delete": "Delete"
+			},
+			"dialog": {
+				"title": "Are you sure you want to delete the song?",
+				"removing": "Deleting the song...",
+				"confirmation": "The song will be deleted permanently."
+			}
+		},
+		"hideChords": {
+			"show": "Show chords",
+			"hide": "Hide chords"
+		},
+		"transpose": {
+			"title": "Transpose",
+			"increase": "Transpose up a semitone",
+			"decrease": "Transpose down a semitone"
+		},
+		"print": {
+			"label": "Print",
+			"tooltip": "Print"
+		},
+		"rightPanel": {
+			"original": "This is the original",
+			"translationOf": "Translation of the original",
+			"chooseOther": "Choose another translation",
+			"noTranslations": "No other translations pinned yet",
+			"support": {
+				"title": "Support ChvalOtce.cz 🚀",
+				"intro": "Hi! We create this songbook for you in our free time.",
+				"description": "Support us so we can keep building, add improvements and polish all the little bugs.",
+				"button": "Support"
+			}
+		},
+		"sources": {
+			"title": "Sources:"
+		}
+	},
+	"teamPage": {
+		"overviewTitle": "Overview",
+		"welcomeTitle": "Welcome to the home page of team",
+		"welcomeNote": "We hope the app serves you well",
+		"quickActions": "Quick actions",
+		"leftPanel": {
+			"title": "Worship team",
+			"expand": "Expand menu",
+			"collapse": "Collapse menu",
+			"menu": {
+				"overview": "Overview",
+				"songlist": "Song list",
+				"playlists": "Playlists",
+				"statistics": "Statistics",
+				"people": "People",
+				"settings": "Settings"
+			}
+		}
+	},
+	"create": {
+		"validation": {
+			"invalidContent": "Invalid content",
+			"contentRequirements": "Content must be longer and have at least two lines"
+		}
+	},
+	"admin": {
+		"validation": "Content Validation",
+		"textAndChords": "Text and Chords",
+		"automatic": "Automatic",
+		"setValidation": "Choose content validation",
+		"validationSet": "Filter set to",
+		"parseFile": "Parse File",
+		"errorOccurred": "An error occurred",
+		"userNotAdmin": "User is not admin",
+		"noFilesSelected": "No files selected",
+		"publishing": "Publishing",
+		"publishingResult": "Publishing result",
+		"layout": {
+			"songs": "Songs",
+			"create": "Create"
+		},
+		"create": {
+			"unknownStep": "Unknown step",
+			"previous": "Previous",
+			"continue": "Continue"
+		},
+		"mediaSection": "Media Section",
+		"songAdmin": {
+			"manageVerification": "Manage verification",
+			"manualVerification": "Manual verification",
+			"cancel": "Cancel",
+			"songManuallyVerified": "Song is manually verified",
+			"songManuallyRejected": "Song is manually rejected",
+			"songNotManuallyVerified": "Song is not manually verified"
+		},
+		"filter": {
+			"valid": "Valid",
+			"invalid": "Invalid",
+			"automatic": "Automatic",
+			"filterSetTo": "Filter set to {label}",
+			"buttonTitle": "Set filter",
+			"popupTitle": "Select filter"
+		},
+		"translationType": {
+			"original": "Original",
+			"translation": "Translation",
+			"officialTranslation": "Official Translation",
+			"unknown": "Unknown",
+			"setTo": "Translation type set to {type}",
+			"chooseType": "Choose Translation Type",
+			"selectType": "Select Translation Type"
+		},
+		"verification": {
+			"verify": "Verify",
+			"reject": "Reject",
+			"cancelVerification": "Cancel Verification",
+			"cancelRejection": "Cancel Rejection"
+		},
+		"songInfo": {
+			"uploadedByProgram": "Uploaded by program",
+			"extendedInfo": "Extended information",
+			"language": "Language",
+			"ggFilterCompliant": "Complies with GG filter",
+			"public": "Public",
+			"yes": "Yes",
+			"no": "No"
+		},
+		"goToSong": "Go to Song",
+		"parseFile": "Parse file",
+		"selectFileToProcess": "Select file to process",
+		"openProcessedData": "Open processed data",
+		"parentSong": "Parent song",
+		"additionalVariant": "additional variant",
+		"additionalVariants": "additional variants",
+		"additionalVariantsGenitive": "additional variants",
+		"selectDifferentSong": "Select different song",
+		"addToEmptyFamily": "Add to empty family",
+		"addToFamily": "Add to family",
+		"bridgeServices": {
+			"title": "Connected programs",
+			"timeAgo": "{seconds}s ago",
+			"external": "External",
+			"noConnectedPrograms": "No connected programs...",
+			"showAll": "Show all"
+		},
+		"songCount": {
+			"title": "Current song count",
+			"loading": "Loading...",
+			"autoRefreshEnabled": "Auto-refresh is enabled"
+		},
+		"userToken": {
+			"title": "Get user token",
+			"getToken": "Get token",
+			"myToken": "My token",
+			"emailPlaceholder": "Email",
+			"passwordPlaceholder": "Password",
+			"tokenCopied": "Token copied to clipboard..."
+		},
+		"menu": {
+			"dashboard": "Dashboard",
+			"addSong": "Add Song",
+			"songs": "Songs",
+			"pendingApproval": "Pending Approval",
+			"recent": "Recent",
+			"tags": "Tags"
+		},
+		"approval": {
+			"reject": "Reject",
+			"continue": "Continue"
+		},
+		"interpret": {
+			"label": "Interpreter",
+			"placeholder": "Enter interpreter name",
+			"addInterpreter": "Add interpreter",
+			"added": "Added"
+		}
+	},
+	"upload": {
+		"title": "Upload",
+		"uploadFile": "Upload file",
+		"uploadFileSubtitle": "Automatically convert song from image",
+		"writeManually": "Write Manually",
+		"createTooltip": "Add",
+		"createPrivately": "Create (privately)",
+		"uploadSong": "Upload song",
+		"songTitle": "Song title",
+		"songContent": "Song content",
+		"dragAndDrop": "Drag and drop files here",
+		"selectFiles": "Select files",
+		"supportedFormats": "Supported formats",
+		"songDataCopied": "Song data copied.",
+		"uploading": "Uploading",
+		"queueing": "Waiting in queue",
+		"processing": "Processing files",
+		"processed": "Processed",
+		"errorOccurred": "An error occurred",
+		"pleaseWait": "Please wait",
+		"withAI": "With AI assistance",
+		"copy": "Copy",
+		"sheet": {
+			"foundIn": "Found in <strong>{fileName}</strong>",
+			"titlePlaceholder": "Song title",
+			"contentPlaceholder": "Song content"
+		}
+	},
+	"songsList": {
+		"title": "List of all songs"
+	},
+	"loadingScreen": {
+		"message": "Loading app..."
+	},
+	"search": {
+		"searchSongs": "Search songs",
+		"searchSong": "Search song",
+		"searchByTitleOrText": "Search by title or text content",
+		"noResults": "No results",
+		"searching": "Searching...",
+		"globalSongbook": "From global songbook",
+		"mySongs": "From my songs",
+		"teamSongbook": "From team songbook"
+	},
+	"errors": {
+		"forbidden": "Access forbidden",
+		"notFound": "Page not found",
+		"serverError": "Server error",
+		"unauthorized": "Unauthorized access",
+		"tokenExpired": "Token expired"
+	},
+	"teams": {
+		"title": "Teams",
+		"createTeam": "Create Team",
+		"joinTeam": "Join Team",
+		"myTeams": "My Teams",
+		"teamSettings": "Team Settings",
+		"createPrivateTeam": "Create a private team",
+		"enterTeamName": "Enter team name",
+		"errorMessage": "An error occurred. Please check the team name",
+		"tryOut": "Try out",
+		"simplifyWork": "Simplify your work with your",
+		"inYourWorshipTeam": "worship team",
+		"freeToolsDescription": "We offer free tools that make it easier to prepare for playing together",
+		"backgroundShape": "Random background shape",
+		"teamScreenPreview": "Team screen preview",
+		"settings": {
+			"title": "Settings",
+			"basicInfo": "Basic information",
+			"teamName": "Team name",
+			"joinCode": "Join code",
+			"confirmDelete": "Are you sure?",
+			"closePopupTooltip": "Close popup without any action",
+			"teamDeleted": "Team has been deleted"
+		},
+		"people": {
+			"people": "People",
+			"invite": "Invite",
+			"inviteNewMembers": "Invite new team members",
+			"copyLink": "Copy link",
+			"linkCopied": "Link copied",
+			"done": "Done",
+			"leftTeam": "You left the team",
+			"cannotLeaveOwnedTeam": "Cannot leave a team you own",
+			"leaveTeam": "Leave team",
+			"leave": "Leave",
+			"leaveTeamConfirm": "Leave team?",
+			"removeFromTeamConfirm": "Remove from team?",
+			"leaveTeamDescription": "Are you sure you want to leave this team?",
+			"removeFromTeamDescription": "Are you sure you want to remove this person from the team?",
+			"remove": "Remove",
+			"cancel": "Cancel",
+			"removeFromTeam": "Remove from team",
+			"setRoleTo": "Set role to",
+			"actions": "Actions",
+			"cannotEditSelfOrOwner": "Cannot edit self or owner",
+			"confirmRemove": "Really remove?",
+			"confirmRemoveSelectedPeople": "Do you really want to remove the selected people from the group?",
+			"cannotRemoveSelf": "Cannot remove yourself",
+			"saveRole": "Save role",
+			"changeRole": "Change role",
+			"roleWasSet": "Role was set.",
+			"selectAll": "Select all",
+			"name": "Name",
+			"email": "Email",
+			"role": "Role",
+			"you": "You",
+			"noOthersHere": "No one else is here",
+			"addNewMember": "Add new member",
+			"addUser": "Add user",
+			"addUserSubtitle": "Add a user to the team using their email",
+			"addUserError": "An error occurred. Check if the email is entered correctly...",
+			"invitation": {
+				"inviteNewMembers": "Invite new team members",
+				"copyLink": "Copy link",
+				"linkCopied": "Link copied",
+				"done": "Done",
+				"byCode": {
+					"title": "By Code",
+					"info": {
+						"start": "The code can be shared on the",
+						"teamsLink": "Teams",
+						"end": "page where you can join a team."
+					},
+					"description": "Share this code"
+				},
+				"byLink": {
+					"title": "By Link",
+					"description": "Or share this link"
+				}
+			}
+		},
+		"statistics": {
+			"trendingSongs": "Trending songs",
+			"timeFrame": "Within the last 40 days",
+			"mostTrendSong": "The most trending song is",
+			"mostPlayedSongs": "10 most played songs",
+			"timeFrame90": "In the last 90 days",
+			"favoriteSongs": "Most favorite songs",
+			"leastPlayedSongs": "10 least played songs",
+			"everySongPlayed": "Every song played",
+			"noDataAvailable": "No data available",
+			"needAtLeastOneSong": "To display trends, you need to have at least 1 song played",
+			"plays": " plays",
+			"dataNotAvailable": "Data not available",
+			"favoriteSongsRequirement": "To display favorites, you need to have at least 3 songs in the team favorites",
+			"allTime": "All time",
+			"howManyTimesPlayed": "How many times what was played",
+			"playedXTimes": "Played {count} times"
+		},
+		"events": {
+			"eventCreated": "Event created",
+			"deleteEventTooltip": "Delete event",
+			"confirmDelete": "Confirm delete",
+			"delete": "Delete",
+			"cancel": "Cancel",
+			"create": "Create",
+			"save": "Save",
+			"openPlaylistTooltip": "Open playlist",
+			"openPlaylist": "Open playlist",
+			"createEvent": "Create event",
+			"eventDetail": "Event detail",
+			"edit": "Edit",
+			"eventNamePlaceholder": "Event name",
+			"nameEventTooltip": "Name event",
+			"renameEventTooltip": "Rename event",
+			"changeDescriptionTooltip": "Change description",
+			"addDescriptionPlaceholder": "Add description",
+			"date": "Date",
+			"eventDateLabel": "Event date",
+			"pastDateWarning": "Past date",
+			"leader": "Leader",
+			"chooseLeaderTooltip": "Choose leader",
+			"choose": "Choose",
+			"members": "Members",
+			"addMemberTooltip": "Add member",
+			"add": "Add",
+			"selectPlaylistTooltip": "Select playlist from list"
+		},
+		"menu": {
+			"songs": "Songs"
+		},
+		"playlists": {
+			"upcoming": "Upcoming",
+			"schedulePlaylist": "Schedule playlist",
+			"schedule": "Schedule",
+			"pinNewPlaylist": "Pin new playlist",
+			"pinPlaylist": "Pin playlist",
+			"createNew": "Create New",
+			"lastUpdated": "Updated",
+			"yourRecent": "Your recent",
+			"yourRecentDescription": "Playlists you've worked on recently",
+			"openPlaylist": "Open playlist",
+			"events": {
+				"openDetail": "Open detail"
+			}
+		},
+		"playlist": {
+			"openSongTooltip": "Open song outside playlist",
+			"open": "Open"
+		},
+		"song": {
+			"edit": "Edit",
+			"editTooltip": "Edit song for this team",
+			"cancel": "Cancel",
+			"save": "Save",
+			"copyTitle": "Step before editing",
+			"continue": "Continue",
+			"copying": "Copying...",
+			"copyDescription": "The song you want to edit is added from the public songbook. If you want to edit the song, we will create a copy of this song for you to edit."
+		},
+		"loading": {
+			"logoAlt": "Team logo"
+		},
+		"people": {
+			"people": "People",
+			"invite": "Invite",
+			"inviteNewMembers": "Invite new team members",
+			"copyLink": "Copy link",
+			"linkCopied": "Link copied",
+			"done": "Done",
+			"leftTeam": "You left the team",
+			"cannotLeaveOwnedTeam": "Cannot leave a team you own",
+			"leaveTeam": "Leave team",
+			"leave": "Leave",
+			"leaveTeamConfirm": "Leave team?",
+			"removeFromTeamConfirm": "Remove from team?",
+			"leaveTeamDescription": "Are you sure you want to leave this team?",
+			"removeFromTeamDescription": "Are you sure you want to remove this person from the team?",
+			"remove": "Remove",
+			"cancel": "Cancel",
+			"removeFromTeam": "Remove from team",
+			"setRoleTo": "Set role to",
+			"actions": "Actions",
+			"cannotEditSelfOrOwner": "Cannot edit self or owner",
+			"confirmRemove": "Really remove?",
+			"confirmRemoveSelectedPeople": "Do you really want to remove the selected people from the group?",
+			"cannotRemoveSelf": "Cannot remove yourself",
+			"saveRole": "Save role",
+			"changeRole": "Change role",
+			"roleWasSet": "Role was set.",
+			"selectAll": "Select all",
+			"name": "Name",
+			"email": "Email",
+			"role": "Role",
+			"you": "You",
+			"noOthersHere": "No one else is here",
+			"invitation": {
+				"inviteNewMembers": "Invite new team members",
+				"copyLink": "Copy link",
+				"linkCopied": "Link copied",
+				"done": "Done",
+				"byCode": {
+					"title": "By Code",
+					"info": {
+						"start": "The code can be shared on the",
+						"teamsLink": "Teams",
+						"end": "page where you can join a team."
+					},
+					"description": "Share this code"
+				},
+				"byLink": {
+					"title": "By Link",
+					"description": "Or share this link"
+				}
+			}
+		},
+		"playlists": {
+			"lastUpdated": "Updated",
+			"yourRecent": "Your recent",
+			"yourRecentDescription": "Playlists you've worked on recently",
+			"openPlaylist": "Open playlist"
+		},
+		"joinPanel": {
+			"cta": "Join an existing team using a code",
+			"button": "Join"
+		},
+		"joinPopup": {
+			"title": "Join a team",
+			"subtitle": "Join an existing team using a code",
+			"joinButton": "Join",
+			"placeholder": "Enter code",
+			"success": "Welcome to the team!",
+			"errors": {
+				"notFound": "A team with this code does not exist",
+				"unknown": "Unknown error"
+			}
+		},
+		"layout": {
+			"adminOptions": {
+				"toggleMenuMode": {
+					"title": "Toggle menu mode",
+					"toLightMode": "Switch to light mode",
+					"toDarkMode": "Switch to dark mode"
+				},
+				"statistics": {
+					"label": "Statistics",
+					"subtitle": "Show team statistics"
+				}
+			}
+		},
+		"providers": {
+			"songSelect": {
+				"teamsOption": "Teams option"
+			},
+			"outsideLinkBlocker": {
+				"title": "External link",
+				"message": "You are about to leave the team application. Do you want to continue?"
+			}
+		}
+	},
+	"account": {
+		"title": "Your account",
+		"tabs": {
+			"info": "Information",
+			"changePassword": "Change password"
+		},
+		"basicInfo": {
+			"firstName": "First name",
+			"lastName": "Last name",
+			"email": "Email"
+		},
+		"passwordChange": {
+			"title": "Change password",
+			"oldPassword": "Old password",
+			"newPassword": "New password",
+			"newPasswordAgain": "New password again",
+			"enterOldPassword": "Enter current password",
+			"enterNewPassword": "Enter new password",
+			"changePasswordButton": "Change password",
+			"googleAccountMessage": "You are logged in via Google, you don't have a password that you could change",
+			"successMessage": "Password has been successfully set. You can now log in.",
+			"errors": {
+				"somethingWrong": "Something went wrong.",
+				"allFieldsRequired": "All fields must be filled.",
+				"samePassword": "New password must not be the same as old password.",
+				"passwordMismatch": "New passwords don't match.",
+				"wrongOldPassword": "Something went wrong. Check that you entered the old password correctly.",
+				"invalidLink": "Invalid or expired password reset link."
+			},
+			"success": "Password was successfully changed."
+		},
+		"myToken": "My token",
+		"favourites": {
+			"title": "My Favourites",
+			"totalSongs": "Total {count} songs",
+			"noFavourites": "You have no favourite songs.",
+			"sortBy": {
+				"label": "Sort by:",
+				"dateAdded": "Date added",
+				"title": "Title"
+			}
+		}
+	},
+	"search": {
+		"searchSongs": "Search songs",
+		"searchByTitleOrText": "Search by title or text content",
+		"noResults": "No results",
+		"searching": "Searching...",
+		"globalSongbook": "From global songbook",
+		"mySongs": "From my songs",
+		"teamSongbook": "From team songbook",
+		"searchSong": "Search song"
+	},
+	"transpose": {
+		"title": "Transpose",
+		"increaseHalfTone": "Increase by semitone",
+		"decreaseHalfTone": "Decrease by semitone",
+		"noChords": "Song has no chords"
+	},
+	"userNote": {
+		"deleteNote": "Delete private note",
+		"saveNote": "Save private note",
+		"add": "Add note",
+		"title": "Your note",
+		"edit": "Edit note",
+		"placeholder": "Write your note...",
+		"cancel": "Cancel",
+		"deleteTooltip": "Delete note",
+		"saveTooltip": "Save note",
+		"delete": "Delete",
+		"save": "Save"
+	},
+	"filters": {
+		"public": "Public",
+		"private": "Private",
+		"addFilter": "Add filter"
+	},
+	"buttons": {
+		"addNewSong": "Add new song",
+		"addSongToPlaylist": "Add song to playlist",
+		"test": "Testing",
+		"publish": "Publish",
+		"unpublish": "Unpublish",
+		"transposeUp": "Transpose up",
+		"transposeDown": "Transpose down",
+		"createEditForPlaylist": "Create song edit for this playlist",
+		"removeFromPlaylist": "Remove from playlist",
+		"createNewPlaylist": "Create new playlist",
+		"create": "Create"
+	},
+	"favourites": {
+		"songCreatedInTeam": "Song created within team",
+		"open": "Open",
+		"remove": "Remove",
+		"removeFromFavourites": "Remove from favourites"
+	},
+	"songEditor": {
+		"title": "Song Editor",
+		"save": "Save",
+		"cancel": "Cancel",
+		"mark": "Mark",
+		"verse": "Verse",
+		"chorus": "Chorus",
+		"bridge": "Bridge",
+		"markVerse": "Mark verse",
+		"markChorus": "Mark chorus",
+		"markBridge": "Mark bridge",
+		"insertChord": "Insert chord",
+		"titlePlaceholder": "Song title",
+		"contentPlaceholder": "Song content"
+	},
+	"mySongs": {
+		"title": "My Songs",
+		"noSongs": "No Songs", 
+		"edit": "Edit",
+		"public": "Public",
+		"private": "Private",
+		"open": "Open",
+		"delete": "Delete",
+		"deleteDialog": {
+			"title": "Do you really want to delete the song?",
+			"cancel": "Cancel",
+			"delete": "Delete",
+			"confirmMessage": "Are you sure you want to delete the song '{title}'?"
+		}
+	},
+	"print": {
+		"print": "Print",
+		"options": "Options",
+		"advancedPrintSettings": "Advanced print settings",
+		"showChords": "Show chords",
+		"printOptions": "Print options",
+		"useLandscapeView": "Use landscape view",
+		"afterPrintingCanClose": "After printing you can close the window",
+		"closeAndGoBack": "Close and go back"
+	},
+	"errors": {
+		"forbidden": "You don't have sufficient permissions to view this content!",
+		"notFound": "Page not found",
+		"notFoundDescription": "It seems you've wandered into uncharted territories of the application. You can try going back to the main page.",
+		"goHome": "GO HOME",
+		"serverError": "Something went wrong!",
+		"unauthorized": "Unauthorized access",
+		"tokenExpired": "Token expired"
+	},
+	"maintenance": {
+		"workInProgress": "The site is currently under maintenance.",
+		"temporarilyUnavailable": "Sorry, the site is temporarily unavailable.",
+		"tryAgainLater": "Please try again in an <b>hour</b>."
+	},
+	"subdomain": {
+		"title": "Subdomain",
+		"notFound": "We couldn't find anything on this subdomain.",
+		"redirectingHome": "You will be redirected to the homepage shortly..."
+	},
+	"suggestions": {
+		"sheep": "Sheep",
+		"noIdea": "No idea?",
+		"chooseSuggestion": "Choose a song from suggestions below or from the list of all songs"
+	}
+}

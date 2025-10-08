@@ -11,6 +11,7 @@ import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box, Button } from '@/common/ui'
 import { Step, StepLabel, Stepper } from '@/common/ui/mui'
 import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default SmartPage(CreateSongPage, [
 	'fullWidth',
@@ -30,6 +31,7 @@ export type AdminStepperItem = {
 const STEP_COUNT = 3
 
 function CreateSongPage() {
+	const t = useTranslations('admin.create')
 	const [packData, setPackData] = useState<PostCreateVariantOutDto | null>(null)
 
 	const first = useTextChordAdminSection(packData, (data) => {
@@ -63,15 +65,15 @@ function CreateSongPage() {
 			</Stepper>
 			{step > 0 && packData?.alias ? (
 				<InnerPackProvider variantAlias={packData?.alias}>
-					{items[step]?.component || <Box>Neznámý krok</Box>}
+					{items[step]?.component || <Box>{t('unknownStep')}</Box>}
 				</InnerPackProvider>
 			) : (
-				<>{items[step]?.component || <Box>Neznámý krok</Box>}</>
+				<>{items[step]?.component || <Box>{t('unknownStep')}</Box>}</>
 			)}
 			<Box flex={1} />
 			<Box display={'flex'} gap={2} justifyContent={'space-between'}>
 				<Button onClick={prevStep} disabled={step === 0} outlined>
-					Předchozí
+					{t('previous')}
 				</Button>
 
 				{items[step]?.actions ? (
@@ -79,7 +81,7 @@ function CreateSongPage() {
 				) : (
 					<>
 						<Button onClick={nextStep} disabled={items[step]?.disabledContinue}>
-							Pokračovat
+							{t('continue')}
 						</Button>
 					</>
 				)}

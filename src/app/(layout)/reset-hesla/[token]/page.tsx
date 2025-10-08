@@ -9,6 +9,7 @@ import useAuth from '@/hooks/auth/useAuth'
 import { routesPaths } from '@/routes'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useSmartParams } from '@/routes/useSmartParams'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import '../styles.css'
@@ -29,30 +30,33 @@ function Page() {
 
 	const { token } = useSmartParams('resetPasswordToken')
 
+	const t = useTranslations('account.passwordChange')
+	const tCommon = useTranslations('common')
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
 		if (newPassword === '' || newPasswordAgain === '') {
-			setError('Všechna pole musí být vyplněna.')
+			setError(t('errors.allFieldsRequired'))
 			return
 		}
 
 		if (newPassword !== newPasswordAgain) {
-			setError('Nová hesla se neshodují.')
+			setError(t('errors.passwordMismatch'))
 			return
 		}
 
 		try {
 			await resetPassword(token, newPassword)
 
-			enqueueSnackbar('Heslo bylo úspěšně změněno.', { variant: 'success' })
+			enqueueSnackbar(t('success'), { variant: 'success' })
 			reset()
 			navigate('login', {
-				message: 'Heslo bylo úspěšně nastaveno. Nyní se můžete přihlásit.',
+				message: t('successMessage'),
 				previousPage: routesPaths.account,
 			})
 		} catch (e) {
-			setError('Tento link je neplatný.')
+			setError(t('errors.invalidLink'))
 		}
 	}
 
@@ -71,7 +75,7 @@ function Page() {
 			}}
 		>
 			<Card
-				title="Resetování hesla"
+				title={t('title')}
 				sx={{
 					minWidth: 300,
 				}}
@@ -82,27 +86,27 @@ function Page() {
 							<Typography color={'error'}>{error}</Typography>
 						)}
 						<Box>
-							<Typography>Nové heslo</Typography>
+							<Typography>{t('newPassword')}</Typography>
 							<TextField
 								className="text-field-edit"
-								placeholder="Zadejte nové heslo"
+								placeholder={t('enterNewPassword')}
 								type="password"
 								value={newPassword}
 								onChange={(value) => setNewPassword(value)}
 							/>
 						</Box>
 						<Box>
-							<Typography>Nové heslo znovu</Typography>
+							<Typography>{t('newPasswordAgain')}</Typography>
 							<TextField
 								className="text-field-edit"
-								placeholder="Zadejte nové heslo"
+								placeholder={t('enterNewPassword')}
 								type="password"
 								value={newPasswordAgain}
 								onChange={(value) => setNewPasswordAgain(value)}
 							/>
 						</Box>
 						<Button variant="contained" color="primary" type="submit">
-							Nastavit heslo
+							{t('changePasswordButton')}
 						</Button>
 					</Box>
 				</form>

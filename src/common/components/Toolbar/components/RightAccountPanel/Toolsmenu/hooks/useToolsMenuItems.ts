@@ -9,6 +9,7 @@ import { RoutesKeys } from '@/routes'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { isDevelopment } from '@/tech/development.tech'
 import { getIconUrl } from '@/tech/paths.tech'
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import useUserTeams from '../../../../../../../app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useUserTeams'
 
@@ -30,7 +31,8 @@ export const searchGroupsEvent = new Event('searchGroups')
 export default function useToolsMenuItems() {
 	const navigate = useSmartNavigate()
 
-	const { isAdmin, isLoggedIn } = useAuth()
+	const { isAdmin } = useAuth()
+	const tNavigation = useTranslations('navigation')
 
 	const { teams } = useUserTeams()
 	const isTeamOn = useTeamChecker()
@@ -68,23 +70,23 @@ export default function useToolsMenuItems() {
 	const items: MenuItemProps<any>[] = useMemo(() => {
 		return [
 			{
-				title: 'Playlisty',
+				title: tNavigation('toolsMenu.playlists'),
 				image: getIconUrl('playlists.png'),
 				to: 'usersPlaylists',
 			},
 			{
-				title: 'Moje písně',
+				title: tNavigation('toolsMenu.mySongs'),
 				image: getIconUrl('users_song_list.png'),
 				to: 'usersSongs',
 			},
 			{
-				title: 'Oblíbené',
+				title: tNavigation('toolsMenu.favourites'),
 				image: getIconUrl('favourites-songs.png'),
 				to: 'usersFavourites',
 			},
 
 			{
-				title: 'Mimo tým',
+				title: tNavigation('toolsMenu.outsideTeam'),
 				image: getIconUrl('home.png'),
 				to: 'home',
 				hidden: !isTeamOn,
@@ -115,7 +117,7 @@ export default function useToolsMenuItems() {
 				: []),
 			...teamsItems,
 		]
-	}, [isAdmin, isLoggedIn, teamsItems, showAdminPage])
+	}, [isAdmin, isTeamOn, showAdminPage, tNavigation, teamsItems])
 
 	return {
 		items,

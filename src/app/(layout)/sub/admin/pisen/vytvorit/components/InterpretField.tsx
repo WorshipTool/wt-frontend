@@ -1,8 +1,10 @@
 import { Box, Button, Chip, TextInput, Typography } from '@/common/ui'
 import { Add } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function InterpretField() {
+	const t = useTranslations('admin.interpret')
 	const [interprets, setInterprets] = useState<string[]>([])
 	const [value, setValue] = useState<string>('')
 	return (
@@ -18,8 +20,8 @@ export default function InterpretField() {
 			}}
 		>
 			<TextInput
-				label="Interpet"
-				placeholder="Zadejte jméno interpreta"
+				label={t('label')}
+				placeholder={t('placeholder')}
 				value={value}
 				onChange={setValue}
 			/>
@@ -31,7 +33,7 @@ export default function InterpretField() {
 					setValue('')
 				}}
 			>
-				Přidat interpreta
+				{t('addInterpreter')}
 			</Button>
 
 			<Box
@@ -41,7 +43,7 @@ export default function InterpretField() {
 					gap: 1,
 				}}
 			>
-				{interprets.length > 0 && <Typography strong>Přidáno:</Typography>}
+				{interprets.length > 0 && <Typography strong>{t('added')}:</Typography>}
 				<Box
 					sx={{
 						display: 'flex',

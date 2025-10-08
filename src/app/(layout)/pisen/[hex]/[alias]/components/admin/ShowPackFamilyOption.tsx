@@ -8,8 +8,10 @@ import { Box } from '@/common/ui'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { AltRoute } from '@mui/icons-material'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function ShowPackFamilyOption() {
+	const t = useTranslations('song.admin')
 	const [popupOpen, setPopupOpen] = useState(false)
 
 	const { variant } = useInnerPackSong()
@@ -27,7 +29,7 @@ export default function ShowPackFamilyOption() {
 	return (
 		<>
 			<AdminOption
-				title="Zobrazit jiné překlady"
+				title={t('showTranslations')}
 				icon={<AltRoute />}
 				onClick={() => setPopupOpen(true)}
 			/>
@@ -35,8 +37,8 @@ export default function ShowPackFamilyOption() {
 			<Popup
 				open={popupOpen}
 				onClose={() => setPopupOpen(false)}
-				title="Seznam překladů"
-				subtitle="Další verze této písně"
+				title={t('translationsList')}
+				subtitle={t('otherVersions')}
 				width={500}
 			>
 				<Box

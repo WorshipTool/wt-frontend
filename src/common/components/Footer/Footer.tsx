@@ -13,6 +13,7 @@ import { useSmartParams } from '@/routes/useSmartParams'
 import { getAssetUrl } from '@/tech/paths.tech'
 import Image from 'next/image'
 import { useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import './footer.styles.css'
 
 type Links = [
@@ -27,13 +28,14 @@ type Links = [
 export default function Footer() {
 	const { hledat: searchString } = useSmartParams('home')
 	const isHome = useSmartMatch('home')
+	const tFooter = useTranslations('footer')
 
 	const year = useCloudNumber('year', 2024)
 
 	const links: Links = useMemo(
 		() => [
 			{
-				children: 'Hledat píseň',
+				children: tFooter('links.searchSong'),
 				to: 'home',
 				toParams: { hledat: isHome ? searchString : '' },
 				onClick: () => {
@@ -41,31 +43,31 @@ export default function Footer() {
 				},
 			},
 			{
-				children: 'Seznam písní',
+				children: tFooter('links.songList'),
 				to: 'songsList',
 			},
 			{
-				children: 'O aplikaci',
+				children: tFooter('links.about'),
 				to: 'about',
 			},
 			{
-				children: 'Týmy',
+				children: tFooter('links.teams'),
 				to: 'teams',
 			},
 			{
-				children: 'Zpětná vazba',
+				children: tFooter('links.feedback'),
 				to: 'contact',
 			},
 			{
-				children: 'Nahlásit chybu',
+				children: tFooter('links.reportBug'),
 				to: 'contact',
 			},
 			{
-				children: 'Kontakt',
+				children: tFooter('links.contact'),
 				to: 'contact',
 			},
 		],
-		[isHome, searchString]
+		[isHome, searchString, tFooter]
 	)
 
 	const footer = useFooter()
@@ -102,11 +104,11 @@ export default function Footer() {
 						}}
 					>
 						<Typography small color="grey.500">
-							Ve spolupráci s
+							{tFooter('cooperation')}
 						</Typography>
 						<Image
 							src={getAssetUrl('worshipko.png')}
-							alt={'Logo worshipko.com'}
+							alt={tFooter('logoAlt')}
 							width={150}
 							height={30}
 							style={{
@@ -146,7 +148,7 @@ export default function Footer() {
 
 				<Box display={'flex'} flexDirection={'row'} gap={1}>
 					<Typography strong size={'small'}>
-						Vytvořeno s{' '}
+						{tFooter('createdWith')}{' '}
 						<Favorite
 							color={'error'}
 							sx={{
@@ -156,7 +158,7 @@ export default function Footer() {
 						/>
 					</Typography>
 					<Typography size={'small'}>{year}</Typography>
-					<Typography size={'small'}>© Všechna práva vyhrazena</Typography>
+					<Typography size={'small'}>{tFooter('rightsReserved')}</Typography>
 				</Box>
 				<Gap value={2} />
 			</Box>

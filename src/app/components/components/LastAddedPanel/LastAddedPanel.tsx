@@ -5,6 +5,7 @@ import RowSongPackCard from '@/common/components/song/RowSongPackCard'
 import { Box, Typography, useTheme } from '@/common/ui'
 import { useMediaQuery } from '@/common/ui/mui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 export default function LastAddedPanel(props: Props) {
 	const theme = useTheme()
 	const { data, isLoading, isError, isSuccess } = useLastAddedSongs()
+	const tHome = useTranslations('home')
 
 	// const navigate = useSmartNavigate()
 	const [init, setInit] = useState(false)
@@ -25,7 +27,7 @@ export default function LastAddedPanel(props: Props) {
 	const isShort = useMediaQuery('(min-height:551px) and (max-height:650px)')
 	const isMedium = useMediaQuery('(min-height:651px) and (max-height:800px)')
 
-	// Pak můžeš nastavit ideasCount:
+	// Determine how many suggestions to show based on viewport size
 	const ideasCount = props.mobileVersion
 		? 4
 		: isTiny
@@ -50,7 +52,7 @@ export default function LastAddedPanel(props: Props) {
 				}}
 			>
 				<Typography variant="h5" strong>
-					Poslední přidané
+					{tHome('lastAdded.title')}
 				</Typography>
 
 				<Box

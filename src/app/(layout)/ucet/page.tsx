@@ -2,6 +2,7 @@
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box, useTheme } from '@/common/ui'
 import { routesPaths } from '@/routes'
+import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 import useAuth from '../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../routes/useSmartNavigate'
@@ -13,6 +14,8 @@ function Account() {
 	const { isLoggedIn } = useAuth()
 
 	const navigate = useSmartNavigate()
+
+	const t = useTranslations('auth.login')
 
 	useEffect(() => {
 		if (!isLoggedIn()) {

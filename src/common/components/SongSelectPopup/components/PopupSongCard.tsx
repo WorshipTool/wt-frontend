@@ -8,6 +8,7 @@ import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { OpenInNew } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
+import { useTranslations } from 'next-intl'
 import { memo, useCallback } from 'react'
 
 type PopupSongCardProps = {
@@ -18,6 +19,8 @@ type PopupSongCardProps = {
 }
 
 const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
+	const t = useTranslations('song')
+	
 	const onSongClick = useCallback(() => {
 		if (props.selected) {
 			props.onDeselect()
@@ -82,7 +85,7 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 					<IconButton
 						size="small"
 						to="variant"
-						tooltip="Otevřít v novém okně"
+						tooltip={t('openInNewWindow')}
 						toParams={parseVariantAlias(props.song.packAlias)}
 						target="_blank"
 						sx={{

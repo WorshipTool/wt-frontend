@@ -1,9 +1,12 @@
+'use client'
 import { Box, Typography } from '@/common/ui'
 import { grey } from '@/common/ui/mui/colors'
 import { getAssetUrl } from '@/tech/paths.tech'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 export default function SheepBigGraphics() {
+	const tAbout = useTranslations('about')
 	return (
 		<Box
 			justifyContent={'center'}
@@ -38,7 +41,11 @@ export default function SheepBigGraphics() {
 						zIndex: 1,
 					}}
 				>
-					<Image src={'/assets/bubble.svg'} alt="Bublina" fill />
+					<Image
+						src={'/assets/bubble.svg'}
+						alt={tAbout('graphics.bubbleAlt')}
+						fill
+					/>
 					<Typography
 						sx={{
 							position: 'absolute',
@@ -49,7 +56,7 @@ export default function SheepBigGraphics() {
 						align="center"
 						variant="h6"
 					>
-						Velikáá
+						{tAbout('graphics.speech')}
 					</Typography>
 				</Box>
 				<Box
@@ -60,7 +67,11 @@ export default function SheepBigGraphics() {
 						transform: 'translateY(-25%)',
 					}}
 				>
-					<Image src={getAssetUrl('/sheeps/ovce2.svg')} alt="Ovečka" fill />
+					<Image
+						src={getAssetUrl('/sheeps/ovce2.svg')}
+						alt={tAbout('graphics.sheepAlt')}
+						fill
+					/>
 				</Box>
 			</Box>
 			<Box

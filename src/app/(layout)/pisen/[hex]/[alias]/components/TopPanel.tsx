@@ -1,3 +1,5 @@
+'use client'
+
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import AllSongAdminOptions from '@/app/(layout)/pisen/[hex]/[alias]/components/admin/AllSongAdminOptions'
 import CreateCopyButton from '@/app/(layout)/pisen/[hex]/[alias]/components/components/CreateCopyButton'
@@ -30,6 +32,7 @@ import EditButton from './components/EditButton'
 import PrintVariantButton from './components/PrintButton'
 import SongsOptionsButton from './components/SongsOptionsButton'
 import TransposePanel from './TransposePanel'
+import { useTranslations } from 'next-intl'
 
 interface TopPanelProps {
 	transpose: (i: number) => void
@@ -49,6 +52,8 @@ interface TopPanelProps {
 
 export default function TopPanel(props: TopPanelProps) {
 	const { isAdmin, isTrustee, isLoggedIn, user, apiConfiguration } = useAuth()
+	const tSongPage = useTranslations('songPage')
+	const tCommon = useTranslations('common')
 	const isOwner = useMemo(() => {
 		if (!user) return false
 		return props.variant.createdByGuid === user?.guid
@@ -75,7 +80,7 @@ export default function TopPanel(props: TopPanelProps) {
 	const onEditClick = async (editable: boolean) => {
 		if (editable) {
 			if (props.variant.verified) {
-				enqueueSnackbar('Nelze upravit veřejenou píseň.')
+				enqueueSnackbar(tSongPage('topPanel.cannotEditPublished'))
 				return
 			}
 			await props.onEditClick?.(editable)
@@ -94,9 +99,12 @@ export default function TopPanel(props: TopPanelProps) {
 			},
 			async (result) => {
 				await props.onEditClick?.(editable)
-				enqueueSnackbar(
-					`Píseň ${(props.variant.title && ' ') || ''}byla upravena.`
-				)
+				const message = props.variant.title
+					? tSongPage('topPanel.updateSuccess.withTitle', {
+							title: props.variant.title,
+					  })
+					: tSongPage('topPanel.updateSuccess.withoutTitle')
+				enqueueSnackbar(message)
 				navigate('variant', {
 					...parseVariantAlias(result.alias as VariantPackAlias),
 				})
@@ -133,7 +141,7 @@ export default function TopPanel(props: TopPanelProps) {
 							color="info"
 							variant="outlined"
 						>
-							Zrušit
+							{tCommon('cancel')}
 						</Button>
 
 						<EditButton
@@ -221,8 +229,8 @@ export default function TopPanel(props: TopPanelProps) {
 					{!props.variant.language && (
 						<>
 							<AdminOption
-								title="Dogenerovat jazyk"
-								subtitle="Public píseň ale bez jazyka."
+								title={tSongPage('admin.generateLanguage')}
+								subtitle={tSongPage('admin.generateLanguageSubtitle')}
 								onClick={generateLanguage}
 								loading={languageGenerating}
 								icon={<Language />}
@@ -233,8 +241,8 @@ export default function TopPanel(props: TopPanelProps) {
 					{(!song.tags || song.tags.length === 0) && (
 						<>
 							<AdminOption
-								title="Dogenerovat keywords"
-								subtitle="Public píseň ale bez klíčových slov."
+								title={tSongPage('admin.generateKeywords')}
+								subtitle={tSongPage('admin.generateKeywordsSubtitle')}
 								onClick={generateKeyword}
 								loading={keywordsGenerating}
 								icon={<Polyline />}

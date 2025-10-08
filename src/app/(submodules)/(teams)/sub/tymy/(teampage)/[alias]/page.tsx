@@ -6,11 +6,12 @@ import TeamCard from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/com
 import { TeamPageTitle } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/TopPanel/components/TeamPageTitle'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
 import { PageProps } from '@/common/types'
-import { Box, useTheme } from '@/common/ui'
+import { Box } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Grid } from '@/common/ui/mui/Grid'
 import { Typography } from '@/common/ui/Typography'
 import { WavingHand } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 
 export default SmartTeamPage(TeamPage, {
 	collapseSideBar: false,
@@ -18,10 +19,10 @@ export default SmartTeamPage(TeamPage, {
 
 function TeamPage(props: PageProps<'team'>) {
 	const { name } = useInnerTeam()
-	const theme = useTheme()
+	const tTeam = useTranslations('teamPage')
 	return (
 		<>
-			<TeamPageTitle>Přehled</TeamPageTitle>
+			<TeamPageTitle>{tTeam('overviewTitle')}</TeamPageTitle>
 			<Grid container spacing={2}>
 				<Grid item xs={12} display={'flex'}>
 					<TeamCard>
@@ -33,16 +34,17 @@ function TeamPage(props: PageProps<'team'>) {
 						>
 							<WavingHand />
 							<Box>
-								<Typography variant="h6" strong>
-									Vítejte na domovské stránce týmu <i>{name}</i>
-								</Typography>
-								Ať vám aplikace dobře slouží
+							<Typography variant="h6" strong>
+								{tTeam('welcomeTitle')}{' '}
+								<i>{name}</i>
+							</Typography>
+							<Typography>{tTeam('welcomeNote')}</Typography>
 							</Box>
 						</Box>
 					</TeamCard>
 				</Grid>
 				<Grid item xs={12}>
-					<Typography strong>Rychlé akce</Typography>
+				<Typography strong>{tTeam('quickActions')}</Typography>
 					<Gap />
 					<TeamQuickActions />
 				</Grid>

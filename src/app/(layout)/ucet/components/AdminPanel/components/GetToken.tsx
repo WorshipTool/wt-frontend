@@ -2,6 +2,7 @@ import { Button, Typography } from '@/common/ui'
 import { InputBase } from '@/common/ui/mui'
 import { copyToClipboard } from '@/tech/string/copy.tech'
 import { Token } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { LoginRequestDTO } from '../../../../../../api/dtos/dtosAuth'
 import { useApi } from '../../../../../../api/tech-and-hooks/useApi'
@@ -9,6 +10,7 @@ import { Card } from '../../../../../../common/ui/Card/Card'
 import useAuth from '../../../../../../hooks/auth/useAuth'
 
 export default function GetToken() {
+	const t = useTranslations('admin')
 	const { authApi } = useApi()
 
 	const [token, setToken] = useState('')
@@ -49,29 +51,29 @@ export default function GetToken() {
 						variant="contained"
 						disabled={email.trim() === '' || password.trim() === ''}
 					>
-						Získat token
+						{t('userToken.getToken')}
 					</Button>
-					<Button onClick={myToken}>Můj token</Button>
+					<Button onClick={myToken}>{t('userToken.myToken')}</Button>
 				</>
 			}
-			title="Získej token uživatele"
+			title={t('userToken.title')}
 		>
 			<InputBase
-				placeholder="Email"
+				placeholder={t('userToken.emailPlaceholder')}
 				value={email}
 				onChange={(e) => {
 					setEmail(e.target.value)
 				}}
 			/>
 			<InputBase
-				placeholder="Heslo"
+				placeholder={t('userToken.passwordPlaceholder')}
 				value={password}
 				type="password"
 				onChange={(e) => {
 					setPassword(e.target.value)
 				}}
 			/>
-			{token != '' && <Typography>Token copied in clipboard...</Typography>}
+			{token != '' && <Typography>{t('userToken.tokenCopied')}</Typography>}
 		</Card>
 	)
 }

@@ -8,6 +8,7 @@ import { grey } from '@/common/ui/mui/colors'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ExtendedVariantPack, PackTranslationType } from '@/types/song'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 const Container = styled(Box)(({ theme }) => ({
@@ -32,6 +33,8 @@ export default function SongRightPanel(props: Props) {
 		'SHOW_FINANCIAL_SUPPORT_CARD',
 		false
 	)
+ 
+	const tRight = useTranslations('songPage.rightPanel')
 
 	const original = props.song.variants.find(
 		(v) => v.translationType === PackTranslationType.Original
@@ -60,22 +63,22 @@ export default function SongRightPanel(props: Props) {
 					{props.pack.title}
 				</Typography>
 				{thisIsOriginal ? (
-					<>
-						<Typography color="grey.600" small>
-							Jedná se o originál
-						</Typography>
-					</>
-				) : original ? (
-					<>
-						<Box display={'flex'} gap={0.5}>
-							<Typography color="grey.600" small>
-								Překlad originálu
-							</Typography>
-							<Link to="variant" params={parseVariantAlias(original.packAlias)}>
-								<Typography small strong color="grey.800">
-									{original.title}
-								</Typography>
-							</Link>
+		<>
+			<Typography color="grey.600" small>
+				{tRight('original')}
+			</Typography>
+		</>
+	) : original ? (
+		<>
+			<Box display={'flex'} gap={0.5}>
+				<Typography color="grey.600" small>
+					{tRight('translationOf')}
+				</Typography>
+				<Link to="variant" params={parseVariantAlias(original.packAlias)}>
+					<Typography small strong color="grey.800">
+						{original.title}
+					</Typography>
+				</Link>
 						</Box>
 					</>
 				) : null}
@@ -83,24 +86,24 @@ export default function SongRightPanel(props: Props) {
 				<Gap value={2} />
 
 				{moreVariants > 0 ? (
-					<>
-						<Button
-							onClick={() => setTranslationPopupOpen(true)}
-							small
-							outlined
-						>
-							Zvolit jiný z překlad
-						</Button>
-						<TranslationsSelectPopup
-							open={translationPopupOpen}
-							onClose={() => setTranslationPopupOpen(false)}
-							packs={props.song.variants}
-						/>
-					</>
-				) : (
-					<Typography>Zatím nemáme připnuté žádné další překlady</Typography>
-				)}
-			</Container>
+			<>
+				<Button
+					onClick={() => setTranslationPopupOpen(true)}
+					small
+					outlined
+				>
+					{tRight('chooseOther')}
+				</Button>
+				<TranslationsSelectPopup
+					open={translationPopupOpen}
+					onClose={() => setTranslationPopupOpen(false)}
+					packs={props.song.variants}
+				/>
+			</>
+		) : (
+			<Typography>{tRight('noTranslations')}</Typography>
+		)}
+		</Container>
 
 			{showSupport && (
 				<Container
@@ -112,29 +115,16 @@ export default function SongRightPanel(props: Props) {
 						flexDirection: 'column',
 					}}
 				>
-					<Typography
-						variant="h6"
-						align="center"
-						sx={
-							{
-								// color: 'primary.main',
-							}
-						}
-					>
-						Podpořte ChvalOtce.cz 🚀
-					</Typography>
-					<Typography align="center">
-						Ahoj! Tento zpěvník tvoříme pro vás ve svém volném čase.
-					</Typography>
-					<Typography align="center">
-						Podpořte nás, abychom mohli tvořit dál, přidat další vylepšení a
-						odladit všechny chybičky.
-					</Typography>
-					<Gap />
+			<Typography variant="h6" align="center">
+				{tRight('support.title')}
+			</Typography>
+			<Typography align="center">{tRight('support.intro')}</Typography>
+			<Typography align="center">{tRight('support.description')}</Typography>
+			<Gap />
 
-					<Button color="success" outlined>
-						Podpořit
-					</Button>
+			<Button color="success" outlined>
+				{tRight('support.button')}
+			</Button>
 				</Container>
 			)}
 

@@ -3,21 +3,23 @@ import { useApi } from '@/api/tech-and-hooks/useApi'
 import { useInnerPack } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
 import Popup from '@/common/components/Popup/Popup'
 import { Button } from '@/common/ui'
+import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
-const OPTIONS: { label: string; value: boolean | null }[] = [
-	{ label: 'Validní', value: true },
-	{ label: 'Nevalidní', value: false },
-	{ label: 'Automaticky', value: null },
-]
-
 export default function GGFilterAdminButton() {
 	const [open, setOpen] = useState(false)
+	const t = useTranslations('admin.filter')
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { packGuid } = useInnerPack()
 	const { songManagementApi } = useApi()
+
+	const OPTIONS: { label: string; value: boolean | null }[] = [
+		{ label: t('valid'), value: true },
+		{ label: t('invalid'), value: false },
+		{ label: t('automatic'), value: null },
+	]
 
 	const onOptionClick = async (value: boolean | null) => {
 		if (value === null) {
@@ -25,8 +27,8 @@ export default function GGFilterAdminButton() {
 		} else {
 			await songManagementApi.setFilterStatusForPack(packGuid, value)
 		}
-		const label = OPTIONS.find((o) => o.value === value)?.label
-		enqueueSnackbar('Filtrace nastavena na ' + label)
+		const label = OPTIONS.find((o) => o.value === value)?.label || ''
+		enqueueSnackbar(t('filterSetTo', { label }))
 		setOpen(false)
 	}
 
@@ -34,18 +36,18 @@ export default function GGFilterAdminButton() {
 		<>
 			<Button
 				// title={'(GG) Validace obsahu'}
-				// subtitle="Zvolit zda se má píseň filtrovat"
+				// subtitle="Choose whether the song should be filtered"
 				onClick={() => setOpen(true)}
 				small
 				sx={{
 					width: 'fit-content',
 				}}
 			>
-				{'(GG) Validace obsahu'}
+				{t('buttonTitle')}
 			</Button>
 
 			<Popup
-				title={'Zvol validaci obsahu'}
+				title={t('popupTitle')}
 				open={open}
 				onClose={() => setOpen(false)}
 			>
