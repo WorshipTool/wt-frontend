@@ -8,9 +8,7 @@ import {
 import { RoutesKeys } from '@/routes'
 import { ReactElement } from 'react'
 
-type LinkProps = CommonLinkProps<RoutesKeys>
-
-export type MenuItemObjectType = {
+export type MenuItemObjectType<T extends CommonLinkProps<RoutesKeys>['to']> = {
 	onClick?: (e: React.MouseEvent<HTMLElement>) => any
 	title: string | ReactElement
 	subtitle?: string
@@ -18,12 +16,14 @@ export type MenuItemObjectType = {
 	disabled?: boolean
 	selected?: boolean
 	hidden?: boolean
-	to?: LinkProps['to']
-	toParams?: LinkProps['params']
+	to?: T
+	toParams?: CommonLinkProps<T>['params']
 	sx?: SxProps
 }
 
-export default function MenuItem(item: MenuItemObjectType) {
+export default function MenuItem<T extends CommonLinkProps<RoutesKeys>['to']>(
+	item: MenuItemObjectType<T>
+) {
 	const LinkEnvelope = (props: { children: React.ReactNode }) => {
 		return item.to && item.toParams ? (
 			<Link to={item.to} params={item.toParams} disabled={!item.to}>
