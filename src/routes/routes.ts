@@ -9,6 +9,7 @@ export const routesPaths = {
 	variantPublish: '/pisen/[hex]/[alias]/zverejnit',
 	variantPrint: '/pisen/[hex]/[alias]/tisk',
 	variantPreviewImage: '/pisen/[hex]/[alias]/preview-image',
+	variantCards: '/pisen/[hex]/[alias]/prezentace',
 	playlist: '/playlist/[guid]',
 	playlistPrint: '/playlist/[guid]/tisk',
 	playlistCards: '/playlist/[guid]/prezentace',
@@ -72,6 +73,9 @@ export const routesSearchParams = {
 	variantPrint: {
 		key: 'a' as note | undefined,
 		hideChords: false as boolean | undefined,
+	},
+	variantCards: {
+		key: 'a' as note | undefined,
 	},
 	home: {
 		hledat: 'string' as string | undefined,

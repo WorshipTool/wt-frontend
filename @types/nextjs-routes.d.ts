@@ -18,6 +18,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/o-nas">
     | DynamicRoute<"/pisen/[hex]/[alias]", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/preview-image", { "hex": string; "alias": string }>
+    | DynamicRoute<"/pisen/[hex]/[alias]/prezentace", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/tisk", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/zverejnit", { "hex": string; "alias": string }>
     | DynamicRoute<"/playlist/[guid]", { "guid": string }>

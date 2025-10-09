@@ -2,12 +2,14 @@ import { useApi } from '@/api/tech-and-hooks/useApi'
 import AllSongAdminOptions from '@/app/(layout)/pisen/[hex]/[alias]/components/admin/AllSongAdminOptions'
 import CreateCopyButton from '@/app/(layout)/pisen/[hex]/[alias]/components/components/CreateCopyButton'
 import { useInnerPackSong } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
+import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { Box, useTheme } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ExtendedVariantPack } from '@/types/song'
+import { FeaturedPlayList } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useSnackbar } from 'notistack'
 import { useMemo } from 'react'
@@ -124,6 +126,16 @@ export default function TopPanel(props: TopPanelProps) {
 					gap: 1,
 				}}
 			>
+				<SmartPortalMenuItem
+					title={'Prezentace'}
+					subtitle="Otevřít jako prezentaci"
+					to="variantCards"
+					toParams={{
+						...parseVariantAlias(props.variant.packAlias),
+						key: props.sheet.getKeyNote() ?? undefined,
+					}}
+					icon={<FeaturedPlayList />}
+				/>
 				{props.isInEditMode ? (
 					<>
 						{isValid ? <Box flex={1} /> : <NotValidWarning />}
