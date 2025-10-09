@@ -16,5 +16,6 @@ declare namespace NodeJS {
 		TEST_WITH_SLOWDOWN?: 'true' | 'false' | undefined
 
 		CONTENT_VERSION: string
+		NEXT_PUBLIC_STRIPE_SUPPORT_URL: string
 	}
 }
