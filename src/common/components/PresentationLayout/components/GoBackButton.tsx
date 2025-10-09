@@ -4,12 +4,12 @@ import { Button } from '@/common/ui/Button'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { ArrowBack } from '@mui/icons-material'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const INTERVAL_DURATION = 5000
 
 type GoBackButtonProps = {
-	teamAlias?: string
+	onClick?: () => void
 }
 
 export default function GoBackButton(props: GoBackButtonProps) {
@@ -18,16 +18,16 @@ export default function GoBackButton(props: GoBackButtonProps) {
 	const navigate = useSmartNavigate()
 	const params = useSmartParams('playlistCards')
 
-	const onClick = useCallback(() => {
-		if (props.teamAlias) {
-			navigate('teamPlaylist', {
-				alias: props.teamAlias,
-				...params,
-			})
-		} else {
-			navigate('playlist', params)
-		}
-	}, [navigate, params, props.teamAlias])
+	// const onClick = useCallback(() => {
+	// 	if (props.teamAlias) {
+	// 		navigate('teamPlaylist', {
+	// 			alias: props.teamAlias,
+	// 			...params,
+	// 		})
+	// 	} else {
+	// 		navigate('playlist', params)
+	// 	}
+	// }, [navigate, params, props.teamAlias])
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null
@@ -68,7 +68,7 @@ export default function GoBackButton(props: GoBackButtonProps) {
 				color="white"
 				startIcon={<ArrowBack />}
 				// disabled={!active}
-				onClick={onClick}
+				onClick={props.onClick}
 			>
 				Opustit prezentaci
 			</Button>
