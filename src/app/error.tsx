@@ -13,7 +13,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
 	}, [error])
 
 	useEffect(() => {
-		console.error(error)
+		console.error('Error page error:', error)
 		//TODO: send report to admin
 	}, [error])
 
