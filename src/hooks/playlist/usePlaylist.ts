@@ -1,6 +1,7 @@
 import { VariantPackGuid } from '@/api/dtos'
 import { ReorderPlaylistItem } from '@/api/generated'
 import { EditPlaylistItemData } from '@/hooks/playlist/usePlaylistsGeneral.types'
+import { useUniqueHookId } from '@/hooks/useUniqueHookId'
 import { useApiState } from '@/tech/ApiState'
 import { Chord } from '@pepavlin/sheet-api'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -13,7 +14,7 @@ import PlaylistDto, {
 import useAuth from '../auth/useAuth'
 import usePlaylistsGeneral from './usePlaylistsGeneral'
 
-const PLAYLIST_CHANGE_EVENT_NAME = 'playlist-change'
+export const PLAYLIST_CHANGE_EVENT_NAME = 'playlist-change'
 type PlaylistChangeEventData = {
 	hookId: string
 	playlistGuid: PlaylistGuid
@@ -24,10 +25,7 @@ export default function usePlaylist(
 	after?: (data: PlaylistDto) => void,
 	notFetch?: boolean
 ) {
-	const uniqueHookId = useMemo(
-		() => Math.random().toString(36).substr(2, 9),
-		[]
-	)
+	const uniqueHookId = useUniqueHookId()
 
 	const {
 		addVariantToPlaylist,
@@ -247,6 +245,7 @@ export default function usePlaylist(
 		isOwner,
 		editItem,
 		requireItemEdit: general.requireItemEdit,
+		_uniqueHookId: uniqueHookId,
 
 		_setItems: setItems,
 	}

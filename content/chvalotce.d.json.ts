@@ -462,7 +462,7 @@ declare const messages: {
 		},
 		"filter": {
 			"valid": "Validní",
-			"invalid": "Nevalidní", 
+			"invalid": "Nevalidní",
 			"automatic": "Automatické",
 			"filterSetTo": "Filtr nastaven na {label}",
 			"buttonTitle": "Nastavit filtr",
@@ -822,7 +822,7 @@ declare const messages: {
 	},
 	"search": {
 		"searchSongs": "Hledat písně",
-		"searchSong": "Hledat píseň",
+		"searchSong": "Vyhledej píseň",
 		"searchByTitleOrText": "Hledej podle názvu nebo části textu",
 		"noResults": "Žádné výsledky",
 		"searching": "Hledání...",

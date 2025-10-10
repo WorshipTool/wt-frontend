@@ -8,7 +8,9 @@ import {
 import { RoutesKeys } from '@/routes'
 import { ReactElement } from 'react'
 
-export type MenuItemObjectType<T extends CommonLinkProps<RoutesKeys>['to']> = {
+export type MenuItemObjectType<
+	T extends CommonLinkProps<RoutesKeys>['to'] = CommonLinkProps<RoutesKeys>['to']
+> = {
 	onClick?: (e: React.MouseEvent<HTMLElement>) => any
 	title: string | ReactElement
 	subtitle?: string

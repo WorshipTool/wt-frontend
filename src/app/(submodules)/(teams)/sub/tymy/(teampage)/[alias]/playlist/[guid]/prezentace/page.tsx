@@ -1,5 +1,5 @@
+import { PresentationPlaylistCards } from '@/app/(layout)/playlist/[guid]/prezentace/PresentationPlaylistCards'
 import { Box } from '@/common/ui'
-import { PlaylistCards } from '../../../../../../../../../(layout)/playlist/[guid]/prezentace/page'
 
 export default function Page() {
 	return (
@@ -13,7 +13,7 @@ export default function Page() {
 				zIndex: 2,
 			}}
 		>
-			<PlaylistCards />
+			<PresentationPlaylistCards />
 		</Box>
 	)
 }
