@@ -1,8 +1,8 @@
-name: Tests
+name: E2E Tests
 
 on:
-  pull_request:
-    branches: [master]
+  push:
+    branches: [develop]
 
 jobs:
   wait-for-vercel:
