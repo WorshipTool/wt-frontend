@@ -3,9 +3,12 @@ import { PackGuid } from '@/api/dtos'
 import { PlaylistComplextEditItem } from '@/api/generated'
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import useCurrentPlaylist from '@/hooks/playlist/useCurrentPlaylist'
-import usePlaylist from '@/hooks/playlist/usePlaylist'
+import usePlaylist, {
+	PLAYLIST_CHANGE_EVENT_NAME,
+} from '@/hooks/playlist/usePlaylist'
 import { EditPlaylistItemData } from '@/hooks/playlist/usePlaylistsGeneral.types'
 import { useStateWithHistory } from '@/hooks/statewithhistory/useStateWithHistory'
+import { useUniqueHookId } from '@/hooks/useUniqueHookId'
 import {
 	PlaylistGuid,
 	PlaylistItemDto,
@@ -54,6 +57,7 @@ type PlaylistHistoryStateType = {
 const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const [isSaved, setIsSaved] = useState<boolean>(true)
 
+	const uniqueHookId = useUniqueHookId()
 	const {
 		state,
 		setState,
@@ -81,13 +85,15 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const packGettingApi = useApi('songGettingApi')
 
 	useEffect(() => {
-		if (playlist.playlist && !playlist.loading && !hasInitialized) {
+		if (playlist.playlist && !playlist.loading) {
 			setState({
 				title: playlist.title || '',
 				items: playlist.items.sort((a, b) => a.order - b.order),
 			})
-			reset()
-			setHasInitialized(true)
+			if (!hasInitialized) {
+				reset()
+				setHasInitialized(true)
+			}
 		}
 	}, [playlist, hasInitialized])
 
@@ -136,11 +142,11 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		})
 		// Use complex edit for everything - items in order with all their changes
 		const complexEditItems: PlaylistComplextEditItem[] = state.items.map(
-			(item, index) => ({
+			(item) => ({
 				packGuid: item.pack.packGuid,
 				toneKey: item.toneKey,
 				newData: changedItems.some(
-					(i) => item.pack.packGuid === item.pack.packGuid
+					(changedItem) => changedItem.pack.packGuid === item.pack.packGuid
 				)
 					? {
 							title: item.pack.title,
@@ -156,6 +162,16 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		})
 
 		setIsSaved(true)
+
+		const data = {
+			hookId: uniqueHookId,
+			playlistGuid: guid,
+		}
+		window.dispatchEvent(
+			new CustomEvent(PLAYLIST_CHANGE_EVENT_NAME, {
+				detail: data,
+			})
+		)
 	}
 
 	// Shortcuts
