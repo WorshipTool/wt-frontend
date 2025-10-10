@@ -1,0 +1,23 @@
+name: Tests
+
+on:
+  pull_request:
+
+jobs:
+  run-basic-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.51.1-jammy
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Vytvoř .env ze secretu
+        run: echo "${{ secrets.TEST_ENVS }}" > .env
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run jest tests
+        run: npm run test:jest
