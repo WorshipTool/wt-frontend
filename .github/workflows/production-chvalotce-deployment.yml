@@ -6,8 +6,6 @@ name: Chvalotce Production Deployment
 env:
   CHVALOTCE_SERVER_USERNAME: chvalotce-docker
   CHVALOTCE_SERVER_URL: chvalotce.cz
-  HALLELUJAHHUB_SERVER_USERNAME: root
-  HALLELUJAHHUB_SERVER_URL: 37.27.38.229
   DOCKER_IMAGE_NAME: worshiptool
 
 on:
