@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Get preview deployment URL
         run: |
-          echo "PREVIEW_URL=https://preview.chvalotce.cz" >> $GITHUB_ENV
+          echo "PREVIEW_URL=https://dev.chvalotce.cz" >> $GITHUB_ENV
 
       - name: Checkout repo
         uses: actions/checkout@v3
