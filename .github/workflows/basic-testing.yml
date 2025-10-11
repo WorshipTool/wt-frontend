@@ -1,4 +1,4 @@
-name: Tests
+name: Basic tests
 
 on:
   pull_request:

@@ -7,7 +7,8 @@ import { IconButton } from '@/common/ui/IconButton'
 import { useTranslations } from 'next-intl'
 
 export default function SaveEditButtons() {
-	const { undo, redo, hasUndo, hasRedo, save, isSaved } = useInnerPlaylist()
+	const { undo, redo, hasUndo, hasRedo, save, isSaved, isSaving } =
+		useInnerPlaylist()
 	const t = useTranslations('playlist')
 
 	return (
@@ -24,8 +25,13 @@ export default function SaveEditButtons() {
 				<Redo />
 			</IconButton>
 
-			<Button variant="text" color="inherit" disabled={isSaved} onClick={save}>
-				{isSaved ? t('saved') : t('save')}
+			<Button
+				variant="text"
+				color="inherit"
+				disabled={isSaved || isSaving}
+				onClick={save}
+			>
+				{isSaved ? t('saved') : isSaving ? t('saving') : t('save')}
 			</Button>
 		</Box>
 	)

@@ -265,6 +265,7 @@ declare const messages: {
 		"createEditForPlaylist": "Upravit píseň pro playlist",
 		"save": "Uložit",
 		"saved": "Uloženo",
+		"saving": "Ukládání...",
 		"share": "Sdílet",
 		"linkCopiedToClipboard": "Odkaz zkopírován do schránky",
 		"presentation": "Prezentace",
@@ -739,7 +740,7 @@ declare const messages: {
 			},
 			"outsideLinkBlocker": {
 				"title": "Externí odkaz",
-				"message": "Pokoušíte se opustit aplikace týmu. Chcete pokračovat?"
+				"message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
 			}
 		}
 	},
@@ -810,8 +811,8 @@ declare const messages: {
 		"copy": "Zkopírovat",
 		"sheet": {
 			"foundIn": "Nalezeno v <strong>{fileName}</strong>",
-			"titlePlaceholder": "Název písně",
-			"contentPlaceholder": "Obsah písně"
+			"titlePlaceholder": "Zadejte název písně",
+			"contentPlaceholder": "Zde je místo pro obsah písně"
 		}
 	},
 	"songsList": {
@@ -907,8 +908,8 @@ declare const messages: {
 		"markChorus": "Označit refrén",
 		"markBridge": "Označit bridge",
 		"insertChord": "Vložit akord",
-		"titlePlaceholder": "Název písně",
-		"contentPlaceholder": "Obsah písně"
+		"titlePlaceholder": "Zadejte název písně",
+		"contentPlaceholder": "Zde je místo pro obsah písně"
 	},
 	"subdomain": {
 		"title": "Subdoména",

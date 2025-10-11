@@ -30,17 +30,13 @@ jobs:
           done
           echo "❌ Timeout waiting for Vercel deployment"; exit 1
 
-  run-tests:
+  run-smoke-tests:
     needs: wait-for-vercel
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-jammy
 
     steps:
-      - name: Get preview deployment URL
-        run: |
-          echo "PREVIEW_URL=https://preview.chvalotce.cz" >> $GITHUB_ENV
-
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -56,17 +52,71 @@ jobs:
       - name: Run smoke tests
         run: npm run test:e2e:smoke-only
 
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts-smoke-${{ github.run_id }}
+          path: |
+            playwright-report/**
+            temp/tests/results/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  run-critical-tests:
+    needs: run-smoke-tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.51.1-jammy
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Vytvoř .env ze secretu
+        run: echo "${{ secrets.TEST_ENVS }}" > .env
+
+      - name: Install deps
+        run: npm ci
+
       - name: Run critical tests
         run: npm run test:e2e:critical-only
 
-      - name: Run full-complex tests
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts-critical-${{ github.run_id }}
+          path: |
+            playwright-report/**
+            temp/tests/results/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  run-full-tests:
+    needs: run-critical-tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.51.1-jammy
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Vytvoř .env ze secretu
+        run: echo "${{ secrets.TEST_ENVS }}" > .env
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run full tests
         run: npm run test:e2e:full-only
 
       - name: Upload Playwright artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-artifacts-${{ github.run_id }}
+          name: playwright-artifacts-full-${{ github.run_id }}
           path: |
             playwright-report/**
             temp/tests/results/**

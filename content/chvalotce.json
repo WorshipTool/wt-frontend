@@ -262,6 +262,7 @@
 		"createEditForPlaylist": "Upravit píseň pro playlist",
 		"save": "Uložit",
 		"saved": "Uloženo",
+		"saving": "Ukládání...",
 		"share": "Sdílet",
 		"linkCopiedToClipboard": "Odkaz zkopírován do schránky",
 		"presentation": "Prezentace",
@@ -736,7 +737,7 @@
 			},
 			"outsideLinkBlocker": {
 				"title": "Externí odkaz",
-				"message": "Pokoušíte se opustit aplikace týmu. Chcete pokračovat?"
+				"message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
 			}
 		}
 	},
@@ -807,8 +808,8 @@
 		"copy": "Zkopírovat",
 		"sheet": {
 			"foundIn": "Nalezeno v <strong>{fileName}</strong>",
-			"titlePlaceholder": "Název písně",
-			"contentPlaceholder": "Obsah písně"
+			"titlePlaceholder": "Zadejte název písně",
+			"contentPlaceholder": "Zde je místo pro obsah písně"
 		}
 	},
 	"songsList": {
@@ -904,8 +905,8 @@
 		"markChorus": "Označit refrén",
 		"markBridge": "Označit bridge",
 		"insertChord": "Vložit akord",
-		"titlePlaceholder": "Název písně",
-		"contentPlaceholder": "Obsah písně"
+		"titlePlaceholder": "Zadejte název písně",
+		"contentPlaceholder": "Zde je místo pro obsah písně"
 	},
 	"subdomain": {
 		"title": "Subdoména",

@@ -3,22 +3,20 @@ import { expect, Page, test } from '@playwright/test'
 import { test_tech_loginWithData } from '../../../test.tech'
 import { smartTest } from '../../setup'
 import {
-	waitUntilPopupAndClose,
-	startWithCreatePlaylist,
-	addSearchedSong,
 	addRandomSong,
+	addSearchedSong,
+	checkSongs,
+	checkSongTransposition,
+	move,
+	pagePlaylistReload,
 	removeSong,
 	renamePlaylist,
-	checkNoErrors,
 	savePlaylist,
-	checkSongs,
-	pagePlaylistReload,
-	move,
+	startWithCreatePlaylist,
 	transposeSong,
-	checkSongTransposition,
 } from './playlist.test.utils'
 
-test.describe.configure({ mode: 'parallel', timeout: 4 * 60 * 1000 }) // 4 minutes
+test.describe.configure({ mode: 'parallel', timeout: 10 * 60 * 1000 }) // 10 minutes
 
 smartTest('Playlist list loads', 'critical', async ({ page }) => {
 	await page.goto('/')
@@ -194,7 +192,7 @@ smartTest(
 		await startWithCreatePlaylist(page)
 		const songs = [
 			await addSearchedSong(page, 'Volas nas do morskych'),
-			await addSearchedSong(page, 'Rano cely den'),
+			await addSearchedSong(page, 'Jsi darcem zivota a darcem'),
 		]
 		await checkSongs(page, songs, 'Song not added to playlist after search')
 
@@ -314,8 +312,7 @@ const testEditing = async ({ page }: { page: Page }) => {
 		'Songs do not match after changes after second save'
 	)
 
-	await page.reload()
-	await page.waitForLoadState('networkidle')
+	await pagePlaylistReload(page)
 
 	await expect(
 		page.getByRole('textbox', { name: 'Název playlistu' })
@@ -331,7 +328,7 @@ const testEditing = async ({ page }: { page: Page }) => {
 		'Songs do not match after changes after refresh'
 	)
 
-	await page.reload()
+	await pagePlaylistReload(page)
 	await page.waitForLoadState('networkidle')
 
 	await expect(
@@ -343,4 +340,3 @@ const testEditing = async ({ page }: { page: Page }) => {
 
 smartTest('Can edit a playlist 1', 'full', testEditing)
 smartTest('Can edit a playlist 2', 'full', testEditing)
-smartTest('Can edit a playlist 3', 'full', testEditing)

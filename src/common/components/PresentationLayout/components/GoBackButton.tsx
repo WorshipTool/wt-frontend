@@ -1,8 +1,6 @@
 'use client'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
-import { useSmartNavigate } from '@/routes/useSmartNavigate'
-import { useSmartParams } from '@/routes/useSmartParams'
 import { ArrowBack } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 
@@ -14,20 +12,6 @@ type GoBackButtonProps = {
 
 export default function GoBackButton(props: GoBackButtonProps) {
 	const [active, setActive] = useState(false)
-
-	const navigate = useSmartNavigate()
-	const params = useSmartParams('playlistCards')
-
-	// const onClick = useCallback(() => {
-	// 	if (props.teamAlias) {
-	// 		navigate('teamPlaylist', {
-	// 			alias: props.teamAlias,
-	// 			...params,
-	// 		})
-	// 	} else {
-	// 		navigate('playlist', params)
-	// 	}
-	// }, [navigate, params, props.teamAlias])
 
 	useEffect(() => {
 		let interval: NodeJS.Timeout | null = null

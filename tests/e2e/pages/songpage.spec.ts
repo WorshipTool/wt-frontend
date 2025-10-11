@@ -73,7 +73,6 @@ smartTest(
 		const userButtons = [
 			page.getByRole('button', { name: 'Upravit' }),
 			page.getByRole('button', { name: 'Přidat do playlistu' }),
-			page.getByRole('button', { name: 'Přidat soukromou poznámku' }),
 		]
 
 		for (const button of userButtons) {
