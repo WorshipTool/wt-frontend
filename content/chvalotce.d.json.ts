@@ -810,8 +810,8 @@ declare const messages: {
 		"copy": "Zkopírovat",
 		"sheet": {
 			"foundIn": "Nalezeno v <strong>{fileName}</strong>",
-			"titlePlaceholder": "Název písně",
-			"contentPlaceholder": "Obsah písně"
+			"titlePlaceholder": "Zadejte název písně",
+			"contentPlaceholder": "Zde je místo pro obsah písně"
 		}
 	},
 	"songsList": {
@@ -907,8 +907,8 @@ declare const messages: {
 		"markChorus": "Označit refrén",
 		"markBridge": "Označit bridge",
 		"insertChord": "Vložit akord",
-		"titlePlaceholder": "Název písně",
-		"contentPlaceholder": "Obsah písně"
+		"titlePlaceholder": "Zadejte název písně",
+		"contentPlaceholder": "Zde je místo pro obsah písně"
 	},
 	"subdomain": {
 		"title": "Subdoména",
