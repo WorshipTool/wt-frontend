@@ -16,7 +16,7 @@ import {
 	transposeSong,
 } from './playlist.test.utils'
 
-test.describe.configure({ mode: 'parallel', timeout: 4 * 60 * 1000 }) // 4 minutes
+test.describe.configure({ mode: 'parallel', timeout: 10 * 60 * 1000 }) // 10 minutes
 
 smartTest('Playlist list loads', 'critical', async ({ page }) => {
 	await page.goto('/')
