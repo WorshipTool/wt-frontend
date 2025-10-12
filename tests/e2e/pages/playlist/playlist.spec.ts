@@ -312,8 +312,7 @@ const testEditing = async ({ page }: { page: Page }) => {
 		'Songs do not match after changes after second save'
 	)
 
-	await page.reload()
-	await page.waitForLoadState('networkidle')
+	await pagePlaylistReload(page)
 
 	await expect(
 		page.getByRole('textbox', { name: 'Název playlistu' })
@@ -329,7 +328,7 @@ const testEditing = async ({ page }: { page: Page }) => {
 		'Songs do not match after changes after refresh'
 	)
 
-	await page.reload()
+	await pagePlaylistReload(page)
 	await page.waitForLoadState('networkidle')
 
 	await expect(
