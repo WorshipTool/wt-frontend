@@ -192,7 +192,7 @@ smartTest(
 		await startWithCreatePlaylist(page)
 		const songs = [
 			await addSearchedSong(page, 'Volas nas do morskych'),
-			await addSearchedSong(page, 'Rano cely den'),
+			await addSearchedSong(page, 'Jsi darcem zivota a darcem'),
 		]
 		await checkSongs(page, songs, 'Song not added to playlist after search')
 
