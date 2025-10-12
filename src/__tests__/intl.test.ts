@@ -176,6 +176,85 @@ describe('Internationalization Tests', () => {
 		})
 	})
 
+	// Test that both JSON files have identical structure
+	describe('JSON structure consistency', () => {
+		it('should have identical structure between chvalotce.json and hallelujahhub.json', () => {
+			const chvalotcePath = join(contentPath, 'chvalotce.json')
+			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
+			
+			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
+			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
+			
+			function getStructure(obj: any, path = ''): string[] {
+				const keys: string[] = []
+				for (const key in obj) {
+					const currentPath = path ? `${path}.${key}` : key
+					keys.push(currentPath)
+					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+						keys.push(...getStructure(obj[key], currentPath))
+					}
+				}
+				return keys.sort()
+			}
+			
+			const chvalotceStructure = getStructure(chvalotceContent)
+			const hallelujahhubStructure = getStructure(hallelujahhubContent)
+			
+			// Compare structures
+			expect(chvalotceStructure).toEqual(hallelujahhubStructure)
+			
+			// If structures don't match, show the difference
+			if (JSON.stringify(chvalotceStructure) !== JSON.stringify(hallelujahhubStructure)) {
+				const missingInHallelujah = chvalotceStructure.filter(key => !hallelujahhubStructure.includes(key))
+				const missingInChvalotce = hallelujahhubStructure.filter(key => !chvalotceStructure.includes(key))
+				
+				console.error('Missing keys in hallelujahhub.json:', missingInHallelujah)
+				console.error('Missing keys in chvalotce.json:', missingInChvalotce)
+			}
+		})
+		
+		it('should have matching value types for all keys', () => {
+			const chvalotcePath = join(contentPath, 'chvalotce.json')
+			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
+			
+			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
+			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
+			
+			function getValueTypes(obj: any, path = ''): { [key: string]: string } {
+				const types: { [key: string]: string } = {}
+				for (const key in obj) {
+					const currentPath = path ? `${path}.${key}` : key
+					const value = obj[key]
+					if (Array.isArray(value)) {
+						types[currentPath] = 'array'
+					} else if (value === null) {
+						types[currentPath] = 'null'
+					} else if (typeof value === 'object') {
+						types[currentPath] = 'object'
+						Object.assign(types, getValueTypes(value, currentPath))
+					} else {
+						types[currentPath] = typeof value
+					}
+				}
+				return types
+			}
+			
+			const chvalotceTypes = getValueTypes(chvalotceContent)
+			const hallelujahhubTypes = getValueTypes(hallelujahhubContent)
+			
+			// Check that all keys have the same types
+			for (const key in chvalotceTypes) {
+				expect(hallelujahhubTypes[key]).toBeDefined()
+				expect(hallelujahhubTypes[key]).toBe(chvalotceTypes[key])
+			}
+			
+			for (const key in hallelujahhubTypes) {
+				expect(chvalotceTypes[key]).toBeDefined()
+				expect(chvalotceTypes[key]).toBe(hallelujahhubTypes[key])
+			}
+		})
+	})
+
 	// Test for common translation issues
 	describe('Translation quality checks', () => {
 		it('should not have empty translation strings', () => {

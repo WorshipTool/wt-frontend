@@ -265,6 +265,7 @@ declare const messages: {
 		"createEditForPlaylist": "Upravit píseň pro playlist",
 		"save": "Uložit",
 		"saved": "Uloženo",
+		"saving": "Ukládání...",
 		"share": "Sdílet",
 		"linkCopiedToClipboard": "Odkaz zkopírován do schránky",
 		"presentation": "Prezentace",
@@ -739,7 +740,7 @@ declare const messages: {
 			},
 			"outsideLinkBlocker": {
 				"title": "Externí odkaz",
-				"message": "Pokoušíte se opustit aplikace týmu. Chcete pokračovat?"
+				"message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
 			}
 		}
 	},

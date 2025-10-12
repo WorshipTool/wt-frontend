@@ -56,6 +56,7 @@ type PlaylistHistoryStateType = {
 
 const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const [isSaved, setIsSaved] = useState<boolean>(true)
+	const [isSaving, setIsSaving] = useState<boolean>(false)
 
 	const uniqueHookId = useUniqueHookId()
 	const {
@@ -132,6 +133,8 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const save = async () => {
 		if (!canUserEdit) return
 
+		setIsSaving(true)
+
 		// sheetdata or title change only for changed items
 		const changedItems = state.items.filter((i) => {
 			const oldItem = playlist.items.find((j) => j.guid === i.guid)
@@ -172,6 +175,8 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 				detail: data,
 			})
 		)
+
+		setIsSaving(false)
 	}
 
 	// Shortcuts
@@ -330,6 +335,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 
 		save,
 		isSaved,
+		isSaving,
 
 		rename,
 		setItems,
