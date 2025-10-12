@@ -31,6 +31,7 @@
 		"backgroundAlt": "Background",
 		"cancelCurrentEdits": "Cancel current edits",
 		"saveCurrentState": "Save current state",
+		"videoNotSupported": "Video is not supported",
 		"sections": {
 			"verse": "Verse",
 			"chorus": "Chorus",
@@ -261,6 +262,7 @@
 		"createEditForPlaylist": "Edit song for playlist",
 		"save": "Save",
 		"saved": "Saved",
+		"saving": "Saving...",
 		"share": "Share",
 		"linkCopiedToClipboard": "Link copied to clipboard",
 		"presentation": "Presentation",
@@ -566,6 +568,12 @@
 			"contentPlaceholder": "Song content"
 		}
 	},
+	"deleteDialog": {
+		"title": "Delete",
+		"confirmMessage": "Are you sure you want to delete?",
+		"confirm": "Delete",
+		"cancel": "Cancel"
+	},
 	"songsList": {
 		"title": "List of all songs"
 	},
@@ -752,65 +760,6 @@
 		"loading": {
 			"logoAlt": "Team logo"
 		},
-		"people": {
-			"people": "People",
-			"invite": "Invite",
-			"inviteNewMembers": "Invite new team members",
-			"copyLink": "Copy link",
-			"linkCopied": "Link copied",
-			"done": "Done",
-			"leftTeam": "You left the team",
-			"cannotLeaveOwnedTeam": "Cannot leave a team you own",
-			"leaveTeam": "Leave team",
-			"leave": "Leave",
-			"leaveTeamConfirm": "Leave team?",
-			"removeFromTeamConfirm": "Remove from team?",
-			"leaveTeamDescription": "Are you sure you want to leave this team?",
-			"removeFromTeamDescription": "Are you sure you want to remove this person from the team?",
-			"remove": "Remove",
-			"cancel": "Cancel",
-			"removeFromTeam": "Remove from team",
-			"setRoleTo": "Set role to",
-			"actions": "Actions",
-			"cannotEditSelfOrOwner": "Cannot edit self or owner",
-			"confirmRemove": "Really remove?",
-			"confirmRemoveSelectedPeople": "Do you really want to remove the selected people from the group?",
-			"cannotRemoveSelf": "Cannot remove yourself",
-			"saveRole": "Save role",
-			"changeRole": "Change role",
-			"roleWasSet": "Role was set.",
-			"selectAll": "Select all",
-			"name": "Name",
-			"email": "Email",
-			"role": "Role",
-			"you": "You",
-			"noOthersHere": "No one else is here",
-			"invitation": {
-				"inviteNewMembers": "Invite new team members",
-				"copyLink": "Copy link",
-				"linkCopied": "Link copied",
-				"done": "Done",
-				"byCode": {
-					"title": "By Code",
-					"info": {
-						"start": "The code can be shared on the",
-						"teamsLink": "Teams",
-						"end": "page where you can join a team."
-					},
-					"description": "Share this code"
-				},
-				"byLink": {
-					"title": "By Link",
-					"description": "Or share this link"
-				}
-			}
-		},
-		"playlists": {
-			"lastUpdated": "Updated",
-			"yourRecent": "Your recent",
-			"yourRecentDescription": "Playlists you've worked on recently",
-			"openPlaylist": "Open playlist"
-		},
 		"joinPanel": {
 			"cta": "Join an existing team using a code",
 			"button": "Join"
@@ -931,19 +880,16 @@
 		"addSongToPlaylist": "Add song to playlist",
 		"test": "Testing",
 		"publish": "Publish",
-		"unpublish": "Unpublish",
-		"transposeUp": "Transpose up",
-		"transposeDown": "Transpose down",
-		"createEditForPlaylist": "Create song edit for this playlist",
-		"removeFromPlaylist": "Remove from playlist",
-		"createNewPlaylist": "Create new playlist",
-		"create": "Create"
+		"unpublish": "Unpublish"
 	},
 	"favourites": {
+		"title": "Favourites",
+		"noFavourites": "No favourite songs",
+		"addToFavourites": "Add to favourites",
+		"removeFromFavourites": "Remove from favourites",
 		"songCreatedInTeam": "Song created within team",
 		"open": "Open",
-		"remove": "Remove",
-		"removeFromFavourites": "Remove from favourites"
+		"remove": "Remove"
 	},
 	"songEditor": {
 		"title": "Song Editor",
