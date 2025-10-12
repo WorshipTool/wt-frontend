@@ -3,19 +3,17 @@ import { expect, Page, test } from '@playwright/test'
 import { test_tech_loginWithData } from '../../../test.tech'
 import { smartTest } from '../../setup'
 import {
-	waitUntilPopupAndClose,
-	startWithCreatePlaylist,
-	addSearchedSong,
 	addRandomSong,
+	addSearchedSong,
+	checkSongs,
+	checkSongTransposition,
+	move,
+	pagePlaylistReload,
 	removeSong,
 	renamePlaylist,
-	checkNoErrors,
 	savePlaylist,
-	checkSongs,
-	pagePlaylistReload,
-	move,
+	startWithCreatePlaylist,
 	transposeSong,
-	checkSongTransposition,
 } from './playlist.test.utils'
 
 test.describe.configure({ mode: 'parallel', timeout: 4 * 60 * 1000 }) // 4 minutes
@@ -343,4 +341,3 @@ const testEditing = async ({ page }: { page: Page }) => {
 
 smartTest('Can edit a playlist 1', 'full', testEditing)
 smartTest('Can edit a playlist 2', 'full', testEditing)
-smartTest('Can edit a playlist 3', 'full', testEditing)

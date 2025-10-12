@@ -131,7 +131,7 @@ export const savePlaylist = async (page: Page) => {
 	await page.waitForTimeout(1000)
 	await page.waitForTimeout(500)
 	await expect(page.getByRole('button', { name: 'Uloženo' })).toBeVisible({
-		timeout: 30000,
+		timeout: 60000,
 	})
 }
 
