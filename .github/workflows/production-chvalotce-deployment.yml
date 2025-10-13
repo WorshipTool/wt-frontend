@@ -56,4 +56,4 @@ jobs:
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Redeploy application
         run: |
-          ssh -o ServerAliveInterval=1000 "${SERVER_USERNAME}@${SERVER_URL}" "cd /home/chvalotce.cz-docker/project-deploy/worshiptool/frontend && bash ./redeploy.sh "
+          ssh -o ServerAliveInterval=1000 "${CHVALOTCE_SERVER_USERNAME}@${CHVALOTCE_SERVER_URL}" "cd /home/chvalotce.cz-docker/project-deploy/worshiptool/frontend && bash ./redeploy.sh"
