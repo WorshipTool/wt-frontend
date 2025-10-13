@@ -1,7 +1,7 @@
 import { VariantPackGuid } from '@/api/dtos'
 import { ReorderPlaylistItem } from '@/api/generated'
-import { EditPlaylistItemData } from '@/hooks/playlist/usePlaylistsGeneral.types'
 import { useUniqueHookId } from '@/hooks/useUniqueHookId'
+
 import { useApiState } from '@/tech/ApiState'
 import { Chord } from '@pepavlin/sheet-api'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -9,7 +9,6 @@ import { mapPlaylistItemOutDtoApiToPlaylistItemDto } from '../../api/dtos/playli
 import PlaylistDto, {
 	PlaylistGuid,
 	PlaylistItemDto,
-	PlaylistItemGuid,
 } from '../../interfaces/playlist/playlist.types'
 import useAuth from '../auth/useAuth'
 import usePlaylistsGeneral from './usePlaylistsGeneral'
@@ -33,7 +32,6 @@ export default function usePlaylist(
 		removeVariantFromPlaylist,
 		getPlaylistByGuid,
 		searchInPlaylistByGuid,
-		renamePlaylist,
 		reorderPlaylist,
 		setKeyChordOfItem,
 		...general
@@ -161,18 +159,6 @@ export default function usePlaylist(
 		changeCallback()
 	}
 
-	const rename = (title: string) => {
-		return renamePlaylist(guid, title).then((r) => {
-			if (r) {
-				setPlaylist({
-					...playlist!,
-					title: title,
-				})
-			}
-			changeCallback()
-		})
-	}
-
 	const reorder = async (reorderItems: ReorderPlaylistItem[]) => {
 		const r = await reorderPlaylist(guid, reorderItems)
 
@@ -197,30 +183,6 @@ export default function usePlaylist(
 		return setKeyChordOfItem(item.pack.packGuid, guid, keyChord)
 	}
 
-	const editItem = async (
-		itemGuid: PlaylistItemGuid,
-		data: EditPlaylistItemData
-	) => {
-		const item = items.find((i) => i.guid === itemGuid)
-		if (!item) return
-		await general.editPlaylistItem(itemGuid, data)
-
-		if (data.sheetData) {
-			item.pack.sheetData = data.sheetData
-			// item.pack.sheet = new Sheet(data.sheetData)
-			//TODO: do in some better way
-		}
-		if (data.title) item.pack.title = data.title
-
-		setItems((items) => {
-			const newItems: PlaylistItemDto[] = [...items]
-			const index = newItems.findIndex((i) => i.guid === itemGuid)
-			newItems[index] = item
-			return newItems
-		})
-		changeCallback()
-	}
-
 	const isOwner = useMemo(() => {
 		if (!playlist) return false
 		if (!isLoggedIn()) return false
@@ -232,7 +194,6 @@ export default function usePlaylist(
 		addPacks,
 		removeVariant,
 		removePacks,
-		rename,
 		playlist,
 		items,
 		searchedItems,
@@ -243,7 +204,6 @@ export default function usePlaylist(
 		loading: state.loading,
 		setItemsKeyChord,
 		isOwner,
-		editItem,
 		requireItemEdit: general.requireItemEdit,
 		_uniqueHookId: uniqueHookId,
 

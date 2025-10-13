@@ -1,6 +1,5 @@
 import { PackGuid, VariantPackGuid } from '@/api/dtos'
 import { useApi } from '@/api/tech-and-hooks/useApi'
-import { EditPlaylistItemData } from '@/hooks/playlist/usePlaylistsGeneral.types'
 import { Chord } from '@pepavlin/sheet-api'
 import { useCallback } from 'react'
 import {
@@ -95,13 +94,6 @@ export default function usePlaylistsGeneral() {
 		[playlistGettingApi]
 	)
 
-	const renamePlaylist = async (guid: PlaylistGuid, title: string) => {
-		return await playlistEditingApi.renamePlaylist({
-			guid,
-			title,
-		})
-	}
-
 	const reorderPlaylist = async (
 		playlistGuid: PlaylistGuid,
 		items: ReorderPlaylistInDto['items']
@@ -121,17 +113,6 @@ export default function usePlaylistsGeneral() {
 			packGuid,
 			playlistGuid,
 			key: keyChord.data.rootNote.toString(),
-		})
-	}
-
-	const editPlaylistItem = async (
-		guid: PlaylistItemGuid,
-		data: EditPlaylistItemData
-	) => {
-		return await playlistEditingApi.editItem({
-			itemGuid: guid,
-			title: data.title,
-			sheetData: data.sheetData,
 		})
 	}
 
@@ -166,12 +147,10 @@ export default function usePlaylistsGeneral() {
 		deletePlaylist,
 		getPlaylistByGuid,
 		searchInPlaylistByGuid,
-		renamePlaylist,
 		reorderPlaylist,
 		setKeyChordOfItem,
 
 		// Item editing
-		editPlaylistItem,
 		requireItemEdit,
 		complexEdit,
 
