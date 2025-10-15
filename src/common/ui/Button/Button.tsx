@@ -19,7 +19,6 @@ export type ButtonProps<T extends RoutesKeys> = {
 	tooltipPlacement?: ComponentProps<typeof Tooltip>['placement']
 	to?: CommonLinkProps<T>['to']
 	toParams?: CommonLinkProps<T>['params']
-	href?: string
 	sx?: SxProps<{}>
 	alt?: string
 	target?: React.HTMLAttributeAnchorTarget
@@ -169,31 +168,17 @@ export const Button = memo(
 
 		const LinkComponent = useCallback(
 			() =>
-				(props.href || props.to) && !disabled ? (
-					props.to ? (
-						<CustomLink
-							to={props.to}
-							params={typedParams}
-							href={props.href}
-							sx={{
-								...props.sx,
-							}}
-							target={props.target}
-						>
-							<ButtonComponent />
-						</CustomLink>
-					) : (
-						<CustomLink
-							href={props.href!}
-							external={true}
-							sx={{
-								...props.sx,
-							}}
-							target={props.target}
-						>
-							<ButtonComponent />
-						</CustomLink>
-					)
+				props.to && !disabled ? (
+					<CustomLink
+						to={props.to}
+						params={typedParams}
+						sx={{
+							...props.sx,
+						}}
+						target={props.target}
+					>
+						<ButtonComponent />
+					</CustomLink>
 				) : (
 					<ButtonComponent />
 				),

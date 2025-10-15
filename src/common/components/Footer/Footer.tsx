@@ -8,14 +8,12 @@ import { MAIN_SEARCH_EVENT_NAME } from '@/app/components/components/MainSearchIn
 import { useCloudNumber } from '@/common/providers/FeatureFlags/useCloudNumber'
 import { Gap } from '@/common/ui/Gap'
 import { Link } from '@/common/ui/Link/Link'
-import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
-import { RoutesKeys } from '@/routes'
 import { useSmartMatch } from '@/routes/useSmartMatch'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { getAssetUrl } from '@/tech/paths.tech'
-import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import './footer.styles.css'
 
 type Links = [
@@ -25,7 +23,6 @@ type Links = [
 	ButtonProps<'teams'>,
 	ButtonProps<'contact'>,
 	ButtonProps<'contact'>,
-	ButtonProps<RoutesKeys>,
 	ButtonProps<'contact'>
 ]
 export default function Footer() {
@@ -64,11 +61,6 @@ export default function Footer() {
 			{
 				children: tFooter('links.reportBug'),
 				to: 'contact',
-			},
-			{
-				children: 'Podpořit',
-				external: true,
-				href: getStripeSupportUrl(),
 			},
 			{
 				children: tFooter('links.contact'),

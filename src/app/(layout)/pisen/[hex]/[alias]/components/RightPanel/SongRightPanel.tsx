@@ -6,7 +6,6 @@ import { Link } from '@/common/ui/Link/Link'
 import { styled } from '@/common/ui/mui'
 import { grey } from '@/common/ui/mui/colors'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
-import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ExtendedVariantPack, PackTranslationType } from '@/types/song'
 import { useTranslations } from 'next-intl'
@@ -34,13 +33,8 @@ export default function SongRightPanel(props: Props) {
 		'SHOW_FINANCIAL_SUPPORT_CARD',
 		false
 	)
-
+ 
 	const tRight = useTranslations('songPage.rightPanel')
-	const showAdditionalInfo = useCloudConfig(
-		'songPage',
-		'SHOW_ADDITIONAL_INFO_CARD',
-		false
-	)
 
 	const original = props.song.variants.find(
 		(v) => v.translationType === PackTranslationType.Original
@@ -56,61 +50,61 @@ export default function SongRightPanel(props: Props) {
 		<Box
 			sx={{
 				width: '300px',
+				// position: 'sticky',
+				// top: 56 + 16,
 				gap: 2,
 				display: 'flex',
 				flexDirection: 'column',
+				// paddingTop: 10,
 			}}
 		>
-			{showAdditionalInfo && (
-				<Container>
-					<Typography color="grey.800" variant="h6">
-						{props.pack.title}
+			<Container>
+				<Typography color="grey.800" variant="h6">
+					{props.pack.title}
+				</Typography>
+				{thisIsOriginal ? (
+		<>
+			<Typography color="grey.600" small>
+				{tRight('original')}
+			</Typography>
+		</>
+	) : original ? (
+		<>
+			<Box display={'flex'} gap={0.5}>
+				<Typography color="grey.600" small>
+					{tRight('translationOf')}
+				</Typography>
+				<Link to="variant" params={parseVariantAlias(original.packAlias)}>
+					<Typography small strong color="grey.800">
+						{original.title}
 					</Typography>
-					{thisIsOriginal ? (
-						<>
-							<Typography color="grey.600" small>
-								{tRight('original')}
-							</Typography>
-						</>
-					) : original ? (
-						<>
-							<Box display={'flex'} gap={0.5}>
-								<Typography color="grey.600" small>
-									{tRight('translationOf')}
-								</Typography>
-								<Link
-									to="variant"
-									params={parseVariantAlias(original.packAlias)}
-								>
-									<Typography small strong color="grey.800">
-										{original.title}
-									</Typography>
-								</Link>
-							</Box>
-						</>
-					) : null}
-					<Gap value={2} />
+				</Link>
+						</Box>
+					</>
+				) : null}
 
-					{moreVariants > 0 ? (
-						<>
-							<Button
-								onClick={() => setTranslationPopupOpen(true)}
-								small
-								outlined
-							>
-								{tRight('chooseOther')}
-							</Button>
-							<TranslationsSelectPopup
-								open={translationPopupOpen}
-								onClose={() => setTranslationPopupOpen(false)}
-								packs={props.song.variants}
-							/>
-						</>
-					) : (
-						<Typography>{tRight('noTranslations')}</Typography>
-					)}
-				</Container>
-			)}
+				<Gap value={2} />
+
+				{moreVariants > 0 ? (
+			<>
+				<Button
+					onClick={() => setTranslationPopupOpen(true)}
+					small
+					outlined
+				>
+					{tRight('chooseOther')}
+				</Button>
+				<TranslationsSelectPopup
+					open={translationPopupOpen}
+					onClose={() => setTranslationPopupOpen(false)}
+					packs={props.song.variants}
+				/>
+			</>
+		) : (
+			<Typography>{tRight('noTranslations')}</Typography>
+		)}
+		</Container>
+
 			{showSupport && (
 				<Container
 					sx={{
@@ -121,20 +115,29 @@ export default function SongRightPanel(props: Props) {
 						flexDirection: 'column',
 					}}
 				>
-					<Typography variant="h6" align="center">
-						{tRight('support.title')}
-					</Typography>
-					<Typography align="center">{tRight('support.intro')}</Typography>
-					<Typography align="center">
-						{tRight('support.description')}
-					</Typography>
-					<Gap />
+			<Typography variant="h6" align="center">
+				{tRight('support.title')}
+			</Typography>
+			<Typography align="center">{tRight('support.intro')}</Typography>
+			<Typography align="center">{tRight('support.description')}</Typography>
+			<Gap />
 
-					<Button color="success" outlined href={getStripeSupportUrl()}>
-						{tRight('support.button')}
-					</Button>
+			<Button color="success" outlined>
+				{tRight('support.button')}
+			</Button>
 				</Container>
 			)}
+
+			{/* <Container>
+				<Typography variant="h6">Podobné chvály</Typography>
+				{['Ocean1', 'Ocean2', 'Ocean1', 'Ocean2', 'Ocean1'].map(
+					(title, index) => (
+						<Typography key={index}>
+							{index + 1}. {title}
+						</Typography>
+					)
+				)}
+			</Container> */}
 		</Box>
 	)
 }
