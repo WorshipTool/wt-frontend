@@ -24,7 +24,6 @@ import CollaborationWithWorshipkoCard from '@/app/(layout)/o-nas/components/Coll
 import HelpUsPanel from '@/app/(layout)/o-nas/components/HelpUsPanel'
 import SheepBigGraphics from '@/app/(layout)/o-nas/components/SheepBigGraphics'
 import { Divider } from '@/common/ui'
-import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
 import breakpoints from '@/tech/theme/theme.tech'
 import './styles.css'
 
@@ -32,7 +31,6 @@ export default SmartPage(Page, ['transparentToolbar', 'containLayout'])
 
 function Page() {
 	const t = useTranslations('about')
-	const stripeUrl = getStripeSupportUrl()
 	return (
 		<Box>
 			<ToolbarChanger />
@@ -338,7 +336,7 @@ function Page() {
 				flexWrap={'wrap'}
 			>
 				<HelpUsPanel />
-				{
+				{false && (
 					<Box
 						display={'flex'}
 						flexDirection={'column'}
@@ -377,12 +375,10 @@ function Page() {
 							</Typography>
 						</Box>
 						<Box display={'flex'}>
-							<Button color={'secondary'} href={stripeUrl}>
-								{t('supportCard.button')}
-							</Button>
+							<Button color={'secondary'}>{t('supportCard.button')}</Button>
 						</Box>
 					</Box>
-				}
+				)}
 			</Box>
 		</Box>
 	)

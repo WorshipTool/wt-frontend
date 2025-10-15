@@ -8,7 +8,6 @@ export type CloudConfigs = {
 	basic: BasicCloudConfig
 	songPage: {
 		SHOW_FINANCIAL_SUPPORT_CARD: boolean
-		SHOW_ADDITIONAL_INFO_CARD: boolean
 		SHOW_RIGHT_PANEL: boolean
 	}
 }
