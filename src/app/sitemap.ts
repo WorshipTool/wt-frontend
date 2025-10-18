@@ -10,7 +10,7 @@ import { handleApiCall } from '../tech/fetch/handleApiCall'
 export const revalidate = 60 * 60 // 1 hour
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const BASE_URL = 'https://chvalotce.cz'
+	const BASE_URL = process.env.NEXT_PUBLIC_FRONTEND_URL
 
 	const api = new SongGettingApi()
 	let songs: GetListSongData[] = []
