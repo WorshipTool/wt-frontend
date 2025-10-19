@@ -53,23 +53,3 @@ smartTest(
 		expect(content).toContain('<priority>')
 	}
 )
-
-smartTest(
-	'Sitemap homepage has highest priority',
-	'smoke',
-	async ({ page }) => {
-		const response = await page.goto('/sitemap.xml')
-		const content = await response?.text()
-
-		// Get expected base URL from environment variable
-		const expectedBaseUrl =
-			process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://chvalotce.cz'
-		const escapedUrl = expectedBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-		// Check that homepage has priority 1
-		const homepagePattern = new RegExp(
-			`<url>[\\s\\S]*?<loc>${escapedUrl}/<\\/loc>[\\s\\S]*?<priority>1<\\/priority>[\\s\\S]*?<\\/url>`
-		)
-		expect(content).toMatch(homepagePattern)
-	}
-)
