@@ -7,8 +7,8 @@ import {
 	BridgeApi,
 	Configuration,
 	ImagesApi,
+	LoggerApi,
 	MailApi,
-	MessengerApi,
 	PackEmbeddingApi,
 	ParserApi,
 	PermissionsApi,
@@ -76,7 +76,7 @@ const getInternalApiClasses = (
 	const packEmbeddingApi = new PackEmbeddingApi(apiConfiguration)
 	const songManagementApi = new SongManagementApi(apiConfiguration)
 	const songUserManagementApi = new SongUserManagementApi(apiConfiguration)
-	const messengerApi = new MessengerApi(apiConfiguration)
+	const loggerApi = new LoggerApi(apiConfiguration)
 	const songCreatorsApi = new SongCreatorsApi(apiConfiguration)
 
 	const teamAddingApi = new TeamAddingApi(apiConfiguration)
@@ -149,7 +149,7 @@ const getInternalApiClasses = (
 		}),
 		songManagementApi: wrapFunc(songManagementApi),
 		songUserManagementApi: wrapFunc(songUserManagementApi),
-		messengerApi: wrapFunc(messengerApi),
+		loggerApi: wrapFunc(loggerApi),
 
 		teamAddingApi: wrapFunc(teamAddingApi),
 		teamGettingApi: wrapFunc(teamGettingApi),

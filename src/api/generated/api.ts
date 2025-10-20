@@ -1740,6 +1740,25 @@ export interface LeaveTeamInDto {
 /**
  * 
  * @export
+ * @interface LoggerBody
+ */
+export interface LoggerBody {
+    /**
+     * 
+     * @type {string}
+     * @memberof LoggerBody
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoggerBody
+     */
+    'content': string;
+}
+/**
+ * 
+ * @export
  * @interface LoginInputData
  */
 export interface LoginInputData {
@@ -2141,7 +2160,7 @@ export interface PlaylistComplexEditInDto {
      * @type {string}
      * @memberof PlaylistComplexEditInDto
      */
-    'name': string;
+    'name'?: string;
 }
 /**
  * 
@@ -2939,25 +2958,6 @@ export interface SearchSongPacksDto {
 /**
  * 
  * @export
- * @interface SendErrorInDto
- */
-export interface SendErrorInDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof SendErrorInDto
-     */
-    'title': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SendErrorInDto
-     */
-    'description': string;
-}
-/**
- * 
- * @export
  * @interface SetMemberRoleInDto
  */
 export interface SetMemberRoleInDto {
@@ -3339,6 +3339,12 @@ export interface SongTitle {
     'searchValue': string;
     /**
      * 
+     * @type {string}
+     * @memberof SongTitle
+     */
+    'trigrams'?: string;
+    /**
+     * 
      * @type {SongVariant}
      * @memberof SongTitle
      */
@@ -3368,6 +3374,12 @@ export interface SongVariant {
      * @memberof SongVariant
      */
     'searchValue': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SongVariant
+     */
+    'trigrams'?: string;
     /**
      * 
      * @type {object}
@@ -3582,6 +3594,12 @@ export interface SongVariantHistoryPack {
      * @memberof SongVariantHistoryPack
      */
     'publishedAt': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SongVariantHistoryPack
+     */
+    'translationLikesCount': number;
     /**
      * 
      * @type {Playlist}
@@ -5550,6 +5568,39 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        getHello: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         root: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/monitor/status`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5593,6 +5644,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async getHello(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getHello(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getHello']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async root(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.root(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -5614,6 +5676,14 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        getHello(options?: any): AxiosPromise<string> {
+            return localVarFp.getHello(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         root(options?: any): AxiosPromise<void> {
             return localVarFp.root(options).then((request) => request(axios, basePath));
         },
@@ -5627,6 +5697,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getHello(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getHello(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {*} [options] Override http request option.
@@ -5811,6 +5891,258 @@ export class ImagesApi extends BaseAPI {
 
 
 /**
+ * LoggerApi - axios parameter creator
+ * @export
+ */
+export const LoggerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        error: async (loggerBody: LoggerBody, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loggerBody' is not null or undefined
+            assertParamExists('error', 'loggerBody', loggerBody)
+            const localVarPath = `/error`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loggerBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        log: async (loggerBody: LoggerBody, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loggerBody' is not null or undefined
+            assertParamExists('log', 'loggerBody', loggerBody)
+            const localVarPath = `/log`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loggerBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        warn: async (loggerBody: LoggerBody, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loggerBody' is not null or undefined
+            assertParamExists('warn', 'loggerBody', loggerBody)
+            const localVarPath = `/warn`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loggerBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LoggerApi - functional programming interface
+ * @export
+ */
+export const LoggerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LoggerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async error(loggerBody: LoggerBody, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.error(loggerBody, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LoggerApi.error']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async log(loggerBody: LoggerBody, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.log(loggerBody, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LoggerApi.log']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async warn(loggerBody: LoggerBody, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.warn(loggerBody, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['LoggerApi.warn']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * LoggerApi - factory interface
+ * @export
+ */
+export const LoggerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LoggerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        error(loggerBody: LoggerBody, options?: any): AxiosPromise<void> {
+            return localVarFp.error(loggerBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        log(loggerBody: LoggerBody, options?: any): AxiosPromise<void> {
+            return localVarFp.log(loggerBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LoggerBody} loggerBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        warn(loggerBody: LoggerBody, options?: any): AxiosPromise<void> {
+            return localVarFp.warn(loggerBody, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LoggerApi - object-oriented interface
+ * @export
+ * @class LoggerApi
+ * @extends {BaseAPI}
+ */
+export class LoggerApi extends BaseAPI {
+    /**
+     * 
+     * @param {LoggerBody} loggerBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LoggerApi
+     */
+    public error(loggerBody: LoggerBody, options?: RawAxiosRequestConfig) {
+        return LoggerApiFp(this.configuration).error(loggerBody, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LoggerBody} loggerBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LoggerApi
+     */
+    public log(loggerBody: LoggerBody, options?: RawAxiosRequestConfig) {
+        return LoggerApiFp(this.configuration).log(loggerBody, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LoggerBody} loggerBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LoggerApi
+     */
+    public warn(loggerBody: LoggerBody, options?: RawAxiosRequestConfig) {
+        return LoggerApiFp(this.configuration).warn(loggerBody, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * MailApi - axios parameter creator
  * @export
  */
@@ -5977,116 +6309,6 @@ export class MailApi extends BaseAPI {
      */
     public sendTestMail(options?: RawAxiosRequestConfig) {
         return MailApiFp(this.configuration).sendTestMail(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * MessengerApi - axios parameter creator
- * @export
- */
-export const MessengerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {SendErrorInDto} sendErrorInDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sendError: async (sendErrorInDto: SendErrorInDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'sendErrorInDto' is not null or undefined
-            assertParamExists('sendError', 'sendErrorInDto', sendErrorInDto)
-            const localVarPath = `/sendError`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(sendErrorInDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * MessengerApi - functional programming interface
- * @export
- */
-export const MessengerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = MessengerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {SendErrorInDto} sendErrorInDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async sendError(sendErrorInDto: SendErrorInDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sendError(sendErrorInDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MessengerApi.sendError']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * MessengerApi - factory interface
- * @export
- */
-export const MessengerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = MessengerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {SendErrorInDto} sendErrorInDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sendError(sendErrorInDto: SendErrorInDto, options?: any): AxiosPromise<boolean> {
-            return localVarFp.sendError(sendErrorInDto, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * MessengerApi - object-oriented interface
- * @export
- * @class MessengerApi
- * @extends {BaseAPI}
- */
-export class MessengerApi extends BaseAPI {
-    /**
-     * 
-     * @param {SendErrorInDto} sendErrorInDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof MessengerApi
-     */
-    public sendError(sendErrorInDto: SendErrorInDto, options?: RawAxiosRequestConfig) {
-        return MessengerApiFp(this.configuration).sendError(sendErrorInDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
