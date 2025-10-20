@@ -1,7 +1,13 @@
 import { logServerError } from '@/tech/logging/logServerError'
 import { FunctionProps } from '@/types/common.types'
 
-const SAFE_API_HOSTS = ['chvalotce.cz', 'localhost', 'worship.cz', 'fly.dev']
+const SAFE_API_HOSTS = [
+	'chvalotce.cz',
+	'localhost',
+	'worship.cz',
+	'fly.dev',
+	'hallelujahhub.com',
+]
 
 export const isSafeUrl = (url: string): boolean => {
 	try {
