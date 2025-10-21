@@ -39,6 +39,7 @@ export default function useSongSearch() {
 				const result = await songSearchingApi.search(
 					searchKey,
 					additionalParams?.page || 0,
+					undefined,
 					{
 						signal: additionalParams?.signal,
 					}
