@@ -92,7 +92,9 @@ smartTest('Neobsahuje cizí soukromé písně', 'critical', async ({ page }) => 
 	const allSearchStrings = [...searchStrings, ...randomStrings]
 
 	for (const searchString of allSearchStrings) {
-		const response = await handleServerApiCall(api.search(searchString))
+		const response = await handleServerApiCall(
+			api.search(searchString, undefined, true)
+		)
 
 		for (const result of response) {
 			const whole = [
@@ -129,7 +131,9 @@ smartTest(
 		let count = 0
 
 		for (const searchString of allSearchStrings) {
-			const response = await handleServerApiCall(api.search(searchString))
+			const response = await handleServerApiCall(
+				api.search(searchString, undefined, true)
+			)
 			count += response.length
 
 			for (const result of response) {
