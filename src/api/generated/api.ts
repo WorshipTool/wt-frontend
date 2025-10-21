@@ -13465,10 +13465,11 @@ export const SongSearchingApiAxiosParamCreator = function (configuration?: Confi
          * 
          * @param {string} searchKey 
          * @param {number} [page] 
+         * @param {boolean} [onlyWithChords] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search: async (searchKey: string, page?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        search: async (searchKey: string, page?: number, onlyWithChords?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'searchKey' is not null or undefined
             assertParamExists('search', 'searchKey', searchKey)
             const localVarPath = `/song/searching/search`;
@@ -13493,6 +13494,10 @@ export const SongSearchingApiAxiosParamCreator = function (configuration?: Confi
 
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
+            }
+
+            if (onlyWithChords !== undefined) {
+                localVarQueryParameter['onlyWithChords'] = onlyWithChords;
             }
 
 
@@ -13520,11 +13525,12 @@ export const SongSearchingApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} searchKey 
          * @param {number} [page] 
+         * @param {boolean} [onlyWithChords] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async search(searchKey: string, page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SearchSongPacksDto>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.search(searchKey, page, options);
+        async search(searchKey: string, page?: number, onlyWithChords?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SearchSongPacksDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search(searchKey, page, onlyWithChords, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SongSearchingApi.search']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -13543,11 +13549,12 @@ export const SongSearchingApiFactory = function (configuration?: Configuration, 
          * 
          * @param {string} searchKey 
          * @param {number} [page] 
+         * @param {boolean} [onlyWithChords] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search(searchKey: string, page?: number, options?: any): AxiosPromise<Array<SearchSongPacksDto>> {
-            return localVarFp.search(searchKey, page, options).then((request) => request(axios, basePath));
+        search(searchKey: string, page?: number, onlyWithChords?: boolean, options?: any): AxiosPromise<Array<SearchSongPacksDto>> {
+            return localVarFp.search(searchKey, page, onlyWithChords, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13563,12 +13570,13 @@ export class SongSearchingApi extends BaseAPI {
      * 
      * @param {string} searchKey 
      * @param {number} [page] 
+     * @param {boolean} [onlyWithChords] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SongSearchingApi
      */
-    public search(searchKey: string, page?: number, options?: RawAxiosRequestConfig) {
-        return SongSearchingApiFp(this.configuration).search(searchKey, page, options).then((request) => request(this.axios, this.basePath));
+    public search(searchKey: string, page?: number, onlyWithChords?: boolean, options?: RawAxiosRequestConfig) {
+        return SongSearchingApiFp(this.configuration).search(searchKey, page, onlyWithChords, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
