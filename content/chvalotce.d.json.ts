@@ -75,6 +75,16 @@ declare const messages: {
 			"manageAccount": "Spravovat účet"
 		}
 	},
+	"config": {
+		"contact": {
+			"main": "chvalotce@chvalotce.cz"
+		},
+		"branding": {
+			"appName": "Chvalotce.cz",
+			"appDescription": "Online zpěvník Chvalotce.cz",
+			"shortName": "Chvalotce.cz"
+		}
+	},
 	"footer": {
 		"links": {
 			"searchSong": "Hledat píseň",

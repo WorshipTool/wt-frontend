@@ -13,23 +13,26 @@ import HeadersProviders from '@/app/providers/HeadersProviders'
 import './globals.classes.css'
 import './globals.css'
 
-export const metadata: Metadata = {
-	title: 'Chvalotce.cz',
-	description: 'User-friendly platform for Christian worship songs',
-	keywords: [
-		'songbook',
-		'worship',
-		'chords',
-		'song',
-		'lyrics',
-		'playlist',
-		'christian',
-		'music',
-	],
-	manifest: '/src/app/manifest.json',
-	verification: {
-		google: 'yvbr9ieSeuhugyZcK93MS5Mm3DgYMXqK1EUHYXEHEWs',
-	},
+export async function generateMetadata(): Promise<Metadata> {
+	const messages = await getMessages()
+	return {
+		title: messages.config.branding.appName,
+		description: messages.config.branding.appDescription,
+		keywords: [
+			'songbook',
+			'worship',
+			'chords',
+			'song',
+			'lyrics',
+			'playlist',
+			'christian',
+			'music',
+		],
+		manifest: '/manifest.webmanifest',
+		verification: {
+			google: 'yvbr9ieSeuhugyZcK93MS5Mm3DgYMXqK1EUHYXEHEWs',
+		},
+	}
 }
 
 export default async function RootLayout({
