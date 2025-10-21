@@ -14,15 +14,15 @@ smartTest('Team is in tools', 'critical', async ({ page }) => {
 	await page.getByRole('link', { name: 'Zkouska Zkouska' }).click()
 
 	await page.waitForURL(
-		/tymy\/ahtk3wx|http:\/\/tymy\.test-chvalotce\.cz:5500\/ahtk3wx/
+		new RegExp(`tymy\\/ahtk3wx|http:\\/\\/tymy\\.test-chvalotce\\.cz:5500\\/ahtk3wx`)
 	)
 	const expectedUrls = [
 		'tymy/ahtk3wx',
-		'http://tymy.test-chvalotce.cz:5500/ahtk3wx',
+		`http://tymy.test-chvalotce.cz:5500/ahtk3wx`,
 	]
 	const currentUrl = page.url()
 	const isMatch = expectedUrls.some((url) => currentUrl.includes(url))
-	await expect(isMatch).toBeTruthy()
+	expect(isMatch).toBeTruthy()
 
 	await expect(page.getByRole('link', { name: 'Zkouska' })).toBeVisible()
 })
