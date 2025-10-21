@@ -40,7 +40,6 @@ export default defineConfig({
 		  }),
 	use: {
 		baseURL: process.env.NEXT_PUBLIC_FRONTEND_URL,
-		// baseURL: 'https://preview.chvalotce.cz',
 		headless: true,
 		actionTimeout: 30 * 1000, // 10 seconds
 		navigationTimeout: 30 * 1000, // 10 seconds

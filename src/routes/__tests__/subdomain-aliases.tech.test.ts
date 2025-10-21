@@ -8,8 +8,8 @@ import {
 
 const baseUrlHostname = getTestBaseUrlHostname()
 describe('Most basic absolute', () => {
-	const IN_URL = 'http://test-chvalotce.cz:5500/sub/tymy/9r78ets'
-	const OUTPUT_URL = 'http://test-chvalotce.cz:5500/sub/13ka'
+	const IN_URL = `http://test-chvalotce.cz:5500/sub/tymy/9r78ets`
+	const OUTPUT_URL = `http://test-chvalotce.cz:5500/sub/13ka`
 
 	const alias: SubdomainData = {
 		subdomain: '13ka',
@@ -38,8 +38,8 @@ describe('Most basic relative', () => {
 })
 
 describe('Absolute url with given subdomain in format', () => {
-	const IN_URL = 'http://page.test-chvalotce.cz:5500/sub/tymy/9r78ets'
-	const OUTPUT_URL = 'http://page.test-chvalotce.cz:5500/sub/13ka'
+	const IN_URL = `http://page.test-chvalotce.cz:5500/sub/tymy/9r78ets`
+	const OUTPUT_URL = `http://page.test-chvalotce.cz:5500/sub/13ka`
 
 	const alias: SubdomainData = {
 		subdomain: '13ka',
