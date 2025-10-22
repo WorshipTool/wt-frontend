@@ -2,7 +2,6 @@
 
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
-import { MAIL } from '@/common/constants/contact'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { StandaloneCard } from '@/common/ui/StandaloneCard'
@@ -18,6 +17,7 @@ const FEEDBACK_DIV_ID = 'feedback'
 
 function ContactPage() {
 	const t = useTranslations('contact')
+	const tConfig = useTranslations('config')
 	const [sent, setSent] = useState(false)
 	const [loading, setLoading] = useState(false)
 
@@ -87,7 +87,7 @@ function ContactPage() {
 				>
 					<Typography size={'inherit'}>{t('writeToUs')}</Typography>
 					<Typography strong size={'inherit'}>
-						{MAIL.MAIN}
+						{tConfig('contact.main')}
 					</Typography>
 				</Box>
 			</StandaloneCard>
