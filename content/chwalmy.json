@@ -1,0 +1,951 @@
+{
+	"common": {
+		"yes": "Tak",
+		"no": "Nie",
+		"cancel": "Anuluj",
+		"save": "Zapisz",
+		"delete": "Usuń",
+		"edit": "Edytuj",
+		"print": "Drukuj",
+		"send": "Wyślij",
+		"search": "Szukaj",
+		"remove": "Usuń",
+		"add": "Dodaj",
+		"close": "Zamknij",
+		"back": "Wstecz",
+		"next": "Dalej",
+		"loading": "Ładowanie...",
+		"error": "Błąd",
+		"success": "Sukces",
+		"discard": "Odrzuć",
+		"open": "Otwórz",
+		"tryAgain": "Spróbuj ponownie",
+		"or": "Lub",
+		"backgroundAlt": "Tło",
+		"cancelCurrentEdits": "Anuluj bieżące zmiany",
+		"saveCurrentState": "Zapisz bieżący stan",
+		"videoNotSupported": "Wideo nie jest obsługiwane",
+		"preferThisTranslation": "Preferuję to tłumaczenie",
+		"private": "Prywatne",
+		"createdByYou": "Utworzone przez Ciebie",
+		"uploadedByProgram": "Przesłane przez program",
+		"addedOn": "Dodane dnia",
+		"authors": "Autorzy",
+		"authorName": "Imię autora",
+		"sections": {
+			"verse": "Zwrotka",
+			"chorus": "Refren",
+			"bridge": "Bridge"
+		}
+	},
+	"navigation": {
+		"home": "Strona główna",
+		"songs": "Pieśni",
+		"playlists": "Playlisty",
+		"teams": "Zespoły",
+		"about": "O aplikacji",
+		"contact": "Kontakt",
+		"account": "Konto",
+		"login": "Zaloguj się",
+		"logout": "Wyloguj się",
+		"signup": "Zarejestruj się",
+		"search": "Szukaj",
+		"aboutUs": "O nas",
+		"worshipTeams": "Zespoły uwielbienia",
+		"closeMenu": "Zamknij menu",
+		"tooltips": {
+			"addSong": "Dodaj nową pieśń",
+			"tools": "Narzędzia",
+			"account": "Konto",
+			"login": "Zaloguj się"
+		},
+		"alt": {
+			"profileImage": "Zdjęcie profilowe"
+		},
+		"toolsMenu": {
+			"playlists": "Playlisty",
+			"mySongs": "Moje pieśni",
+			"favourites": "Ulubione",
+			"outsideTeam": "Poza zespołem"
+		},
+		"accountMenu": {
+			"manageAccount": "Zarządzaj kontem"
+		}
+	},
+	"config": {
+		"contact": {
+			"main": "kontakt@chwalmy.com"
+		},
+		"branding": {
+			"appName": "Chwalmy.com",
+			"appDescription": "Internetowy śpiewnik Chwalmy.com",
+			"shortName": "Chwalmy.com"
+		}
+	},
+	"footer": {
+		"links": {
+			"searchSong": "Szukaj pieśń",
+			"songList": "Lista pieśni",
+			"about": "O aplikacji",
+			"teams": "Zespoły",
+			"feedback": "Opinie",
+			"reportBug": "Zgłoś błąd",
+			"contact": "Kontakt"
+		},
+		"cooperation": "We współpracy z",
+		"logoAlt": "Logo worshipko.com",
+		"createdWith": "Stworzone z",
+		"rightsReserved": "© Wszystkie prawa zastrzeżone"
+	},
+	"home": {
+		"backgroundShape": "Kształt w tle",
+		"hero": {
+			"lead": "Jeśli jesteś owcą, to...",
+			"title": "Chwal Pana",
+			"subtitle": "Na chwalmy.com",
+			"subtitleLower": "na chwalmy.com"
+		},
+		"recommended": {
+			"idea": "Jakaś propozycja:",
+			"error": "Wystąpił błąd podczas ładowania..."
+		},
+		"allList": {
+			"browse": "przeglądaj",
+			"title": "Lista wszystkich pieśni"
+		},
+		"lastAdded": {
+			"title": "Ostatnio dodane"
+		},
+		"floatingAdd": {
+			"label": "Utwórz"
+		},
+		"search": {
+			"resultsTitle": "Wyniki wyszukiwania:",
+			"loadMore": "Załaduj więcej",
+			"noResults": "Niczego nie znaleźliśmy..."
+		}
+	},
+	"about": {
+		"title": "O aplikacji",
+		"subtitle": "Platforma z chrześcijańskimi pieśniami uwielbienia",
+		"whoAreWe": "Kim jesteśmy?",
+		"platform": "Platforma",
+		"withChristianPraises": "z chrześcijańskimi",
+		"praises": "pieśniami uwielbienia",
+		"description": "Jesteśmy przyjazną użytkownikowi platformą, która oferuje szeroki wybór pieśni uwielbienia, ale przede wszystkim nowoczesne narzędzia",
+		"database": {
+			"title": "Duża i aktualna baza danych",
+			"description": "Podstawą całej aplikacji jest lista pieśni uwielbienia. Staramy się utrzymywać tę listę jak największą i dobrze ustrukturyzowaną.",
+			"allInOne": {
+				"title": "Wszystko w jednym miejscu",
+				"description": "Grupujemy pieśni z innych śpiewników, abyś mógł szukać w jednym miejscu"
+			},
+			"constantUpdate": {
+				"title": "Ciągła aktualizacja",
+				"description": "Nasz algorytm automatycznie dodaje nowe pieśni, więc baza danych jest zawsze aktualna"
+			},
+			"yourSongs": {
+				"title": "Twoje pieśni",
+				"description": "Baza danych jest otwarta - możesz sam dodawać pieśni uwielbienia, publicznie lub prywatnie"
+			}
+		},
+		"tools": {
+			"title": "Narzędzia",
+			"description": "Za darmo oferujemy narzędzia, które mogą Ci się przydać",
+			"smartSearch": {
+				"title": "Inteligentne wyszukiwanie",
+				"description": "Znajdź swoje pieśni według ich tytułu lub nawet tekstu",
+				"tryIt": "Wypróbuj"
+			},
+			"teams": {
+				"title": "Zespoły",
+				"description": "Stwórz dla swojego zespołu uwielbienia środowisko, w którym łatwo przygotujesz się do wspólnego grania",
+				"learnMore": "Dowiedz się więcej"
+			},
+			"playlists": {
+				"title": "Tworzenie playlist",
+				"description": "Utwórz z pieśni własną playlistę, którą można łatwo udostępnić innym",
+				"tryIt": "Wypróbuj"
+			}
+		},
+		"whyWhoHow": {
+			"title": "Dlaczego, kto i jak?",
+			"description": "Cały projekt został stworzony z jakiegoś powodu. Zobacz krótkie wideo"
+		},
+		"helpUs": {
+			"title": "Wesprzyj nas",
+			"description": "Całą aplikację tworzyliśmy w naszym wolnym czasie, za darmo. Za jakiekolwiek wsparcie finansowe będziemy wdzięczni.",
+			"supportFinancially": "Wesprzyj finansowo"
+		},
+		"collaboration": {
+			"title": "Stworzone we współpracy z"
+		},
+		"more": {
+			"button": "Dowiedz się więcej",
+			"label": "Dowiedz się więcej"
+		},
+		"helpPanel": {
+			"title": "Chcesz nam pomóc?",
+			"description": "Chciałbyś dołączyć do projektu w jakikolwiek sposób?",
+			"join": "Chcę dołączyć"
+		},
+		"graphics": {
+			"introSheepAlt": "Owca",
+			"bubbleAlt": "Bańka",
+			"sheepAlt": "Owieczka",
+			"speech": "Wielkaaa"
+		},
+		"supportCard": {
+			"iconAlt": "Wyślij pieniądze",
+			"title": "Wesprzyj nas",
+			"description": "Całą aplikację tworzyliśmy w naszym wolnym czasie, za darmo. Za jakiekolwiek wsparcie finansowe będziemy wdzięczni.",
+			"button": "Wesprzyj finansowo"
+		}
+	},
+	"contact": {
+		"title": "Kontakt",
+		"subtitle": "Chcesz o coś zapytać lub masz jakiś pomysł? Chętnie Cię wysłuchamy.",
+		"writeToUs": "Napisz do nas na",
+		"wantToHelp": "Chcesz nam pomóc?",
+		"feedback": "Opinie",
+		"wantToJoinDescription": "Chciałbyś dołączyć do tworzenia tej aplikacji? Napisz do nas za pomocą formularza.",
+		"feedbackDescription": "Podoba Ci się nasza aplikacja lub masz jakieś uwagi? Napisz do nas za pomocą formularza.",
+		"form": {
+			"yourName": "Twoje imię",
+			"enterName": "Wpisz swoje imię",
+			"yourEmail": "Twój e-mail",
+			"enterEmail": "Wpisz swój e-mail",
+			"message": "Wiadomość",
+			"writeMessage": "Napisz wiadomość",
+			"sendMessage": "Wyślij wiadomość",
+			"messageSent": "Wiadomość została wysłana... Dziękujemy za Twoją opinię.",
+			"writeAnother": "Napisz kolejną wiadomość",
+			"wantToJoinMessage": "Dzień dobry,\\nchciałbym uczestniczyć w tworzeniu tej aplikacji. Jakie mam możliwości?"
+		}
+	},
+	"auth": {
+		"login": {
+			"title": "Zaloguj się",
+			"subtitle": "I korzystaj z aplikacji w pełni",
+			"email": "Email",
+			"enterEmail": "Wpisz e-mail",
+			"password": "Hasło",
+			"enterPassword": "Wpisz hasło",
+			"loginButton": "Zaloguj się",
+			"forgotPassword": "Zapomniałeś hasła?",
+			"noAccount": "Nie masz jeszcze konta?",
+			"createAccount": "Stwórz je",
+			"signUp": "Zarejestruj się",
+			"wrongCredentials": "Nieprawidłowy email lub hasło"
+		},
+		"signup": {
+			"title": "Utwórz konto",
+			"subtitle": "I korzystaj z aplikacji w pełni",
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"email": "Email",
+			"password": "Hasło",
+			"confirmPassword": "Potwierdź hasło",
+			"signupButton": "Utwórz konto",
+			"haveAccount": "Masz już konto?",
+			"login": "Zaloguj się",
+			"emailExists": "Konto z tym emailem już istnieje"
+		},
+		"resetPassword": {
+			"title": "Resetowanie hasła",
+			"subtitle": "Na Twój email wyślemy link, który pozwoli Ci zmienić hasło",
+			"sendResetLink": "Wyślij link resetujący",
+			"linkSent": "Link wysłany",
+			"linkSentMessage": "Teraz idź do swojego emaila i kliknij wygenerowany link.",
+			"emailRequired": "Email musi być wypełniony.",
+			"enterEmail": "Wpisz email"
+		}
+	},
+	"playlist": {
+		"myPlaylists": "Moje playlisty",
+		"createNew": "Utwórz nową",
+		"create": "Utwórz",
+		"createNewPlaylist": "Utwórz nową playlistę",
+		"addToPlaylist": "Dodaj do playlisty",
+		"removeFromPlaylist": "Usuń z playlisty",
+		"addSongToPlaylist": "Dodaj pieśń do playlisty",
+		"createEditForPlaylist": "Edytuj pieśń dla playlisty",
+		"save": "Zapisz",
+		"saved": "Zapisano",
+		"saving": "Zapisywanie...",
+		"share": "Udostępnij",
+		"linkCopiedToClipboard": "Link skopiowany do schowka",
+		"presentation": "Prezentacja",
+		"rename": "Zmień nazwę",
+		"playlistNamePlaceholder": "Nazwa playlisty",
+		"print": "Drukuj",
+		"openInNewTab": "Otwórz w nowej karcie",
+		"loading": "Ładowanie...",
+		"noPlaylists": "Brak playlist",
+		"more": "Więcej",
+		"selectPlaylistFromList": "Wybierz playlistę z listy",
+		"close": "Zamknij",
+		"transpose": {
+			"up": "Transponuj w górę",
+			"down": "Transponuj w dół"
+		},
+		"search": {
+			"placeholder": "Szukaj pieśni..."
+		}
+	},
+	"song": {
+		"transpose": "Transponuj",
+		"print": "Drukuj",
+		"edit": "Edytuj",
+		"delete": "Usuń",
+		"createCopy": "Utwórz kopię",
+		"addToPlaylist": "Dodaj do playlisty",
+		"source": "Źródło",
+		"author": "Autor",
+		"language": "Język",
+		"public": "Publiczne",
+		"validated": "Zwalidowane",
+		"hidChords": "Ukryj akordy",
+		"teamNote": "Notatka zespołu",
+		"openInNewWindow": "Otwórz w nowym oknie",
+		"deleted": {
+			"restored": "Pieśń {title} została przywrócona",
+			"message": "Ta pieśń została usunięta",
+			"restore": "Przywróć"
+		},
+		"admin": {
+			"advancedOptions": "Opcje zaawansowane",
+			"adminSettings": "Ustawienia administratora",
+			"showTranslations": "Pokaż inne tłumaczenia",
+			"translationsList": "Lista tłumaczeń",
+			"otherVersions": "Inne wersje tej pieśni",
+			"dataCopied": "Dane pieśni zostały skopiowane do schowka",
+			"songOptions": "Opcje pieśni",
+			"manageManualVerification": "Zarządzaj ręczną weryfikacją",
+			"copy": "Kopiuj",
+			"manualVerification": "Ręczna weryfikacja",
+			"cancel": "Anuluj"
+		},
+		"translations": {
+			"selectOther": "Wybierz inne tłumaczenie"
+		},
+		"songAdmin": {
+			"mediaSection": "Sekcja mediów"
+		}
+	},
+	"songPage": {
+		"topPanel": {
+			"cannotEditPublished": "Nie można edytować opublikowanej pieśni.",
+			"updateSuccess": {
+				"withTitle": "Pieśń {title} została edytowana.",
+				"withoutTitle": "Pieśń została edytowana."
+			}
+		},
+		"editButton": {
+			"errorEmpty": "Nie można zapisać pieśni z pustym polem",
+			"edit": "Edytuj",
+			"save": "Zapisz"
+		},
+		"createCopy": {
+			"menu": "Utwórz kopię",
+			"tooltip": "Utwórz prywatną kopię pieśni",
+			"button": "Utwórz edycję",
+			"subtitle": "Tworzy prywatną kopię pieśni."
+		},
+		"optionsMenu": {
+			"more": "Więcej opcji"
+		},
+		"sendToApproval": {
+			"menuTitle": "Opublikuj",
+			"menuSubtitle": "Wyślij pieśń do publikacji",
+			"dialogTitle": "Opublikuj",
+			"confirm": "Tak, opublikuj",
+			"success": "Pieśń została pomyślnie opublikowana i wysłana do zatwierdzenia.",
+			"question": "Chcesz opublikować pieśń, aby widzieli ją inni użytkownicy?"
+		},
+		"delete": {
+			"cannotDeletePublished": "Nie można usunąć opublikowanej pieśni.",
+			"successWithTitle": "Pieśń {title} została usunięta.",
+			"success": "Pieśń została usunięta.",
+			"menu": {
+				"removing": "Usuwanie...",
+				"removeSong": "Usuń pieśń...",
+				"deleted": "Usunięto",
+				"remove": "Usuń",
+				"removeSubtitle": "Usuń pieśń"
+			},
+			"button": {
+				"deleted": "Usunięto",
+				"delete": "Usuń"
+			},
+			"dialog": {
+				"title": "Czy na pewno chcesz usunąć pieśń?",
+				"removing": "Trwa usuwanie pieśni...",
+				"confirmation": "Pieśń zostanie usunięta na zawsze."
+			}
+		},
+		"hideChords": {
+			"show": "Pokaż akordy",
+			"hide": "Ukryj akordy"
+		},
+		"transpose": {
+			"title": "Transpozycja",
+			"increase": "Podnieś o półton",
+			"decrease": "Obniż o półton"
+		},
+		"print": {
+			"label": "Drukuj",
+			"tooltip": "Drukuj"
+		},
+		"rightPanel": {
+			"original": "To jest oryginał",
+			"translationOf": "Tłumaczenie oryginału",
+			"chooseOther": "Wybierz inne tłumaczenie",
+			"noTranslations": "Nie mamy jeszcze przypięte żadne inne tłumaczenia",
+			"support": {
+				"title": "Wesprzyj Chwalmy.com 🚀",
+				"intro": "Cześć! Ten śpiewnik tworzymy dla Was w naszym wolnym czasie.",
+				"description": "Wesprzyj nas, abyśmy mogli tworzyć dalej, dodać kolejne ulepszenia i naprawić wszystkie błędy.",
+				"button": "Wesprzyj"
+			}
+		},
+		"sources": {
+			"title": "Źródła:"
+		}
+	},
+	"teamPage": {
+		"overviewTitle": "Przegląd",
+		"welcomeTitle": "Witamy na stronie głównej zespołu",
+		"welcomeNote": "Niech aplikacja dobrze Wam służy",
+		"quickActions": "Szybkie akcje",
+		"leftPanel": {
+			"title": "Zespół uwielbienia",
+			"expand": "Rozwiń menu",
+			"collapse": "Zwiń menu",
+			"menu": {
+				"overview": "Przegląd",
+				"songlist": "Lista pieśni",
+				"playlists": "Playlisty",
+				"statistics": "Statystyki",
+				"people": "Ludzie",
+				"settings": "Ustawienia"
+			}
+		}
+	},
+	"create": {
+		"validation": {
+			"invalidContent": "Nieprawidłowa zawartość",
+			"contentRequirements": "Zawartość musi być dłuższa i mieć co najmniej dwie linie"
+		}
+	},
+	"admin": {
+		"validation": "Walidacja zawartości",
+		"textAndChords": "Tekst i akordy",
+		"automatic": "Automatycznie",
+		"setValidation": "Wybierz walidację zawartości",
+		"validationSet": "Filtrowanie ustawione na",
+		"parseFile": "Parsuj plik",
+		"errorOccurred": "Wystąpił błąd",
+		"userNotAdmin": "Użytkownik nie jest administratorem",
+		"noFilesSelected": "Nie wybrano plików",
+		"publishing": "Publikowanie",
+		"publishingResult": "Wynik publikowania",
+		"layout": {
+			"songs": "Pieśni",
+			"create": "Utwórz"
+		},
+		"create": {
+			"unknownStep": "Nieznany krok",
+			"previous": "Poprzedni",
+			"continue": "Kontynuuj"
+		},
+		"mediaSection": "Sekcja mediów",
+		"songAdmin": {
+			"manageVerification": "Zarządzaj weryfikacją",
+			"manualVerification": "Ręczna weryfikacja",
+			"cancel": "Anuluj",
+			"songManuallyVerified": "Pieśń jest ręcznie zweryfikowana",
+			"songManuallyRejected": "Pieśń jest ręcznie odrzucona",
+			"songNotManuallyVerified": "Pieśń nie jest ręcznie zweryfikowana"
+		},
+		"filter": {
+			"valid": "Prawidłowe",
+			"invalid": "Nieprawidłowe",
+			"automatic": "Automatyczne",
+			"filterSetTo": "Filtr ustawiony na {label}",
+			"buttonTitle": "Ustaw filtr",
+			"popupTitle": "Wybierz filtr"
+		},
+		"translationType": {
+			"original": "Oryginał",
+			"translation": "Tłumaczenie",
+			"officialTranslation": "Oficjalne tłumaczenie",
+			"unknown": "Nieznany",
+			"setTo": "Typ tłumaczenia ustawiony na {type}",
+			"chooseType": "Wybierz typ tłumaczenia",
+			"selectType": "Wybierz typ tłumaczenia"
+		},
+		"verification": {
+			"verify": "Zweryfikuj",
+			"reject": "Odrzuć",
+			"cancelVerification": "Anuluj weryfikację",
+			"cancelRejection": "Anuluj odrzucenie"
+		},
+		"songInfo": {
+			"uploadedByProgram": "Przesłane przez program",
+			"extendedInfo": "Rozszerzone informacje",
+			"language": "Język",
+			"ggFilterCompliant": "Zgodne z filtrem GG",
+			"public": "Publiczne",
+			"yes": "Tak",
+			"no": "Nie"
+		},
+		"goToSong": "Przejdź do pieśni",
+		"parseFile": "Parsuj plik",
+		"selectFileToProcess": "Wybierz plik do przetworzenia",
+		"openProcessedData": "Otwórz przetworzone dane",
+		"parentSong": "Pieśń nadrzędna",
+		"additionalVariant": "dodatkowy wariant",
+		"additionalVariants": "dodatkowe warianty",
+		"additionalVariantsGenitive": "dodatkowych wariantów",
+		"selectDifferentSong": "Wybierz inną pieśń",
+		"addToEmptyFamily": "Dodaj do pustej rodziny",
+		"addToFamily": "Dodaj do rodziny",
+		"menu": {
+			"dashboard": "Panel",
+			"addSong": "Dodaj pieśń",
+			"songs": "Pieśni",
+			"pendingApproval": "Do zatwierdzenia",
+			"recent": "Ostatnie",
+			"tags": "Tagi"
+		},
+		"approval": {
+			"reject": "Odrzuć",
+			"continue": "Kontynuuj"
+		},
+		"bridgeServices": {
+			"title": "Połączone programy",
+			"timeAgo": "{seconds}s temu",
+			"external": "Zewnętrzny",
+			"noConnectedPrograms": "Brak połączonych programów...",
+			"showAll": "Pokaż wszystko"
+		},
+		"songCount": {
+			"title": "Bieżąca liczba pieśni",
+			"loading": "Ładowanie...",
+			"autoRefreshEnabled": "Automatyczne odświeżanie jest włączone"
+		},
+		"interpret": {
+			"label": "Wykonawca",
+			"placeholder": "Wpisz imię wykonawcy",
+			"addInterpreter": "Dodaj wykonawcę",
+			"added": "Dodano"
+		},
+		"userToken": {
+			"title": "Pobierz token użytkownika",
+			"getToken": "Pobierz token",
+			"myToken": "Mój token",
+			"emailPlaceholder": "Email",
+			"passwordPlaceholder": "Hasło",
+			"tokenCopied": "Token skopiowany do schowka..."
+		}
+	},
+	"teams": {
+		"title": "Zespoły",
+		"createTeam": "Utwórz zespół",
+		"joinTeam": "Dołącz do zespołu",
+		"myTeams": "Moje zespoły",
+		"teamSettings": "Ustawienia zespołu",
+		"createPrivateTeam": "Utwórz prywatny zespół",
+		"enterTeamName": "Wpisz nazwę zespołu",
+		"errorMessage": "Wystąpił błąd. Proszę sprawdzić nazwę zespołu",
+		"tryOut": "Wypróbuj",
+		"simplifyWork": "Uprość pracę w swoim",
+		"inYourWorshipTeam": "zespole uwielbienia",
+		"freeToolsDescription": "Za darmo oferujemy narzędzia, które ułatwią Ci przygotowanie do wspólnego grania",
+		"backgroundShape": "Losowy kształt w tle",
+		"teamScreenPreview": "Podgląd ekranu zespołu",
+		"joinPanel": {
+			"cta": "Dołącz do istniejącego zespołu za pomocą kodu",
+			"button": "Dołącz"
+		},
+		"joinPopup": {
+			"title": "Dołącz do zespołu",
+			"subtitle": "Dołącz do istniejącego zespołu za pomocą kodu",
+			"joinButton": "Dołącz",
+			"placeholder": "Wpisz kod",
+			"success": "Witamy w zespole!",
+			"errors": {
+				"notFound": "Grupa z tym kodem nie istnieje",
+				"unknown": "Nieznany błąd"
+			}
+		},
+		"settings": {
+			"title": "Ustawienia",
+			"basicInfo": "Podstawowe informacje",
+			"teamName": "Nazwa zespołu",
+			"joinCode": "Kod dołączenia",
+			"confirmDelete": "Jesteś pewien?",
+			"closePopupTooltip": "Zamknij popup bez akcji",
+			"teamDeleted": "Zespół został usunięty"
+		},
+		"statistics": {
+			"trendingSongs": "Popularne pieśni",
+			"timeFrame": "W ciągu ostatnich 40 dni",
+			"mostTrendSong": "Najpopularniejsza pieśń to",
+			"mostPlayedSongs": "10 najczęściej granych pieśni",
+			"timeFrame90": "W ciągu ostatnich 90 dni",
+			"favoriteSongs": "Najbardziej ulubione pieśni",
+			"leastPlayedSongs": "10 najmniej granych pieśni",
+			"everySongPlayed": "Każda pieśń zagrana",
+			"noDataAvailable": "Brak dostępnych danych",
+			"needAtLeastOneSong": "Aby zobaczyć trendy, musisz mieć zagraną co najmniej 1 pieśń",
+			"plays": " odtworzeń",
+			"dataNotAvailable": "Dane niedostępne",
+			"favoriteSongsRequirement": "Aby zobaczyć ulubione, musisz mieć co najmniej 3 pieśni w ulubionych zespołu",
+			"allTime": "Cały czas",
+			"howManyTimesPlayed": "Ile razy co było grane",
+			"playedXTimes": "Zagrane {count} razy"
+		},
+		"events": {
+			"eventCreated": "Wydarzenie utworzone",
+			"deleteEventTooltip": "Usuń wydarzenie",
+			"confirmDelete": "Potwierdź usunięcie",
+			"delete": "Usuń",
+			"cancel": "Anuluj",
+			"create": "Utwórz",
+			"save": "Zapisz",
+			"openPlaylistTooltip": "Otwórz playlistę",
+			"openPlaylist": "Otwórz playlistę",
+			"createEvent": "Utwórz wydarzenie",
+			"eventDetail": "Szczegóły wydarzenia",
+			"edit": "Edytuj",
+			"eventNamePlaceholder": "Nazwa wydarzenia",
+			"nameEventTooltip": "Nazwij wydarzenie",
+			"renameEventTooltip": "Zmień nazwę wydarzenia",
+			"changeDescriptionTooltip": "Zmień opis",
+			"addDescriptionPlaceholder": "Dodaj opis",
+			"date": "Data",
+			"eventDateLabel": "Data wydarzenia",
+			"pastDateWarning": "Data w przeszłości",
+			"leader": "Lider",
+			"chooseLeaderTooltip": "Wybierz lidera",
+			"choose": "Wybierz",
+			"members": "Członkowie",
+			"addMemberTooltip": "Dodaj członka",
+			"add": "Dodaj",
+			"selectPlaylistTooltip": "Wybierz playlistę z listy"
+		},
+		"menu": {
+			"songs": "Pieśni"
+		},
+		"playlists": {
+			"upcoming": "Nadchodzące",
+			"schedulePlaylist": "Zaplanuj playlistę",
+			"schedule": "Zaplanuj",
+			"pinNewPlaylist": "Przypnij nową playlistę",
+			"pinPlaylist": "Przypnij playlistę",
+			"createNew": "Utwórz nową",
+			"lastUpdated": "Zaktualizowano",
+			"yourRecent": "Twoje ostatnie",
+			"yourRecentDescription": "Playlisty, nad którymi ostatnio pracowałeś",
+			"openPlaylist": "Otwórz playlistę",
+			"events": {
+				"openDetail": "Otwórz szczegóły"
+			}
+		},
+		"playlist": {
+			"openSongTooltip": "Otwórz pieśń poza playlistą",
+			"open": "Otwórz"
+		},
+		"song": {
+			"edit": "Edytuj",
+			"editTooltip": "Edytuj pieśń dla tego zespołu",
+			"cancel": "Anuluj",
+			"save": "Zapisz",
+			"copyTitle": "Krok przed edycją",
+			"continue": "Kontynuuj",
+			"copying": "Kopiowanie...",
+			"copyDescription": "Pieśń, którą chcesz edytować, jest dodana z publicznego śpiewnika. Jeśli chcesz edytować pieśń, utworzymy Ci kopię tej pieśni, którą będziesz mógł edytować."
+		},
+		"loading": {
+			"logoAlt": "Logo zespołu"
+		},
+		"people": {
+			"people": "Ludzie",
+			"invite": "Zaproś",
+			"inviteNewMembers": "Zaproś nowych członków zespołu",
+			"copyLink": "Skopiuj link",
+			"linkCopied": "Link skopiowany",
+			"done": "Gotowe",
+			"leftTeam": "Opuściłeś zespół",
+			"cannotLeaveOwnedTeam": "Nie można opuścić zespołu, który posiadasz",
+			"leaveTeam": "Opuść zespół",
+			"leave": "Opuść",
+			"leaveTeamConfirm": "Opuścić zespół?",
+			"removeFromTeamConfirm": "Usunąć z zespołu?",
+			"leaveTeamDescription": "Czy na pewno chcesz opuścić ten zespół?",
+			"removeFromTeamDescription": "Czy na pewno chcesz usunąć tę osobę z zespołu?",
+			"remove": "Usuń",
+			"cancel": "Anuluj",
+			"removeFromTeam": "Usuń z zespołu",
+			"setRoleTo": "Ustaw rolę na",
+			"actions": "Akcje",
+			"cannotEditSelfOrOwner": "Nie można edytować siebie lub właściciela",
+			"confirmRemove": "Czy na pewno usunąć?",
+			"confirmRemoveSelectedPeople": "Czy na pewno chcesz usunąć wybrane osoby z grupy?",
+			"cannotRemoveSelf": "Nie można usunąć siebie",
+			"saveRole": "Zapisz rolę",
+			"changeRole": "Zmień rolę",
+			"roleWasSet": "Rola została ustawiona.",
+			"selectAll": "Zaznacz wszystko",
+			"name": "Imię",
+			"email": "Email",
+			"role": "Rola",
+			"you": "Ty",
+			"noOthersHere": "Nikt inny tutaj nie jest",
+			"addNewMember": "Dodaj nowego członka",
+			"addUser": "Dodaj użytkownika",
+			"addUserSubtitle": "Dodaj użytkownika do zespołu za pomocą emaila",
+			"addUserError": "Wystąpił błąd. Sprawdź, czy email jest prawidłowo wpisany...",
+			"invitation": {
+				"inviteNewMembers": "Zaproś nowych członków zespołu",
+				"copyLink": "Skopiuj link",
+				"linkCopied": "Link skopiowany",
+				"done": "Gotowe",
+				"byCode": {
+					"title": "Za pomocą kodu",
+					"info": {
+						"start": "Kod można udostępnić na stronie",
+						"teamsLink": "Zespoły",
+						"end": "gdzie można dołączyć do zespołu."
+					},
+					"description": "Udostępnij ten kod"
+				},
+				"byLink": {
+					"title": "Za pomocą linku",
+					"description": "Lub udostępnij ten link"
+				}
+			}
+		},
+		"layout": {
+			"adminOptions": {
+				"toggleMenuMode": {
+					"title": "Przełącz tryb menu",
+					"toLightMode": "Przełącz na tryb jasny",
+					"toDarkMode": "Przełącz na tryb ciemny"
+				},
+				"statistics": {
+					"label": "Statystyki",
+					"subtitle": "Pokaż statystyki zespołu"
+				}
+			}
+		},
+		"providers": {
+			"songSelect": {
+				"teamsOption": "Opcja zespołowa"
+			},
+			"outsideLinkBlocker": {
+				"title": "Link zewnętrzny",
+				"message": "Próbujesz opuścić środowisko zespołu. Czy chcesz kontynuować?"
+			}
+		}
+	},
+	"account": {
+		"title": "Twoje konto",
+		"tabs": {
+			"info": "Informacje",
+			"changePassword": "Zmień hasło"
+		},
+		"basicInfo": {
+			"firstName": "Imię",
+			"lastName": "Nazwisko",
+			"email": "Email"
+		},
+		"passwordChange": {
+			"title": "Zmiana hasła",
+			"oldPassword": "Stare hasło",
+			"newPassword": "Nowe hasło",
+			"newPasswordAgain": "Nowe hasło ponownie",
+			"enterOldPassword": "Wpisz poprzednie hasło",
+			"enterNewPassword": "Wpisz nowe hasło",
+			"changePasswordButton": "Zmień hasło",
+			"googleAccountMessage": "Jesteś zalogowany przez Google, nie masz hasła, które mógłbyś zmienić",
+			"errors": {
+				"somethingWrong": "Coś poszło nie tak.",
+				"allFieldsRequired": "Wszystkie pola muszą być wypełnione.",
+				"samePassword": "Nowe hasło nie może być takie samo jak stare.",
+				"passwordMismatch": "Nowe hasła się nie zgadzają.",
+				"wrongOldPassword": "Coś poszło nie tak. Sprawdź, czy prawidłowo wpisałeś stare hasło.",
+				"invalidLink": "Nieprawidłowy lub wygasły link do resetowania hasła."
+			},
+			"success": "Hasło zostało pomyślnie zmienione.",
+			"successMessage": "Hasło zostało pomyślnie zmienione. Możesz się teraz zalogować."
+		},
+		"myToken": "Mój token",
+		"favourites": {
+			"title": "Moje ulubione",
+			"totalSongs": "Łącznie {count} pieśni",
+			"noFavourites": "Nie masz ulubionych pieśni.",
+			"sortBy": {
+				"label": "Sortuj według:",
+				"dateAdded": "Daty dodania",
+				"title": "Tytułu"
+			}
+		}
+	},
+	"upload": {
+		"title": "Prześlij",
+		"uploadFile": "Prześlij plik",
+		"uploadFileSubtitle": "Automatycznie konwertuj pieśń z obrazu",
+		"writeManually": "Napisz ręcznie",
+		"createTooltip": "Dodaj",
+		"createPrivately": "Utwórz (niepublicznie)",
+		"uploadSong": "Prześlij pieśń",
+		"songTitle": "Tytuł pieśni",
+		"songContent": "Zawartość pieśni",
+		"dragAndDrop": "Przeciągnij pliki tutaj",
+		"selectFiles": "Wybierz pliki",
+		"supportedFormats": "Obsługiwane formaty",
+		"songDataCopied": "Dane pieśni skopiowane.",
+		"uploading": "Przesyłanie",
+		"queueing": "Czekanie w kolejce",
+		"processing": "Przetwarzanie plików",
+		"processed": "Przetworzone",
+		"errorOccurred": "Wystąpił błąd",
+		"pleaseWait": "Proszę czekać",
+		"withAI": "Z pomocą AI",
+		"copy": "Kopiuj",
+		"sheet": {
+			"foundIn": "Znalezione w <strong>{fileName}</strong>",
+			"titlePlaceholder": "Wpisz tytuł pieśni",
+			"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"
+		}
+	},
+	"songsList": {
+		"title": "Lista wszystkich pieśni"
+	},
+	"loadingScreen": {
+		"message": "Ładowanie aplikacji..."
+	},
+	"search": {
+		"searchSongs": "Szukaj pieśni",
+		"searchSong": "Znajdź pieśń",
+		"searchByTitleOrText": "Szukaj według tytułu lub części tekstu",
+		"noResults": "Brak wyników",
+		"searching": "Szukanie...",
+		"globalSongbook": "Z globalnego śpiewnika",
+		"mySongs": "Z moich pieśni",
+		"teamSongbook": "Z śpiewnika zespołu"
+	},
+	"transpose": {
+		"title": "Transpozycja",
+		"increaseHalfTone": "Podnieś o półton",
+		"decreaseHalfTone": "Obniż o półton",
+		"noChords": "Pieśń nie ma akordów"
+	},
+	"userNote": {
+		"deleteNote": "Usuń prywatną notatkę",
+		"saveNote": "Zapisz prywatną notatkę",
+		"add": "Dodaj notatkę",
+		"title": "Twoja notatka",
+		"edit": "Edytuj notatkę",
+		"placeholder": "Napisz swoją notatkę...",
+		"cancel": "Anuluj",
+		"deleteTooltip": "Usuń notatkę",
+		"saveTooltip": "Zapisz notatkę",
+		"delete": "Usuń",
+		"save": "Zapisz"
+	},
+	"filters": {
+		"public": "Publiczne",
+		"private": "Prywatne",
+		"addFilter": "Dodaj filtr"
+	},
+	"buttons": {
+		"addNewSong": "Dodaj nową pieśń",
+		"addSongToPlaylist": "Dodaj pieśń do playlisty",
+		"test": "Testuję",
+		"publish": "Opublikuj",
+		"unpublish": "Anuluj publikację"
+	},
+	"print": {
+		"print": "Drukuj",
+		"options": "Opcje",
+		"advancedPrintSettings": "Zaawansowane ustawienia druku",
+		"showChords": "Pokaż akordy",
+		"printOptions": "Opcje druku",
+		"useLandscapeView": "Użyj widoku poziomego",
+		"afterPrintingCanClose": "Po wydrukowaniu możesz zamknąć okno",
+		"closeAndGoBack": "Zamknij i wróć"
+	},
+	"favourites": {
+		"title": "Ulubione",
+		"noFavourites": "Brak ulubionych pieśni",
+		"addToFavourites": "Dodaj do ulubionych",
+		"removeFromFavourites": "Usuń z ulubionych",
+		"songCreatedInTeam": "Pieśń utworzona w zespole",
+		"open": "Otwórz",
+		"remove": "Usuń"
+	},
+	"mySongs": {
+		"title": "Moje pieśni",
+		"noSongs": "Brak pieśni",
+		"edit": "Edytuj",
+		"delete": "Usuń",
+		"public": "Publiczna",
+		"private": "Prywatna",
+		"open": "Otwórz",
+		"deleteDialog": {
+			"title": "Czy na pewno chcesz usunąć pieśń?",
+			"cancel": "Anuluj",
+			"delete": "Usuń",
+			"confirmMessage": "Czy na pewno chcesz usunąć pieśń '{title}'?"
+		}
+	},
+	"songEditor": {
+		"title": "Edytor pieśni",
+		"save": "Zapisz",
+		"cancel": "Anuluj",
+		"mark": "Oznacz",
+		"verse": "Zwrotka",
+		"chorus": "Refren",
+		"bridge": "Bridge",
+		"markVerse": "Oznacz zwrotkę",
+		"markChorus": "Oznacz refren",
+		"markBridge": "Oznacz bridge",
+		"insertChord": "Wstaw akord",
+		"titlePlaceholder": "Wpisz tytuł pieśni",
+		"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"
+	},
+	"subdomain": {
+		"title": "Subdomena",
+		"notFound": "Subdomena nie znaleziona",
+		"redirectingHome": "Wkrótce zostaniesz przekierowany na stronę główną..."
+	},
+	"deleteDialog": {
+		"title": "Usuń",
+		"confirmMessage": "Czy na pewno chcesz usunąć?",
+		"confirm": "Usuń",
+		"cancel": "Anuluj"
+	},
+	"errors": {
+		"forbidden": "Nie masz wystarczających uprawnień do wyświetlenia zawartości!",
+		"notFound": "Strona nie znaleziona",
+		"notFoundDescription": "Wygląda na to, że dotarłeś do niezbadanych obszarów aplikacji. Możesz spróbować wrócić na stronę główną.",
+		"goHome": "STRONA GŁÓWNA",
+		"serverError": "Gdzieś wystąpił błąd!",
+		"unauthorized": "Nieautoryzowany dostęp",
+		"tokenExpired": "Token wygasł"
+	},
+	"maintenance": {
+		"workInProgress": "Strona jest obecnie w trakcie konserwacji.",
+		"temporarilyUnavailable": "Przepraszamy, strona jest tymczasowo niedostępna.",
+		"tryAgainLater": "Spróbuj ponownie za <b>godzinę</b>."
+	},
+	"suggestions": {
+		"sheep": "Owca",
+		"noIdea": "Brak pomysłu?",
+		"chooseSuggestion": "Wybierz pieśń z propozycji poniżej lub z listy wszystkich pieśni"
+	}
+}

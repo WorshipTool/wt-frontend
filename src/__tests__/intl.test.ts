@@ -1,12 +1,19 @@
-import { readFileSync } from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 
 describe('Internationalization Tests', () => {
 	const contentPath = join(process.cwd(), 'content')
 	
+	// Dynamically discover all JSON files in content folder
+	const getAllJsonFiles = (): string[] => {
+		return readdirSync(contentPath)
+			.filter(file => file.endsWith('.json'))
+			.sort()
+	}
+	
 	// Test that JSON files exist and are valid
 	describe('JSON content files', () => {
-		const files = ['chvalotce.json', 'hallelujahhub.json']
+		const files = getAllJsonFiles()
 		
 		files.forEach(filename => {
 			it(`should have valid JSON structure in ${filename}`, () => {
@@ -32,19 +39,20 @@ describe('Internationalization Tests', () => {
 
 	// Test that TypeScript definition matches JSON content
 	describe('TypeScript definitions consistency', () => {
-		it('should have core translation sections in both files', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
+		it('should have core translation sections in all files', () => {
+			const files = getAllJsonFiles()
+			const contents = files.map(file => ({
+				filename: file,
+				content: JSON.parse(readFileSync(join(contentPath, file), 'utf-8'))
+			}))
 			
-			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
-			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
-			
-			// Test that both files have core sections
+			// Test that all files have core sections
 			const coreKeys = ['common', 'navigation', 'home', 'auth']
 			
-			coreKeys.forEach(key => {
-				expect(chvalotceContent).toHaveProperty(key)
-				expect(hallelujahhubContent).toHaveProperty(key)
+			contents.forEach(({ filename, content }) => {
+				coreKeys.forEach(key => {
+					expect(content).toHaveProperty(key)
+				})
 			})
 		})
 	})
@@ -66,14 +74,14 @@ describe('Internationalization Tests', () => {
 			expect(typeof content.common.cancel).toBe('string')
 		})
 
-		it('should have core translation keys in both locales', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
+		it('should have core translation keys in all locales', () => {
+			const files = getAllJsonFiles()
+			const contents = files.map(file => ({
+				filename: file,
+				content: JSON.parse(readFileSync(join(contentPath, file), 'utf-8'))
+			}))
 			
-			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
-			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
-			
-			// Test that core translation keys exist in both files
+			// Test that core translation keys exist in all files
 			const coreTranslationPaths = [
 				'common.yes',
 				'common.no',
@@ -85,18 +93,17 @@ describe('Internationalization Tests', () => {
 			
 			coreTranslationPaths.forEach(path => {
 				const keys = path.split('.')
-				let chvalotceValue = chvalotceContent
-				let hallelujahhubValue = hallelujahhubContent
 				
-				keys.forEach(key => {
-					chvalotceValue = chvalotceValue?.[key]
-					hallelujahhubValue = hallelujahhubValue?.[key]
+				contents.forEach(({ filename, content }) => {
+					let value = content
+					
+					keys.forEach(key => {
+						value = value?.[key]
+					})
+					
+					expect(value).toBeDefined()
+					expect(typeof value).toBe('string')
 				})
-				
-				expect(chvalotceValue).toBeDefined()
-				expect(hallelujahhubValue).toBeDefined()
-				expect(typeof chvalotceValue).toBe('string')
-				expect(typeof hallelujahhubValue).toBe('string')
 			})
 		})
 	})
@@ -105,15 +112,15 @@ describe('Internationalization Tests', () => {
 	describe('Content version switching', () => {
 		// Mock the content version logic directly without using next-intl
 		function getContentByVersion(contentVersion: string) {
-			const chvalotcePath = join(process.cwd(), 'content', 'chvalotce.json')
-			const hallelujahhubPath = join(process.cwd(), 'content', 'hallelujahhub.json')
-			
+			const files = getAllJsonFiles()
 			const version = contentVersion || 'chvalotce'
 			
-			if (version === 'chvalotce') {
-				return JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
-			} else if (version === 'hallelujahhub') {
-				return JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
+			// Remove .json extension for comparison
+			const versionFile = `${version}.json`
+			
+			if (files.includes(versionFile)) {
+				const filePath = join(process.cwd(), 'content', versionFile)
+				return JSON.parse(readFileSync(filePath, 'utf-8'))
 			} else {
 				throw new Error(`Content version "${version}" not found`)
 			}
@@ -176,14 +183,14 @@ describe('Internationalization Tests', () => {
 		})
 	})
 
-	// Test that both JSON files have identical structure
+	// Test that all JSON files have identical structure
 	describe('JSON structure consistency', () => {
-		it('should have identical structure between chvalotce.json and hallelujahhub.json', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
-			
-			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
-			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
+		it('should have identical structure across all JSON files', () => {
+			const files = getAllJsonFiles()
+			const contents = files.map(file => ({
+				filename: file,
+				content: JSON.parse(readFileSync(join(contentPath, file), 'utf-8'))
+			}))
 			
 			function getStructure(obj: any, path = ''): string[] {
 				const keys: string[] = []
@@ -197,28 +204,40 @@ describe('Internationalization Tests', () => {
 				return keys.sort()
 			}
 			
-			const chvalotceStructure = getStructure(chvalotceContent)
-			const hallelujahhubStructure = getStructure(hallelujahhubContent)
+			// Get structure from the first file as reference
+			const referenceFile = contents[0]
+			const referenceStructure = getStructure(referenceFile.content)
 			
-			// Compare structures
-			expect(chvalotceStructure).toEqual(hallelujahhubStructure)
-			
-			// If structures don't match, show the difference
-			if (JSON.stringify(chvalotceStructure) !== JSON.stringify(hallelujahhubStructure)) {
-				const missingInHallelujah = chvalotceStructure.filter(key => !hallelujahhubStructure.includes(key))
-				const missingInChvalotce = hallelujahhubStructure.filter(key => !chvalotceStructure.includes(key))
+			// Compare all other files against the reference
+			contents.slice(1).forEach(({ filename, content }) => {
+				const currentStructure = getStructure(content)
 				
-				console.error('Missing keys in hallelujahhub.json:', missingInHallelujah)
-				console.error('Missing keys in chvalotce.json:', missingInChvalotce)
-			}
+				// Compare structures
+				try {
+					expect(currentStructure).toEqual(referenceStructure)
+				} catch (error) {
+					// If structures don't match, show detailed differences
+					const missingKeys = referenceStructure.filter(key => !currentStructure.includes(key))
+					const extraKeys = currentStructure.filter(key => !referenceStructure.includes(key))
+					
+					console.error(`Structure mismatch in ${filename}:`)
+					if (missingKeys.length > 0) {
+						console.error(`Missing keys:`, missingKeys)
+					}
+					if (extraKeys.length > 0) {
+						console.error(`Extra keys:`, extraKeys)
+					}
+					throw error
+				}
+			})
 		})
 		
-		it('should have matching value types for all keys', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const hallelujahhubPath = join(contentPath, 'hallelujahhub.json')
-			
-			const chvalotceContent = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
-			const hallelujahhubContent = JSON.parse(readFileSync(hallelujahhubPath, 'utf-8'))
+		it('should have matching value types for all keys across all files', () => {
+			const files = getAllJsonFiles()
+			const contents = files.map(file => ({
+				filename: file,
+				content: JSON.parse(readFileSync(join(contentPath, file), 'utf-8'))
+			}))
 			
 			function getValueTypes(obj: any, path = ''): { [key: string]: string } {
 				const types: { [key: string]: string } = {}
@@ -239,33 +258,85 @@ describe('Internationalization Tests', () => {
 				return types
 			}
 			
-			const chvalotceTypes = getValueTypes(chvalotceContent)
-			const hallelujahhubTypes = getValueTypes(hallelujahhubContent)
+			// Get types from the first file as reference
+			const referenceFile = contents[0]
+			const referenceTypes = getValueTypes(referenceFile.content)
 			
-			// Check that all keys have the same types
-			for (const key in chvalotceTypes) {
-				expect(hallelujahhubTypes[key]).toBeDefined()
-				expect(hallelujahhubTypes[key]).toBe(chvalotceTypes[key])
+			// Compare all other files against the reference
+			contents.slice(1).forEach(({ filename, content }) => {
+				const currentTypes = getValueTypes(content)
+				
+				// Check that all keys have the same types
+				for (const key in referenceTypes) {
+					expect(currentTypes[key]).toBeDefined()
+					expect(currentTypes[key]).toBe(referenceTypes[key])
+				}
+				
+				for (const key in currentTypes) {
+					expect(referenceTypes[key]).toBeDefined()
+					expect(referenceTypes[key]).toBe(currentTypes[key])
+				}
+			})
+		})
+		
+		it('should have all interpolation placeholders consistent across files', () => {
+			const files = getAllJsonFiles()
+			const contents = files.map(file => ({
+				filename: file,
+				content: JSON.parse(readFileSync(join(contentPath, file), 'utf-8'))
+			}))
+			
+			function getInterpolationKeys(obj: any, path = ''): { [key: string]: string[] } {
+				const interpolations: { [key: string]: string[] } = {}
+				for (const key in obj) {
+					const currentPath = path ? `${path}.${key}` : key
+					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+						Object.assign(interpolations, getInterpolationKeys(obj[key], currentPath))
+					} else if (typeof obj[key] === 'string') {
+						// Extract interpolation placeholders {variable}
+						const matches = obj[key].match(/\{[^}]+\}/g) || []
+						if (matches.length > 0) {
+							interpolations[currentPath] = matches.sort()
+						}
+					}
+				}
+				return interpolations
 			}
 			
-			for (const key in hallelujahhubTypes) {
-				expect(chvalotceTypes[key]).toBeDefined()
-				expect(chvalotceTypes[key]).toBe(hallelujahhubTypes[key])
-			}
+			// Get interpolations from the first file as reference
+			const referenceFile = contents[0]
+			const referenceInterpolations = getInterpolationKeys(referenceFile.content)
+			
+			// Compare all other files against the reference
+			contents.slice(1).forEach(({ filename, content }) => {
+				const currentInterpolations = getInterpolationKeys(content)
+				
+				// Check that interpolation keys match
+				for (const path in referenceInterpolations) {
+					if (currentInterpolations[path]) {
+						expect(currentInterpolations[path]).toEqual(referenceInterpolations[path])
+					} else {
+						expect(currentInterpolations[path]).toBeDefined()
+					}
+				}
+				
+				for (const path in currentInterpolations) {
+					expect(referenceInterpolations[path]).toBeDefined()
+				}
+			})
 		})
 	})
 
 	// Test for common translation issues
 	describe('Translation quality checks', () => {
-		it('should not have empty translation strings', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const content = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
+		it('should not have empty translation strings in any file', () => {
+			const files = getAllJsonFiles()
 			
 			function checkForEmptyStrings(obj: any, path = ''): string[] {
 				const emptyKeys: string[] = []
 				for (const key in obj) {
 					const currentPath = path ? `${path}.${key}` : key
-					if (typeof obj[key] === 'object' && obj[key] !== null) {
+					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
 						emptyKeys.push(...checkForEmptyStrings(obj[key], currentPath))
 					} else if (typeof obj[key] === 'string' && obj[key].trim() === '') {
 						emptyKeys.push(currentPath)
@@ -274,19 +345,21 @@ describe('Internationalization Tests', () => {
 				return emptyKeys
 			}
 			
-			const emptyKeys = checkForEmptyStrings(content)
-			expect(emptyKeys).toHaveLength(0)
+			files.forEach(filename => {
+				const content = JSON.parse(readFileSync(join(contentPath, filename), 'utf-8'))
+				const emptyKeys = checkForEmptyStrings(content)
+				expect(emptyKeys).toHaveLength(0)
+			})
 		})
 
-		it('should have interpolation placeholders in correct format', () => {
-			const chvalotcePath = join(contentPath, 'chvalotce.json')
-			const content = JSON.parse(readFileSync(chvalotcePath, 'utf-8'))
+		it('should have interpolation placeholders in correct format in all files', () => {
+			const files = getAllJsonFiles()
 			
 			function checkInterpolations(obj: any, path = ''): string[] {
 				const invalidInterpolations: string[] = []
 				for (const key in obj) {
 					const currentPath = path ? `${path}.${key}` : key
-					if (typeof obj[key] === 'object' && obj[key] !== null) {
+					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
 						invalidInterpolations.push(...checkInterpolations(obj[key], currentPath))
 					} else if (typeof obj[key] === 'string') {
 						// Check for next-intl interpolation format {variable}
@@ -304,8 +377,39 @@ describe('Internationalization Tests', () => {
 				return invalidInterpolations
 			}
 			
-			const invalidInterpolations = checkInterpolations(content)
-			expect(invalidInterpolations).toHaveLength(0)
+			files.forEach(filename => {
+				const content = JSON.parse(readFileSync(join(contentPath, filename), 'utf-8'))
+				const invalidInterpolations = checkInterpolations(content)
+				expect(invalidInterpolations).toHaveLength(0)
+			})
+		})
+
+		it('should have consistent branding across all files', () => {
+			const files = getAllJsonFiles()
+			const expectedBrandings: { [filename: string]: { appName: string, email: string } } = {
+				'chvalotce.json': { appName: 'Chvalotce.cz', email: 'chvalotce@chvalotce.cz' },
+				'hallelujahhub.json': { appName: 'HallelujahHub', email: 'contact@hallelujahhub.com' },
+				'chwalmy.json': { appName: 'Chwalmy.com', email: 'kontakt@chwalmy.com' }
+			}
+			
+			files.forEach(filename => {
+				const content = JSON.parse(readFileSync(join(contentPath, filename), 'utf-8'))
+				const expected = expectedBrandings[filename]
+				
+				if (expected) {
+					expect(content.config?.branding?.appName).toBe(expected.appName)
+					expect(content.config?.contact?.main).toBe(expected.email)
+				}
+			})
+		})
+
+		it('should have all content files properly registered', () => {
+			const files = getAllJsonFiles()
+			const expectedFiles = ['chvalotce.json', 'hallelujahhub.json', 'chwalmy.json']
+			
+			expectedFiles.forEach(expectedFile => {
+				expect(files).toContain(expectedFile)
+			})
 		})
 	})
 })
