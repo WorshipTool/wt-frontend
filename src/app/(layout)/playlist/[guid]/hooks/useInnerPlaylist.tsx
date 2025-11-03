@@ -22,6 +22,7 @@ import {
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from 'react'
 import { v4 } from 'uuid'
@@ -80,23 +81,32 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const _playlist = usePlaylist(guid, undefined, isCurrent)
 	const playlist = isCurrent ? current : _playlist
 
-	const [hasInitialized, setHasInitialized] = useState(false)
+	const hasInitializedRef = useRef(false)
+	const lastPlaylistGuidRef = useRef<PlaylistGuid | null>(null)
 
 	const editingApi = useApi('playlistEditingApi')
 	const packGettingApi = useApi('songGettingApi')
 
 	useEffect(() => {
 		if (playlist.playlist && !playlist.loading) {
-			setState({
-				title: playlist.title || '',
-				items: playlist.items.sort((a, b) => a.order - b.order),
-			})
-			if (!hasInitialized) {
+			// Only initialize or update when the playlist GUID changes
+			const guidChanged = lastPlaylistGuidRef.current !== guid
+
+			if (!hasInitializedRef.current || guidChanged) {
+				const newTitle = playlist.title || ''
+				const newItems = [...playlist.items].sort((a, b) => a.order - b.order)
+
+				setState({
+					title: newTitle,
+					items: newItems,
+				})
+
 				reset()
-				setHasInitialized(true)
+				hasInitializedRef.current = true
+				lastPlaylistGuidRef.current = guid
 			}
 		}
-	}, [playlist, hasInitialized])
+	}, [playlist.playlist, playlist.loading, playlist.title, playlist.items, setState, reset, guid])
 
 	const canUserEdit = useMemo(() => playlist.isOwner, [playlist.isOwner])
 
