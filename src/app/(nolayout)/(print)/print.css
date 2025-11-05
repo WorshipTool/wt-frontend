@@ -1,8 +1,0 @@
-#print-layout {
-	margin: 1rem;
-}
-@media print {
-	#print-layout {
-		margin: 0;
-	}
-}

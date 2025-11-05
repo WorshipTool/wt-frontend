@@ -1,8 +1,8 @@
 'use client'
 
-import { openNewPrintWindow } from '@/app/(nolayout)/(print)/print.tech'
 import { useTheme } from '@/common/ui'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
+import { openNewPrintWindow } from '@/tech/print.tech'
 import { Print } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { Button } from '../../../../../../../common/ui/Button'
@@ -10,15 +10,15 @@ import { IconButton } from '../../../../../../../common/ui/IconButton'
 import { routesPaths, SmartAllParams } from '../../../../../../../routes'
 
 type PrintVariantButtonProps = {
-	params: SmartAllParams<'variantPrint'>
+	params: SmartAllParams<'variantPdf'>
 } & React.ComponentProps<typeof Button>
 
 export default function PrintVariantButton(props: PrintVariantButtonProps) {
-    const tPrint = useTranslations('songPage.print')
+	const tPrint = useTranslations('songPage.print')
 	const onPrintClick = () => {
 		// open new window on url
 		const url = getReplacedUrlWithParams(
-			routesPaths['variantPrint'],
+			routesPaths['variantPdf'],
 			props.params,
 			{
 				returnFormat: 'absolute',

@@ -17,13 +17,13 @@ declare module "nextjs-routes" {
     | StaticRoute<"/nahrat/hledani">
     | StaticRoute<"/o-nas">
     | DynamicRoute<"/pisen/[hex]/[alias]", { "hex": string; "alias": string }>
+    | DynamicRoute<"/pisen/[hex]/[alias]/pdf", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/preview-image", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/prezentace", { "hex": string; "alias": string }>
-    | DynamicRoute<"/pisen/[hex]/[alias]/tisk", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/zverejnit", { "hex": string; "alias": string }>
     | DynamicRoute<"/playlist/[guid]", { "guid": string }>
+    | DynamicRoute<"/playlist/[guid]/pdf", { "guid": string }>
     | DynamicRoute<"/playlist/[guid]/prezentace", { "guid": string }>
-    | DynamicRoute<"/playlist/[guid]/tisk", { "guid": string }>
     | StaticRoute<"/prihlaseni">
     | StaticRoute<"/registrace">
     | StaticRoute<"/reset-hesla">
