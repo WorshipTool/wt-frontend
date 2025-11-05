@@ -7,11 +7,11 @@ export const routesPaths = {
 	home: '/',
 	variant: '/pisen/[hex]/[alias]',
 	variantPublish: '/pisen/[hex]/[alias]/zverejnit',
-	variantPrint: '/pisen/[hex]/[alias]/tisk',
+	variantPdf: '/pisen/[hex]/[alias]/pdf',
 	variantPreviewImage: '/pisen/[hex]/[alias]/preview-image',
 	variantCards: '/pisen/[hex]/[alias]/prezentace',
 	playlist: '/playlist/[guid]',
-	playlistPrint: '/playlist/[guid]/tisk',
+	playlistPdf: '/playlist/[guid]/pdf',
 	playlistCards: '/playlist/[guid]/prezentace',
 	addMenu: '/vytvorit',
 	upload: '/nahrat',
@@ -70,7 +70,7 @@ export const routesSearchParams = {
 	uploadParse: {
 		files: ['', ''],
 	},
-	variantPrint: {
+	variantPdf: {
 		key: 'a' as note | undefined,
 		hideChords: false as boolean | undefined,
 	},
