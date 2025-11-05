@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 type InitialValueType<T> = T | ((prev?: T) => T)
 
@@ -40,6 +40,15 @@ export const useStateWithHistory: <T>(
 		initialValue !== undefined && initialValue !== null ? 0 : -1
 	)
 
+	// Use refs to track current values without including them in dependencies
+	const stateRef = useRef(state)
+	const historyRef = useRef(history)
+	const pointerRef = useRef(pointer)
+
+	stateRef.current = state
+	historyRef.current = history
+	pointerRef.current = pointer
+
 	/**
 	 * This function is used to set the state.
 	 */
@@ -47,49 +56,61 @@ export const useStateWithHistory: <T>(
 		(value: InitialValueType<T>) => {
 			let valueToAdd = value
 			if (typeof value === 'function') {
-				valueToAdd = (value as (prev?: T) => T)(state)
+				valueToAdd = (value as (prev?: T) => T)(stateRef.current)
 			}
 
 			// Check if previous value is time distance is less than 300ms
 			// If so, remove the last value from history
 			const TIME_DISTANCE = 300
 			const removePrevValue =
-				history[pointer] &&
-				Date.now() - history[pointer].timestamp < TIME_DISTANCE
+				historyRef.current[pointerRef.current] &&
+				Date.now() - historyRef.current[pointerRef.current].timestamp <
+					TIME_DISTANCE
 
 			const newItem = {
 				value: valueToAdd,
 				timestamp: Date.now(),
 			}
 
-			setHistory((prev) => [
-				...prev.slice(0, pointer + (removePrevValue ? 0 : 1)),
+			const newHistory = [
+				...historyRef.current.slice(0, pointerRef.current + (removePrevValue ? 0 : 1)),
 				newItem,
-			])
-			setPointer((prev) => prev + (removePrevValue ? 0 : 1))
+			]
+			const newPointer = pointerRef.current + (removePrevValue ? 0 : 1)
+
+			setHistory(newHistory)
+			setPointer(newPointer)
 			_setState(value)
+
+			// Synchronous updates for immediate use
+			historyRef.current = newHistory
+			pointerRef.current = newPointer
 		},
-		[setHistory, setPointer, _setState, state, pointer, history]
+		[]
 	)
 
 	/**
 	 * This function is used to undo the last change
 	 */
 	const undo: () => void = useCallback(() => {
-		if (pointer <= 0) return
-		_setState(history[pointer - 1].value)
-		setPointer((prev) => prev - 1)
-	}, [history, pointer, setPointer])
+		if (pointerRef.current <= 0) return
+		const newPointer = pointerRef.current - 1
+		_setState(historyRef.current[newPointer].value)
+		setPointer(newPointer)
+		pointerRef.current = newPointer // Synchronous update for immediate use
+	}, [_setState])
 
 	/**
 	 * This function is used to redo the last change
 	 *
 	 */
 	const redo: () => void = useCallback(() => {
-		if (pointer + 1 >= history.length) return
-		_setState(history[pointer + 1].value)
-		setPointer((prev) => prev + 1)
-	}, [pointer, history, setPointer])
+		if (pointerRef.current + 1 >= historyRef.current.length) return
+		const newPointer = pointerRef.current + 1
+		_setState(historyRef.current[newPointer].value)
+		setPointer(newPointer)
+		pointerRef.current = newPointer // Synchronous update for immediate use
+	}, [_setState])
 
 	/**
 	 * This function clear the history and set last value as current
@@ -97,7 +118,7 @@ export const useStateWithHistory: <T>(
 	const reset = useCallback(() => {
 		setHistory((prev) => [prev.at(-1)!])
 		setPointer(0)
-	}, [setHistory, setPointer])
+	}, [])
 
 	return {
 		state,
