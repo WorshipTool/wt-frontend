@@ -1,7 +1,7 @@
 import Menu from '@/common/components/Menu/Menu'
 import { IconButton } from '@/common/ui'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
-import { MoreHoriz } from '@mui/icons-material'
+import { ExpandCircleDown } from '@mui/icons-material'
 import { useState } from 'react'
 
 export const PLAYLIST_MORE_BUTTON_ID = 'playlist-more-button'
@@ -22,8 +22,8 @@ export default function PlaylistMoreButton() {
 	return (
 		<>
 			{childrenCount > 0 && (
-				<IconButton onClick={onClick}>
-					<MoreHoriz />
+				<IconButton onClick={onClick} color="primary.light">
+					<ExpandCircleDown />
 				</IconButton>
 			)}
 
