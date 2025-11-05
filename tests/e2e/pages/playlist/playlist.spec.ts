@@ -340,3 +340,36 @@ const testEditing = async ({ page }: { page: Page }) => {
 
 smartTest('Can edit a playlist 1', 'full', testEditing)
 smartTest('Can edit a playlist 2', 'full', testEditing)
+
+smartTest('Print button works for playlist', 'critical', async ({ page }) => {
+	await startWithCreatePlaylist(page)
+
+	// Add at least one song to enable print button
+	const song = await addRandomSong(page)
+	await checkSongs(page, [song])
+	await savePlaylist(page)
+
+	// Check that print button exists and is visible
+	const printButton = page.getByRole('button').filter({ hasText: /tisknout/i })
+	await expect(printButton).toBeVisible()
+
+	// Extract the playlist GUID from the URL
+	const currentUrl = page.url()
+	const guidMatch = currentUrl.match(/\/playlist\/([a-f0-9-]+)/)
+	expect(guidMatch).toBeTruthy()
+	const guid = guidMatch![1]
+
+	// Build the PDF URL dynamically from current URL
+	const url = new URL(currentUrl)
+	const pdfUrl = `${url.origin}/playlist/${guid}/pdf`
+
+	// Use request API to check PDF generation
+	const response = await page.request.get(pdfUrl)
+
+	// Check that we got a successful response
+	expect(response.status()).toBe(200)
+
+	// Check content type is PDF
+	const contentType = response.headers()['content-type']
+	expect(contentType).toContain('application/pdf')
+})

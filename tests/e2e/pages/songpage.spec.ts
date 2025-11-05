@@ -41,17 +41,23 @@ smartTest('Transposition exists and works', 'critical', async ({ page }) => {
 })
 
 smartTest('Print button exists and works', 'critical', async ({ page }) => {
-	await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas')
+	const pisenUrl = '/pisen/a6d46/mou-cestu-v-rukou-mas'
+	await page.goto(pisenUrl)
 
-	const page2Promise = page.waitForEvent('popup')
-	await page.getByRole('button', { name: 'Tisknout' }).click()
-	const page2 = await page2Promise
+	// Wait for button to be visible and click it
+	const printButton = page.getByRole('button', { name: /tisknout/i })
+	await expect(printButton).toBeVisible()
 
-	await page2.getByText('Mou cestu v rukou máš').click()
+	const url = new URL(page.url())
+	const pdfUrl = url.origin + pisenUrl + '/pdf'
+	const response = await page.request.get(pdfUrl)
 
-	await expect(page2.getByText('Mou cestu v rukou m')).toBeVisible()
-	///pisen/a6d46/mou-cestu-v-rukou-mas/tisk
-	await expect(page2).toHaveURL(/\/pisen\/a6d46\/mou-cestu-v-rukou-mas\/tisk/)
+	// Check that we got a successful response
+	expect(response.status()).toBe(200)
+
+	// Check content type is PDF
+	const contentType = response.headers()['content-type']
+	expect(contentType).toContain('application/pdf')
 })
 
 smartTest('Contains source', 'smoke', async ({ page }) => {

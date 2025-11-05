@@ -281,7 +281,7 @@ declare const messages: {
 		"presentation": "Prezentace",
 		"rename": "Přejmenovat",
 		"playlistNamePlaceholder": "Název playlistu",
-		"print": "Tiskout",
+		"print": "Tisknout",
 		"openInNewTab": "Otevřít v nové kartě",
 		"loading": "Načítání...",
 		"noPlaylists": "Žádné playlisty",
