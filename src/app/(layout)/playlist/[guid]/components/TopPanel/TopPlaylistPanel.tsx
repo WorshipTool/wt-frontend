@@ -28,7 +28,6 @@ export default function TopPlaylistPanel() {
 					[theme.breakpoints.down('sm')]: {
 						position: 'relative',
 						top: 0,
-						zIndex: 0,
 					},
 				}}
 			>
