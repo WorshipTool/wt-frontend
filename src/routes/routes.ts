@@ -86,9 +86,6 @@ export const routesSearchParams = {
 	teamPlaylists: {
 		openedEvent: 'string' as string | undefined,
 	},
-	playlistPrint: {
-		landscapeMode: false as boolean | undefined,
-	},
 	contact: {
 		wantToJoin: false as boolean | undefined,
 	},
