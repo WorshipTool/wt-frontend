@@ -3,6 +3,7 @@
 import { useTheme } from '@/common/ui'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
 import { printDocumentByUrl } from '@/tech/print.tech'
+import { openNewPrintWindow } from '@/tech/print.tech'
 import { Print } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { Button } from '../../../../../../../common/ui/Button'
