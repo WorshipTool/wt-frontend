@@ -2,9 +2,9 @@ import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlayl
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { IconButton } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
-import { SmartAllParams, routesPaths } from '@/routes'
+import { routesPaths } from '@/routes'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
-import { openNewPrintWindow } from '@/tech/print.tech'
+import { printDocumentByUrl } from '@/tech/print.tech'
 import { Print } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 
@@ -16,14 +16,14 @@ export default function PrintButton() {
 		await save()
 
 		const urlPattern = routesPaths.playlistPdf
-		const printParams: SmartAllParams<'playlistPdf'> = {
+		const printParams = {
 			guid,
 		}
 		const url = getReplacedUrlWithParams(urlPattern, printParams, {
 			returnFormat: 'absolute',
 		})
 
-		openNewPrintWindow(url)
+		printDocumentByUrl(url)
 	}
 
 	const isSmall = useDownSize('sm')

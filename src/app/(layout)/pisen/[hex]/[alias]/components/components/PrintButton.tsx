@@ -2,7 +2,7 @@
 
 import { useTheme } from '@/common/ui'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
-import { openNewPrintWindow } from '@/tech/print.tech'
+import { printDocumentByUrl } from '@/tech/print.tech'
 import { Print } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { Button } from '../../../../../../../common/ui/Button'
@@ -16,7 +16,6 @@ type PrintVariantButtonProps = {
 export default function PrintVariantButton(props: PrintVariantButtonProps) {
 	const tPrint = useTranslations('songPage.print')
 	const onPrintClick = () => {
-		// open new window on url
 		const url = getReplacedUrlWithParams(
 			routesPaths['variantPdf'],
 			props.params,
@@ -25,7 +24,7 @@ export default function PrintVariantButton(props: PrintVariantButtonProps) {
 			}
 		)
 
-		openNewPrintWindow(url)
+		printDocumentByUrl(url)
 	}
 	const theme = useTheme()
 	return (
