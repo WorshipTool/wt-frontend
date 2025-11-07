@@ -16,12 +16,15 @@ export default function PrintButton() {
 		await save()
 
 		const urlPattern = routesPaths.playlistPdf
-		const printParams = {
-			guid,
-		}
-		const url = getReplacedUrlWithParams(urlPattern, printParams, {
-			returnFormat: 'absolute',
-		})
+		const url = getReplacedUrlWithParams(
+			urlPattern,
+			{
+				guid,
+			},
+			{
+				returnFormat: 'absolute',
+			}
+		)
 
 		printDocumentByUrl(url)
 	}
