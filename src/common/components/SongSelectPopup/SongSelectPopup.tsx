@@ -11,7 +11,6 @@ import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
-import normalizeSearchText from '@/tech/string/normalizeSearchText'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { VariantPackGuid } from '../../../interfaces/variant/songVariant.types'
 import './styles.css'
@@ -58,9 +57,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 	const [searchString, setSearchString] = useState('')
 
 	useChangeDelayer(
-		searchStringRaw.length === 0
-			? searchStringRaw
-			: normalizeSearchText(searchStringRaw),
+		searchStringRaw.length === 0 ? '' : searchStringRaw,
 		setSearchString,
 		[]
 	)
