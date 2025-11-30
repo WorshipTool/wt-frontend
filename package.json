@@ -37,7 +37,7 @@
 		"@react-oauth/google": "^0.12.1",
 		"@react-pdf/renderer": "^4.3.1",
 		"@statsig/js-client": "^3.15.0",
-		"@statsig/react-bindings": "^3.15.0",
+		"@statsig/react-bindings": "^3.30.0",
 		"@statsig/session-replay": "^3.15.0",
 		"@statsig/web-analytics": "^3.15.0",
 		"@stripe/react-stripe-js": "^5.2.0",
