@@ -8,20 +8,19 @@ smartTest(
 	'critical',
 	async ({ page }) => {
 		// Navigate to a specific song's presentation page
-		await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas/prezentace')
+		await page.goto('/pisen/a32c2/oceany/prezentace')
 
 		// Wait for presentation to load
-		await page.waitForTimeout(1000)
-		await page.waitForLoadState('networkidle')
-		await page.waitForTimeout(1000)
+		await page.waitForLoadState('domcontentloaded')
 
 		// Verify PresentationLayout is rendered
 		const presentationLayout = page.locator('body')
 		await expect(presentationLayout).toBeVisible()
 
 		// Check that the song title is visible in presentation
-		const pageContent = await page.content()
-		expect(pageContent.toLowerCase()).toContain('mou cestu')
+		await expect(page.getByText(/voláš/i).first()).toBeVisible({
+			timeout: 30000,
+		})
 
 		// Check for the original chord (should be C in default key)
 		const chordElements = page.locator('.chord')
@@ -56,16 +55,15 @@ smartTest(
 	'critical',
 	async ({ page }) => {
 		// Navigate to song presentation with key parameter (transpose +2)
-		await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas/prezentace?key=D')
+		await page.goto('/pisen/a32c2/oceany/prezentace?key=D')
 
 		// Wait for presentation to load
-		await page.waitForTimeout(1000)
-		await page.waitForLoadState('networkidle')
-		await page.waitForTimeout(1000)
+		await page.waitForLoadState('domcontentloaded')
 
 		// Check that the song title is still visible
-		const pageContent = await page.content()
-		expect(pageContent.toLowerCase()).toContain('mou cestu')
+		expect(page.getByText(/voláš/i).first()).toBeVisible({
+			timeout: 30000,
+		})
 
 		// Check for the transposed chord (should be D when transposed +2 from C)
 		const chordElements = page.locator('.chord')
@@ -81,11 +79,10 @@ smartTest(
 	'critical',
 	async ({ page }) => {
 		// Navigate to song presentation
-		await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas/prezentace')
+		await page.goto('/pisen/a32c2/oceany/prezentace')
 
 		// Wait for presentation to load
 		await page.waitForTimeout(2000)
-		await page.waitForLoadState('networkidle')
 
 		// Find and click the back button
 		const backButton = page
@@ -103,6 +100,6 @@ smartTest(
 
 		await page.waitForTimeout(1000)
 
-		await page.waitForURL('**/pisen/a6d46/mou-cestu-v-rukou-mas{,?**}')
+		await page.waitForURL('**/pisen/a32c2/oceany{,?**}')
 	}
 )

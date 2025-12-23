@@ -5,7 +5,7 @@ test('User visits song page, logs in manually, and stays on song page', async ({
 	page,
 }) => {
 	// Step 1: Visit a song page while unauthenticated (should work fine, no redirect)
-	const songUrl = '/pisen/a6d46/mou-cestu-v-rukou-mas'
+	const songUrl = '/pisen/2ae33/bozi-beranek'
 	await page.goto(songUrl)
 
 	// Step 2: Verify we're on the song page (no redirect should happen)
@@ -18,7 +18,7 @@ test('User visits song page, logs in manually, and stays on song page', async ({
 	await expect(page).toHaveURL(songUrl)
 
 	// Verify we're actually on the song page by checking for song-specific content
-	await expect(page.getByText('Mou cestu v rukou máš').first()).toBeVisible()
+	await expect(page.getByText(/Smiluj/i).first()).toBeVisible()
 })
 
 test('User visits different song page, logs in manually, and stays on that song page', async ({

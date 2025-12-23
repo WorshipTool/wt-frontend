@@ -186,6 +186,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 	return !props.open ? null : (
 		<PopupContainer>
 			<div
+				data-testid="song-select-popup"
 				style={{
 					position: 'absolute',
 					left: 0,
