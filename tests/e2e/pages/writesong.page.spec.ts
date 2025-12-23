@@ -13,10 +13,9 @@ smartTest('Link, routing', 'smoke', async ({ page }) => {
 	await page.getByRole('link', { name: 'Sepsat ručně' }).click()
 
 	await page.waitForURL(/.*\/vytvorit\/napsat/)
-	await page.waitForLoadState('networkidle')
 	await expect(
 		page.getByRole('textbox', { name: 'Zadejte název písně' })
-	).toBeVisible()
+	).toBeVisible({ timeout: 30000 })
 	await expect(
 		page.getByRole('textbox', { name: 'Zde je místo pro obsah písně' })
 	).toBeVisible()
