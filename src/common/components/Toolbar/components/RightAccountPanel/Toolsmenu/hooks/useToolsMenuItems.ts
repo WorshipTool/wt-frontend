@@ -98,6 +98,13 @@ export default function useToolsMenuItems() {
 				hidden: !showAdminPage,
 				imageSizeCoef: 0.8,
 			},
+			{
+				title: 'ML Trénink',
+				to: 'adminMlTraining',
+				image: getIconUrl('ai-song.png'),
+				hidden: !showAdminPage,
+				imageSizeCoef: 0.8,
+			},
 
 			...(isDevelopment
 				? [

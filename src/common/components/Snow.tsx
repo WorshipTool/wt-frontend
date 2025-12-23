@@ -1,33 +1,21 @@
 'use client'
 import { Box } from '@/common/ui'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Snowfall from 'react-snowfall'
 import { useSmartMatch } from '../../routes/useSmartMatch'
 import OnScrollComponent from '../providers/OnScrollComponent/OnScrollComponent'
 
-const imagesName = ['y', 'i', 'p', 'k']
-
 export default function Snow() {
-	const [images, setImages] = useState<HTMLImageElement[]>([])
-	useEffect(() => {
-		const images = imagesName.map((name) => {
-			const snowflake1 = document.createElement('img')
-			snowflake1.src = `/assets/flakes/${name}.png`
-			return snowflake1
-		})
-		setImages(images)
-	}, [])
-
+	const sizeCoef = 0.4
 	const isHome = useSmartMatch('home')
-	const [top, setTop] = useState(true)
 
 	const [blur, setBlur] = useState(0)
 
 	return (
 		<Box displayPrint={'none'}>
 			<OnScrollComponent
-				onChange={(top, y) => {
+				onChange={(_, y) => {
 					const level = Math.min(1, Math.pow(y / 100, 3))
 					setBlur(level * 10)
 				}}
@@ -48,9 +36,8 @@ export default function Snow() {
 						<Snowfall
 							snowflakeCount={30}
 							speed={[0.2, 1]}
-							color="#0085FF44"
-							images={images}
-							radius={[5, 15]}
+							color="#4faaff44"
+							radius={[5 * sizeCoef, 15 * sizeCoef]}
 							style={{
 								zIndex: -100,
 								opacity: 0.8,
