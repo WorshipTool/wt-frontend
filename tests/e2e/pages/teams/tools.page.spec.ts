@@ -14,11 +14,13 @@ smartTest('Team is in tools', 'critical', async ({ page }) => {
 	await page.getByRole('link', { name: 'Zkouska Zkouska' }).click()
 
 	await page.waitForURL(
-		new RegExp(`tymy\\/ahtk3wx|http:\\/\\/tymy\\.test-chvalotce\\.cz:5500\\/ahtk3wx`)
+		new RegExp(
+			`tymy\\/zkouska-team|http:\\/\\/tymy\\.test-chvalotce\\.cz:5500\\/zkouska-team`
+		)
 	)
 	const expectedUrls = [
-		'tymy/ahtk3wx',
-		`http://tymy.test-chvalotce.cz:5500/ahtk3wx`,
+		'tymy/zkouska-team',
+		`http://tymy.test-chvalotce.cz:5500/zkouska-team`,
 	]
 	const currentUrl = page.url()
 	const isMatch = expectedUrls.some((url) => currentUrl.includes(url))

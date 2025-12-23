@@ -2,74 +2,102 @@ import { mapBasicVariantPackApiToDto } from '@/api/dtos'
 import { SongSearchingApi } from '@/api/generated'
 import { handleServerApiCall } from '@/tech/fetch/handleServerApiCall'
 import { getRandomString } from '@/tech/string/random.string.tech'
+import { login } from '@e2e/helpers/auth.helper'
+import { selectors } from '@e2e/helpers/selectors.helper'
 import { expect, Page } from '@playwright/test'
-import { test_tech_loginWithData } from '../test.tech'
 import { smartTest } from './setup'
 
+/**
+ * Search using the search bar and wait for results to appear.
+ * Uses deterministic waits instead of arbitrary timeouts.
+ */
 async function searchWithSearchBar(str: string, page: Page) {
-	await page.waitForLoadState()
-	await page.waitForLoadState('networkidle')
-	await page.getByPlaceholder(/.*Hledej.*/i).fill(str)
-	await page.waitForTimeout(500)
-	await page.waitForLoadState('networkidle')
+	const sel = selectors(page)
+
+	await page.waitForLoadState('domcontentloaded')
+
+	const searchInput = sel.search.input()
+	await expect(searchInput).toBeVisible()
+
+	const responsePromise = page.waitForResponse(
+		(response) => response.url().includes('searching/search'),
+		{ timeout: 60_000 }
+	)
+
+	await searchInput.fill(str)
+
+	// Wait for the "searching/search" network request to complete with status 200
+	const res = await responsePromise
+	expect([200, 201, 204]).toContain(res.status())
+
+	await page.waitForLoadState('domcontentloaded')
 }
 
 smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
-	// Otevřeme domovskou stránku
+	const sel = selectors(page)
+
+	// Open homepage
 	await page.goto('/')
 
-	// Vyhledáme podle názvu
+	// Search by title
 	await searchWithSearchBar('Vira', page)
 
-	// Existuje výsledek
-	const textPisne = await page
-		.getByRole('link', {
-			name: 'Kde je zápis ptačí melodie?',
-		})
-		.first()
-	await expect(textPisne).toBeVisible()
+	// Check that search result exists
+	const songLink = sel.search.songResult('Kde je zápis ptačí melodie?').first()
+	await expect(songLink).toBeVisible({ timeout: 10000 })
 
-	// 4. Klikneme na výsledek
-	await textPisne.click()
+	// Click on result
+	await songLink.click()
 
-	// 5. Jsme na stránce písně
-	await expect(page).toHaveURL(/\/pisen\/[a-z0-9-]+/)
+	// Wait for navigation to song page
+	await page.waitForURL(/\/pisen\/[a-z0-9-]+/, { timeout: 10000 })
 
-	// 6. Zobrazí se text písně
-	const newText = await page.locator('text=/.*Kde.*/i').first()
-	await expect(newText).toBeVisible()
+	// Verify song text is visible
+	await expect(page.locator('text=/.*Kde.*/i').first()).toBeVisible()
 })
 
 smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
+	const sel = selectors(page)
+
 	await page.goto('/')
 
-	await searchWithSearchBar('Jsi darcem zivota', page)
+	await searchWithSearchBar('Jsi darcem života', page)
 
-	await page.getByRole('link', { name: 'Český originál Pokoj Jsi dá' }).click()
+	const songLink = sel.search.songResult('pokoj')
+	await expect(songLink).toBeVisible({ timeout: 10000 })
+	await songLink.click()
 
-	await expect(page).toHaveURL(/\/pisen\/[a-z0-9-]+/)
+	await page.waitForURL(/\/pisen\/[a-z0-9-]+/, { timeout: 10000 })
 })
 
 smartTest('Vyhledávání podle jednoho písmene', 'critical', async ({ page }) => {
+	const sel = selectors(page)
+
 	await page.goto('/')
 
 	await searchWithSearchBar('A', page)
 
-	await page.getByRole('link', { name: 'Až Až ulovíš severák holýma' }).click()
+	const songLink = sel.search.songResult('Až Až ulovíš severák')
+	await expect(songLink).toBeVisible({ timeout: 10000 })
+	await songLink.click()
 
-	await expect(page).toHaveURL(/\/pisen\/[a-z0-9-]+/)
+	await page.waitForURL(/\/pisen\/[a-z0-9-]+/, { timeout: 10000 })
 })
 
 smartTest('Načíst další', 'critical', async ({ page }) => {
+	const sel = selectors(page)
+
 	await page.goto('/')
-	await page.waitForLoadState()
+	await page.waitForLoadState('domcontentloaded')
 
 	await searchWithSearchBar('Pokoj', page)
 
-	const b = page.getByRole('button', { name: 'Načíst další' })
-	await expect(b).toBeVisible()
-	await b.click()
-	await expect(b).toBeVisible()
+	const loadMoreButton = sel.search.loadMoreButton()
+	await expect(loadMoreButton).toBeVisible({ timeout: 10000 })
+	await loadMoreButton.click()
+
+	// Verify button is still visible after loading more results
+	await expect(loadMoreButton).toBeVisible()
 })
 
 smartTest('Neobsahuje cizí soukromé písně', 'critical', async ({ page }) => {
@@ -105,10 +133,7 @@ smartTest('Neobsahuje cizí soukromé písně', 'critical', async ({ page }) => 
 
 			for (const song of whole) {
 				const data = mapBasicVariantPackApiToDto(song)
-				await expect(
-					data.public,
-					`Vyhledávání podle "${searchString}"`
-				).toBeTruthy()
+				expect(data.public, `Vyhledávání podle "${searchString}"`).toBeTruthy()
 			}
 		}
 	}
@@ -120,7 +145,7 @@ smartTest(
 	async ({ page }) => {
 		await page.goto('/')
 
-		const user = await test_tech_loginWithData(page)
+		const user = await login(page)
 
 		const api = new SongSearchingApi()
 		const searchStrings = ['Oceany']
@@ -147,7 +172,7 @@ smartTest(
 					const data = mapBasicVariantPackApiToDto(song)
 
 					if (!data.public) {
-						await expect(
+						expect(
 							data.createdByGuid,
 							`Soukromá píseň: vyhledána pomocí "${searchString}"`
 						).toBe(user.guid)
@@ -156,6 +181,6 @@ smartTest(
 			}
 		}
 
-		await expect(count).toBeGreaterThan(0)
+		expect(count).toBeGreaterThan(0)
 	}
 )

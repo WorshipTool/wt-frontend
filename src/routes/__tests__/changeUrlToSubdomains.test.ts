@@ -2,9 +2,8 @@ import {
 	// changeUrlFromSubdomains,
 	changeUrlToSubdomains,
 } from '@/routes/tech/subdomains.tech'
-import { getTestBaseUrlHostname } from '../../../tests/test.tech'
+import {} from '../../../tests/test.tech'
 
-const baseUrlHostname = getTestBaseUrlHostname()
 // Create test
 describe('changeUrlToSubdomains', () => {
 	it('should change url to subdomains', () => {

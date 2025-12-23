@@ -1,37 +1,58 @@
-name: E2E Tests
+name: Development Deploy, E2E Tests
+
+env:
+  DOCKER_IMAGE_NAME: worshiptool
 
 on:
   push:
     branches: [develop]
 
 jobs:
-  wait-for-vercel:
+  upload-to-docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Find READY deployment for this commit
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          GIT_SHA: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
+          known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
+
+      - name: Copy .env from remote server
+        run: scp -o StrictHostKeyChecking=no "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}:/root/worshiptool/dev/frontend/.env" ./.env
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build
+        run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/${{env.DOCKER_IMAGE_NAME}}:dev .
+
+      - name: Log Images
+        run: docker images
+
+      - name: Push
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/${{env.DOCKER_IMAGE_NAME}}:dev
+
+  deploy-to-development-server:
+    needs: upload-to-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
+          known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
+
+      - name: Redeploy application
         run: |
-          echo "Looking for READY deployment of $GIT_SHA ..."
-          for i in {1..60}; do
-          RES=$(curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" \
-              "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&sha=$GIT_SHA&state=READY&limit=1")
-          URL=$(echo "$RES" | jq -r '.deployments[0].url // empty')
-          ID=$(echo  "$RES" | jq -r '.deployments[0].uid // empty')
-          if [ -n "$URL" ] && [ -n "$ID" ]; then
-              echo "PREVIEW_URL=https://$URL" >> $GITHUB_ENV
-              echo "VERCEL_DEPLOYMENT_ID=$ID" >> $GITHUB_ENV
-              echo "✅ READY: https://$URL"
-              exit 0
-          fi
-          echo "…not ready yet, retry in 10s"; sleep 10
-          done
-          echo "❌ Timeout waiting for Vercel deployment"; exit 1
+          ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
+          "cd /root/worshiptool/dev && docker compose up -d --pull always frontend-dev"
 
   run-smoke-tests:
-    needs: wait-for-vercel
+    needs: deploy-to-development-server
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-jammy
