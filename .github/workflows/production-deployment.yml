@@ -1,0 +1,95 @@
+name: Chvalotce  Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: chvalotce
+            env_remote: /root/worshiptool/chvalotce/frontend/.env
+            tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:chvalotce-prod
+            profile: chvalotce
+            service: frontend-chvalotce
+
+          - key: worshipcz
+            env_remote: /root/worshiptool/chvalotce/frontend/.worshipcz.env
+            tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:worshipcz-prod
+            profile: chvalotce
+            service: frontend-worshipcz
+
+          - key: halelujahhub
+            env_remote: /root/worshiptool/halelujahhub/frontend/.env
+            tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:halelujahhub-prod
+            profile: halelujahhub
+            service: frontend-halelujahhub
+
+          - key: chwalmy
+            env_remote: /root/worshiptool/chwalmy/frontend/.env
+            tags: |
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:chwalmy-prod
+            profile: chwalmy
+            service: frontend-chwalmy
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Copy .env from remote server
+        run: scp -o StrictHostKeyChecking=no "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}:${{ matrix.env_remote }}" ./.env
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ matrix.tags }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: chvalotce
+            service: frontend-chvalotce
+          - profile: chvalotce
+            service: frontend-worshipcz
+          - profile: halelujahhub
+            service: frontend-halelujahhub
+          - profile: chwalmy
+            service: frontend-chwalmy
+
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Redeploy application
+        run: |
+          ssh -o ServerAliveInterval=1000 "${{secrets.SERVER_USERNAME}}@${{secrets.SERVER_URL}}" \
+            "cd /root/worshiptool/ && docker compose --profile ${{ matrix.profile }} up -d ${{ matrix.service }}"
