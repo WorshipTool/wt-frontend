@@ -23,9 +23,9 @@ jobs:
           - key: worshipcz
             env_remote: /root/worshiptool/chvalotce/frontend/.worshipcz.env
             tag_suffixes: 'worshipcz-prod'
-          - key: halelujahhub
-            env_remote: /root/worshiptool/halelujahhub/frontend/.env
-            tag_suffixes: 'halelujahhub-prod'
+          - key: hallelujahhub
+            env_remote: /root/worshiptool/hallelujahhub/frontend/.env
+            tag_suffixes: 'hallelujahhub-prod'
           - key: chwalmy
             env_remote: /root/worshiptool/chwalmy/frontend/.env
             tag_suffixes: 'chwalmy-prod'
