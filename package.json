@@ -38,7 +38,7 @@
 		"@react-pdf/renderer": "^4.3.1",
 		"@statsig/js-client": "^3.15.0",
 		"@statsig/react-bindings": "^3.15.0",
-		"@statsig/session-replay": "^3.15.0",
+		"@statsig/session-replay": "^3.30.2",
 		"@statsig/web-analytics": "^3.15.0",
 		"@stripe/react-stripe-js": "^5.2.0",
 		"@stripe/stripe-js": "^8.0.0",
