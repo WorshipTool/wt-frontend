@@ -1,4 +1,9 @@
-name: Chvalotce  Deployment
+name: Chvalotce Deployment
+
+env:
+  SERVER_USERNAME: root
+  SERVER_URL: 65.109.5.66
+  DOCKER_IMAGE_NAME: worshiptool
 
 on:
   workflow_dispatch:
@@ -14,32 +19,16 @@ jobs:
         include:
           - key: chvalotce
             env_remote: /root/worshiptool/chvalotce/frontend/.env
-            tags: |
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:chvalotce-prod
-            profile: chvalotce
-            service: frontend-chvalotce
-
+            tag_suffixes: 'latest,chvalotce-prod'
           - key: worshipcz
             env_remote: /root/worshiptool/chvalotce/frontend/.worshipcz.env
-            tags: |
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:worshipcz-prod
-            profile: chvalotce
-            service: frontend-worshipcz
-
+            tag_suffixes: 'worshipcz-prod'
           - key: halelujahhub
             env_remote: /root/worshiptool/halelujahhub/frontend/.env
-            tags: |
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:halelujahhub-prod
-            profile: halelujahhub
-            service: frontend-halelujahhub
-
+            tag_suffixes: 'halelujahhub-prod'
           - key: chwalmy
             env_remote: /root/worshiptool/chwalmy/frontend/.env
-            tags: |
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:chwalmy-prod
-            profile: chwalmy
-            service: frontend-chwalmy
+            tag_suffixes: 'chwalmy-prod'
 
     steps:
       - uses: actions/checkout@v3
@@ -60,11 +49,19 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ matrix.tags }}
+        shell: bash
+        run: |
+          IFS=',' read -ra SUFFIXES <<< "${{ matrix.tag_suffixes }}"
+          TAG_ARGS=()
+          for s in "${SUFFIXES[@]}"; do
+            TAG_ARGS+=("-t" "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}")
+          done
+
+          docker build "${TAG_ARGS[@]}" .
+
+          for s in "${SUFFIXES[@]}"; do
+            docker push "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}"
+          done
 
   deploy:
     needs: build-and-push
@@ -91,5 +88,5 @@ jobs:
 
       - name: Redeploy application
         run: |
-          ssh -o ServerAliveInterval=1000 "${{secrets.SERVER_USERNAME}}@${{secrets.SERVER_URL}}" \
+          ssh -o ServerAliveInterval=1000 "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}" \
             "cd /root/worshiptool/ && docker compose --profile ${{ matrix.profile }} up -d ${{ matrix.service }}"
