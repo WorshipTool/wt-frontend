@@ -89,4 +89,4 @@ jobs:
       - name: Redeploy application
         run: |
           ssh -o ServerAliveInterval=1000 "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}" \
-            "cd /root/worshiptool/ && docker compose --profile ${{ matrix.profile }} up -d ${{ matrix.service }}"
+            "cd /root/worshiptool/ && docker compose --profile ${{ matrix.profile }} up -d --pull always ${{ matrix.service }}"
