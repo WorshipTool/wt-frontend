@@ -74,8 +74,8 @@ jobs:
             service: frontend-chvalotce
           - profile: chvalotce
             service: frontend-worshipcz
-          - profile: halelujahhub
-            service: frontend-halelujahhub
+          - profile: hallelujahhub
+            service: frontend-hallelujahhub
           - profile: chwalmy
             service: frontend-chwalmy
 
