@@ -49,7 +49,7 @@ jobs:
       - name: Redeploy application
         run: |
           ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
-          "cd c && docker compose up -d --pull always frontend-dev"
+          "cd /root/worshiptool/dev && docker compose up -d --pull always frontend-dev"
 
   run-smoke-tests:
     needs: deploy-to-development-server
