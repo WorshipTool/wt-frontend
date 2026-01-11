@@ -29,11 +29,9 @@ smartTest('Link, routing', 'smoke', async ({ page }) => {
 
 smartTest('Create new song', 'critical', async ({ page }) => {
 	await page.goto('/')
-	await page.waitForLoadState('networkidle')
 
 	await test_tech_loginWithData(page)
 	await page.goto('/vytvorit/napsat')
-	await page.waitForLoadState('networkidle')
 
 	const title = getRandomString(10, 5)
 	const notValidText = getRandomString(10, 10)
@@ -59,11 +57,9 @@ smartTest('Create new song', 'critical', async ({ page }) => {
 
 smartTest('Create new song, validity, in list', 'full', async ({ page }) => {
 	await page.goto('/')
-	await page.waitForLoadState('networkidle')
 
 	await test_tech_loginWithData(page)
 	await page.goto('/vytvorit/napsat')
-	await page.waitForLoadState('networkidle')
 
 	const title = getRandomString(10, 5)
 	const notValidText = getRandomString(10, 10)

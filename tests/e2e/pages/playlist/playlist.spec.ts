@@ -57,7 +57,6 @@ smartTest('Can rename a playlist', 'critical', async ({ page }) => {
 	await savePlaylist(page)
 
 	await page.reload()
-	await page.waitForLoadState('networkidle')
 
 	await expect(
 		page.getByRole('textbox', { name: 'Název playlistu' })
@@ -73,7 +72,7 @@ smartTest('Can add a song to a playlist', 'critical', async ({ page }) => {
 
 	await checkSongs(page, [song], 'After save: song not added to playlist')
 	await page.reload()
-	await page.waitForLoadState('networkidle')
+
 	await checkSongs(page, [song], 'After reload: song not added to playlist')
 })
 
@@ -329,7 +328,6 @@ const testEditing = async ({ page }: { page: Page }) => {
 	)
 
 	await pagePlaylistReload(page)
-	await page.waitForLoadState('networkidle')
 
 	await expect(
 		page.getByRole('textbox', { name: 'Název playlistu' })

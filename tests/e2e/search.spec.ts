@@ -8,10 +8,9 @@ import { smartTest } from './setup'
 
 async function searchWithSearchBar(str: string, page: Page) {
 	await page.waitForLoadState()
-	await page.waitForLoadState('networkidle')
+
 	await page.getByPlaceholder(/.*Hledej.*/i).fill(str)
 	await page.waitForTimeout(500)
-	await page.waitForLoadState('networkidle')
 }
 
 smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {

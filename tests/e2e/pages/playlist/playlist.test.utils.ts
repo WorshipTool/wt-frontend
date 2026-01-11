@@ -2,8 +2,8 @@ import { expect, Page } from '@playwright/test'
 import { test_tech_loginWithData } from '../../../test.tech'
 
 export const waitUntilPopupAndClose = async (page: Page) => {
-	await page.waitForLoadState('networkidle', { timeout: 60000 })
-	await page.waitForTimeout(1500)
+	// await page.waitForLoadState('networkidle', { timeout: 60000 })
+	await page.waitForTimeout(3000)
 	await page.mouse.click(10, 10)
 	await page.waitForTimeout(500)
 }
@@ -26,24 +26,17 @@ export const addSearchedSong = async (
 	page: Page,
 	searchQuery: string
 ): Promise<string> => {
-	await page.waitForLoadState('networkidle')
-	await page.waitForTimeout(1000)
-
-	await page.mouse.click(10, 10)
-	await page.waitForTimeout(500)
+	await waitUntilPopupAndClose(page)
 
 	await page.getByLabel('Přidat píseň do playlistu').getByRole('button').click()
-	await page.waitForLoadState('networkidle')
 	await page.waitForTimeout(1000)
 
 	await page.getByRole('textbox', { name: 'Vyhledej píseň' }).fill(searchQuery)
 	await page.waitForTimeout(1000)
-	await page.waitForLoadState('networkidle')
 	await page.waitForTimeout(500)
 
 	await page.locator('.global-song-list-item').first().click()
 	await page.waitForTimeout(500)
-	await page.waitForLoadState('networkidle')
 
 	await page
 		.locator('#popup-div-container')
@@ -53,7 +46,6 @@ export const addSearchedSong = async (
 	await page.waitForTimeout(500)
 	await page.mouse.click(10, 10)
 	await page.waitForTimeout(500)
-	await page.waitForLoadState('networkidle')
 
 	const lastParagraph = await page
 		.locator('.song-menu-list p')
@@ -68,7 +60,6 @@ export const addRandomSong = async (page: Page): Promise<string> => {
 }
 
 export const removeSong = async (page: Page, songIndex: number) => {
-	await page.waitForLoadState('networkidle')
 	await page.waitForTimeout(500)
 
 	await page.mouse.click(10, 10)
@@ -81,7 +72,6 @@ export const removeSong = async (page: Page, songIndex: number) => {
 	await expect(button).toBeVisible()
 	await button.click()
 	await page.waitForTimeout(500)
-	await page.waitForLoadState('networkidle')
 }
 
 export const renamePlaylist = async (page: Page, newName?: string) => {
@@ -124,10 +114,10 @@ export const checkNoErrors = async (page: Page) => {
 
 export const savePlaylist = async (page: Page) => {
 	await page.waitForTimeout(1000)
-	await page.waitForLoadState('networkidle')
+	//
 	await page.getByRole('button', { name: 'Uložit' }).click()
 	await page.waitForTimeout(1000)
-	await page.waitForLoadState('networkidle')
+	//
 	await page.waitForTimeout(1000)
 	await page.waitForTimeout(500)
 	await expect(page.getByRole('button', { name: 'Uloženo' })).toBeVisible({
@@ -153,7 +143,7 @@ export const checkSongs = async (
 
 export const pagePlaylistReload = async (page: Page) => {
 	await page.reload()
-	await page.waitForLoadState('networkidle')
+
 	await waitUntilPopupAndClose(page)
 }
 
@@ -200,7 +190,6 @@ export const transposeSong = async (
 	transpose: number
 ) => {
 	for (let i = 0; i < Math.abs(transpose); i++) {
-		await page.waitForLoadState('networkidle')
 		await page.waitForTimeout(500)
 
 		if (transpose > 0) {
@@ -218,7 +207,6 @@ export const transposeSong = async (
 		}
 
 		await page.waitForTimeout(1000)
-		await page.waitForLoadState('networkidle')
 	}
 }
 
@@ -243,14 +231,14 @@ export const checkSongTransposition = async (
 }
 
 export const openPresentation = async (page: Page) => {
-	await page.waitForLoadState('networkidle')
+	//
 	await page.waitForTimeout(500)
 
 	const presentationButton = page.getByRole('button', { name: 'Prezentace' })
 	await expect(presentationButton).toBeVisible()
 	await presentationButton.click()
 
-	await page.waitForLoadState('networkidle')
+	//
 	await page.waitForTimeout(1500)
 
 	await page.waitForURL('**/prezentace')

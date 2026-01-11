@@ -12,7 +12,7 @@ smartTest(
 
 		// Wait for presentation to load
 		await page.waitForTimeout(1000)
-		await page.waitForLoadState('networkidle')
+
 		await page.waitForTimeout(1000)
 
 		// Verify PresentationLayout is rendered
@@ -60,7 +60,7 @@ smartTest(
 
 		// Wait for presentation to load
 		await page.waitForTimeout(1000)
-		await page.waitForLoadState('networkidle')
+
 		await page.waitForTimeout(1000)
 
 		// Check that the song title is still visible
@@ -85,7 +85,6 @@ smartTest(
 
 		// Wait for presentation to load
 		await page.waitForTimeout(2000)
-		await page.waitForLoadState('networkidle')
 
 		// Find and click the back button
 		const backButton = page

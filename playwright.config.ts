@@ -8,6 +8,16 @@ const isCI = !!process.env.CI
 
 const suite = process.env.E2E_SUITE ?? 'smoke' // smoke|critical|full
 
+const BLOCK = [
+	/google-analytics\.com/,
+	/googletagmanager\.com/,
+	/doubleclick\.net/,
+	/hotjar\.com/,
+	/mixpanel\.com/,
+	/segment\.com/,
+	/sentry\.io/,
+]
+
 export default defineConfig({
 	testDir: './tests/e2e',
 	grep:
@@ -50,7 +60,7 @@ export default defineConfig({
 	},
 	//TODO: add more browser testing on full mode
 	reporter: [['html', { open: 'never' }], ['github'], ['list']],
-	retries: 1,
+	retries: 0,
 	workers: '75%',
 	timeout: 120 * 1000, // 60 seconds
 	outputDir: 'temp/tests/results/',

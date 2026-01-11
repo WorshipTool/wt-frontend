@@ -10,7 +10,6 @@ smartTest('Team is visible', 'critical', async ({ page }) => {
 	await page.goto('sub/tymy/ahtk3wx/pisen/a32c2/oceany')
 
 	await page.waitForURL(/a32c2\/oceany/)
-	await page.waitForLoadState('networkidle')
 
 	await expect(page.getByText('Oceány')).toBeVisible()
 	await expect(page.getByText('Říkáš')).toBeVisible()
