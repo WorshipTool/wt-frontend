@@ -2,6 +2,7 @@ import { getRandomString } from '@/tech/string/random.string.tech'
 import { expect, Page } from '@playwright/test'
 import { test_tech_loginWithData } from '../../test.tech'
 import { smartTest } from '../setup'
+import { test_createNewSong } from './songs/songs.test.utils'
 
 smartTest('Transposition exists and works', 'critical', async ({ page }) => {
 	await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas')
@@ -113,7 +114,9 @@ const songEdit = async (page: Page, newTitle: string, newContent: string) => {
 }
 
 smartTest('Edit song saves changes', 'critical', async ({ page }) => {
-	await page.goto('/pisen/26515/52k6a')
+	const { hex, alias } = await test_createNewSong(page)
+	const url = `/pisen/${hex}/${alias}`
+	await page.goto(url)
 	await test_tech_loginWithData(page)
 
 	const newTitle = getRandomString(10, 5)
@@ -125,20 +128,21 @@ smartTest('Edit song saves changes', 'critical', async ({ page }) => {
 	await expect(page.locator('body')).toContainText(content.split('\n')[0])
 
 	// check if url is different... not equal to original
-	await expect(page).not.toHaveURL(/\/pisen\/26515\/52k6a/)
+	await expect(page).not.toHaveURL(url)
 })
 
 smartTest('Creating clone', 'critical', async ({ page }) => {
-	await page.goto('/pisen/26515/52k6a')
+	const publicSongUrl = '/pisen/2ae33/bozi-beranek'
+	await page.goto(publicSongUrl)
 
 	await test_tech_loginWithData(page)
 
-	await page.getByLabel('Další možnosti').getByRole('button').click()
+	// await page.getByLabel('Další možnosti').getByRole('button').click()
 	await page.getByText('Vytvořit úpravu').click()
 	await page.waitForTimeout(10000) // wait for save to finish
 
 	// check if url is different... not equal to original
-	await expect(page).not.toHaveURL(/\/pisen\/26515\/52k6a/)
+	await expect(page).not.toHaveURL(publicSongUrl)
 
 	// page check element, which contains element "(kopie)"
 	await expect(page.locator('text=/.*\\(kopie\\).*/').first()).toBeVisible()

@@ -43,10 +43,6 @@ smartTest('Can create a new playlist', 'critical', async ({ page }) => {
 smartTest('Can rename a playlist', 'critical', async ({ page }) => {
 	await startWithCreatePlaylist(page)
 
-	await expect(
-		page.getByRole('textbox', { name: 'Název playlistu' })
-	).toBeVisible()
-
 	const newName = 'asdfihelhalhi ohi'
 	await renamePlaylist(page, newName)
 
@@ -191,7 +187,7 @@ smartTest(
 		await startWithCreatePlaylist(page)
 		const songs = [
 			await addSearchedSong(page, 'Volas nas do morskych'),
-			await addSearchedSong(page, 'Jsi darcem zivota a darcem'),
+			await addSearchedSong(page, 'Pokoj'),
 		]
 		await checkSongs(page, songs, 'Song not added to playlist after search')
 

@@ -42,9 +42,13 @@ smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
 smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
 	await page.goto('/')
 
-	await searchWithSearchBar('Jsi darcem zivota', page)
+	await searchWithSearchBar('Jsi darcem života', page)
 
-	await page.getByRole('link', { name: 'Český originál Pokoj Jsi dá' }).click()
+	const songLink = page.getByRole('link', {
+		name: 'Pokoj Jsi darcem života Jsi',
+	})
+	await expect(songLink).toBeVisible()
+	await songLink.click()
 
 	await expect(page).toHaveURL(/\/pisen\/[a-z0-9-]+/)
 })

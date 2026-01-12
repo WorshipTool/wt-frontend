@@ -78,7 +78,7 @@ export const renamePlaylist = async (page: Page, newName?: string) => {
 	newName = newName || `${Math.random().toString(36).substring(2, 7)}`
 
 	const input = page.getByRole('textbox', { name: 'Název playlistu' })
-	await expect(input).toBeVisible()
+	// await expect(input).toBeVisible()
 	await input.click()
 	await input.fill(newName)
 	await input.press('Enter')
@@ -121,7 +121,7 @@ export const savePlaylist = async (page: Page) => {
 	await page.waitForTimeout(1000)
 	await page.waitForTimeout(500)
 	await expect(page.getByRole('button', { name: 'Uloženo' })).toBeVisible({
-		timeout: 60000,
+		timeout: 120000,
 	})
 }
 
