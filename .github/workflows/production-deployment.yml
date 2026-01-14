@@ -13,23 +13,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - key: chvalotce
-            env_remote: /root/worshiptool/chvalotce/frontend/.env
-            tag_suffixes: 'latest,chvalotce-prod'
-          - key: worshipcz
-            env_remote: /root/worshiptool/chvalotce/frontend/.worshipcz.env
-            tag_suffixes: 'worshipcz-prod'
-          - key: hallelujahhub
-            env_remote: /root/worshiptool/hallelujahhub/frontend/.env
-            tag_suffixes: 'hallelujahhub-prod'
-          - key: chwalmy
-            env_remote: /root/worshiptool/chwalmy/frontend/.env
-            tag_suffixes: 'chwalmy-prod'
-
     steps:
       - uses: actions/checkout@v3
 
@@ -39,8 +22,27 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
 
-      - name: Copy .env from remote server
-        run: scp -o StrictHostKeyChecking=no "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}:${{ matrix.env_remote }}" ./.env
+      # 1 SSH: vytáhne všechny env soubory naráz
+      - name: Fetch all env files from remote (single SSH)
+        shell: bash
+        run: |
+          mkdir -p envs
+          ssh "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}" '
+          tar -cf - \
+              /root/worshiptool/chvalotce/frontend/.env \
+              /root/worshiptool/chvalotce/frontend/.worshipcz.env \
+              /root/worshiptool/hallelujahhub/frontend/.env \
+              /root/worshiptool/chwalmy/frontend/.env
+          ' | tar -xf - -C envs
+
+          # přejmenuj na krátké názvy
+          mv "envs/root/worshiptool/chvalotce/frontend/.env" envs/chvalotce.env
+          mv "envs/root/worshiptool/chvalotce/frontend/.worshipcz.env" envs/worshipcz.env
+          mv "envs/root/worshiptool/hallelujahhub/frontend/.env" envs/hallelujahhub.env
+          mv "envs/root/worshiptool/chwalmy/frontend/.env" envs/chwalmy.env
+
+          # uklid
+          rm -rf envs/root
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -48,37 +50,42 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & Push
+      # build+push 4x s jiným .env a tagy
+      - name: Build & Push all variants
         shell: bash
         run: |
-          IFS=',' read -ra SUFFIXES <<< "${{ matrix.tag_suffixes }}"
+          set -euo pipefail
+
+          build_one () {
+          local key="$1"
+          local envfile="$2"
+          local suffixes="$3"
+
+          cp "$envfile" ./.env
+
+          IFS=',' read -ra SUFFIXES <<< "$suffixes"
           TAG_ARGS=()
           for s in "${SUFFIXES[@]}"; do
-            TAG_ARGS+=("-t" "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}")
+              TAG_ARGS+=("-t" "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}")
           done
 
           docker build "${TAG_ARGS[@]}" .
 
           for s in "${SUFFIXES[@]}"; do
-            docker push "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}"
+              docker push "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${s}"
           done
+          }
+
+          build_one chvalotce     envs/chvalotce.env     "latest,chvalotce-prod"
+          build_one worshipcz     envs/worshipcz.env     "worshipcz-prod"
+          build_one hallelujahhub envs/hallelujahhub.env "hallelujahhub-prod"
+          build_one chwalmy       envs/chwalmy.env       "chwalmy-prod"
+
+          rm -f ./.env
 
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - profile: chvalotce
-            service: frontend-chvalotce
-          - profile: chvalotce
-            service: frontend-worshipcz
-          - profile: hallelujahhub
-            service: frontend-hallelujahhub
-          - profile: chwalmy
-            service: frontend-chwalmy
-
     steps:
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -86,7 +93,14 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
 
-      - name: Redeploy application
+      # 1 SSH + 1 docker compose příkaz
+      - name: Redeploy frontends
         run: |
           ssh -o ServerAliveInterval=1000 "${{ env.SERVER_USERNAME }}@${{ env.SERVER_URL }}" \
-            "cd /root/worshiptool/ && docker compose --profile ${{ matrix.profile }} up -d --pull always ${{ matrix.service }}"
+          "cd /root/worshiptool/ && \
+          docker compose \
+              --profile chvalotce \
+              --profile hallelujahhub \
+              --profile chwalmy \
+              up -d --pull always \
+              frontend-chvalotce frontend-worshipcz frontend-hallelujahhub frontend-chwalmy"
