@@ -8,7 +8,7 @@ export class Selectors {
 
 	// Search
 	search = {
-		input: () => this.page.getByPlaceholder(/.*Hledej.*/i),
+		input: () => this.page.getByTestId('main-search-input'),
 		songResult: (songName: string) =>
 			this.page.getByRole('link', { name: new RegExp(songName, 'i') }).first(),
 		loadMoreButton: () =>
