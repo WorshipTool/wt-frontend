@@ -91,6 +91,7 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 					autoFocus
 					value={props.value}
 					inputRef={inputRef}
+					inputProps={{ 'data-testid': 'main-search-input' }}
 				></SearchInput>
 
 				{showSmartSearch && (
