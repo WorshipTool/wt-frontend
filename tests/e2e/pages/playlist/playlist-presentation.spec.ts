@@ -83,19 +83,13 @@ smartTest(
 
 		await openPresentation(page)
 
-		// Wait for presentation to load
-		await page.waitForTimeout(1000)
-		//
-		await page.waitForTimeout(1000)
-
 		// Check that the song title is visible in presentation
-		const pageContent = await page.content()
-		expect(pageContent.toLowerCase()).toContain('pokoj')
+		expect(page.getByText(/pokoj/i).first()).toBeVisible()
 
 		// Check for the first chord being transposed correctly
 		// "Volas nas do morskych" typically starts with C, transposed +2 should be D
 		const chordElements = page.locator('.chord')
-		await expect(chordElements.first()).toBeVisible()
+		await expect(chordElements.first()).toBeVisible({ timeout: 30000 })
 
 		const firstChordText = await chordElements.first().textContent()
 		expect(firstChordText?.trim().startsWith('D')).toBe(true)

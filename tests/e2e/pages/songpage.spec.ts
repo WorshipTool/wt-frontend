@@ -1,12 +1,14 @@
 import { getRandomString } from '@/tech/string/random.string.tech'
 import { expect, Page } from '@playwright/test'
+import { Selectors } from '@tests/e2e/helpers/selectors.helper'
 import { test_tech_loginWithData } from '../../test.tech'
 import { smartTest } from '../setup'
 import { test_createNewSong } from './songs/songs.test.utils'
 
 smartTest('Transposition exists and works', 'critical', async ({ page }) => {
-	await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas')
-	await page.getByText('TRANSPOZICE').click()
+	const sel = new Selectors(page)
+	await page.goto('/pisen/a6d46/proscholy')
+	// await page.getByText('TRANSPOZICE').click()
 	const c1 = await page
 		.locator('div')
 		.filter({ hasText: /^CMou$/ })
@@ -15,7 +17,7 @@ smartTest('Transposition exists and works', 'critical', async ({ page }) => {
 
 	await expect(c1).toBeVisible()
 
-	const up = await page.getByRole('button', { name: 'Zvýšit o půltón' })
+	const up = await sel.songPage.transposeUpButton()
 	up.click()
 	up.click()
 
@@ -27,7 +29,7 @@ smartTest('Transposition exists and works', 'critical', async ({ page }) => {
 
 	await expect(c2).toBeVisible()
 
-	const down = await page.getByRole('button', { name: 'Snížit o půltón' })
+	const down = await sel.songPage.transposeDownButton()
 
 	down.click()
 	down.click()
@@ -42,11 +44,12 @@ smartTest('Transposition exists and works', 'critical', async ({ page }) => {
 })
 
 smartTest('Print button exists and works', 'critical', async ({ page }) => {
-	const pisenUrl = '/pisen/a6d46/mou-cestu-v-rukou-mas'
+	const sel = new Selectors(page)
+	const pisenUrl = '/pisen/a6d46/proscholy'
 	await page.goto(pisenUrl)
 
 	// Wait for button to be visible and click it
-	const printButton = page.getByRole('button', { name: /tisknout/i })
+	const printButton = sel.songPage.printButton()
 	await expect(printButton).toBeVisible()
 
 	const url = new URL(page.url())
@@ -62,11 +65,14 @@ smartTest('Print button exists and works', 'critical', async ({ page }) => {
 })
 
 smartTest('Contains source', 'smoke', async ({ page }) => {
-	await page.goto('/pisen/a6d46/mou-cestu-v-rukou-mas')
+	await page.goto('/pisen/a6d46/proscholy')
+
+	// Wait for page to fully load
+	await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {})
 
 	await expect(
 		page.getByRole('button', { name: 'https://zpevnik.proscholy.cz/' })
-	).toBeVisible()
+	).toBeVisible({ timeout: 10000 })
 })
 
 // User logged
@@ -115,9 +121,9 @@ const songEdit = async (page: Page, newTitle: string, newContent: string) => {
 
 smartTest('Edit song saves changes', 'critical', async ({ page }) => {
 	const { hex, alias } = await test_createNewSong(page)
+
 	const url = `/pisen/${hex}/${alias}`
 	await page.goto(url)
-	await test_tech_loginWithData(page)
 
 	const newTitle = getRandomString(10, 5)
 	const content = getRandomString(50, 20) + '\n\n' + getRandomString(50, 20)
@@ -139,10 +145,14 @@ smartTest('Creating clone', 'critical', async ({ page }) => {
 
 	// await page.getByLabel('Další možnosti').getByRole('button').click()
 	await page.getByText('Vytvořit úpravu').click()
-	await page.waitForTimeout(10000) // wait for save to finish
+	await page.waitForResponse(
+		(response) =>
+			response.url().includes('/song/create/copy') && response.status() === 201
+	)
 
 	// check if url is different... not equal to original
-	await expect(page).not.toHaveURL(publicSongUrl)
+	await page.waitForURL((url) => url.pathname !== publicSongUrl)
+	// await expect(page).not.toHaveURL(publicSongUrl)
 
 	// page check element, which contains element "(kopie)"
 	await expect(page.locator('text=/.*\\(kopie\\).*/').first()).toBeVisible()

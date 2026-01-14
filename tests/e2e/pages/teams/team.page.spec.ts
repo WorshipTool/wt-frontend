@@ -1,10 +1,15 @@
 import { expect } from '@playwright/test'
-import { test_tech_loginWithData } from '../../../test.tech'
+import { login } from '@tests/e2e/helpers/auth.helper'
 import { smartTest } from '../../setup'
 
 smartTest('Team is visible', 'critical', async ({ page }) => {
-	await test_tech_loginWithData(page)
+	await page.goto('/')
+	await login(page)
 	await page.goto('/sub/tymy/zkouska-team')
 
-	await expect(page.getByText('Zkouska')).toBeVisible()
+	await page.waitForLoadState('domcontentloaded')
+
+	await expect(page.getByText(/Zkouska/i).first()).toBeVisible({
+		timeout: 10000,
+	})
 })

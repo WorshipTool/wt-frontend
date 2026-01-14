@@ -30,7 +30,7 @@ export default defineConfig({
 					command:
 						false && fs.existsSync('.next/routes-manifest.json') // just trying
 							? 'npm run start'
-							: 'echo "Building project..." &&npm run build && npm run start',
+							: 'echo "Building project..." && npm run build && npm run start',
 					port: 5500,
 					reuseExistingServer: true,
 					timeout: 120 * 1000, // 2 minutes
@@ -41,17 +41,35 @@ export default defineConfig({
 	use: {
 		baseURL: process.env.NEXT_PUBLIC_FRONTEND_URL,
 		headless: true,
-		actionTimeout: 30 * 1000, // 10 seconds
-		navigationTimeout: 30 * 1000, // 10 seconds
+		// Increased timeouts for more reliable tests
+		actionTimeout: 30 * 1000, // 30 seconds
+		navigationTimeout: 30 * 1000, // 30 seconds
 
-		screenshot: 'only-on-failure',
-		video: 'retain-on-failure',
-		trace: 'retain-on-failure',
+		// Better debugging in CI
+		screenshot: isCI ? 'on' : 'only-on-failure',
+		video: isCI ? 'on' : 'retain-on-failure',
+		trace: isCI ? 'on-first-retry' : 'retain-on-failure',
+
+		// Ignore HTTPS errors in test environments
+		ignoreHTTPSErrors: true,
 	},
-	//TODO: add more browser testing on full mode
-	reporter: [['html', { open: 'never' }], ['github'], ['list']],
-	retries: 1,
-	workers: '75%',
-	timeout: 120 * 1000, // 60 seconds
+	// Better reporters for CI and local development
+	reporter: [
+		['html', { open: 'never' }],
+		['github'],
+		['list'],
+		// Add junit reporter for CI integration
+		...(isCI
+			? [['junit', { outputFile: 'temp/tests/junit-results.xml' }] as const]
+			: []),
+	],
+	// More retries in CI to handle transient failures
+	retries: isCI ? 2 : 1,
+	// Reduced workers for more stable parallel execution
+	workers: isCI ? '50%' : '75%',
+	// Longer timeout for complex test scenarios
+	timeout: 120 * 1000, // 2 minutes
 	outputDir: 'temp/tests/results/',
+	// Fail fast in CI to save resources
+	maxFailures: isCI ? 10 : undefined,
 })

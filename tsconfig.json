@@ -27,7 +27,9 @@
 			"@/assets/*": ["./src/assets/*"],
 			"@/hooks/*": ["./src/hooks/*"],
 			"@/ui/*": ["./src/common/ui/*"],
-			"@/tech/*": ["./src/tech/*"]
+			"@/tech/*": ["./src/tech/*"],
+			"@tests/*": ["./tests/*"],
+			"@e2e/*": ["./tests/e2e/*"]
 		},
 		"forceConsistentCasingInFileNames": true
 	},
