@@ -9,6 +9,7 @@ import {
 	ImagesApi,
 	LoggerApi,
 	MailApi,
+	NewsApi,
 	PackEmbeddingApi,
 	ParserApi,
 	PermissionsApi,
@@ -89,6 +90,8 @@ const getInternalApiClasses = (
 	const teamSongNotesApi = new TeamSongNotesApi(apiConfiguration)
 	const teamStatisticsApi = new TeamStatisticsApi(apiConfiguration)
 
+	const newsApi = new NewsApi(apiConfiguration)
+
 	const wrappedClasses = {
 		playlistGettingApi: wrapFunc(playlistGettingApi, {
 			getPlaylistDataByGuid: {
@@ -160,6 +163,8 @@ const getInternalApiClasses = (
 		teamPlaylistsApi: wrapFunc(teamPlaylistsApi),
 		teamSongNotesApi: wrapFunc(teamSongNotesApi),
 		teamStatisticsApi: wrapFunc(teamStatisticsApi),
+
+		newsApi: wrapFunc(newsApi),
 	}
 
 	return wrappedClasses
