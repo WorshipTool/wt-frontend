@@ -947,5 +947,15 @@
 		"sheep": "Owca",
 		"noIdea": "Brak pomysłu?",
 		"chooseSuggestion": "Wybierz pieśń z propozycji poniżej lub z listy wszystkich pieśni"
+	},
+	"news": {
+		"popupLabel": "Nowość",
+		"popupTryIt": "Wypróbuj",
+		"popupClose": "Zamknij",
+		"smartSearchTitle": "Wyszukiwanie według znaczenia",
+		"smartSearchDescription": "Znajdź pieśń według tego, <strong>o czym jest</strong>, nie tylko według słów w tekście. Przełącz się na tryb inteligentny i wpisz temat lub nastrój – np. <strong>\u201Enadzieja w trudnych chwilach\u201C</strong>, <strong>\u201Euwielbienie w próbach\u201C</strong> lub <strong>\u201EBoża wierność\u201C</strong>.",
+		"smartSearchNote": "💡 Funkcja jest wciąż w fazie rozwoju.",
+		"smartSearchStep1": "Przełącz na inteligentne wyszukiwanie",
+		"smartSearchStep2": "Wpisz temat lub nastrój, którego szukasz"
 	}
 }

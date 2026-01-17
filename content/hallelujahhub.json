@@ -964,5 +964,15 @@
 		"sheep": "Sheep",
 		"noIdea": "No idea?",
 		"chooseSuggestion": "Choose a song from suggestions below or from the list of all songs"
+	},
+	"news": {
+		"popupLabel": "New",
+		"popupTryIt": "Try it",
+		"popupClose": "Close",
+		"smartSearchTitle": "Search by meaning",
+		"smartSearchDescription": "Find a song by <strong>what it's about</strong>, not just by the words in the text. Switch to smart mode and type a theme or feeling – e.g. <strong>\"hope in difficult times\"</strong>, <strong>\"praise in the midst of trials\"</strong> or <strong>\"God's faithfulness\"</strong>.",
+		"smartSearchNote": "💡 This feature is still in development.",
+		"smartSearchStep1": "Switch to smart search",
+		"smartSearchStep2": "Enter the theme or mood you're looking for"
 	}
 }
