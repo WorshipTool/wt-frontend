@@ -72,9 +72,21 @@ export function useProvideAuth() {
 		return undefined
 	}
 	const _emptyCookie = () => {
+		const hostname = process.env.NEXT_PUBLIC_FRONTEND_HOSTNAME || ''
+		// Remove cookie with current domain
 		cookies.remove(AUTH_COOKIE_NAME, {
-			domain: `.${process.env.NEXT_PUBLIC_FRONTEND_HOSTNAME}`,
+			domain: `.${hostname}`,
 		})
+		// Also remove cookie without domain (legacy)
+		cookies.remove(AUTH_COOKIE_NAME)
+		// Also remove parent domain cookie (e.g., .chvalotce.cz when on dev.chvalotce.cz)
+		const parts = hostname.split('.')
+		if (parts.length > 2) {
+			const parentDomain = parts.slice(1).join('.')
+			cookies.remove(AUTH_COOKIE_NAME, {
+				domain: `.${parentDomain}`,
+			})
+		}
 	}
 
 	// User state
@@ -87,7 +99,7 @@ export function useProvideAuth() {
 			isJsonMime: () => true,
 			accessToken: token,
 		}),
-		[token]
+		[token],
 	)
 
 	const pathname = useClientPathname()
@@ -123,7 +135,7 @@ export function useProvideAuth() {
 	const [loading, setLoading] = useState<boolean>(false)
 	const login = async (
 		{ email, password }: { email: string; password: string },
-		after?: (r: any) => void
+		after?: (r: any) => void,
 	) => {
 		setLoading(true)
 
@@ -149,7 +161,7 @@ export function useProvideAuth() {
 
 	const _innerLogin = (user: UserDto) => {
 		enqueueSnackbar(
-			`Ahoj ${user.firstName} ${user.lastName}. Ať najdeš, po čem paseš.`
+			`Ahoj ${user.firstName} ${user.lastName}. Ať najdeš, po čem paseš.`,
 		)
 		setUser(user)
 		_setCookie(user)
@@ -190,7 +202,7 @@ export function useProvideAuth() {
 
 	const loginWithGoogle = (
 		response: CredentialResponse,
-		after?: (r: any) => void
+		after?: (r: any) => void,
 	) => {
 		setLoading(true)
 
@@ -218,7 +230,7 @@ export function useProvideAuth() {
 			})
 	}
 
-	const isLoggedIn = () => user != undefined
+	const isLoggedIn = useCallback(() => user != undefined, [user])
 
 	// Check if cookie still exists
 	const checkIfCookieExists = (): boolean => {
@@ -230,14 +242,14 @@ export function useProvideAuth() {
 			if (!user) return
 			await authApi.changePassword({ newPassword, oldPassword })
 		},
-		[authApi, user]
+		[authApi, user],
 	)
 
 	const resetPassword = useCallback(
 		async (resetToken: string, newPassword: string) => {
 			await authApi.resetPassword({ resetToken, newPassword })
 		},
-		[authApi]
+		[authApi],
 	)
 
 	const sendResetLink = useCallback(
@@ -245,7 +257,7 @@ export function useProvideAuth() {
 			const result = await authApi.sendResetToken(email)
 			return result
 		},
-		[authApi]
+		[authApi],
 	)
 
 	const reloadInfo = useCallback(
@@ -255,7 +267,7 @@ export function useProvideAuth() {
 				...partialUser,
 			})
 		},
-		[user]
+		[user],
 	)
 
 	return {

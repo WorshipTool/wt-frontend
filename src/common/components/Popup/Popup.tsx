@@ -3,7 +3,7 @@ import PopupContainer from '@/common/components/Popup/PopupContainer'
 import { POPUP_DIV_CONTAINER_ID } from '@/common/components/Popup/PopupProvider'
 import { Box } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
-import { alpha } from '@/common/ui/mui'
+import { alpha, SxProps } from '@/common/ui/mui'
 import { Typography } from '@/common/ui/Typography'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FormEvent, ReactNode, useEffect, useRef, useState } from 'react'
@@ -22,6 +22,8 @@ type PopupProps = {
 
 	onSubmit?: () => void
 	onReset?: () => void
+
+	sx?: SxProps
 
 	width?: number
 }
@@ -126,6 +128,7 @@ export default function Popup({
 									bgcolor: 'white',
 									boxShadow: '0px 0px 2px  rgba(0,0,0,0.1)',
 									position: 'relative',
+									...props.sx,
 								}}
 								onClick={(e) => e.stopPropagation()}
 								display={'flex'}

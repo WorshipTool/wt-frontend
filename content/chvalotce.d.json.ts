@@ -950,6 +950,16 @@ declare const messages: {
 		"sheep": "Ovce",
 		"noIdea": "Žádný nápad?",
 		"chooseSuggestion": "Vyberte píseň z návrhů níže nebo ze seznamu všech písní"
+	},
+	"news": {
+		"popupLabel": "Novinka",
+		"popupTryIt": "Vyzkoušet",
+		"popupClose": "Zavřít",
+		"smartSearchTitle": "Vyhledávání podle významu",
+		"smartSearchDescription": "Najděte píseň podle toho, <strong>o čem je</strong>, ne jen podle slov v textu. Přepněte se do chytrého módu a napište téma nebo pocit – např. <strong>\u201Enaděje v těžkých chvílích\u201C</strong>, <strong>\u201Echvála uprostřed zkoušek\u201C</strong> nebo <strong>\u201EBoží věrnost\u201C</strong>.",
+		"smartSearchNote": "💡 Funkce je stále ve vývoji a ladí se.",
+		"smartSearchStep1": "Přepněte na chytré vyhledávání",
+		"smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
 	}
 };
 export default messages;

@@ -1,4 +1,5 @@
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
+import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, IconButton, useTheme } from '@/common/ui'
 import { InputBase } from '@/common/ui/mui'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
@@ -72,6 +73,7 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 
 	return (
 		<div
+			data-testid="main-search-container"
 			style={{
 				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
 				boxShadow: `0px 3px 4px ${theme.palette.grey[500]}`,
@@ -95,7 +97,10 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 				></SearchInput>
 
 				{showSmartSearch && (
-					<>
+					<NewsHighlightWrapper
+						targetComponent="smart-search-toggle"
+						tooltipPlacement="right"
+					>
 						<IconButton
 							color={props.smartSearch ? 'primary.main' : 'grey.400'}
 							size="small"
@@ -105,7 +110,7 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 						>
 							<AutoAwesome fontSize="small" />
 						</IconButton>
-					</>
+					</NewsHighlightWrapper>
 				)}
 			</SearchContainer>
 		</div>
