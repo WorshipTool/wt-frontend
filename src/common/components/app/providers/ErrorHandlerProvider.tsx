@@ -3,7 +3,7 @@ import { Button } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Lock } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import useAuth from '../../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
 import {
@@ -18,8 +18,9 @@ interface ErrorHandlerProviderProps {
 
 export default function ErrorHandlerProvider(props: ErrorHandlerProviderProps) {
 	const { enqueueSnackbar } = useSnackbar()
-	const { logout, isAdmin } = useAuth()
+	const { logout, isAdmin, isLoggedIn } = useAuth()
 	const navigate = useSmartNavigate()
+	const isHandlingUnauthorized = useRef(false)
 
 	const ne = useCallback(() => {
 		if (!isAdmin()) return
@@ -43,7 +44,15 @@ export default function ErrorHandlerProvider(props: ErrorHandlerProviderProps) {
 	}, [enqueueSnackbar])
 
 	const ue = useCallback(() => {
-		logout()
+		// Prevent multiple simultaneous unauthorized handlers
+		if (isHandlingUnauthorized.current) return
+		// Don't handle if already logged out
+		if (!isLoggedIn()) return
+
+		isHandlingUnauthorized.current = true
+		logout().finally(() => {
+			isHandlingUnauthorized.current = false
+		})
 		navigate('login', {
 			previousPage: window.location.pathname,
 			message: 'Je třeba se znovu přihlásit.',
@@ -51,7 +60,7 @@ export default function ErrorHandlerProvider(props: ErrorHandlerProviderProps) {
 		enqueueSnackbar('Je třeba se znovu přihlásit.', {
 			persist: true,
 		})
-	}, [enqueueSnackbar, logout, navigate])
+	}, [enqueueSnackbar, logout, navigate, isLoggedIn])
 
 	const noPermission = useCallback(() => {
 		enqueueSnackbar(
