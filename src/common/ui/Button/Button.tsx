@@ -58,19 +58,24 @@ export const Button = memo(
 
 			...props
 		}: ButtonProps<T>,
-		ref: React.Ref<HTMLButtonElement>
+		ref: React.Ref<HTMLButtonElement>,
 	) {
 		const disabled = useMemo(
 			() => props.loading || props.disabled,
-			[props.loading, props.disabled]
+			[props.loading, props.disabled],
 		)
 
 		size = props.small ? 'small' : size
 		variant = props.outlined
 			? 'outlined'
 			: props.contained
-			? 'contained'
-			: variant
+				? 'contained'
+				: variant
+
+		props.sx = {
+			borderRadius: 2,
+			...props.sx,
+		}
 
 		const ButtonComponent = useCallback(
 			() => (
@@ -104,7 +109,7 @@ export const Button = memo(
 								? {
 										background: `linear-gradient(115deg, ${theme.palette.primary.main} 10%, ${theme.palette.primary.dark})`,
 										color: 'white',
-								  }
+									}
 								: {}),
 
 							textTransform: props.disableUppercase ? 'none' : undefined,
@@ -159,12 +164,12 @@ export const Button = memo(
 				props.title,
 				props.subtitle,
 				ref,
-			]
+			],
 		)
 
 		const typedParams: CommonLinkProps<T>['params'] = useMemo(
 			() => props.toParams as CommonLinkProps<T>['params'],
-			[props.toParams]
+			[props.toParams],
 		)
 
 		const LinkComponent = useCallback(
@@ -197,7 +202,14 @@ export const Button = memo(
 				) : (
 					<ButtonComponent />
 				),
-			[props.to, disabled, props.sx, typedParams, props.target, ButtonComponent]
+			[
+				props.to,
+				disabled,
+				props.sx,
+				typedParams,
+				props.target,
+				ButtonComponent,
+			],
 		)
 
 		return props.tooltip && !disabled ? (
@@ -207,5 +219,5 @@ export const Button = memo(
 		) : (
 			<LinkComponent />
 		)
-	})
+	}),
 )
