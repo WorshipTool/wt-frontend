@@ -3,6 +3,7 @@ import { VariantPackGuid } from '@/api/dtos'
 export const AnalyticsTrackEventNames: Record<AnalyticsEventNameType, string> =
 	{
 		VISIT_SONG: 'VISIT_SONG',
+		SMART_SEARCH_TOGGLE: 'SMART_SEARCH_TOGGLE',
 	}
 
 export type AnalyticsTrackData = {
@@ -11,6 +12,9 @@ export type AnalyticsTrackData = {
 		packGuid: VariantPackGuid
 		title: string
 		hasChords: boolean
+	}
+	SMART_SEARCH_TOGGLE: {
+		enabled: boolean
 	}
 }
 
