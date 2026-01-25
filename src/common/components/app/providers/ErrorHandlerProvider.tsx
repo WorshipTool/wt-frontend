@@ -9,6 +9,7 @@ import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
 import {
 	networkErrorEvent,
 	norequiredPermissionEvent,
+	serviceUnavailableEvent,
 	unauthorizedEvent,
 } from '../../../../tech/fetch/handleApiCall'
 
@@ -59,20 +60,29 @@ export default function ErrorHandlerProvider(props: ErrorHandlerProviderProps) {
 				<Lock />
 				<Gap horizontal />
 				Nemáte dostatečná oprávnění.
-			</>
+			</>,
 		)
+	}, [enqueueSnackbar])
+
+	const serviceUnavailable = useCallback(() => {
+		enqueueSnackbar('Služba je dočasně nedostupná. Zkuste to prosím později.', {
+			variant: 'error',
+			preventDuplicate: true,
+		})
 	}, [enqueueSnackbar])
 
 	useEffect(() => {
 		window.addEventListener(networkErrorEvent, ne)
 		window.addEventListener(unauthorizedEvent, ue)
 		window.addEventListener(norequiredPermissionEvent, noPermission)
+		window.addEventListener(serviceUnavailableEvent, serviceUnavailable)
 
 		return () => {
 			window.removeEventListener(networkErrorEvent, ne)
 			window.removeEventListener(unauthorizedEvent, ue)
 			window.removeEventListener(norequiredPermissionEvent, noPermission)
+			window.removeEventListener(serviceUnavailableEvent, serviceUnavailable)
 		}
-	}, [ne, ue, noPermission])
+	}, [ne, ue, noPermission, serviceUnavailable])
 	return <>{props.children}</>
 }

@@ -2,8 +2,8 @@ import { AxiosResponse } from 'axios'
 
 export const networkErrorEvent = 'networkErrorEvent'
 export const unauthorizedEvent = 'unauthorizedEvent'
-
 export const norequiredPermissionEvent = 'norequiredPermissionEvent'
+export const serviceUnavailableEvent = 'serviceUnavailableEvent'
 
 export type HandleApiCallOptions = {
 	ignoreUnauthorizedError?: boolean
@@ -36,6 +36,9 @@ export const handleApiCall = <T>(
 						break
 					case 403:
 						window?.dispatchEvent(new CustomEvent(norequiredPermissionEvent))
+						break
+					case 503:
+						window?.dispatchEvent(new CustomEvent(serviceUnavailableEvent))
 						break
 				}
 			}
