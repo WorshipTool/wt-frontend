@@ -1,3 +1,4 @@
+import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, IconButton, useTheme } from '@/common/ui'
@@ -105,7 +106,11 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 							color={props.smartSearch ? 'primary.main' : 'grey.400'}
 							size="small"
 							onClick={() => {
-								props.onSmartSearchChange?.(!props.smartSearch)
+								const newValue = !props.smartSearch
+								props.onSmartSearchChange?.(newValue)
+								Analytics.track('SMART_SEARCH_TOGGLE', {
+									enabled: newValue,
+								})
 							}}
 						>
 							<AutoAwesome fontSize="small" />

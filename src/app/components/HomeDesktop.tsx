@@ -114,7 +114,10 @@ export default function HomeDesktop() {
 
 	const useWorshipVersion = useWorshipCzVersion()
 
-	const [smartSearch, setSmartSearch] = useState(false)
+	const [smartSearch, setSmartSearch] = useUrlState('smartSearch', false, {
+		parse: (value) => value === 'true',
+		stringify: (value) => (value ? 'true' : 'false'),
+	})
 
 	const paddingX = 32
 	const gapString = `calc(max(${paddingX}px, (100vw - ${containerMaxWidth}px) / 2) )`
@@ -326,7 +329,7 @@ export default function HomeDesktop() {
 										gradientBorder={isTop && !phoneVersion}
 										value={searchInputValue}
 										onChange={onSearchValueChange}
-										smartSearch={smartSearch}
+										smartSearch={smartSearch ?? false}
 										onSmartSearchChange={setSmartSearch}
 									/>
 								</Box>
@@ -377,7 +380,7 @@ export default function HomeDesktop() {
 					{searchString && (
 						<SearchedSongsList
 							searchString={searchString}
-							useSmartSearch={smartSearch}
+							useSmartSearch={smartSearch ?? false}
 						/>
 					)}
 					<RecommendedSongsList />
