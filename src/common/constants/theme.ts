@@ -3,11 +3,11 @@ import { ThemeOptions } from '@/common/ui/mui'
 export const theme = {
 	palette: {
 		primary: {
-			main: '#0085FF',
-			dark: '#532EE7',
+			main: '#E53935',
+			dark: '#B71C1C',
 		},
 		secondary: {
-			main: '#EBBC1E',
+			main: '#FF8A65',
 		},
 		success: {
 			main: '#43a047',

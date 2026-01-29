@@ -22,9 +22,9 @@ body {
 }
 
 :root {
-	--color-primary: #0085ff;
-	--color-primary-dark: #532ee7;
-	--color-secondary: #ebbc1e;
+	--color-primary: #e53935;
+	--color-primary-dark: #b71c1c;
+	--color-secondary: #ff8a65;
 	--color-success: #43a047;
 
 	/*grey*/
