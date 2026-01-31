@@ -59,10 +59,7 @@ export function Toolbar() {
 			>
 				<motion.div
 					style={{
-						background:
-							variant === 'dark'
-								? grey[900]
-								: `linear-gradient(70deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+						background: grey[900],
 						position: 'absolute',
 						left: 0,
 						right: 0,
