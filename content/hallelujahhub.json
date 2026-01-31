@@ -57,7 +57,9 @@
 			"addSong": "Add new song",
 			"tools": "Tools",
 			"account": "Account",
-			"login": "Sign In"
+			"login": "Sign In",
+			"darkMode": "Dark mode",
+			"lightMode": "Light mode"
 		},
 		"alt": {
 			"profileImage": "Profile image"

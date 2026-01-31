@@ -60,7 +60,9 @@ declare const messages: {
 			"addSong": "Přidat novou píseň",
 			"tools": "Nástroje",
 			"account": "Účet",
-			"login": "Přihlásit se"
+			"login": "Přihlásit se",
+			"darkMode": "Tmavý režim",
+			"lightMode": "Světlý režim"
 		},
 		"alt": {
 			"profileImage": "Profilový obrázek"

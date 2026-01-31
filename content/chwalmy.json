@@ -57,7 +57,9 @@
 			"addSong": "Dodaj nową pieśń",
 			"tools": "Narzędzia",
 			"account": "Konto",
-			"login": "Zaloguj się"
+			"login": "Zaloguj się",
+			"darkMode": "Tryb ciemny",
+			"lightMode": "Tryb jasny"
 		},
 		"alt": {
 			"profileImage": "Zdjęcie profilowe"

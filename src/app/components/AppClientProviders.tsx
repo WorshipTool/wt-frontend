@@ -1,5 +1,6 @@
 'use client'
 import AppSongSelectSpecifierProvider from '@/app/components/components/AppSongSelectSpecifierProvider'
+import { DarkModeProvider } from '@/app/providers/DarkModeProvider'
 import { FooterProvider } from '@/common/components/Footer/hooks/useFooter'
 import { ToolbarProvider } from '@/common/components/Toolbar/hooks/useToolbar'
 import ErrorHandlerProvider from '@/common/components/app/providers/ErrorHandlerProvider'
@@ -32,50 +33,52 @@ export default function AppClientProviders({
 	test,
 }: AppClientProvidersProps) {
 	return (
-		<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="cs">
-			<SnackbarProvider
-				maxSnack={1}
-				anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-				autoHideDuration={3000}
-				preventDuplicate
-			>
-				{/* <BrowserRouter> */}
-				<CommonDataProvider initialData={initialCommonData}>
-					<SubdomainPathnameAliasProvider>
-						<AuthProvider>
-							<FeatureFlagsProvider>
-								<NewsProvider>
-									<PermissionsProvider>
-										<ErrorHandlerProvider>
-											<TranslationLikesProvider>
-												<BottomPanelProvider>
-													<FavouritesProvider>
-														<ToolbarProvider>
-															<FooterProvider>
-																<OutsideLinkBlockerProvider>
-																	<AppSongSelectSpecifierProvider>
-																		<CurrentPlaylistProvider>
-																			<SongDragProvider>
-																				{children}
-																				<NewsPopup />
-																			</SongDragProvider>
-																		</CurrentPlaylistProvider>
-																	</AppSongSelectSpecifierProvider>
-																</OutsideLinkBlockerProvider>
-															</FooterProvider>
-														</ToolbarProvider>
-													</FavouritesProvider>
-												</BottomPanelProvider>
-											</TranslationLikesProvider>
-										</ErrorHandlerProvider>
-									</PermissionsProvider>
-								</NewsProvider>
-							</FeatureFlagsProvider>
-						</AuthProvider>
-					</SubdomainPathnameAliasProvider>
-				</CommonDataProvider>
-				{/* </BrowserRouter> */}
-			</SnackbarProvider>
-		</LocalizationProvider>
+		<DarkModeProvider>
+			<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="cs">
+				<SnackbarProvider
+					maxSnack={1}
+					anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+					autoHideDuration={3000}
+					preventDuplicate
+				>
+					{/* <BrowserRouter> */}
+					<CommonDataProvider initialData={initialCommonData}>
+						<SubdomainPathnameAliasProvider>
+							<AuthProvider>
+								<FeatureFlagsProvider>
+									<NewsProvider>
+										<PermissionsProvider>
+											<ErrorHandlerProvider>
+												<TranslationLikesProvider>
+													<BottomPanelProvider>
+														<FavouritesProvider>
+															<ToolbarProvider>
+																<FooterProvider>
+																	<OutsideLinkBlockerProvider>
+																		<AppSongSelectSpecifierProvider>
+																			<CurrentPlaylistProvider>
+																				<SongDragProvider>
+																					{children}
+																					<NewsPopup />
+																				</SongDragProvider>
+																			</CurrentPlaylistProvider>
+																		</AppSongSelectSpecifierProvider>
+																	</OutsideLinkBlockerProvider>
+																</FooterProvider>
+															</ToolbarProvider>
+														</FavouritesProvider>
+													</BottomPanelProvider>
+												</TranslationLikesProvider>
+											</ErrorHandlerProvider>
+										</PermissionsProvider>
+									</NewsProvider>
+								</FeatureFlagsProvider>
+							</AuthProvider>
+						</SubdomainPathnameAliasProvider>
+					</CommonDataProvider>
+					{/* </BrowserRouter> */}
+				</SnackbarProvider>
+			</LocalizationProvider>
+		</DarkModeProvider>
 	)
 }

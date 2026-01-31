@@ -1,6 +1,7 @@
 'use client'
 
 import AccountMenu from '@/common/components/Toolbar/components/RightAccountPanel/AccountMenu'
+import DarkModeToggle from '@/common/components/Toolbar/components/RightAccountPanel/DarkModeToggle'
 import ToolsMenu from '@/common/components/Toolbar/components/RightAccountPanel/Toolsmenu/ToolsMenu'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, IconButton, Tooltip, useTheme } from '@/common/ui'
@@ -119,6 +120,12 @@ export default function RightAccountPanel({}: RightAccountPanelProps) {
 						navigate('uploadParse', { files: files.map((f) => f.name) })
 					}}
 					inputRef={uploadInputRef}
+				/>
+
+				<DarkModeToggle
+					iconStyle={iconStyle}
+					iconButtonStyle={iconButtonStyle}
+					fontSize={fontSize}
 				/>
 
 				{isLoggedIn() ? (
