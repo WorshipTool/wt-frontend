@@ -5,6 +5,7 @@ import LogoTitle from '@/common/components/Toolbar/components/LogoTitle'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Gap } from '@/common/ui/Gap'
+import { PasswordStrengthIndicator } from '@/common/ui/PasswordStrengthIndicator/PasswordStrengthIndicator'
 import { StandaloneCard } from '@/common/ui/StandaloneCard'
 import { TextInput } from '@/common/ui/TextInput'
 import { Typography } from '@/common/ui/Typography'
@@ -140,14 +141,17 @@ function SignUp() {
 								type="email"
 								disabled={inProgress}
 							/>
-							<TextInput
-								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
-								type="password"
-								disabled={inProgress}
-							/>
+							<Box display={'flex'} flexDirection={'column'}>
+								<TextInput
+									required
+									title={t('password')}
+									value={password}
+									onChange={(m) => setPassword(m)}
+									type="password"
+									disabled={inProgress}
+								/>
+								<PasswordStrengthIndicator password={password} />
+							</Box>
 						</Box>
 						<Gap />
 						<Gap />

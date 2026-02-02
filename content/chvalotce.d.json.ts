@@ -262,6 +262,12 @@ declare const messages: {
 			"linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
 			"emailRequired": "Email musí být vyplněn.",
 			"enterEmail": "Zadejte email"
+		},
+		"passwordStrength": {
+			"weak": "Slabé heslo",
+			"fair": "Průměrné heslo",
+			"good": "Dobré heslo",
+			"strong": "Silné heslo"
 		}
 	},
 	"playlist": {
