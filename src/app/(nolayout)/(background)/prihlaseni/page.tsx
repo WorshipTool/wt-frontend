@@ -187,6 +187,7 @@ function Login() {
 								type="email"
 								placeholder={t('enterEmail')}
 								required
+								autoComplete="email"
 							/>
 							<Gap />
 							<TextInput
@@ -198,6 +199,7 @@ function Login() {
 								type="password"
 								placeholder={t('enterPassword')}
 								required
+								autoComplete="current-password"
 							/>
 							<Box
 								display={'flex'}
