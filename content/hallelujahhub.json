@@ -236,7 +236,9 @@
 			"noAccount": "Don't have an account yet?",
 			"createAccount": "Create one",
 			"signUp": "Sign up",
-			"wrongCredentials": "Wrong email or password"
+			"wrongCredentials": "Wrong email or password",
+			"passwordRequirements": "Password must contain at least 8 characters",
+			"passwordsDontMatch": "Passwords do not match"
 		},
 		"signup": {
 			"title": "Create an account",
@@ -249,7 +251,9 @@
 			"signupButton": "Create account",
 			"haveAccount": "Already have an account?",
 			"login": "Sign in",
-			"emailExists": "Account with this email already exists"
+			"emailExists": "Account with this email already exists",
+			"passwordRequirements": "Password must contain at least 8 characters",
+			"passwordsDontMatch": "Passwords do not match"
 		},
 		"resetPassword": {
 			"title": "Password Reset",

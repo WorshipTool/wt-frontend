@@ -233,13 +233,17 @@ declare const messages: {
 			"email": "Email",
 			"enterEmail": "Zadejte e-mail",
 			"password": "Heslo",
-			"enterPassword": "Zadejte heslo",
+			"enterPassword": "Minimálně 8 znaků",
+			"confirmPassword": "Potvrdit heslo",
+			"enterConfirmPassword": "Zadejte heslo znovu",
 			"loginButton": "Přihlásit se",
 			"forgotPassword": "Zapomněli jste heslo?",
 			"noAccount": "Nemáte ještě účet?",
 			"createAccount": "Vytvořte si ho",
 			"signUp": "Registrujte se",
-			"wrongCredentials": "Špatný email nebo heslo"
+			"wrongCredentials": "Špatný email nebo heslo",
+			"passwordsDontMatch": "Hesla se neshodují",
+			"passwordRequirements": "Heslo musí obsahovat minimálně 8 znaků"
 		},
 		"signup": {
 			"title": "Vytvořte si účet",
@@ -252,7 +256,9 @@ declare const messages: {
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"passwordRequirements": "Heslo musí obsahovat minimálně 8 znaků",
+			"passwordsDontMatch": "Hesla se neshodují"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",

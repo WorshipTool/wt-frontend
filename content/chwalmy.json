@@ -236,7 +236,9 @@
 			"noAccount": "Nie masz jeszcze konta?",
 			"createAccount": "Stwórz je",
 			"signUp": "Zarejestruj się",
-			"wrongCredentials": "Nieprawidłowy email lub hasło"
+			"wrongCredentials": "Nieprawidłowy email lub hasło",
+			"passwordRequirements": "Hasło musi zawierać co najmniej 8 znaków",
+			"passwordsDontMatch": "Hasła nie pasują do siebie"
 		},
 		"signup": {
 			"title": "Utwórz konto",
@@ -249,7 +251,9 @@
 			"signupButton": "Utwórz konto",
 			"haveAccount": "Masz już konto?",
 			"login": "Zaloguj się",
-			"emailExists": "Konto z tym emailem już istnieje"
+			"emailExists": "Konto z tym emailem już istnieje",
+			"passwordRequirements": "Hasło musi zawierać co najmniej 8 znaków",
+			"passwordsDontMatch": "Hasła nie pasują do siebie"
 		},
 		"resetPassword": {
 			"title": "Resetowanie hasła",

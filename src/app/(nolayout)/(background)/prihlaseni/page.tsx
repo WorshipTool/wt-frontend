@@ -185,7 +185,7 @@ function Login() {
 								error={!isEmailOk}
 								disabled={inProgress}
 								type="email"
-								placeholder={t('enterEmail')}
+								placeholder="email@example.com"
 								required
 							/>
 							<Gap />
@@ -196,9 +196,16 @@ function Login() {
 								error={!isPasswordOk}
 								disabled={inProgress}
 								type="password"
-								placeholder={t('enterPassword')}
+								placeholder="••••••••"
 								required
 							/>
+							<Typography
+								size={'0.75rem'}
+								color="grey.600"
+								sx={{ marginTop: 0.5, marginLeft: 1 }}
+							>
+								{t('passwordRequirements')}
+							</Typography>
 							<Box
 								display={'flex'}
 								flexDirection={'row'}
