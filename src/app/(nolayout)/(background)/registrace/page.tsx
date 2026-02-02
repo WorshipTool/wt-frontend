@@ -25,6 +25,7 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
@@ -39,7 +40,13 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		if (password !== confirmPassword) {
+			setErrorMessage(t('passwordMismatch'))
+			return
+		}
+
 		setInProgress(true)
+		setErrorMessage('')
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
@@ -123,6 +130,7 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder={t('enterFirstName')}
 								/>
 								<TextInput
 									required
@@ -130,6 +138,7 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder={t('enterLastName')}
 								/>
 							</Box>
 							<TextInput
@@ -139,6 +148,7 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder={t('enterEmail')}
 							/>
 							<TextInput
 								required
@@ -147,6 +157,16 @@ function SignUp() {
 								onChange={(m) => setPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder={t('enterPassword')}
+							/>
+							<TextInput
+								required
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
+								type="password"
+								disabled={inProgress}
+								placeholder={t('enterConfirmPassword')}
 							/>
 						</Box>
 						<Gap />
