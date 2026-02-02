@@ -25,6 +25,7 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
@@ -39,7 +40,20 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		// Validate password match
+		if (password !== confirmPassword) {
+			setErrorMessage(t('passwordMismatch'))
+			return
+		}
+
+		// Validate password length
+		if (password.length < 8) {
+			setErrorMessage(t('passwordRequirements'))
+			return
+		}
+
 		setInProgress(true)
+		setErrorMessage('')
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
@@ -120,6 +134,7 @@ function SignUp() {
 								<TextInput
 									required
 									title={t('firstName')}
+									placeholder={t('placeholders.firstName')}
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
@@ -127,6 +142,7 @@ function SignUp() {
 								<TextInput
 									required
 									title={t('lastName')}
+									placeholder={t('placeholders.lastName')}
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
@@ -135,16 +151,32 @@ function SignUp() {
 							<TextInput
 								required
 								title={t('email')}
+								placeholder={t('placeholders.email')}
 								value={email}
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
 							/>
+							<Box display={'flex'} flexDirection={'column'} gap={0.5}>
+								<TextInput
+									required
+									title={t('password')}
+									placeholder={t('placeholders.password')}
+									value={password}
+									onChange={(m) => setPassword(m)}
+									type="password"
+									disabled={inProgress}
+								/>
+								<Typography size={'0.85rem'} color="grey.600">
+									{t('passwordRequirements')}
+								</Typography>
+							</Box>
 							<TextInput
 								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
+								title={t('confirmPassword')}
+								placeholder={t('placeholders.confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
 								type="password"
 								disabled={inProgress}
 							/>

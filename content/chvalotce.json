@@ -249,7 +249,16 @@
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"placeholders": {
+				"firstName": "Zadejte své křestní jméno",
+				"lastName": "Zadejte své příjmení",
+				"email": "Zadejte svůj email",
+				"password": "Zadejte své heslo",
+				"confirmPassword": "Zadejte heslo znovu"
+			},
+			"passwordRequirements": "Heslo musí obsahovat alespoň 8 znaků",
+			"passwordMismatch": "Hesla se neshodují"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",
