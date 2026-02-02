@@ -245,14 +245,20 @@ declare const messages: {
 			"title": "Vytvořte si účet",
 			"subtitle": "A používejte aplikaci naplno",
 			"firstName": "Jméno",
+			"enterFirstName": "Zadejte jméno",
 			"lastName": "Příjmení",
+			"enterLastName": "Zadejte příjmení",
 			"email": "Email",
+			"enterEmail": "Zadejte e-mail",
 			"password": "Heslo",
+			"enterPassword": "Zadejte heslo (min. 6 znaků)",
 			"confirmPassword": "Potvrdit heslo",
+			"enterConfirmPassword": "Zadejte heslo znovu",
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"passwordMismatch": "Hesla se neshodují"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",
