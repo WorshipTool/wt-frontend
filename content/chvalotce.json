@@ -249,7 +249,8 @@
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"passwordMismatch": "Hesla se neshodují"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",
