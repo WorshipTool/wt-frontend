@@ -19,7 +19,7 @@ type TextFieldProps = {
 }
 
 export function TextField({
-	placeholder = 'Zadejte text',
+	placeholder,
 	...props
 }: TextFieldProps) {
 	const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
