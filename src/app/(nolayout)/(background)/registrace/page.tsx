@@ -25,7 +25,10 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+	const [passwordError, setPasswordError] = useState('')
+	const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -38,7 +41,58 @@ function SignUp() {
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
 
+	const validatePassword = (pwd: string): string => {
+		if (pwd.length < 8) {
+			return t('passwordTooShort')
+		}
+		if (!/[a-z]/.test(pwd)) {
+			return t('passwordMissingLowercase')
+		}
+		if (!/[A-Z]/.test(pwd)) {
+			return t('passwordMissingUppercase')
+		}
+		if (!/[0-9]/.test(pwd)) {
+			return t('passwordMissingNumber')
+		}
+		return ''
+	}
+
+	const handlePasswordChange = (value: string) => {
+		setPassword(value)
+		const error = validatePassword(value)
+		setPasswordError(error)
+
+		// Also check if confirm password matches
+		if (confirmPassword && value !== confirmPassword) {
+			setConfirmPasswordError(t('passwordsDoNotMatch'))
+		} else if (confirmPassword) {
+			setConfirmPasswordError('')
+		}
+	}
+
+	const handleConfirmPasswordChange = (value: string) => {
+		setConfirmPassword(value)
+		if (value && password !== value) {
+			setConfirmPasswordError(t('passwordsDoNotMatch'))
+		} else {
+			setConfirmPasswordError('')
+		}
+	}
+
 	const onSignupClick = () => {
+		// Validate password
+		const pwdError = validatePassword(password)
+		if (pwdError) {
+			setPasswordError(pwdError)
+			return
+		}
+
+		// Check if passwords match
+		if (password !== confirmPassword) {
+			setConfirmPasswordError(t('passwordsDoNotMatch'))
+			return
+		}
+
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -122,6 +176,7 @@ function SignUp() {
 									title={t('firstName')}
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
+									placeholder={t('enterFirstName')}
 									disabled={inProgress}
 								/>
 								<TextInput
@@ -129,6 +184,7 @@ function SignUp() {
 									title={t('lastName')}
 									value={lastName}
 									onChange={(m) => setLastName(m)}
+									placeholder={t('enterLastName')}
 									disabled={inProgress}
 								/>
 							</Box>
@@ -138,16 +194,48 @@ function SignUp() {
 								value={email}
 								onChange={(m) => setEmail(m)}
 								type="email"
+								placeholder={t('enterEmail')}
 								disabled={inProgress}
 							/>
-							<TextInput
-								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
-								type="password"
-								disabled={inProgress}
-							/>
+							<Box>
+								<TextInput
+									required
+									title={t('password')}
+									value={password}
+									onChange={handlePasswordChange}
+									type="password"
+									placeholder={t('enterPassword')}
+									disabled={inProgress}
+									error={!!passwordError}
+								/>
+								{passwordError && (
+									<Typography color={'error'} size={'0.875rem'}>
+										{passwordError}
+									</Typography>
+								)}
+								{!passwordError && (
+									<Typography color={'grey.600'} size={'0.875rem'}>
+										{t('passwordRequirements')}
+									</Typography>
+								)}
+							</Box>
+							<Box>
+								<TextInput
+									required
+									title={t('confirmPassword')}
+									value={confirmPassword}
+									onChange={handleConfirmPasswordChange}
+									type="password"
+									placeholder={t('enterConfirmPassword')}
+									disabled={inProgress}
+									error={!!confirmPasswordError}
+								/>
+								{confirmPasswordError && (
+									<Typography color={'error'} size={'0.875rem'}>
+										{confirmPasswordError}
+									</Typography>
+								)}
+							</Box>
 						</Box>
 						<Gap />
 						<Gap />
