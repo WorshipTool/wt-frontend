@@ -25,7 +25,9 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+	const [passwordError, setPasswordError] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -38,7 +40,25 @@ function SignUp() {
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
 
+	const validatePassword = (pwd: string) => {
+		if (pwd.length < 8) {
+			setPasswordError(t('passwordRequirements'))
+			return false
+		}
+		setPasswordError('')
+		return true
+	}
+
 	const onSignupClick = () => {
+		if (!validatePassword(password)) {
+			return
+		}
+
+		if (password !== confirmPassword) {
+			setPasswordError(t('passwordsDoNotMatch'))
+			return
+		}
+
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -120,6 +140,7 @@ function SignUp() {
 								<TextInput
 									required
 									title={t('firstName')}
+									placeholder={t('enterFirstName')}
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
@@ -127,6 +148,7 @@ function SignUp() {
 								<TextInput
 									required
 									title={t('lastName')}
+									placeholder={t('enterLastName')}
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
@@ -135,18 +157,47 @@ function SignUp() {
 							<TextInput
 								required
 								title={t('email')}
+								placeholder={t('enterEmail')}
 								value={email}
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
 							/>
+							<Box>
+								<TextInput
+									required
+									title={t('password')}
+									placeholder={t('enterPassword')}
+									value={password}
+									onChange={(m) => {
+										setPassword(m)
+										if (m.length > 0) {
+											validatePassword(m)
+										} else {
+											setPasswordError('')
+										}
+									}}
+									type="password"
+									disabled={inProgress}
+									error={passwordError !== ''}
+								/>
+								<Typography
+									size={'0.75rem'}
+									color={passwordError ? 'error' : 'grey.600'}
+									sx={{ marginTop: 0.5, marginLeft: 1 }}
+								>
+									{passwordError || t('passwordRequirements')}
+								</Typography>
+							</Box>
 							<TextInput
 								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
+								title={t('confirmPassword')}
+								placeholder={t('enterConfirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
 								type="password"
 								disabled={inProgress}
+								error={confirmPassword !== '' && password !== confirmPassword}
 							/>
 						</Box>
 						<Gap />
