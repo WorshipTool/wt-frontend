@@ -197,6 +197,7 @@ function Login() {
 								disabled={inProgress}
 								type="password"
 								placeholder={t('enterPassword')}
+								helperText={t('passwordHint')}
 								required
 							/>
 							<Box
