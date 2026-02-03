@@ -228,9 +228,9 @@
 			"title": "Zaloguj się",
 			"subtitle": "I korzystaj z aplikacji w pełni",
 			"email": "Email",
-			"enterEmail": "Wpisz e-mail",
+			"enterEmail": "Wpisz swój email, np. twoj.email@example.com",
 			"password": "Hasło",
-			"enterPassword": "Wpisz hasło",
+			"enterPassword": "Wpisz swoje hasło",
 			"loginButton": "Zaloguj się",
 			"forgotPassword": "Zapomniałeś hasła?",
 			"noAccount": "Nie masz jeszcze konta?",
@@ -242,10 +242,17 @@
 			"title": "Utwórz konto",
 			"subtitle": "I korzystaj z aplikacji w pełni",
 			"firstName": "Imię",
+			"enterFirstName": "Wpisz swoje imię, np. Jan",
 			"lastName": "Nazwisko",
+			"enterLastName": "Wpisz swoje nazwisko, np. Kowalski",
 			"email": "Email",
+			"enterEmail": "Wpisz swój email, np. twoj.email@example.com",
 			"password": "Hasło",
+			"enterPassword": "Utwórz hasło (minimum 8 znaków)",
 			"confirmPassword": "Potwierdź hasło",
+			"enterConfirmPassword": "Wpisz hasło ponownie dla potwierdzenia",
+			"passwordRequirements": "Hasło musi zawierać co najmniej 8 znaków",
+			"passwordsDoNotMatch": "Hasła się nie zgadzają",
 			"signupButton": "Utwórz konto",
 			"haveAccount": "Masz już konto?",
 			"login": "Zaloguj się",
@@ -258,7 +265,7 @@
 			"linkSent": "Link wysłany",
 			"linkSentMessage": "Teraz idź do swojego emaila i kliknij wygenerowany link.",
 			"emailRequired": "Email musi być wypełniony.",
-			"enterEmail": "Wpisz email"
+			"enterEmail": "Wpisz swój email, np. twoj.email@example.com"
 		}
 	},
 	"playlist": {

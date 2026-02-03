@@ -231,9 +231,9 @@ declare const messages: {
 			"title": "Přihlaste se",
 			"subtitle": "A používejte aplikaci naplno",
 			"email": "Email",
-			"enterEmail": "Zadejte e-mail",
+			"enterEmail": "Zadejte svůj email, např. vas.email@example.com",
 			"password": "Heslo",
-			"enterPassword": "Zadejte heslo",
+			"enterPassword": "Zadejte své heslo",
 			"loginButton": "Přihlásit se",
 			"forgotPassword": "Zapomněli jste heslo?",
 			"noAccount": "Nemáte ještě účet?",
@@ -245,10 +245,17 @@ declare const messages: {
 			"title": "Vytvořte si účet",
 			"subtitle": "A používejte aplikaci naplno",
 			"firstName": "Jméno",
+			"enterFirstName": "Zadejte své křestní jméno, např. Jan",
 			"lastName": "Příjmení",
+			"enterLastName": "Zadejte své příjmení, např. Novák",
 			"email": "Email",
+			"enterEmail": "Zadejte svůj email, např. vas.email@example.com",
 			"password": "Heslo",
+			"enterPassword": "Vytvořte si heslo (minimálně 8 znaků)",
 			"confirmPassword": "Potvrdit heslo",
+			"enterConfirmPassword": "Zadejte heslo znovu pro potvrzení",
+			"passwordRequirements": "Heslo musí obsahovat alespoň 8 znaků",
+			"passwordsDoNotMatch": "Hesla se neshodují",
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
@@ -261,7 +268,7 @@ declare const messages: {
 			"linkSent": "Link odeslán",
 			"linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
 			"emailRequired": "Email musí být vyplněn.",
-			"enterEmail": "Zadejte email"
+			"enterEmail": "Zadejte svůj email, např. vas.email@example.com"
 		}
 	},
 	"playlist": {
