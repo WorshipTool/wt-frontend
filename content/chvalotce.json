@@ -246,10 +246,18 @@
 			"email": "Email",
 			"password": "Heslo",
 			"confirmPassword": "Potvrdit heslo",
+			"enterFirstName": "Zadejte vaše jméno",
+			"enterLastName": "Zadejte vaše příjmení",
+			"enterEmail": "Zadejte e-mail",
+			"enterPassword": "Vytvořte heslo",
+			"enterConfirmPassword": "Zopakujte heslo",
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"passwordMismatch": "Hesla se neshodují",
+			"passwordRules": "Heslo musí obsahovat alespoň 8 znaků",
+			"allFieldsRequired": "Všechna pole jsou povinná"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",

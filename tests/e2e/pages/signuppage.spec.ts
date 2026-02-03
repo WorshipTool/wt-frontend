@@ -10,16 +10,17 @@ smartTest('Contain title and form', 'smoke', async ({ page }) => {
 		page
 			.locator('div')
 			.filter({ hasText: /^Jméno$/ })
-			.getByPlaceholder('Zadejte text')
+			.getByPlaceholder('Zadejte vaše jméno')
 	).toBeEmpty()
 	await expect(
 		page
 			.locator('div')
 			.filter({ hasText: /^Příjmení$/ })
-			.getByPlaceholder('Zadejte text')
+			.getByPlaceholder('Zadejte vaše příjmení')
 	).toBeEmpty()
-	await expect(page.locator('input[type="email"]')).toBeEmpty()
-	await expect(page.locator('input[type="password"]')).toBeEmpty()
+	await expect(page.getByPlaceholder('Zadejte e-mail')).toBeEmpty()
+	await expect(page.getByPlaceholder('Vytvořte heslo')).toBeEmpty()
+	await expect(page.getByPlaceholder('Zopakujte heslo')).toBeEmpty()
 	await expect(
 		page.getByRole('button', { name: 'Vytvořit účet' })
 	).toBeVisible()
