@@ -203,7 +203,7 @@ function Login() {
 								display={'flex'}
 								flexDirection={'row'}
 								alignItems={'center'}
-								justifyContent={'start'}
+								justifyContent={'space-between'}
 							>
 								<Button
 									size={'small'}
