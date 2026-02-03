@@ -242,14 +242,21 @@
 			"title": "Utwórz konto",
 			"subtitle": "I korzystaj z aplikacji w pełni",
 			"firstName": "Imię",
+			"enterFirstName": "Wpisz swoje imię",
 			"lastName": "Nazwisko",
+			"enterLastName": "Wpisz swoje nazwisko",
 			"email": "Email",
+			"enterEmail": "Wpisz swój email",
 			"password": "Hasło",
+			"enterPassword": "Wpisz swoje hasło",
 			"confirmPassword": "Potwierdź hasło",
+			"enterConfirmPassword": "Wpisz hasło ponownie",
 			"signupButton": "Utwórz konto",
 			"haveAccount": "Masz już konto?",
 			"login": "Zaloguj się",
-			"emailExists": "Konto z tym emailem już istnieje"
+			"emailExists": "Konto z tym emailem już istnieje",
+			"passwordRequirements": "Hasło musi zawierać co najmniej 8 znaków",
+			"passwordsDoNotMatch": "Hasła nie pasują do siebie"
 		},
 		"resetPassword": {
 			"title": "Resetowanie hasła",

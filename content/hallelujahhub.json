@@ -242,14 +242,21 @@
 			"title": "Create an account",
 			"subtitle": "And use the app to the fullest",
 			"firstName": "First name",
+			"enterFirstName": "Enter your first name",
 			"lastName": "Last name",
+			"enterLastName": "Enter your last name",
 			"email": "Email",
+			"enterEmail": "Enter your email",
 			"password": "Password",
+			"enterPassword": "Enter your password",
 			"confirmPassword": "Confirm password",
+			"enterConfirmPassword": "Enter your password again",
 			"signupButton": "Create account",
 			"haveAccount": "Already have an account?",
 			"login": "Sign in",
-			"emailExists": "Account with this email already exists"
+			"emailExists": "Account with this email already exists",
+			"passwordRequirements": "Password must contain at least 8 characters",
+			"passwordsDoNotMatch": "Passwords do not match"
 		},
 		"resetPassword": {
 			"title": "Password Reset",
