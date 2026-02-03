@@ -25,6 +25,7 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
@@ -39,7 +40,20 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		// Validate password length
+		if (password.length < 8) {
+			setErrorMessage(t('passwordRequirements'))
+			return
+		}
+
+		// Validate password confirmation
+		if (password !== confirmPassword) {
+			setErrorMessage(t('passwordMismatch'))
+			return
+		}
+
 		setInProgress(true)
+		setErrorMessage('')
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
@@ -123,6 +137,7 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder={t('firstNamePlaceholder')}
 								/>
 								<TextInput
 									required
@@ -130,6 +145,7 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder={t('lastNamePlaceholder')}
 								/>
 							</Box>
 							<TextInput
@@ -139,6 +155,7 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder={t('emailPlaceholder')}
 							/>
 							<TextInput
 								required
@@ -147,6 +164,16 @@ function SignUp() {
 								onChange={(m) => setPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder={t('passwordPlaceholder')}
+							/>
+							<TextInput
+								required
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
+								type="password"
+								disabled={inProgress}
+								placeholder={t('confirmPasswordPlaceholder')}
 							/>
 						</Box>
 						<Gap />
