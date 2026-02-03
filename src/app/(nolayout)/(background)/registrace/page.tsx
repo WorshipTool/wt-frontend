@@ -25,7 +25,18 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+
+	const [isFirstNameOk, setIsFirstNameOk] = useState(true)
+	const [isLastNameOk, setIsLastNameOk] = useState(true)
+	const [isEmailOk, setIsEmailOk] = useState(true)
+	const [isPasswordOk, setIsPasswordOk] = useState(true)
+	const [isConfirmPasswordOk, setIsConfirmPasswordOk] = useState(true)
+
+	const [passwordStrength, setPasswordStrength] = useState<
+		'weak' | 'medium' | 'strong' | null
+	>(null)
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -38,8 +49,78 @@ function SignUp() {
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
 
+	const calculatePasswordStrength = (pass: string): 'weak' | 'medium' | 'strong' => {
+		if (pass.length < 8) return 'weak'
+
+		let strength = 0
+		if (pass.length >= 12) strength++
+		if (/[a-z]/.test(pass) && /[A-Z]/.test(pass)) strength++
+		if (/[0-9]/.test(pass)) strength++
+		if (/[^a-zA-Z0-9]/.test(pass)) strength++
+
+		if (strength <= 1) return 'weak'
+		if (strength <= 2) return 'medium'
+		return 'strong'
+	}
+
+	const handlePasswordChange = (value: string) => {
+		setPassword(value)
+		if (value.length > 0) {
+			setPasswordStrength(calculatePasswordStrength(value))
+		} else {
+			setPasswordStrength(null)
+		}
+	}
+
 	const onSignupClick = () => {
+		let ok = true
+
+		// Validate first name
+		if (firstName.trim() === '') {
+			setIsFirstNameOk(false)
+			ok = false
+		} else {
+			setIsFirstNameOk(true)
+		}
+
+		// Validate last name
+		if (lastName.trim() === '') {
+			setIsLastNameOk(false)
+			ok = false
+		} else {
+			setIsLastNameOk(true)
+		}
+
+		// Validate email
+		if (email.trim() === '') {
+			setIsEmailOk(false)
+			ok = false
+		} else {
+			setIsEmailOk(true)
+		}
+
+		// Validate password
+		if (password.length < 8) {
+			setIsPasswordOk(false)
+			setErrorMessage(t('passwordRequirements'))
+			ok = false
+		} else {
+			setIsPasswordOk(true)
+		}
+
+		// Validate confirm password
+		if (confirmPassword !== password) {
+			setIsConfirmPasswordOk(false)
+			setErrorMessage(t('passwordMismatch'))
+			ok = false
+		} else {
+			setIsConfirmPasswordOk(true)
+		}
+
+		if (!ok) return
+
 		setInProgress(true)
+		setErrorMessage('')
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
@@ -123,6 +204,8 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder={t('enterFirstName')}
+									error={!isFirstNameOk}
 								/>
 								<TextInput
 									required
@@ -130,6 +213,8 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder={t('enterLastName')}
+									error={!isLastNameOk}
 								/>
 							</Box>
 							<TextInput
@@ -139,14 +224,56 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder={t('enterEmail')}
+								error={!isEmailOk}
 							/>
+							<Box>
+								<TextInput
+									required
+									title={t('password')}
+									value={password}
+									onChange={(m) => handlePasswordChange(m)}
+									type="password"
+									disabled={inProgress}
+									placeholder={t('enterPassword')}
+									error={!isPasswordOk}
+								/>
+								{password.length > 0 && (
+									<Box display={'flex'} flexDirection={'row'} gap={1} mt={0.5}>
+										<Typography size={'0.8rem'} color={'grey.600'}>
+											{t('passwordRequirements')}
+										</Typography>
+										{passwordStrength && (
+											<Typography
+												size={'0.8rem'}
+												color={
+													passwordStrength === 'strong'
+														? 'green'
+														: passwordStrength === 'medium'
+														? 'orange'
+														: 'red'
+												}
+												strong={'bold'}
+											>
+												{passwordStrength === 'strong'
+													? t('passwordStrong')
+													: passwordStrength === 'medium'
+													? t('passwordMedium')
+													: t('passwordWeak')}
+											</Typography>
+										)}
+									</Box>
+								)}
+							</Box>
 							<TextInput
 								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder={t('enterConfirmPassword')}
+								error={!isConfirmPasswordOk}
 							/>
 						</Box>
 						<Gap />
