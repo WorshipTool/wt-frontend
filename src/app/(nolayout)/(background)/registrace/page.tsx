@@ -25,7 +25,9 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+	const [passwordError, setPasswordError] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -39,6 +41,21 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		setPasswordError('')
+		setErrorMessage('')
+
+		// Validate password length
+		if (password.length < 6) {
+			setPasswordError(t('passwordRequirement'))
+			return
+		}
+
+		// Validate password confirmation
+		if (password !== confirmPassword) {
+			setPasswordError(t('passwordMismatch'))
+			return
+		}
+
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -123,6 +140,7 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder={t('enterFirstName')}
 								/>
 								<TextInput
 									required
@@ -130,6 +148,7 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder={t('enterLastName')}
 								/>
 							</Box>
 							<TextInput
@@ -139,15 +158,41 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder={t('enterEmail')}
 							/>
+							<Box>
+								<TextInput
+									required
+									title={t('password')}
+									value={password}
+									onChange={(m) => setPassword(m)}
+									type="password"
+									disabled={inProgress}
+									placeholder={t('enterPassword')}
+								/>
+								<Typography
+									size={'0.75rem'}
+									color={'grey.600'}
+									sx={{ marginTop: '4px', marginLeft: '2px' }}
+								>
+									{t('passwordRequirement')}
+								</Typography>
+							</Box>
 							<TextInput
 								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder={t('enterConfirmPassword')}
+								error={passwordError !== ''}
 							/>
+							{passwordError !== '' && (
+								<Typography color={'error'} size={'0.85rem'}>
+									{passwordError}
+								</Typography>
+							)}
 						</Box>
 						<Gap />
 						<Gap />
