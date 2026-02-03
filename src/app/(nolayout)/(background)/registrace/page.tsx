@@ -25,6 +25,7 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
@@ -38,7 +39,28 @@ function SignUp() {
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
 
+	const validatePassword = (pwd: string): boolean => {
+		// Password must be at least 8 characters, contain uppercase, lowercase, and number
+		const minLength = pwd.length >= 8
+		const hasUpperCase = /[A-Z]/.test(pwd)
+		const hasLowerCase = /[a-z]/.test(pwd)
+		const hasNumber = /[0-9]/.test(pwd)
+		return minLength && hasUpperCase && hasLowerCase && hasNumber
+	}
+
 	const onSignupClick = () => {
+		// Validate password format
+		if (!validatePassword(password)) {
+			setErrorMessage(t('passwordRequirements'))
+			return
+		}
+
+		// Validate password confirmation
+		if (password !== confirmPassword) {
+			setErrorMessage(t('passwordMismatch'))
+			return
+		}
+
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -123,6 +145,7 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder="John"
 								/>
 								<TextInput
 									required
@@ -130,6 +153,7 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder="Doe"
 								/>
 							</Box>
 							<TextInput
@@ -139,6 +163,7 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder="example@email.com"
 							/>
 							<TextInput
 								required
@@ -147,7 +172,22 @@ function SignUp() {
 								onChange={(m) => setPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder="••••••••"
 							/>
+							<TextInput
+								required
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
+								type="password"
+								disabled={inProgress}
+								placeholder="••••••••"
+							/>
+							<Box>
+								<Typography size={'0.75rem'} color={'grey.600'}>
+									{t('passwordRules')}
+								</Typography>
+							</Box>
 						</Box>
 						<Gap />
 						<Gap />
