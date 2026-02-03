@@ -23,8 +23,8 @@ import { getActiveNews } from '@/common/providers/News/news.config'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { useTranslations } from 'next-intl'
 
-/** Delay before automatic popup display (in ms) */
-const POPUP_AUTO_SHOW_DELAY_MS = 500
+/** Delay before automatic popup display (in ms) - increased to be less intrusive */
+const POPUP_AUTO_SHOW_DELAY_MS = 2000
 
 /**
  * Default context value (for use outside of provider)
