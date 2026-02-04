@@ -25,7 +25,9 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+	const [passwordMismatch, setPasswordMismatch] = useState(false)
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -39,6 +41,15 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		// Check if passwords match
+		if (password !== confirmPassword) {
+			setPasswordMismatch(true)
+			setErrorMessage(t('passwordMismatch'))
+			return
+		}
+
+		setPasswordMismatch(false)
+		setErrorMessage('')
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -123,6 +134,8 @@ function SignUp() {
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
 									disabled={inProgress}
+									placeholder={t('firstNamePlaceholder')}
+									autoComplete="given-name"
 								/>
 								<TextInput
 									required
@@ -130,6 +143,8 @@ function SignUp() {
 									value={lastName}
 									onChange={(m) => setLastName(m)}
 									disabled={inProgress}
+									placeholder={t('lastNamePlaceholder')}
+									autoComplete="family-name"
 								/>
 							</Box>
 							<TextInput
@@ -139,14 +154,38 @@ function SignUp() {
 								onChange={(m) => setEmail(m)}
 								type="email"
 								disabled={inProgress}
+								placeholder={t('emailPlaceholder')}
+								autoComplete="email"
 							/>
+							<Box>
+								<TextInput
+									required
+									title={t('password')}
+									value={password}
+									onChange={(m) => setPassword(m)}
+									type="password"
+									disabled={inProgress}
+									placeholder={t('passwordPlaceholder')}
+									autoComplete="new-password"
+								/>
+								<Typography
+									size={'0.85rem'}
+									color={'grey.600'}
+									sx={{ marginTop: 0.5, marginLeft: 0.5 }}
+								>
+									{t('passwordRequirements')}
+								</Typography>
+							</Box>
 							<TextInput
 								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
 								type="password"
 								disabled={inProgress}
+								placeholder={t('confirmPasswordPlaceholder')}
+								error={passwordMismatch}
+								autoComplete="new-password"
 							/>
 						</Box>
 						<Gap />

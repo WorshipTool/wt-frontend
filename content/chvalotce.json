@@ -228,9 +228,9 @@
 			"title": "Přihlaste se",
 			"subtitle": "A používejte aplikaci naplno",
 			"email": "Email",
-			"enterEmail": "Zadejte e-mail",
+			"enterEmail": "napriklad@email.cz",
 			"password": "Heslo",
-			"enterPassword": "Zadejte heslo",
+			"enterPassword": "Vaše heslo",
 			"loginButton": "Přihlásit se",
 			"forgotPassword": "Zapomněli jste heslo?",
 			"noAccount": "Nemáte ještě účet?",
@@ -242,10 +242,17 @@
 			"title": "Vytvořte si účet",
 			"subtitle": "A používejte aplikaci naplno",
 			"firstName": "Jméno",
+			"firstNamePlaceholder": "např. Jan",
 			"lastName": "Příjmení",
+			"lastNamePlaceholder": "např. Novák",
 			"email": "Email",
+			"emailPlaceholder": "napriklad@email.cz",
 			"password": "Heslo",
+			"passwordPlaceholder": "Minimálně 8 znaků",
 			"confirmPassword": "Potvrdit heslo",
+			"confirmPasswordPlaceholder": "Zadejte heslo znovu",
+			"passwordRequirements": "Heslo musí obsahovat minimálně 8 znaků",
+			"passwordMismatch": "Hesla se neshodují",
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
@@ -258,7 +265,7 @@
 			"linkSent": "Link odeslán",
 			"linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
 			"emailRequired": "Email musí být vyplněn.",
-			"enterEmail": "Zadejte email"
+			"enterEmail": "napriklad@email.cz"
 		}
 	},
 	"playlist": {
