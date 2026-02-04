@@ -185,7 +185,7 @@ function Login() {
 								error={!isEmailOk}
 								disabled={inProgress}
 								type="email"
-								placeholder={t('enterEmail')}
+								placeholder="example@email.com"
 								required
 							/>
 							<Gap />
@@ -196,7 +196,7 @@ function Login() {
 								error={!isPasswordOk}
 								disabled={inProgress}
 								type="password"
-								placeholder={t('enterPassword')}
+								placeholder="Enter your password"
 								required
 							/>
 							<Box
