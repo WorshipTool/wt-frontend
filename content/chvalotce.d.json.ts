@@ -272,6 +272,7 @@ declare const messages: {
 		"addToPlaylist": "Přidat do playlistu",
 		"removeFromPlaylist": "Odebrat z playlistu",
 		"addSongToPlaylist": "Přidat píseň do playlistu",
+		"songAddedToPlaylist": "Píseň přidána do playlistu",
 		"createEditForPlaylist": "Upravit píseň pro playlist",
 		"save": "Uložit",
 		"saved": "Uloženo",

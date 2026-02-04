@@ -3,6 +3,8 @@ import { Box, CircularProgress } from '@/common/ui'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { BasicVariantPack } from '@/types/song'
 import { CheckCircle, PlaylistAdd } from '@mui/icons-material'
+import { useSnackbar } from 'notistack'
+import { useTranslations } from 'next-intl'
 import React, { useCallback, useEffect } from 'react'
 import usePlaylistsGeneral from '../../../../../../../../hooks/playlist/usePlaylistsGeneral'
 
@@ -22,6 +24,8 @@ export default function AddToPlaylistMenuItem({
 		removeVariantFromPlaylist: removeFromPlaylist,
 	} = usePlaylistsGeneral()
 	const { isVariantInPlaylist } = usePlaylistsGeneral()
+	const { enqueueSnackbar } = useSnackbar()
+	const t = useTranslations('playlist')
 
 	const [loading, setLoading] = React.useState(true)
 	const [isInPlaylist, setIsInPlaylist] = React.useState<boolean>(false)
@@ -47,12 +51,16 @@ export default function AddToPlaylistMenuItem({
 				addToPlaylist(variant.packGuid, playlistGuid).then(async (result) => {
 					await reloadPlaylists()
 					setLoading(false)
+					enqueueSnackbar(t('songAddedToPlaylist'), {
+						variant: 'success',
+						autoHideDuration: 3000,
+					})
 				})
 			} catch (e) {
 				console.log(e)
 			}
 		},
-		[variant.packGuid, playlistGuid]
+		[variant.packGuid, playlistGuid, enqueueSnackbar, t]
 	)
 
 	const removeVariantFromPlaylist = useCallback(

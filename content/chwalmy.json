@@ -269,6 +269,7 @@
 		"addToPlaylist": "Dodaj do playlisty",
 		"removeFromPlaylist": "Usuń z playlisty",
 		"addSongToPlaylist": "Dodaj pieśń do playlisty",
+		"songAddedToPlaylist": "Pieśń dodana do playlisty",
 		"createEditForPlaylist": "Edytuj pieśń dla playlisty",
 		"save": "Zapisz",
 		"saved": "Zapisano",

@@ -269,6 +269,7 @@
 		"addToPlaylist": "Add to Playlist",
 		"removeFromPlaylist": "Remove from Playlist",
 		"addSongToPlaylist": "Add song to playlist",
+		"songAddedToPlaylist": "Song added to playlist",
 		"createEditForPlaylist": "Edit song for playlist",
 		"save": "Save",
 		"saved": "Saved",
