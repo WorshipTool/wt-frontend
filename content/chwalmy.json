@@ -831,7 +831,7 @@
 	"search": {
 		"searchSongs": "Szukaj pieśni",
 		"searchSong": "Znajdź pieśń",
-		"searchByTitleOrText": "Szukaj według tytułu lub części tekstu",
+		"searchByTitleOrText": "Szukaj według tytułu piosenki, artysty lub tekstu",
 		"noResults": "Brak wyników",
 		"searching": "Szukanie...",
 		"globalSongbook": "Z globalnego śpiewnika",
