@@ -834,7 +834,7 @@ declare const messages: {
 	"search": {
 		"searchSongs": "Hledat písně",
 		"searchSong": "Vyhledej píseň",
-		"searchByTitleOrText": "Hledej podle názvu nebo části textu",
+		"searchByTitleOrText": "Hledej podle názvu písně, interpreta nebo textu",
 		"noResults": "Žádné výsledky",
 		"searching": "Hledání...",
 		"globalSongbook": "Z globálního zpěvníku",

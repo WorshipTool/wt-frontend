@@ -593,7 +593,7 @@
 	"search": {
 		"searchSongs": "Search songs",
 		"searchSong": "Search song",
-		"searchByTitleOrText": "Search by title or text content",
+		"searchByTitleOrText": "Search by song title, artist, or lyrics",
 		"noResults": "No results",
 		"searching": "Searching...",
 		"globalSongbook": "From global songbook",
@@ -853,7 +853,7 @@
 	},
 	"search": {
 		"searchSongs": "Search songs",
-		"searchByTitleOrText": "Search by title or text content",
+		"searchByTitleOrText": "Search by song title, artist, or lyrics",
 		"noResults": "No results",
 		"searching": "Searching...",
 		"globalSongbook": "From global songbook",
