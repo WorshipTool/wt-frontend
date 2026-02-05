@@ -199,6 +199,9 @@ function Login() {
 								placeholder={t('enterPassword')}
 								required
 							/>
+							<Typography size={'0.75rem'} color="grey.600">
+								{t('passwordRequirements')}
+							</Typography>
 							<Box
 								display={'flex'}
 								flexDirection={'row'}
