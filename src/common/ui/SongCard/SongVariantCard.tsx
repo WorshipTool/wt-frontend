@@ -4,6 +4,7 @@ import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
 import { SxProps } from '@/common/ui/mui'
 import SongCardAdditional from '@/common/ui/SongCard/components/SongCardAdditional'
+import { SongTitleWithTooltip } from '@/common/ui/SongCard/components/SongTitleWithTooltip'
 import VariantCardColorPoint from '@/common/ui/SongCard/components/VariantCardColorPoint'
 import useTranslationLike from '@/common/ui/SongCard/hooks/useTranslationLike'
 import { useTranslationLikesCount } from '@/common/ui/SongCard/hooks/useTranslationLikesCount'
@@ -273,7 +274,9 @@ export const SongVariantCard = memo(function S({
 						}}
 					>
 						<Box display={'flex'} flexDirection={'row'} gap={1}>
-							<Typography
+							<SongTitleWithTooltip
+								title={title}
+								songGuid={data.songGuid}
 								strong
 								sx={{
 									flex: 1,
@@ -287,8 +290,7 @@ export const SongVariantCard = memo(function S({
 									language={data.language}
 									translationType={data.translationType}
 								/>
-								{title}
-							</Typography>
+							</SongTitleWithTooltip>
 							<Box>
 								{showPrivate || showYourPublic ? (
 									<CustomChip
