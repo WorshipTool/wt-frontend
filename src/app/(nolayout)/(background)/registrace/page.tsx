@@ -25,7 +25,9 @@ function SignUp() {
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
+	const [passwordError, setPasswordError] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
 
@@ -39,6 +41,19 @@ function SignUp() {
 	const tCommon = useTranslations('common')
 
 	const onSignupClick = () => {
+		// Validate password length
+		if (password.length < 8) {
+			setPasswordError(t('passwordRequirements'))
+			return
+		}
+
+		// Validate password confirmation
+		if (password !== confirmPassword) {
+			setPasswordError(t('passwordsDoNotMatch'))
+			return
+		}
+
+		setPasswordError('')
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
@@ -122,6 +137,7 @@ function SignUp() {
 									title={t('firstName')}
 									value={firstName}
 									onChange={(m) => setFirstName(m)}
+									placeholder={t('enterFirstName')}
 									disabled={inProgress}
 								/>
 								<TextInput
@@ -129,6 +145,7 @@ function SignUp() {
 									title={t('lastName')}
 									value={lastName}
 									onChange={(m) => setLastName(m)}
+									placeholder={t('enterLastName')}
 									disabled={inProgress}
 								/>
 							</Box>
@@ -138,6 +155,7 @@ function SignUp() {
 								value={email}
 								onChange={(m) => setEmail(m)}
 								type="email"
+								placeholder={t('enterEmail')}
 								disabled={inProgress}
 							/>
 							<TextInput
@@ -146,8 +164,27 @@ function SignUp() {
 								value={password}
 								onChange={(m) => setPassword(m)}
 								type="password"
+								placeholder={t('enterPassword')}
 								disabled={inProgress}
 							/>
+							<Typography size={'0.75rem'} color={'grey.600'}>
+								{t('passwordRequirements')}
+							</Typography>
+							<TextInput
+								required
+								title={t('confirmPassword')}
+								value={confirmPassword}
+								onChange={(m) => setConfirmPassword(m)}
+								type="password"
+								placeholder={t('enterConfirmPassword')}
+								disabled={inProgress}
+								error={passwordError !== ''}
+							/>
+							{passwordError && (
+								<Typography size={'0.85rem'} color={'error'}>
+									{passwordError}
+								</Typography>
+							)}
 						</Box>
 						<Gap />
 						<Gap />
