@@ -252,7 +252,15 @@ declare const messages: {
 			"signupButton": "Vytvořit účet",
 			"haveAccount": "Už máte účet?",
 			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
+			"emailExists": "Účet s tímto emailem již existuje",
+			"enterFirstName": "Zadejte jméno",
+			"enterLastName": "Zadejte příjmení",
+			"enterEmail": "Zadejte e-mail",
+			"enterPassword": "Vytvořte heslo",
+			"enterConfirmPassword": "Potvrďte heslo",
+			"passwordHint": "Heslo musí obsahovat minimálně 6 znaků",
+			"passwordMismatch": "Hesla se neshodují",
+			"passwordTooShort": "Heslo musí mít alespoň 6 znaků"
 		},
 		"resetPassword": {
 			"title": "Resetování hesla",

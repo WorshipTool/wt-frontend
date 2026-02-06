@@ -249,7 +249,15 @@
 			"signupButton": "Utwórz konto",
 			"haveAccount": "Masz już konto?",
 			"login": "Zaloguj się",
-			"emailExists": "Konto z tym emailem już istnieje"
+			"emailExists": "Konto z tym emailem już istnieje",
+			"enterFirstName": "Podaj imię",
+			"enterLastName": "Podaj nazwisko",
+			"enterEmail": "Podaj email",
+			"enterPassword": "Utwórz hasło",
+			"enterConfirmPassword": "Potwierdź hasło",
+			"passwordHint": "Hasło musi mieć co najmniej 6 znaków",
+			"passwordMismatch": "Hasła nie są zgodne",
+			"passwordTooShort": "Hasło musi mieć co najmniej 6 znaków"
 		},
 		"resetPassword": {
 			"title": "Resetowanie hasła",

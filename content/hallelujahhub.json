@@ -249,7 +249,15 @@
 			"signupButton": "Create account",
 			"haveAccount": "Already have an account?",
 			"login": "Sign in",
-			"emailExists": "Account with this email already exists"
+			"emailExists": "Account with this email already exists",
+			"enterFirstName": "Enter first name",
+			"enterLastName": "Enter last name",
+			"enterEmail": "Enter email",
+			"enterPassword": "Create a password",
+			"enterConfirmPassword": "Confirm your password",
+			"passwordHint": "Password must be at least 6 characters",
+			"passwordMismatch": "Passwords do not match",
+			"passwordTooShort": "Password must be at least 6 characters"
 		},
 		"resetPassword": {
 			"title": "Password Reset",
