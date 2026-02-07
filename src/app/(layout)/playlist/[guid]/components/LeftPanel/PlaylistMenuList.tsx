@@ -29,7 +29,7 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 	}, [items])
 
 	useEffect(() => {
-		const handleMouseUp = () => {
+		const handleDragEnd = () => {
 			if (startReordering.current) {
 				const itemsCopy = [...items]
 				const newItems = innerGuids.map((guid, i) => {
@@ -46,10 +46,13 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 			}
 		}
 
-		document.addEventListener('mouseup', handleMouseUp)
+		// Handle both mouse and touch events
+		document.addEventListener('mouseup', handleDragEnd)
+		document.addEventListener('touchend', handleDragEnd)
 
 		return () => {
-			document.removeEventListener('mouseup', handleMouseUp)
+			document.removeEventListener('mouseup', handleDragEnd)
+			document.removeEventListener('touchend', handleDragEnd)
 		}
 	}, [innerGuids, items, setItems, startReordering])
 
@@ -109,7 +112,9 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 										gap: '8px',
 										display: 'flex',
 										flexDirection: 'column',
+										listStyle: 'none',
 									}}
+									className="song-menu-list"
 								>
 									{innerGuids?.map((item, index) => {
 										return (
@@ -120,6 +125,22 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 												style={{
 													paddingLeft: 5,
 													paddingRight: 5,
+													cursor: 'grab',
+													touchAction: 'none',
+												}}
+												whileDrag={{
+													cursor: 'grabbing',
+													scale: 1.05,
+													zIndex: 1000,
+													boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.25)',
+													transition: { duration: 0.2 },
+												}}
+												dragListener={true}
+												dragControls={undefined}
+												transition={{
+													type: 'spring',
+													stiffness: 300,
+													damping: 25,
 												}}
 											>
 												<PanelItem

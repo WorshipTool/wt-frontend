@@ -1,6 +1,7 @@
 import { Box, Typography } from '@/common/ui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
+import { DragIndicator } from '@mui/icons-material'
 import { styled } from '@mui/system'
 import { useMemo } from 'react'
 import { Link } from '../../../../../../common/ui/Link/Link'
@@ -17,11 +18,15 @@ const PanelItemContainer = styled(Box)(({ theme }) => ({
 		backgroundColor: theme.palette.grey[200],
 		boxShadow: `0px 0px 9px ${theme.palette.grey[400]}`,
 	},
+	'&:hover .drag-handle': {
+		opacity: 1,
+	},
 	cursor: 'pointer',
 	justifyContent: 'center',
 	alignItems: 'center',
 	paddingRight: 7,
 	scrollMarginTop: theme.spacing(0.5),
+	transition: 'all 0.2s ease-in-out',
 }))
 
 const StyledPanelButton = styled(Typography)(({ theme }) => ({
@@ -38,7 +43,7 @@ interface PanelItemProps {
 }
 
 export default function PanelItem({ itemGuid, itemIndex }: PanelItemProps) {
-	const { loading, items } = useInnerPlaylist()
+	const { loading, items, canUserEdit } = useInnerPlaylist()
 
 	const item = useMemo(() => {
 		return items.find((i) => i.guid === itemGuid)!
@@ -65,10 +70,26 @@ export default function PanelItem({ itemGuid, itemIndex }: PanelItemProps) {
 			<PanelItemContainer id={'panelItem_' + item.guid}>
 				{!loading ? (
 					<>
+						{canUserEdit && (
+							<DragIndicator
+								className="drag-handle"
+								sx={{
+									color: 'grey.400',
+									fontSize: '1.25rem',
+									marginLeft: '4px',
+									opacity: 0.5,
+									transition: 'opacity 0.2s ease-in-out',
+									cursor: 'grab',
+									'&:active': {
+										cursor: 'grabbing',
+									},
+								}}
+							/>
+						)}
 						<Typography
 							sx={{
 								padding: '9px',
-								paddingLeft: '14px',
+								paddingLeft: canUserEdit ? '8px' : '14px',
 							}}
 							strong={900}
 						>
