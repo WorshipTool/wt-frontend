@@ -87,9 +87,7 @@ export default (phase, { defaultConfig }) => {
 			},
 			reactStrictMode: false,
 			output: 'standalone',
-			experimental: {
-				serverComponentsExternalPackages: ['@react-pdf/renderer'],
-			},
+			serverExternalPackages: ['@react-pdf/renderer'],
 		})
 	)
 	return nextConfig
