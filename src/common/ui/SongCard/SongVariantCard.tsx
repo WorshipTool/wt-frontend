@@ -11,7 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
+import { Lock, MusicNote, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -112,6 +112,7 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const hasChords = sheet.getSections().some((section) => section.containsChords)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -277,16 +278,30 @@ export const SongVariantCard = memo(function S({
 								strong
 								sx={{
 									flex: 1,
+									display: 'flex',
+									flexDirection: 'row',
+									alignItems: 'center',
+									gap: 0.5,
 									...(!data.ggValidated &&
 										isAdmin() && {
 											color: 'error.main',
 										}),
 								}}
 							>
-								<VariantCardColorPoint
-									language={data.language}
-									translationType={data.translationType}
-								/>
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+									<VariantCardColorPoint
+										language={data.language}
+										translationType={data.translationType}
+									/>
+									{hasChords && (
+										<MusicNote
+											sx={{
+												fontSize: '1rem',
+												color: 'primary.main',
+											}}
+										/>
+									)}
+								</Box>
 								{title}
 							</Typography>
 							<Box>
