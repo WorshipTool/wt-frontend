@@ -111,7 +111,7 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 3)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -238,7 +238,7 @@ export const SongVariantCard = memo(function S({
 					sx={{
 						outlineColor: showPrivate ? theme.palette.grey[300] : 'transparent',
 
-						height: flexibleHeght ? 'auto' : '11rem',
+						height: flexibleHeght ? 'auto' : '9rem',
 						overflowY: 'hidden',
 
 						...(selected && {
@@ -256,7 +256,7 @@ export const SongVariantCard = memo(function S({
 					<Box
 						sx={{
 							position: 'relative',
-							padding: '1rem',
+							padding: '0.625rem',
 							...(selected && {
 								borderColor: 'primary.main',
 								borderWidth: 2,
@@ -266,13 +266,13 @@ export const SongVariantCard = memo(function S({
 									bgcolor: alpha(theme.palette.primary.main, 0.2),
 								},
 							}),
-							height: 'calc(100% - 2rem)',
+							height: 'calc(100% - 1.25rem)',
 							display: 'flex',
 							flexDirection: 'column',
 							overflow: 'hidden',
 						}}
 					>
-						<Box display={'flex'} flexDirection={'row'} gap={1}>
+						<Box display={'flex'} flexDirection={'row'} gap={0.5} mb={0.5}>
 							<Typography
 								strong
 								sx={{
@@ -307,11 +307,11 @@ export const SongVariantCard = memo(function S({
 									/>
 								) : null}
 								{createdByLoaderEnabled && data.createdByLoader ? (
-									<Typography size={'small'}>{t('uploadedByProgram')}</Typography>
+									<Typography size={'small'} sx={{ fontSize: '0.7rem' }}>{t('uploadedByProgram')}</Typography>
 								) : null}
 
 								{publishedDateEnabled && data.publishedAt ? (
-									<Typography size={'small'}>
+									<Typography size={'small'} sx={{ fontSize: '0.7rem' }}>
 										{t('addedOn')} {data.publishedAt.toLocaleDateString('cs-CZ')}
 									</Typography>
 								) : null}
@@ -343,6 +343,8 @@ export const SongVariantCard = memo(function S({
 												key={'SearchItemText' + index}
 												sx={{
 													flex: 1,
+													fontSize: '0.875rem',
+													lineHeight: 1.4,
 												}}
 											>
 												{line}

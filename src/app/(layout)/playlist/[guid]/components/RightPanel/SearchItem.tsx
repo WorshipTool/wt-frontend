@@ -98,7 +98,7 @@ export default function SearchItem({
 									: 'grey',
 						}}
 					>
-						<Box padding={'1rem'}>
+						<Box padding={'0.625rem'}>
 							{variant.createdBy == user?.guid && (
 								<Typography>Vytvořeno vámi.</Typography>
 							)}
@@ -131,7 +131,7 @@ export default function SearchItem({
 								{sheet
 									.getSections()[0]
 									?.text?.split('\n')
-									.slice(0, 4)
+									.slice(0, 3)
 									.map((line, index) => {
 										return (
 											<Typography noWrap key={'SearchItemText' + line}>

@@ -11,7 +11,7 @@ export default function PlaylistSearchList({
 	variants,
 }: PlaylistSearchListProps) {
 	const theme = useTheme()
-	const spacing = 1
+	const spacing = 0.75
 
 	return variants.length == 0 ? (
 		<></>

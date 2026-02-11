@@ -47,7 +47,7 @@ export const SmartSongListCard = memo(function SongListCards({
 	// .filter((v) => v !== undefined)
 	// .filter((v, i, a) => a.findIndex((t) => t.packGuid === v.packGuid) === i)
 
-	const spacing = 1
+	const spacing = 0.75
 
 	const variant = props.variant
 
