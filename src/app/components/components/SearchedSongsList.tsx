@@ -3,7 +3,7 @@ import { Box, Button, LinearProgress, Typography } from '@/common/ui'
 import { Sync } from '@mui/icons-material'
 import { grey } from '@mui/material/colors'
 import { useTranslations } from 'next-intl'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ContainerGrid from '../../../common/components/ContainerGrid'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import useSongSearch from '../../../hooks/song/useSongSearch'
@@ -61,10 +61,24 @@ const SearchedSongsList = memo(function S({
 	const {
 		nextPage: loadNext,
 		loadPage,
-		data: songs,
+		data: songsRaw,
 		pagedData: pagedSongs,
 		nextExists,
 	} = usePagination<SearchSongDto>(func)
+
+	// Sort songs by popularity (translationLikes) - most popular first
+	const songs = useMemo(() => {
+		return [...songsRaw].sort((a, b) => {
+			// Get max translation likes from all variants in each group
+			const getMaxLikes = (dto: SearchSongDto) => {
+				return Math.max(
+					...dto.found.map(v => v.translationLikes || 0),
+					dto.original?.translationLikes || 0
+				)
+			}
+			return getMaxLikes(b) - getMaxLikes(a)
+		})
+	}, [songsRaw])
 
 	useEffect(() => {
 		setEnableLoadNext(false)
