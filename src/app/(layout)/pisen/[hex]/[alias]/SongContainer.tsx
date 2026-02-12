@@ -6,6 +6,7 @@ import { SONG_OPTIONS_BUTTON_ID } from '@/app/(layout)/pisen/[hex]/[alias]/compo
 import HideChordsButton from '@/app/(layout)/pisen/[hex]/[alias]/components/HideChordsButton'
 import TopPanel from '@/app/(layout)/pisen/[hex]/[alias]/components/TopPanel'
 import UserNotePanel from '@/app/(layout)/pisen/[hex]/[alias]/components/UserNotePanel'
+import MobileTransposeControls from '@/app/(layout)/pisen/[hex]/[alias]/components/MobileTransposeControls'
 import { InnerPackProvider } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SmartPortalMenuProvider } from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
@@ -56,9 +57,38 @@ export default function SongContainer({
 		if (title) setEditedTitle(title)
 	}, [title])
 
+	// Track original key for reset functionality
+	const originalKey = useMemo(() => {
+		if (!sheet) return undefined
+		const keyChord = sheet.getKeyChord()
+		if (!keyChord) return undefined
+
+		const root = keyChord.data.rootNote.toString('sharp')
+		const quality = keyChord.data.quality
+
+		let signature: 'sharp' | 'flat' = 'sharp'
+		if (root === 'A#') signature = 'flat'
+		if (root === 'C' && quality === 'm') signature = 'flat'
+		if (root === 'D' && quality === 'm') signature = 'flat'
+		if (root === 'F') signature = 'flat'
+
+		const noteString = keyChord.data.rootNote.toString(signature)
+		const qualityString = quality === 'm' ? ' mol' : ' dur'
+
+		return noteString + qualityString
+	}, [sheet])
+
 	const transpose = (value: number) => {
 		if (currentSheet) {
 			currentSheet.transpose(value)
+			rerender()
+		}
+	}
+
+	const resetTranspose = () => {
+		// Reset to original sheet to restore original key
+		if (sheet) {
+			setCurrentSheet(new Sheet(sheet.getOriginalSheetData()))
 			rerender()
 		}
 	}
@@ -173,6 +203,17 @@ export default function SongContainer({
 								showMedia={props.flags.showMedia}
 							/>
 						</>
+					)}
+
+					{/* Mobile transpose controls - fixed at bottom */}
+					{!inEditMode && currentSheet && currentSheet.getKeyChord() && (
+						<MobileTransposeControls
+							transpose={transpose}
+							reset={resetTranspose}
+							disabled={!Boolean(currentSheet.getKeyChord())}
+							sheet={currentSheet}
+							originalKey={originalKey}
+						/>
 					)}
 				</Box>
 			</SmartPortalMenuProvider>

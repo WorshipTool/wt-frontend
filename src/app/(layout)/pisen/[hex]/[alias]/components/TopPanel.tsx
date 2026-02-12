@@ -172,6 +172,7 @@ export default function TopPanel(props: TopPanelProps) {
 						<TransposePanel
 							transpose={props.transpose}
 							disabled={!Boolean(props.sheet?.getKeyChord())}
+							sheet={props.sheet}
 						/>
 						{/* {isOwner && <VisibilityLabel public={props.variant.public} />} */}
 						<Box flex={1} />
