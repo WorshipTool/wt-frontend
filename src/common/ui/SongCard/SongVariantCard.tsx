@@ -11,7 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
+import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt, MusicNote } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -44,6 +44,8 @@ const SONG_CARD_PROPERTIES = [
 	'SHOW_ADDED_BY_LOADER',
 	'ENABLE_TRANSLATION_LIKE',
 	'SHOW_PUBLISHED_DATE',
+	'COMPACT_MODE',
+	'SHOW_CHORD_INDICATOR',
 ] as const
 type SongCardProperty = (typeof SONG_CARD_PROPERTIES)[number]
 
@@ -103,6 +105,8 @@ export const SongVariantCard = memo(function S({
 	const privateLabelEnabled = properties.SHOW_PRIVATE_LABEL
 	const yourPublicLabelEnabled = properties.SHOW_YOUR_PUBLIC_LABEL
 	const publishedDateEnabled = properties.SHOW_PUBLISHED_DATE
+	const compactMode = properties.COMPACT_MODE
+	const showChordIndicator = properties.SHOW_CHORD_INDICATOR
 
 	// What display
 	const showPrivate = !data.public && createdByYou && privateLabelEnabled
@@ -111,7 +115,21 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+
+	// Check if sheet contains chords - look for chord notation patterns in the sheet data
+	const hasChords = useMemo(() => {
+		try {
+			// Check if sheetData contains chord markers like [C], [Am], [G7], etc.
+			const chordPattern = /\[[A-G][#b]?(?:m|maj|min|dim|aug|sus)?[0-9]?\]/
+			return chordPattern.test(data.sheetData)
+		} catch {
+			return false
+		}
+	}, [data.sheetData])
+
+	// Get preview lines - in compact mode show only first line, otherwise show first 4
+	const maxLines = compactMode ? 1 : 4
+	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, maxLines)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -289,7 +307,15 @@ export const SongVariantCard = memo(function S({
 								/>
 								{title}
 							</Typography>
-							<Box>
+							<Box display={'flex'} flexDirection={'row'} gap={0.5} alignItems={'center'}>
+								{showChordIndicator && hasChords && (
+									<CustomChip
+										icon={<MusicNote fontSize="small" />}
+										label={t('withChords')}
+										color={theme.palette.primary.main}
+										borderColor={theme.palette.primary.main}
+									/>
+								)}
 								{showPrivate || showYourPublic ? (
 									<CustomChip
 										icon={showPrivate ? <Lock /> : <Public />}

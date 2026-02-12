@@ -42,10 +42,16 @@ export const SmartSongListCard = memo(function SongListCards({
 	data: _data,
 	...props
 }: SmartSongListCardsProps) {
-	// unique
-	const data = _data
-	// .filter((v) => v !== undefined)
-	// .filter((v, i, a) => a.findIndex((t) => t.packGuid === v.packGuid) === i)
+	// Sort by popularity (translationLikes) - highest first
+	// Within each search result, sort the "found" array by translationLikes
+	const data = useMemo(() => {
+		return _data.map(searchResult => ({
+			...searchResult,
+			found: [...searchResult.found].sort((a, b) =>
+				(b.translationLikes || 0) - (a.translationLikes || 0)
+			)
+		}))
+	}, [_data])
 
 	const spacing = 1
 
