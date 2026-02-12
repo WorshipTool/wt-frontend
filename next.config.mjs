@@ -87,8 +87,9 @@ export default (phase, { defaultConfig }) => {
 			},
 			reactStrictMode: false,
 			output: 'standalone',
+			// Move serverComponentsExternalPackages to top level (Next.js 15+ requirement)
+			serverExternalPackages: ['@react-pdf/renderer'],
 			experimental: {
-				serverComponentsExternalPackages: ['@react-pdf/renderer'],
 				// Optimize package imports to reduce bundle size and memory usage
 				optimizePackageImports: ['@mui/material', '@mui/icons-material'],
 				// Enable webpack build worker for better memory management
