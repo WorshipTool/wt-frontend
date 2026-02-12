@@ -11,7 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
+import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt, MusicNote } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -44,6 +44,8 @@ const SONG_CARD_PROPERTIES = [
 	'SHOW_ADDED_BY_LOADER',
 	'ENABLE_TRANSLATION_LIKE',
 	'SHOW_PUBLISHED_DATE',
+	'COMPACT_VIEW',
+	'SHOW_CHORD_INDICATOR',
 ] as const
 type SongCardProperty = (typeof SONG_CARD_PROPERTIES)[number]
 
@@ -103,6 +105,8 @@ export const SongVariantCard = memo(function S({
 	const privateLabelEnabled = properties.SHOW_PRIVATE_LABEL
 	const yourPublicLabelEnabled = properties.SHOW_YOUR_PUBLIC_LABEL
 	const publishedDateEnabled = properties.SHOW_PUBLISHED_DATE
+	const compactView = properties.COMPACT_VIEW
+	const showChordIndicator = properties.SHOW_CHORD_INDICATOR
 
 	// What display
 	const showPrivate = !data.public && createdByYou && privateLabelEnabled
@@ -111,7 +115,10 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const hasChords = sheet.getSections().some(section => section.containsChords)
+	// In compact view, show only first line; otherwise show 4 lines
+	const linesToShow = compactView ? 1 : 4
+	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, linesToShow)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -288,6 +295,16 @@ export const SongVariantCard = memo(function S({
 									translationType={data.translationType}
 								/>
 								{title}
+								{showChordIndicator && hasChords && (
+									<MusicNote
+										sx={{
+											fontSize: '1rem',
+											verticalAlign: 'middle',
+											marginLeft: '0.25rem',
+											opacity: 0.7,
+										}}
+									/>
+								)}
 							</Typography>
 							<Box>
 								{showPrivate || showYourPublic ? (
