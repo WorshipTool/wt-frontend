@@ -33,7 +33,7 @@ export const mapGetVariantDataApiToSongDto = (
 }
 
 export const mapBasicVariantPackApiToDto = (
-	api: BasicVariantPackDto
+	api: BasicVariantPackDto & { hasChords?: boolean }
 ): BasicVariantPack => {
 	return {
 		...api,
@@ -46,6 +46,7 @@ export const mapBasicVariantPackApiToDto = (
 
 		translationType: api.translationType as PackTranslationType,
 		ggValidated: api.ggValidated,
+		hasChords: Boolean(api.hasChords),
 
 		public: Boolean(api.public),
 		publishApprovalStatus: api.publishApprovalStatus as PublishApprovalStatus,

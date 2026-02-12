@@ -8,6 +8,7 @@ import VariantCardColorPoint from '@/common/ui/SongCard/components/VariantCardCo
 import useTranslationLike from '@/common/ui/SongCard/hooks/useTranslationLike'
 import { useTranslationLikesCount } from '@/common/ui/SongCard/hooks/useTranslationLikesCount'
 import { Typography } from '@/common/ui/Typography'
+import ChordIcon from '@/common/components/songLists/SongListCards/components/ChordIcon'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
@@ -44,6 +45,8 @@ const SONG_CARD_PROPERTIES = [
 	'SHOW_ADDED_BY_LOADER',
 	'ENABLE_TRANSLATION_LIKE',
 	'SHOW_PUBLISHED_DATE',
+	'COMPACT_VIEW',
+	'SHOW_CHORD_INDICATOR',
 ] as const
 type SongCardProperty = (typeof SONG_CARD_PROPERTIES)[number]
 
@@ -103,6 +106,8 @@ export const SongVariantCard = memo(function S({
 	const privateLabelEnabled = properties.SHOW_PRIVATE_LABEL
 	const yourPublicLabelEnabled = properties.SHOW_YOUR_PUBLIC_LABEL
 	const publishedDateEnabled = properties.SHOW_PUBLISHED_DATE
+	const compactView = properties.COMPACT_VIEW
+	const showChordIndicator = properties.SHOW_CHORD_INDICATOR
 
 	// What display
 	const showPrivate = !data.public && createdByYou && privateLabelEnabled
@@ -111,7 +116,8 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const maxLines = compactView ? 1 : 4
+	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, maxLines)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -289,7 +295,20 @@ export const SongVariantCard = memo(function S({
 								/>
 								{title}
 							</Typography>
-							<Box>
+							<Box display={'flex'} flexDirection={'row'} gap={0.5} alignItems={'center'}>
+								{showChordIndicator && data.hasChords ? (
+									<Box
+										display={'flex'}
+										alignItems={'center'}
+										sx={{
+											opacity: 0.6,
+											'&:hover': { opacity: 1 }
+										}}
+										title={t('hasChords')}
+									>
+										<ChordIcon size={20} />
+									</Box>
+								) : null}
 								{showPrivate || showYourPublic ? (
 									<CustomChip
 										icon={showPrivate ? <Lock /> : <Public />}

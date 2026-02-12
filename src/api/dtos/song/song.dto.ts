@@ -40,6 +40,7 @@ export type BasicVariantPack = {
 	translationType: PackTranslationType
 	translationLikes: number
 	ggValidated: boolean
+	hasChords: boolean
 
 	// Dates
 	createdAt: Date
