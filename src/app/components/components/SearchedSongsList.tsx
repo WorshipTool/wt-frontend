@@ -14,12 +14,34 @@ import SmartSongListCards from '@/common/components/songLists/SongListCards/Smar
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useIsInViewport } from '@/hooks/useIsInViewport'
 import { SearchKey } from '@/types/song/search.types'
+import { BasicVariantPack } from '@/api/dtos'
 
 interface SearchedSongsListProps {
 	searchString: string
 	useSmartSearch?: boolean
 }
 const controller = new AbortController()
+
+// Sort song variants by popularity (translationLikes count)
+const sortByPopularity = (songs: SearchSongDto[]): SearchSongDto[] => {
+	return songs.map(songGroup => {
+		// Sort variants within each song group by translationLikes (descending)
+		const sortedFound = [...songGroup.found].sort((a, b) =>
+			(b.translationLikes || 0) - (a.translationLikes || 0)
+		)
+		const sortedOther = songGroup.other
+			? [...songGroup.other].sort((a, b) =>
+				(b.translationLikes || 0) - (a.translationLikes || 0)
+			)
+			: undefined
+
+		return {
+			...songGroup,
+			found: sortedFound,
+			other: sortedOther,
+		}
+	})
+}
 
 const SearchedSongsList = memo(function S({
 	searchString,
@@ -107,9 +129,9 @@ const SearchedSongsList = memo(function S({
 
 				{!loading && songs.length > 0 && (
 					<SmartSongListCards
-						data={songs}
+						data={sortByPopularity(songs)}
 						key={'songlistcards'}
-						properties={['SHOW_ADDED_BY_LOADER', 'SHOW_PRIVATE_LABEL']}
+						properties={['SHOW_ADDED_BY_LOADER', 'SHOW_PRIVATE_LABEL', 'COMPACT_MODE', 'SHOW_CHORD_INDICATOR']}
 					></SmartSongListCards>
 				)}
 			</>

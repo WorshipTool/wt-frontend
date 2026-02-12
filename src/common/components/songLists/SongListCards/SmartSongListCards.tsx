@@ -116,7 +116,7 @@ export const SmartSongListCard = memo(function SongListCards({
 										<SongVariantCard
 											data={v}
 											key={v.packGuid}
-											properties={['SHOW_PRIVATE_LABEL']}
+											properties={props.properties || ['SHOW_PRIVATE_LABEL']}
 										/>
 									)),
 									<PackGroupCommonCard
@@ -140,7 +140,7 @@ export const SmartSongListCard = memo(function SongListCards({
 							<SongVariantCard
 								data={v}
 								key={v.packGuid}
-								properties={['SHOW_PRIVATE_LABEL']}
+								properties={props.properties || ['SHOW_PRIVATE_LABEL']}
 							/>
 						))
 					}
@@ -152,7 +152,7 @@ export const SmartSongListCard = memo(function SongListCards({
 							<SongVariantCard
 								data={v}
 								key={v.packGuid}
-								properties={['SHOW_PRIVATE_LABEL']}
+								properties={props.properties || ['SHOW_PRIVATE_LABEL']}
 							/>
 						)),
 
