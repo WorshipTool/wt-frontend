@@ -394,7 +394,9 @@ declare const messages: {
 		"transpose": {
 			"title": "Transpozice",
 			"increase": "Zvýšit o půltón",
-			"decrease": "Snížit o půltón"
+			"decrease": "Snížit o půltón",
+			"currentKey": "Tónina",
+			"reset": "Reset na původní tóninu"
 		},
 		"print": {
 			"label": "Tisknout",

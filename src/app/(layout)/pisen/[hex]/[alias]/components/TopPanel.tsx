@@ -41,6 +41,7 @@ interface TopPanelProps {
 	variant: ExtendedVariantPack
 	reloadSong: () => void
 	sheet: Sheet
+	originalSheet: Sheet
 	title: string
 	editedTitle: string
 	song: SongDto
@@ -50,6 +51,7 @@ interface TopPanelProps {
 	cancelEditing: () => void
 	isInEditMode?: boolean
 	hideChords: boolean
+	onResetTranspose?: () => void
 }
 
 export default function TopPanel(props: TopPanelProps) {
@@ -172,6 +174,9 @@ export default function TopPanel(props: TopPanelProps) {
 						<TransposePanel
 							transpose={props.transpose}
 							disabled={!Boolean(props.sheet?.getKeyChord())}
+							currentSheet={props.sheet}
+							originalSheet={props.originalSheet}
+							onReset={props.onResetTranspose}
 						/>
 						{/* {isOwner && <VisibilityLabel public={props.variant.public} />} */}
 						<Box flex={1} />

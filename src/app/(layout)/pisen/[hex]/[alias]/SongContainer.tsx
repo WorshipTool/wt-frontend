@@ -63,6 +63,12 @@ export default function SongContainer({
 		}
 	}
 
+	const resetTranspose = () => {
+		if (sheet) {
+			setCurrentSheet(new Sheet(variant.sheetData))
+		}
+	}
+
 	const reload = () => {
 		window?.location.reload()
 	}
@@ -96,11 +102,13 @@ export default function SongContainer({
 						title={editedTitle}
 						editedTitle={editedTitle}
 						sheet={currentSheet as Sheet}
+						originalSheet={sheet}
 						song={song as SongDto}
 						onEditClick={onEditClick}
 						isInEditMode={inEditMode}
 						cancelEditing={cancelEditing}
 						hideChords={!showChords}
+						onResetTranspose={resetTranspose}
 					/>
 
 					<>
