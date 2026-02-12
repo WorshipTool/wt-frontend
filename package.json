@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev -p 5500 -H test-chvalotce.cz",
-		"build": "next build",
+		"build": "NODE_OPTIONS=\"--max-old-space-size=8192\" next build",
 		"start": "next start -p 5500 -H test-chvalotce.cz",
 		"lint": "next lint",
 		"generate-api": "bash ./src/api/generate_api.sh",

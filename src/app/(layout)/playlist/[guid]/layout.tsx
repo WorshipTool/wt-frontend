@@ -9,8 +9,9 @@ import { LayoutProps, MetadataProps } from '../../../../common/types'
 
 export const generateMetadata = generateSmartMetadata(
 	'playlist',
-	async ({ params }: MetadataProps<'playlist'>) => {
+	async (props: MetadataProps<'playlist'>) => {
 		const { playlistGettingApi } = await useServerApi()
+		const params = await props.params
 		try {
 			const playlist = await playlistGettingApi.getPlaylistDataByGuid(
 				params.guid
@@ -30,13 +31,14 @@ export const generateMetadata = generateSmartMetadata(
 
 export default async function Layout(props: LayoutProps<'playlist'>) {
 	const { playlistGettingApi } = await useServerApi()
+	const params = await props.params
 	const playlist = await playlistGettingApi.getPlaylistDataByGuid(
-		props.params.guid
+		params.guid
 	)
 
 	try {
 		// Send tick to backend
-		await playlistGettingApi.updatePlaylistOpenDate(props.params.guid)
+		await playlistGettingApi.updatePlaylistOpenDate(params.guid)
 	} catch (e) {
 		console.log('Please log-in')
 		// console.error(e)
@@ -49,11 +51,11 @@ export default async function Layout(props: LayoutProps<'playlist'>) {
 	if (playlist.teamAlias && !isSomethingAfter) {
 		smartRedirect('teamPlaylist', {
 			alias: playlist.teamAlias,
-			guid: props.params.guid,
+			guid: params.guid,
 		})
 	}
 	return (
-		<InnerPlaylistProvider guid={props.params.guid as PlaylistGuid}>
+		<InnerPlaylistProvider guid={params.guid as PlaylistGuid}>
 			{props.children}
 		</InnerPlaylistProvider>
 	)

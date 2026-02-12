@@ -16,7 +16,7 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 const joinTeam = async (code: string) => {
-	const cookie = cookies()
+	const cookie = await cookies()
 	const cookieData = cookie.get(AUTH_COOKIE_NAME)
 	const user: UserDto | undefined = cookieData
 		? JSON.parse(cookieData.value)
@@ -42,7 +42,8 @@ const joinTeam = async (code: string) => {
 
 export default async function PripojitSePage(props: LayoutProps<'teamJoin'>) {
 	const pathname = await useServerPathname()
-	const coded_code = props.params.code
+	const params = await props.params
+	const coded_code = params.code
 	const code = decodeTeamCode(coded_code)
 
 	const data = await joinTeam(code)

@@ -89,6 +89,10 @@ export default (phase, { defaultConfig }) => {
 			output: 'standalone',
 			experimental: {
 				serverComponentsExternalPackages: ['@react-pdf/renderer'],
+				// Optimize package imports to reduce bundle size and memory usage
+				optimizePackageImports: ['@mui/material', '@mui/icons-material'],
+				// Enable webpack build worker for better memory management
+				webpackBuildWorker: true,
 			},
 		})
 	)

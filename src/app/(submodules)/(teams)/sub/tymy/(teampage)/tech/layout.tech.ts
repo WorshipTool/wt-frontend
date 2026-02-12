@@ -51,7 +51,7 @@ export const getLayoutTeamPayload = async (
 export const checkLayoutUserMembership = async (
 	teamAlias: string
 ): Promise<boolean | null> => {
-	const cookie = cookies()
+	const cookie = await cookies()
 	const cookieData = cookie.get(AUTH_COOKIE_NAME)
 	const user: UserDto | undefined = cookieData
 		? JSON.parse(cookieData.value)

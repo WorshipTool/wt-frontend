@@ -9,20 +9,21 @@ import { getTranslations } from 'next-intl/server'
 export default async function layout(props: LayoutProps<'adminSong'>) {
 	const t = await getTranslations('admin.layout')
 	const { songGettingApi } = await useServerApi()
-	const data = await songGettingApi.getSongDataByGuid(props.params.songGuid)
+	const params = await props.params
+	const data = await songGettingApi.getSongDataByGuid(params.songGuid)
 
 	const formatted = mapBasicSongApiToDto(data)
 
 	return (
 		<InnerSongProvider
 			startData={formatted}
-			songGuid={props.params.songGuid as SongGuid}
+			songGuid={params.songGuid as SongGuid}
 		>
 			<AdminBreadItem label={t('songs')} to="adminSongs" toParams={{}} />
 			<AdminBreadItem
 				label={data.title}
 				to={'adminSong'}
-				toParams={props.params}
+				toParams={params}
 			/>
 			{props.children}
 		</InnerSongProvider>
