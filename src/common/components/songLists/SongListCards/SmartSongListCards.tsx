@@ -42,8 +42,28 @@ export const SmartSongListCard = memo(function SongListCards({
 	data: _data,
 	...props
 }: SmartSongListCardsProps) {
+	// Sort by popularity (translationLikes + published date)
+	const sortByPopularity = (songs: SearchSongDto[]): SearchSongDto[] => {
+		return [...songs].sort((a, b) => {
+			const aVariant = a.found[0]
+			const bVariant = b.found[0]
+
+			// Primary sort: translation likes (higher is better)
+			const likesA = aVariant.translationLikes || 0
+			const likesB = bVariant.translationLikes || 0
+			if (likesB !== likesA) {
+				return likesB - likesA
+			}
+
+			// Secondary sort: published date (older is more established)
+			const dateA = aVariant.publishedAt?.getTime() || 0
+			const dateB = bVariant.publishedAt?.getTime() || 0
+			return dateA - dateB
+		})
+	}
+
 	// unique
-	const data = _data
+	const data = sortByPopularity(_data)
 	// .filter((v) => v !== undefined)
 	// .filter((v, i, a) => a.findIndex((t) => t.packGuid === v.packGuid) === i)
 

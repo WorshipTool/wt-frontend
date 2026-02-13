@@ -11,7 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
+import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt, MusicNote } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -111,7 +111,10 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 1)
+
+	// Check if song has chords
+	const hasChords = data.sheetData.includes('[')
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -288,6 +291,16 @@ export const SongVariantCard = memo(function S({
 									translationType={data.translationType}
 								/>
 								{title}
+								{hasChords && (
+									<MusicNote
+										sx={{
+											fontSize: '1rem',
+											marginLeft: '0.5rem',
+											verticalAlign: 'middle',
+											color: theme.palette.primary.main,
+										}}
+									/>
+								)}
 							</Typography>
 							<Box>
 								{showPrivate || showYourPublic ? (
