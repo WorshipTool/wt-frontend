@@ -29,6 +29,7 @@ declare const messages: {
 		"saveCurrentState": "Uložit aktuální stav",
 		"videoNotSupported": "Video není podporováno",
 		"preferThisTranslation": "Preferuji tento překlad",
+		"hasChords": "S akordy",
 		"private": "Soukromé",
 		"createdByYou": "Vytvořeno vámi",
 		"uploadedByProgram": "Nahráno programem",
