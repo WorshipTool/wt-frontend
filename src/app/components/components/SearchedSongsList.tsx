@@ -109,7 +109,7 @@ const SearchedSongsList = memo(function S({
 					<SmartSongListCards
 						data={songs}
 						key={'songlistcards'}
-						properties={['SHOW_ADDED_BY_LOADER', 'SHOW_PRIVATE_LABEL']}
+						properties={['SHOW_ADDED_BY_LOADER', 'SHOW_PRIVATE_LABEL', 'SHOW_CHORD_INDICATOR']}
 					></SmartSongListCards>
 				)}
 			</>
