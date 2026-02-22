@@ -2,964 +2,967 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-	"common": {
-		"yes": "Ano",
-		"no": "Ne",
-		"cancel": "Zrušit",
-		"save": "Uložit",
-		"delete": "Smazat",
-		"edit": "Upravit",
-		"print": "Tisknout",
-		"send": "Poslat",
-		"search": "Hledat",
-		"remove": "Odebrat",
-		"add": "Přidat",
-		"close": "Zavřít",
-		"back": "Zpět",
-		"next": "Další",
-		"loading": "Načítání...",
-		"error": "Chyba",
-		"success": "Úspěch",
-		"discard": "Zahodit",
-		"open": "Otevřít",
-		"tryAgain": "Zkusit znovu",
-		"or": "Nebo",
-		"backgroundAlt": "Pozadí",
-		"cancelCurrentEdits": "Zrušit aktuální úpravy",
-		"saveCurrentState": "Uložit aktuální stav",
-		"videoNotSupported": "Video není podporováno",
-		"preferThisTranslation": "Preferuji tento překlad",
-		"private": "Soukromé",
-		"createdByYou": "Vytvořeno vámi",
-		"uploadedByProgram": "Nahráno programem",
-		"addedOn": "Přidáno dne",
-		"authors": "Autoři",
-		"authorName": "Jméno autora",
-		"sections": {
-			"verse": "Sloka",
-			"chorus": "Refrén",
-			"bridge": "Bridge"
-		}
-	},
-	"navigation": {
-		"home": "Domů",
-		"songs": "Písně",
-		"playlists": "Playlisty",
-		"teams": "Týmy",
-		"about": "O aplikaci",
-		"contact": "Kontakt",
-		"account": "Účet",
-		"login": "Přihlásit se",
-		"logout": "Odhlásit se",
-		"signup": "Registrovat se",
-		"search": "Hledat",
-		"aboutUs": "O nás",
-		"worshipTeams": "Chválící týmy",
-		"closeMenu": "Zavřít menu",
-		"tooltips": {
-			"addSong": "Přidat novou píseň",
-			"tools": "Nástroje",
-			"account": "Účet",
-			"login": "Přihlásit se"
-		},
-		"alt": {
-			"profileImage": "Profilový obrázek"
-		},
-		"toolsMenu": {
-			"playlists": "Playlisty",
-			"mySongs": "Moje písně",
-			"favourites": "Oblíbené",
-			"outsideTeam": "Mimo tým"
-		},
-		"accountMenu": {
-			"manageAccount": "Spravovat účet"
-		}
-	},
-	"config": {
-		"contact": {
-			"main": "chvalotce@chvalotce.cz"
-		},
-		"branding": {
-			"appName": "Chvalotce.cz",
-			"appDescription": "Online zpěvník Chvalotce.cz",
-			"shortName": "Chvalotce.cz"
-		}
-	},
-	"footer": {
-		"links": {
-			"searchSong": "Hledat píseň",
-			"songList": "Seznam písní",
-			"about": "O aplikaci",
-			"teams": "Týmy",
-			"feedback": "Zpětná vazba",
-			"reportBug": "Nahlásit chybu",
-			"contact": "Kontakt"
-		},
-		"cooperation": "Ve spolupráci s",
-		"logoAlt": "Logo worshipko.com",
-		"createdWith": "Vytvořeno s",
-		"rightsReserved": "© Všechna práva vyhrazena"
-	},
-	"home": {
-		"backgroundShape": "Tvar na pozadí",
-		"hero": {
-			"lead": "Jsi-li ovce, tak...",
-			"title": "Chval Otce",
-			"subtitle": "Na worship.cz",
-			"subtitleLower": "na worship.cz"
-		},
-		"recommended": {
-			"idea": "Nějaký nápad:",
-			"error": "Při načítání se vyskytla chyba..."
-		},
-		"allList": {
-			"browse": "procházet",
-			"title": "Seznam všech písní"
-		},
-		"lastAdded": {
-			"title": "Poslední přidané"
-		},
-		"floatingAdd": {
-			"label": "Vytvořit"
-		},
-		"search": {
-			"resultsTitle": "Výsledky vyhledávání:",
-			"loadMore": "Načíst další",
-			"noResults": "Nic jsme nenašli..."
-		}
-	},
-	"about": {
-		"title": "O aplikaci",
-		"subtitle": "Platforma s křesťanskými chválami",
-		"whoAreWe": "Kdo jsme?",
-		"platform": "Platforma",
-		"withChristianPraises": "s křesťanskými",
-		"praises": "chválami",
-		"description": "Jsme uživatelsky přívětivá platforma, která nabízí široký výběr chval ale především moderní nástroje",
-		"database": {
-			"title": "Velká a aktuální databáze",
-			"description": "Základem celé aplikace je seznam chval. Tento seznam se snažíme držet co největší a dobře strukturovaný.",
-			"allInOne": {
-				"title": "Vše na jednom místě",
-				"description": "Seskupujeme písně z jiných zpěvníků, abyste mohli hledat na jednom místě"
-			},
-			"constantUpdate": {
-				"title": "Neustálá aktualizace",
-				"description": "Náš algoritmus automaticky přidává nové písně, takže databáze je vždy aktuální"
-			},
-			"yourSongs": {
-				"title": "Váše písně",
-				"description": "Databáze je otevřená - sami můžete přidávat chvály, veřejně či soukromě"
-			}
-		},
-		"tools": {
-			"title": "Nástroje",
-			"description": "Zdarma nabízíme nástroje, které se vám můžou hodit",
-			"smartSearch": {
-				"title": "Chytré vyhledávání",
-				"description": "Najděte své písně podle jejich názvu nebo i textu",
-				"tryIt": "Vyzkoušet"
-			},
-			"teams": {
-				"title": "Týmy",
-				"description": "Sestavte si pro váš chválící tým prostředí, kde se snadno připravíte na společné hraní",
-				"learnMore": "Dozvědět se víc"
-			},
-			"playlists": {
-				"title": "Tvorba playlistů",
-				"description": "Vytvořte si z písní vlastní playlist, který lze snadno sdílet s ostatními",
-				"tryIt": "Vyzkoušet"
-			}
-		},
-		"whyWhoHow": {
-			"title": "Proč, kdo a jak?",
-			"description": "Celý projekt byl vytvořen z nějakého důvodu. Podívejte se na krátké video"
-		},
-		"helpUs": {
-			"title": "Podpořte nás",
-			"description": "Celou aplikaci jsme vytvářeli ve svém volném času, zadarmo. Za jakoukoliv finanční podporu budeme rádi.",
-			"supportFinancially": "Finančně podpořit"
-		},
-		"collaboration": {
-			"title": "Vytvořeno ve spolupráci s"
-		},
-		"more": {
-			"button": "Dozvědět se víc",
-			"label": "Zjistit více"
-		},
-		"helpPanel": {
-			"title": "Chcete nám pomoct?",
-			"description": "Chtěli byste se k projektu jakýmkoliv způsobem připojit?",
-			"join": "Chci se připojit"
-		},
-		"graphics": {
-			"introSheepAlt": "Ovce",
-			"bubbleAlt": "Bublina",
-			"sheepAlt": "Ovečka",
-			"speech": "Velikáá"
-		},
-		"supportCard": {
-			"iconAlt": "Poslat peníze",
-			"title": "Podpořte nás",
-			"description": "Celou aplikaci jsme vytvářeli ve svém volném času, zadarmo. Za jakoukoliv finanční podporu budeme rádi.",
-			"button": "Finančně podpořit"
-		}
-	},
-	"contact": {
-		"title": "Kontakt",
-		"subtitle": "Chcete se na něco zeptat nebo máte nějaký nápad? Rádi od vás uslyšíme.",
-		"writeToUs": "Napište nám na",
-		"wantToHelp": "Chcete nám pomoci?",
-		"feedback": "Zpětná vazba",
-		"wantToJoinDescription": "Rádi byste se připojili k vytváření této aplikace? Napište nám pomocí formuláře.",
-		"feedbackDescription": "Líbí se vám naše aplikace, nebo máte nějaké přípomínky? Napište nám pomocí formuláře.",
-		"form": {
-			"yourName": "Vaše jméno",
-			"enterName": "Zadejte vaše jméno",
-			"yourEmail": "Váš e-mail",
-			"enterEmail": "Zadejte váš e-mail",
-			"message": "Zpráva",
-			"writeMessage": "Napište zprávu",
-			"sendMessage": "Poslat zprávu",
-			"messageSent": "Zpráva byla odeslána... Děkujeme za váš názor.",
-			"writeAnother": "Napsat další zprávu",
-			"wantToJoinMessage": "Dobrý den,\\nrád bych se podílel na vytváření této aplikace. Jaké mám možnosti?"
-		}
-	},
-	"auth": {
-		"login": {
-			"title": "Přihlaste se",
-			"subtitle": "A používejte aplikaci naplno",
-			"email": "Email",
-			"enterEmail": "Zadejte e-mail",
-			"password": "Heslo",
-			"enterPassword": "Zadejte heslo",
-			"loginButton": "Přihlásit se",
-			"forgotPassword": "Zapomněli jste heslo?",
-			"noAccount": "Nemáte ještě účet?",
-			"createAccount": "Vytvořte si ho",
-			"signUp": "Registrujte se",
-			"wrongCredentials": "Špatný email nebo heslo"
-		},
-		"signup": {
-			"title": "Vytvořte si účet",
-			"subtitle": "A používejte aplikaci naplno",
-			"firstName": "Jméno",
-			"lastName": "Příjmení",
-			"email": "Email",
-			"password": "Heslo",
-			"confirmPassword": "Potvrdit heslo",
-			"signupButton": "Vytvořit účet",
-			"haveAccount": "Už máte účet?",
-			"login": "Přihlásit se",
-			"emailExists": "Účet s tímto emailem již existuje"
-		},
-		"resetPassword": {
-			"title": "Resetování hesla",
-			"subtitle": "Na váš email pošleme odkaz, který vám umožní změnit heslo",
-			"sendResetLink": "Poslat reset link",
-			"linkSent": "Link odeslán",
-			"linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
-			"emailRequired": "Email musí být vyplněn.",
-			"enterEmail": "Zadejte email"
-		}
-	},
-	"playlist": {
-		"myPlaylists": "Moje playlisty",
-		"createNew": "Vytvořit nový",
-		"create": "Vytvořit",
-		"createNewPlaylist": "Vytvořit nový playlist",
-		"addToPlaylist": "Přidat do playlistu",
-		"removeFromPlaylist": "Odebrat z playlistu",
-		"addSongToPlaylist": "Přidat píseň do playlistu",
-		"createEditForPlaylist": "Upravit píseň pro playlist",
-		"save": "Uložit",
-		"saved": "Uloženo",
-		"saving": "Ukládání...",
-		"share": "Sdílet",
-		"linkCopiedToClipboard": "Odkaz zkopírován do schránky",
-		"presentation": "Prezentace",
-		"rename": "Přejmenovat",
-		"playlistNamePlaceholder": "Název playlistu",
-		"print": "Tisknout",
-		"openInNewTab": "Otevřít v nové kartě",
-		"loading": "Načítání...",
-		"noPlaylists": "Žádné playlisty",
-		"more": "Více",
-		"selectPlaylistFromList": "Vybrat playlist ze seznamu",
-		"close": "Zavřít",
-		"transpose": {
-			"up": "Transpose up",
-			"down": "Transpose down"
-		},
-		"search": {
-			"placeholder": "Hledat písně..."
-		}
-	},
-	"song": {
-		"transpose": "Transponovat",
-		"print": "Tisknout",
-		"edit": "Upravit",
-		"delete": "Smazat",
-		"createCopy": "Vytvořit kopii",
-		"addToPlaylist": "Přidat do playlistu",
-		"source": "Zdroj",
-		"author": "Autor",
-		"language": "Jazyk",
-		"public": "Veřejné",
-		"validated": "Validováno",
-		"hidChords": "Skrýt akordy",
-		"teamNote": "Týmová poznámka",
-		"openInNewWindow": "Otevřít v novém okně",
-		"deleted": {
-			"restored": "Píseň {title} byla obnovena",
-			"message": "Tato píseň byla smazána",
-			"restore": "Obnovit"
-		},
-		"admin": {
-			"advancedOptions": "Pokročilé možnosti",
-			"adminSettings": "Admin nastavení",
-			"showTranslations": "Zobrazit jiné překlady",
-			"translationsList": "Seznam překladů",
-			"otherVersions": "Další verze této písně",
-			"dataCopied": "Data písně byla zkopírována do schránky",
-			"songOptions": "Možnosti k písni",
-			"manageManualVerification": "Spravovat manuální ověření",
-			"copy": "Zkopírovat",
-			"manualVerification": "Manuální ověření",
-			"cancel": "Zrušit"
-		},
-		"translations": {
-			"selectOther": "Vybrat jiný překlad"
-		},
-		"songAdmin": {
-			"mediaSection": "Média"
-		}
-	},
-	"songPage": {
-		"topPanel": {
-			"cannotEditPublished": "Nelze upravit veřejnou píseň.",
-			"updateSuccess": {
-				"withTitle": "Píseň {title} byla upravena.",
-				"withoutTitle": "Píseň byla upravena."
-			}
-		},
-		"editButton": {
-			"errorEmpty": "Nelze uložit píseň s prázdným polem",
-			"edit": "Upravit",
-			"save": "Uložit"
-		},
-		"createCopy": {
-			"menu": "Vytvořit kopii",
-			"tooltip": "Vytvořit soukromou kopii písně",
-			"button": "Vytvořit úpravu",
-			"subtitle": "Vytvoří soukromou kopii písně."
-		},
-		"optionsMenu": {
-			"more": "Další možnosti"
-		},
-		"sendToApproval": {
-			"menuTitle": "Zveřejnit",
-			"menuSubtitle": "Poslat píseň ke zveřejnění",
-			"dialogTitle": "Zveřejnit",
-			"confirm": "Ano, zveřejnit",
-			"success": "Píseň byla úspěšně zveřejněna a odeslána ke schválení.",
-			"question": "Chcete píseň zveřejnit, aby ji viděli ostatní uživatelé?"
-		},
-		"delete": {
-			"cannotDeletePublished": "Nelze smazat veřejnou píseň.",
-			"successWithTitle": "Píseň {title} byla smazána.",
-			"success": "Píseň byla smazána.",
-			"menu": {
-				"removing": "Odstraňování...",
-				"removeSong": "Odstranit píseň...",
-				"deleted": "Smazáno",
-				"remove": "Odstranit",
-				"removeSubtitle": "Odstranit píseň"
-			},
-			"button": {
-				"deleted": "Smazáno",
-				"delete": "Smazat"
-			},
-			"dialog": {
-				"title": "Opravdu chcete smazat píseň?",
-				"removing": "Probíhá odstraňování písně...",
-				"confirmation": "Píseň se smaže natrvalo."
-			}
-		},
-		"hideChords": {
-			"show": "Zobrazit akordy",
-			"hide": "Skrýt akordy"
-		},
-		"transpose": {
-			"title": "Transpozice",
-			"increase": "Zvýšit o půltón",
-			"decrease": "Snížit o půltón"
-		},
-		"print": {
-			"label": "Tisknout",
-			"tooltip": "Tisknout"
-		},
-		"rightPanel": {
-			"original": "Jedná se o originál",
-			"translationOf": "Překlad originálu",
-			"chooseOther": "Zvolit jiný překlad",
-			"noTranslations": "Zatím nemáme připnuté žádné další překlady",
-			"support": {
-				"title": "Podpořte ChvalOtce.cz 🚀",
-				"intro": "Ahoj! Tento zpěvník tvoříme pro vás ve svém volném čase.",
-				"description": "Podpořte nás, abychom mohli tvořit dál, přidat další vylepšení a odladit všechny chybičky.",
-				"button": "Podpořit"
-			}
-		},
-		"sources": {
-			"title": "Zdroje:"
-		}
-	},
-	"teamPage": {
-		"overviewTitle": "Přehled",
-		"welcomeTitle": "Vítejte na domovské stránce týmu",
-		"welcomeNote": "Ať vám aplikace dobře slouží",
-		"quickActions": "Rychlé akce",
-		"leftPanel": {
-			"title": "Chválící tým",
-			"expand": "Rozbalit menu",
-			"collapse": "Sbalit menu",
-			"menu": {
-				"overview": "Přehled",
-				"songlist": "Seznam písní",
-				"playlists": "Playlisty",
-				"statistics": "Statistiky",
-				"people": "Lidé",
-				"settings": "Nastavení"
-			}
-		}
-	},
-	"create": {
-		"validation": {
-			"invalidContent": "Neplatný obsah",
-			"contentRequirements": "Obsah musí být delší a mít alespoň dva řádky"
-		}
-	},
-	"admin": {
-		"validation": "Validace obsahu",
-		"textAndChords": "Text a akordy",
-		"automatic": "Automaticky",
-		"setValidation": "Zvol validaci obsahu",
-		"validationSet": "Filtrace nastavena na",
-		"parseFile": "Parsovat soubor",
-		"errorOccurred": "Nastala chyba",
-		"userNotAdmin": "Uživatel není admin",
-		"noFilesSelected": "Žádné soubory nevybrány",
-		"publishing": "Publikování",
-		"publishingResult": "Výsledek publikování",
-		"layout": {
-			"songs": "Písně",
-			"create": "Vytvořit"
-		},
-		"create": {
-			"unknownStep": "Neznámý krok",
-			"previous": "Předchozí",
-			"continue": "Pokračovat"
-		},
-		"mediaSection": "Sekce médií",
-		"songAdmin": {
-			"manageVerification": "Spravovat ověření",
-			"manualVerification": "Manuální ověření",
-			"cancel": "Zrušit",
-			"songManuallyVerified": "Píseň je manuálně ověřena",
-			"songManuallyRejected": "Píseň je manuálně odmítnuta",
-			"songNotManuallyVerified": "Píseň není manuálně ověřena"
-		},
-		"filter": {
-			"valid": "Validní",
-			"invalid": "Nevalidní",
-			"automatic": "Automatické",
-			"filterSetTo": "Filtr nastaven na {label}",
-			"buttonTitle": "Nastavit filtr",
-			"popupTitle": "Vyberte filtr"
-		},
-		"translationType": {
-			"original": "Originál",
-			"translation": "Překlad",
-			"officialTranslation": "Oficiální překlad",
-			"unknown": "Neznámý",
-			"setTo": "Typ překladu nastaven na {type}",
-			"chooseType": "Vybrat typ překladu",
-			"selectType": "Vyberte typ překladu"
-		},
-		"verification": {
-			"verify": "Ověřit",
-			"reject": "Odmítnout",
-			"cancelVerification": "Zrušit ověření",
-			"cancelRejection": "Zrušit odmítnutí"
-		},
-		"songInfo": {
-			"uploadedByProgram": "Nahráno programem",
-			"extendedInfo": "Rozšířené informace",
-			"language": "Jazyk",
-			"ggFilterCompliant": "GG Filter kompatibilní",
-			"public": "Veřejné",
-			"yes": "Ano",
-			"no": "Ne"
-		},
-		"goToSong": "Přejít na píseň",
-		"parseFile": "Parsovat soubor",
-		"selectFileToProcess": "Vybrat soubor ke zpracování",
-		"openProcessedData": "Otevřít zpracovaná data",
-		"parentSong": "Rodičovská píseň",
-		"additionalVariant": "další varianta",
-		"additionalVariants": "další varianty",
-		"additionalVariantsGenitive": "dalších variant",
-		"selectDifferentSong": "Vybrat jinou píseň",
-		"addToEmptyFamily": "Přidat do prázdné rodiny",
-		"addToFamily": "Přidat do rodiny",
-		"menu": {
-			"dashboard": "Dashboard",
-			"addSong": "Přidat píseň",
-			"songs": "Písně",
-			"pendingApproval": "Ke schválení",
-			"recent": "Nedávné",
-			"tags": "Štítky"
-		},
-		"approval": {
-			"reject": "Odmítnout",
-			"continue": "Pokračovat"
-		},
-		"bridgeServices": {
-			"title": "Připojené programy",
-			"timeAgo": "{seconds}s zpět",
-			"external": "Externí",
-			"noConnectedPrograms": "Žádné připojené programy...",
-			"showAll": "Zobrazit vše"
-		},
-		"songCount": {
-			"title": "Aktuální počet písní",
-			"loading": "Načítání...",
-			"autoRefreshEnabled": "Automatické obnovování je zapnuto"
-		},
-		"interpret": {
-			"label": "Interpret",
-			"placeholder": "Zadejte jméno interpreta",
-			"addInterpreter": "Přidat interpreta",
-			"added": "Přidáno"
-		},
-		"userToken": {
-			"title": "Získat uživatelský token",
-			"getToken": "Získat token",
-			"myToken": "Můj token",
-			"emailPlaceholder": "Email",
-			"passwordPlaceholder": "Heslo",
-			"tokenCopied": "Token zkopírován do schránky..."
-		}
-	},
-	"teams": {
-		"title": "Týmy",
-		"createTeam": "Vytvořit tým",
-		"joinTeam": "Připojit se k týmu",
-		"myTeams": "Moje týmy",
-		"teamSettings": "Nastavení týmu",
-		"createPrivateTeam": "Vytvořte soukromý tým",
-		"enterTeamName": "Zadejte název týmu",
-		"errorMessage": "Nastala chyba. Prosím, zkontrolujte název týmu",
-		"tryOut": "Vyzkoušet",
-		"simplifyWork": "Zjednodušte si práci ve vašem",
-		"inYourWorshipTeam": "chválícím týmu",
-		"freeToolsDescription": "Zdarma nabízíme nástroje, které vám usnadní přípravu na společné hraní",
-		"backgroundShape": "Náhodný tvar na pozadí",
-		"teamScreenPreview": "Ukázka obrazovky týmu",
-		"joinPanel": {
-			"cta": "Připoj se k existujícímu týmu pomocí kódu",
-			"button": "Připojit se"
-		},
-		"joinPopup": {
-			"title": "Připojit se k týmu",
-			"subtitle": "Připoj se k existujícímu týmu pomocí kódu",
-			"joinButton": "Připojit se",
-			"placeholder": "Zadejte kód",
-			"success": "Vítej v týmu!",
-			"errors": {
-				"notFound": "Skupina s tímto kódem neexistuje",
-				"unknown": "Neznámá chyba"
-			}
-		},
-		"settings": {
-			"title": "Nastavení",
-			"basicInfo": "Základní informace",
-			"teamName": "Název týmu",
-			"joinCode": "Kód pro připojení",
-			"confirmDelete": "Jste si jisti?",
-			"closePopupTooltip": "Zavřít popup bez akce",
-			"teamDeleted": "Tým byl smazán"
-		},
-		"statistics": {
-			"trendingSongs": "Populární písně",
-			"timeFrame": "Za posledních 40 dní",
-			"mostTrendSong": "Nejpopulárnější píseň je",
-			"mostPlayedSongs": "10 nejhranějších písní",
-			"timeFrame90": "Za posledních 90 dní",
-			"favoriteSongs": "Nejoblíbenější písně",
-			"leastPlayedSongs": "10 nejméně hraných písní",
-			"everySongPlayed": "Každá píseň zahrána",
-			"noDataAvailable": "Žádná data nejsou k dispozici",
-			"needAtLeastOneSong": "Pro zobrazení trendů musíte mít zahrán alespoň 1 píseň",
-			"plays": " přehrání",
-			"dataNotAvailable": "Data nejsou k dispozici",
-			"favoriteSongsRequirement": "Pro zobrazení oblíbených musíte mít alespoň 3 písně v týmových oblíbených",
-			"allTime": "Celý čas",
-			"howManyTimesPlayed": "Kolikrát co bylo zahráno",
-			"playedXTimes": "Zahráno {count}krát"
-		},
-		"events": {
-			"eventCreated": "Událost vytvořena",
-			"deleteEventTooltip": "Smazat událost",
-			"confirmDelete": "Potvrdit smazání",
-			"delete": "Smazat",
-			"cancel": "Zrušit",
-			"create": "Vytvořit",
-			"save": "Uložit",
-			"openPlaylistTooltip": "Otevřít playlist",
-			"openPlaylist": "Otevřít playlist",
-			"createEvent": "Vytvořit událost",
-			"eventDetail": "Detail události",
-			"edit": "Upravit",
-			"eventNamePlaceholder": "Název události",
-			"nameEventTooltip": "Pojmenovat událost",
-			"renameEventTooltip": "Přejmenovat událost",
-			"changeDescriptionTooltip": "Změnit popis",
-			"addDescriptionPlaceholder": "Přidat popis",
-			"date": "Datum",
-			"eventDateLabel": "Datum události",
-			"pastDateWarning": "Datum v minulosti",
-			"leader": "Vedoucí",
-			"chooseLeaderTooltip": "Vybrat vedoucího",
-			"choose": "Zvolit",
-			"members": "Členové",
-			"addMemberTooltip": "Přidat člena",
-			"add": "Přidat",
-			"selectPlaylistTooltip": "Vybrat playlist ze seznamu"
-		},
-		"menu": {
-			"songs": "Písně"
-		},
-		"playlists": {
-			"upcoming": "Nadcházející",
-			"schedulePlaylist": "Naplánovat playlist",
-			"schedule": "Naplánovat",
-			"pinNewPlaylist": "Připnout nový playlist",
-			"pinPlaylist": "Připnout playlist",
-			"createNew": "Vytvořit nový",
-			"lastUpdated": "Aktualizováno",
-			"yourRecent": "Vaše nedávné",
-			"yourRecentDescription": "Playlisty, na kterých jste nedávno pracovali",
-			"openPlaylist": "Otevřít playlist",
-			"events": {
-				"openDetail": "Otevřít detail"
-			}
-		},
-		"playlist": {
-			"openSongTooltip": "Otevřít píseň mimo playlist",
-			"open": "Otevřít"
-		},
-		"song": {
-			"edit": "Upravit",
-			"editTooltip": "Upravit píseň pro tento tým",
-			"cancel": "Zrušit",
-			"save": "Uložit",
-			"copyTitle": "Krok před úpravou",
-			"continue": "Pokračovat",
-			"copying": "Kopírování...",
-			"copyDescription": "Píseň, kterou chcete upravit je přidaná z veřejného zpěvníku. Pokud chcete píseň upravit, vytvoříme vám kopii této písně, kterou si můžete upravit."
-		},
-		"loading": {
-			"logoAlt": "Logo týmu"
-		},
-		"people": {
-			"people": "Lidé",
-			"invite": "Pozvat",
-			"inviteNewMembers": "Pozvat nové členy týmu",
-			"copyLink": "Zkopírovat odkaz",
-			"linkCopied": "Odkaz zkopírován",
-			"done": "Hotovo",
-			"leftTeam": "Opustili jste tým",
-			"cannotLeaveOwnedTeam": "Nelze opustit tým, který vlastníte",
-			"leaveTeam": "Opustit tým",
-			"leave": "Opustit",
-			"leaveTeamConfirm": "Opustit tým?",
-			"removeFromTeamConfirm": "Odebrat z týmu?",
-			"leaveTeamDescription": "Opravdu chcete opustit tento tým?",
-			"removeFromTeamDescription": "Opravdu chcete odebrat tuto osobu z týmu?",
-			"remove": "Odebrat",
-			"cancel": "Zrušit",
-			"removeFromTeam": "Odebrat z týmu",
-			"setRoleTo": "Nastavit roli na",
-			"actions": "Akce",
-			"cannotEditSelfOrOwner": "Nelze upravit sebe nebo vlastníka",
-			"confirmRemove": "Opravdu odebrat?",
-			"confirmRemoveSelectedPeople": "Opravdu chcete odebrat vybrané osoby ze skupiny?",
-			"cannotRemoveSelf": "Nelze se odebrat sám",
-			"saveRole": "Uložit roli",
-			"changeRole": "Změnit roli",
-			"roleWasSet": "Role byla nastavena.",
-			"selectAll": "Vybrat vše",
-			"name": "Jméno",
-			"email": "Email",
-			"role": "Role",
-			"you": "Vy",
-			"noOthersHere": "Nikdo jiný zde není",
-			"addNewMember": "Přidat nového člena",
-			"addUser": "Přidat uživatele",
-			"addUserSubtitle": "Přidejte uživatele do týmu pomocí emailu",
-			"addUserError": "Nastala chyba. Zkontrolujte, zda je email správně zadán...",
-			"invitation": {
-				"inviteNewMembers": "Pozvat nové členy týmu",
-				"copyLink": "Zkopírovat odkaz",
-				"linkCopied": "Odkaz zkopírován",
-				"done": "Hotovo",
-				"byCode": {
-					"title": "Pomocí kódu",
-					"info": {
-						"start": "Kód lze sdílet na stránce",
-						"teamsLink": "Týmy",
-						"end": "kde se můžete připojit k týmu."
-					},
-					"description": "Sdílejte tento kód"
-				},
-				"byLink": {
-					"title": "Pomocí odkazu",
-					"description": "Nebo sdílejte tento odkaz"
-				}
-			}
-		},
-		"layout": {
-			"adminOptions": {
-				"toggleMenuMode": {
-					"title": "Přepnout režim menu",
-					"toLightMode": "Přepnout na světlý režim",
-					"toDarkMode": "Přepnout na tmavý režim"
-				},
-				"statistics": {
-					"label": "Statistiky",
-					"subtitle": "Zobrazit statistiky týmu"
-				}
-			}
-		},
-		"providers": {
-			"songSelect": {
-				"teamsOption": "Týmová možnost"
-			},
-			"outsideLinkBlocker": {
-				"title": "Externí odkaz",
-				"message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
-			}
-		}
-	},
-	"account": {
-		"title": "Váš účet",
-		"tabs": {
-			"info": "Informace",
-			"changePassword": "Změnit heslo"
-		},
-		"basicInfo": {
-			"firstName": "Křestní jméno",
-			"lastName": "Příjmení",
-			"email": "Email"
-		},
-		"passwordChange": {
-			"title": "Změna hesla",
-			"oldPassword": "Staré heslo",
-			"newPassword": "Nové heslo",
-			"newPasswordAgain": "Nové heslo znovu",
-			"enterOldPassword": "Zadejte původní heslo",
-			"enterNewPassword": "Zadejte nové heslo",
-			"changePasswordButton": "Změnit heslo",
-			"googleAccountMessage": "Jsi přihlašen pomocí Google, nemáš heslo, které bys mohl změnit",
-			"errors": {
-				"somethingWrong": "Něco se pokazilo.",
-				"allFieldsRequired": "Všechna pole musí být vyplněna.",
-				"samePassword": "Nové heslo nesmí být stejné jako staré.",
-				"passwordMismatch": "Nová hesla se neshodují.",
-				"wrongOldPassword": "Něco se pokazilo. Zkontrolujte, zda jste správně zadal/a staré heslo.",
-				"invalidLink": "Neplatný nebo vypršený odkaz pro reset hesla."
-			},
-			"success": "Heslo bylo úspěšně změněno.",
-			"successMessage": "Heslo bylo úspěšně změněno. Můžete se nyní přihlásit."
-		},
-		"myToken": "Můj token",
-		"favourites": {
-			"title": "Mé oblíbené",
-			"totalSongs": "Celkem {count} písní",
-			"noFavourites": "Nemáte žádné oblíbené písně.",
-			"sortBy": {
-				"label": "Seřadit podle:",
-				"dateAdded": "Data přidání",
-				"title": "Názvu"
-			}
-		}
-	},
-	"upload": {
-		"title": "Nahrát",
-		"uploadFile": "Nahrát soubor",
-		"uploadFileSubtitle": "Automaticky převeďte píseň z obrázku",
-		"writeManually": "Sepsat ručně",
-		"createTooltip": "Přidat",
-		"createPrivately": "Vytvořit (neveřejně)",
-		"uploadSong": "Nahrát píseň",
-		"songTitle": "Název písně",
-		"songContent": "Obsah písně",
-		"dragAndDrop": "Přetáhněte soubory sem",
-		"selectFiles": "Vybrat soubory",
-		"supportedFormats": "Podporované formáty",
-		"songDataCopied": "Data písně zkopírovány.",
-		"uploading": "Nahrávání",
-		"queueing": "Čekání ve frontě",
-		"processing": "Zpracovávání souborů",
-		"processed": "Zpracováno",
-		"errorOccurred": "Nastala chyba",
-		"pleaseWait": "Počkejte prosím",
-		"withAI": "S pomocí AI",
-		"copy": "Zkopírovat",
-		"sheet": {
-			"foundIn": "Nalezeno v <strong>{fileName}</strong>",
-			"titlePlaceholder": "Zadejte název písně",
-			"contentPlaceholder": "Zde je místo pro obsah písně"
-		}
-	},
-	"songsList": {
-		"title": "Seznam všech písní"
-	},
-	"loadingScreen": {
-		"message": "Načítání aplikace..."
-	},
-	"search": {
-		"searchSongs": "Hledat písně",
-		"searchSong": "Vyhledej píseň",
-		"searchByTitleOrText": "Hledej podle názvu nebo části textu",
-		"noResults": "Žádné výsledky",
-		"searching": "Hledání...",
-		"globalSongbook": "Z globálního zpěvníku",
-		"mySongs": "Z mých písní",
-		"teamSongbook": "Z týmového zpěvníku"
-	},
-	"transpose": {
-		"title": "Transpozice",
-		"increaseHalfTone": "Zvýšit o půltón",
-		"decreaseHalfTone": "Snížit o půltón",
-		"noChords": "Píseň nemá akordy"
-	},
-	"userNote": {
-		"deleteNote": "Smazat soukromou poznámku",
-		"saveNote": "Uložit soukromou poznámku",
-		"add": "Přidat poznámku",
-		"title": "Vaše poznámka",
-		"edit": "Upravit poznámku",
-		"placeholder": "Napište svou poznámku...",
-		"cancel": "Zrušit",
-		"deleteTooltip": "Smazat poznámku",
-		"saveTooltip": "Uložit poznámku",
-		"delete": "Smazat",
-		"save": "Uložit"
-	},
-	"filters": {
-		"public": "Veřejné",
-		"private": "Soukromé",
-		"addFilter": "Přidat filtr"
-	},
-	"buttons": {
-		"addNewSong": "Přidat novou píseň",
-		"addSongToPlaylist": "Přidat píseň do playlistu",
-		"test": "Testuju",
-		"publish": "Zveřejnit",
-		"unpublish": "Zrušit zveřejnění"
-	},
-	"print": {
-		"print": "Tisknout",
-		"options": "Možnosti",
-		"advancedPrintSettings": "Pokročilé nastavení tisku",
-		"showChords": "Zobrazit akordy",
-		"printOptions": "Možnosti tisku",
-		"useLandscapeView": "Použít režim na šířku",
-		"afterPrintingCanClose": "Po vytištění můžete okno zavřít",
-		"closeAndGoBack": "Zavřít a vrátit se zpět"
-	},
-	"favourites": {
-		"title": "Oblíbené",
-		"noFavourites": "Žádné oblíbené písně",
-		"addToFavourites": "Přidat do oblíbených",
-		"removeFromFavourites": "Odebrat z oblíbených",
-		"songCreatedInTeam": "Píseň vytvořena v týmu",
-		"open": "Otevřít",
-		"remove": "Odebrat"
-	},
-	"mySongs": {
-		"title": "Moje písně",
-		"noSongs": "Žádné písně",
-		"edit": "Upravit",
-		"delete": "Smazat",
-		"public": "Veřejná",
-		"private": "Soukromá",
-		"open": "Otevřít",
-		"deleteDialog": {
-			"title": "Opravdu chcete smazat píseň?",
-			"cancel": "Zrušit",
-			"delete": "Smazat",
-			"confirmMessage": "Opravdu chcete smazat píseň '{title}'?"
-		}
-	},
-	"songEditor": {
-		"title": "Editor písně",
-		"save": "Uložit",
-		"cancel": "Zrušit",
-		"mark": "Označit",
-		"verse": "Sloka",
-		"chorus": "Refrén",
-		"bridge": "Bridge",
-		"markVerse": "Označit sloku",
-		"markChorus": "Označit refrén",
-		"markBridge": "Označit bridge",
-		"insertChord": "Vložit akord",
-		"titlePlaceholder": "Zadejte název písně",
-		"contentPlaceholder": "Zde je místo pro obsah písně"
-	},
-	"subdomain": {
-		"title": "Subdoména",
-		"notFound": "Subdoména nenalezena",
-		"redirectingHome": "Brzy budete přesměrováni na domovskou stránku..."
-	},
-	"deleteDialog": {
-		"title": "Smazat",
-		"confirmMessage": "Opravdu chcete smazat?",
-		"confirm": "Smazat",
-		"cancel": "Zrušit"
-	},
-	"errors": {
-		"forbidden": "K zobrazení obsahu nemáte dostatečná oprávnění!",
-		"notFound": "Stránka nenalezena",
-		"notFoundDescription": "Zdá se, že jste se dostali do neprozkouraných oblastí aplikace. Můžete zkusit jít zpět na hlavní stránku.",
-		"goHome": "DOMŮ",
-		"serverError": "Někde nastala chyba!",
-		"unauthorized": "Neautorizovaný přístup",
-		"tokenExpired": "Token vypršel"
-	},
-	"maintenance": {
-		"workInProgress": "Stránka je momentálně v údržbě.",
-		"temporarilyUnavailable": "Omlouváme se, stránka je dočasně nedostupná.",
-		"tryAgainLater": "Zkuste to prosím znovu za <b>hodinu</b>."
-	},
-	"suggestions": {
-		"sheep": "Ovce",
-		"noIdea": "Žádný nápad?",
-		"chooseSuggestion": "Vyberte píseň z návrhů níže nebo ze seznamu všech písní"
-	},
-	"news": {
-		"popupLabel": "Novinka",
-		"popupTryIt": "Vyzkoušet",
-		"popupClose": "Zavřít",
-		"smartSearchTitle": "Vyhledávání podle významu",
-		"smartSearchDescription": "Najděte píseň podle toho, <strong>o čem je</strong>, ne jen podle slov v textu. Přepněte se do chytrého módu a napište téma nebo pocit – např. <strong>\u201Enaděje v těžkých chvílích\u201C</strong>, <strong>\u201Echvála uprostřed zkoušek\u201C</strong> nebo <strong>\u201EBoží věrnost\u201C</strong>.",
-		"smartSearchNote": "💡 Funkce je stále ve vývoji a ladí se.",
-		"smartSearchStep1": "Přepněte na chytré vyhledávání",
-		"smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
-	}
+  "common": {
+    "yes": "Ano",
+    "no": "Ne",
+    "cancel": "Zrušit",
+    "save": "Uložit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "print": "Tisknout",
+    "send": "Poslat",
+    "search": "Hledat",
+    "remove": "Odebrat",
+    "add": "Přidat",
+    "close": "Zavřít",
+    "back": "Zpět",
+    "next": "Další",
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "success": "Úspěch",
+    "discard": "Zahodit",
+    "open": "Otevřít",
+    "tryAgain": "Zkusit znovu",
+    "or": "Nebo",
+    "backgroundAlt": "Pozadí",
+    "cancelCurrentEdits": "Zrušit aktuální úpravy",
+    "saveCurrentState": "Uložit aktuální stav",
+    "videoNotSupported": "Video není podporováno",
+    "preferThisTranslation": "Preferuji tento překlad",
+    "private": "Soukromé",
+    "createdByYou": "Vytvořeno vámi",
+    "uploadedByProgram": "Nahráno programem",
+    "addedOn": "Přidáno dne",
+    "authors": "Autoři",
+    "authorName": "Jméno autora",
+    "sections": {
+      "verse": "Sloka",
+      "chorus": "Refrén",
+      "bridge": "Bridge"
+    }
+  },
+  "navigation": {
+    "home": "Domů",
+    "songs": "Písně",
+    "playlists": "Playlisty",
+    "teams": "Týmy",
+    "about": "O aplikaci",
+    "contact": "Kontakt",
+    "account": "Účet",
+    "login": "Přihlásit se",
+    "logout": "Odhlásit se",
+    "signup": "Registrovat se",
+    "search": "Hledat",
+    "aboutUs": "O nás",
+    "worshipTeams": "Chválící týmy",
+    "closeMenu": "Zavřít menu",
+    "tooltips": {
+      "addSong": "Přidat novou píseň",
+      "tools": "Nástroje",
+      "account": "Účet",
+      "login": "Přihlásit se"
+    },
+    "alt": {
+      "profileImage": "Profilový obrázek"
+    },
+    "toolsMenu": {
+      "playlists": "Playlisty",
+      "mySongs": "Moje písně",
+      "favourites": "Oblíbené",
+      "outsideTeam": "Mimo tým"
+    },
+    "accountMenu": {
+      "manageAccount": "Spravovat účet"
+    }
+  },
+  "config": {
+    "contact": {
+      "main": "chvalotce@chvalotce.cz"
+    },
+    "branding": {
+      "appName": "Chvalotce.cz",
+      "appDescription": "Online zpěvník Chvalotce.cz",
+      "shortName": "Chvalotce.cz"
+    }
+  },
+  "footer": {
+    "links": {
+      "searchSong": "Hledat píseň",
+      "songList": "Seznam písní",
+      "about": "O aplikaci",
+      "teams": "Týmy",
+      "feedback": "Zpětná vazba",
+      "reportBug": "Nahlásit chybu",
+      "contact": "Kontakt"
+    },
+    "cooperation": "Ve spolupráci s",
+    "logoAlt": "Logo worshipko.com",
+    "createdWith": "Vytvořeno s",
+    "rightsReserved": "© Všechna práva vyhrazena"
+  },
+  "home": {
+    "backgroundShape": "Tvar na pozadí",
+    "hero": {
+      "lead": "Jsi-li ovce, tak...",
+      "title": "Chval Otce",
+      "subtitle": "Na worship.cz",
+      "subtitleLower": "na worship.cz"
+    },
+    "recommended": {
+      "idea": "Nějaký nápad:",
+      "error": "Při načítání se vyskytla chyba..."
+    },
+    "allList": {
+      "browse": "procházet",
+      "title": "Seznam všech písní"
+    },
+    "lastAdded": {
+      "title": "Poslední přidané"
+    },
+    "floatingAdd": {
+      "label": "Vytvořit"
+    },
+    "search": {
+      "resultsTitle": "Výsledky vyhledávání:",
+      "loadMore": "Načíst další",
+      "noResults": "Nic jsme nenašli..."
+    }
+  },
+  "about": {
+    "title": "O aplikaci",
+    "subtitle": "Platforma s křesťanskými chválami",
+    "whoAreWe": "Kdo jsme?",
+    "platform": "Platforma",
+    "withChristianPraises": "s křesťanskými",
+    "praises": "chválami",
+    "description": "Jsme uživatelsky přívětivá platforma, která nabízí široký výběr chval ale především moderní nástroje",
+    "database": {
+      "title": "Velká a aktuální databáze",
+      "description": "Základem celé aplikace je seznam chval. Tento seznam se snažíme držet co největší a dobře strukturovaný.",
+      "allInOne": {
+        "title": "Vše na jednom místě",
+        "description": "Seskupujeme písně z jiných zpěvníků, abyste mohli hledat na jednom místě"
+      },
+      "constantUpdate": {
+        "title": "Neustálá aktualizace",
+        "description": "Náš algoritmus automaticky přidává nové písně, takže databáze je vždy aktuální"
+      },
+      "yourSongs": {
+        "title": "Váše písně",
+        "description": "Databáze je otevřená - sami můžete přidávat chvály, veřejně či soukromě"
+      }
+    },
+    "tools": {
+      "title": "Nástroje",
+      "description": "Zdarma nabízíme nástroje, které se vám můžou hodit",
+      "smartSearch": {
+        "title": "Chytré vyhledávání",
+        "description": "Najděte své písně podle jejich názvu nebo i textu",
+        "tryIt": "Vyzkoušet"
+      },
+      "teams": {
+        "title": "Týmy",
+        "description": "Sestavte si pro váš chválící tým prostředí, kde se snadno připravíte na společné hraní",
+        "learnMore": "Dozvědět se víc"
+      },
+      "playlists": {
+        "title": "Tvorba playlistů",
+        "description": "Vytvořte si z písní vlastní playlist, který lze snadno sdílet s ostatními",
+        "tryIt": "Vyzkoušet"
+      }
+    },
+    "whyWhoHow": {
+      "title": "Proč, kdo a jak?",
+      "description": "Celý projekt byl vytvořen z nějakého důvodu. Podívejte se na krátké video"
+    },
+    "helpUs": {
+      "title": "Podpořte nás",
+      "description": "Celou aplikaci jsme vytvářeli ve svém volném času, zadarmo. Za jakoukoliv finanční podporu budeme rádi.",
+      "supportFinancially": "Finančně podpořit"
+    },
+    "collaboration": {
+      "title": "Vytvořeno ve spolupráci s"
+    },
+    "more": {
+      "button": "Dozvědět se víc",
+      "label": "Zjistit více"
+    },
+    "helpPanel": {
+      "title": "Chcete nám pomoct?",
+      "description": "Chtěli byste se k projektu jakýmkoliv způsobem připojit?",
+      "join": "Chci se připojit"
+    },
+    "graphics": {
+      "introSheepAlt": "Ovce",
+      "bubbleAlt": "Bublina",
+      "sheepAlt": "Ovečka",
+      "speech": "Velikáá"
+    },
+    "supportCard": {
+      "iconAlt": "Poslat peníze",
+      "title": "Podpořte nás",
+      "description": "Celou aplikaci jsme vytvářeli ve svém volném času, zadarmo. Za jakoukoliv finanční podporu budeme rádi.",
+      "button": "Finančně podpořit"
+    }
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Chcete se na něco zeptat nebo máte nějaký nápad? Rádi od vás uslyšíme.",
+    "writeToUs": "Napište nám na",
+    "wantToHelp": "Chcete nám pomoci?",
+    "feedback": "Zpětná vazba",
+    "wantToJoinDescription": "Rádi byste se připojili k vytváření této aplikace? Napište nám pomocí formuláře.",
+    "feedbackDescription": "Líbí se vám naše aplikace, nebo máte nějaké přípomínky? Napište nám pomocí formuláře.",
+    "form": {
+      "yourName": "Vaše jméno",
+      "enterName": "Zadejte vaše jméno",
+      "yourEmail": "Váš e-mail",
+      "enterEmail": "Zadejte váš e-mail",
+      "message": "Zpráva",
+      "writeMessage": "Napište zprávu",
+      "sendMessage": "Poslat zprávu",
+      "messageSent": "Zpráva byla odeslána... Děkujeme za váš názor.",
+      "writeAnother": "Napsat další zprávu",
+      "wantToJoinMessage": "Dobrý den,\\nrád bych se podílel na vytváření této aplikace. Jaké mám možnosti?"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Přihlaste se",
+      "subtitle": "A používejte aplikaci naplno",
+      "email": "Email",
+      "enterEmail": "Zadejte e-mail",
+      "password": "Heslo",
+      "enterPassword": "Zadejte heslo",
+      "loginButton": "Přihlásit se",
+      "forgotPassword": "Zapomněli jste heslo?",
+      "noAccount": "Nemáte ještě účet?",
+      "createAccount": "Vytvořte si ho",
+      "signUp": "Registrujte se",
+      "wrongCredentials": "Špatný email nebo heslo"
+    },
+    "signup": {
+      "title": "Vytvořte si účet",
+      "subtitle": "A používejte aplikaci naplno",
+      "firstName": "Jméno",
+      "lastName": "Příjmení",
+      "email": "Email",
+      "password": "Heslo",
+      "confirmPassword": "Potvrdit heslo",
+      "signupButton": "Vytvořit účet",
+      "haveAccount": "Už máte účet?",
+      "login": "Přihlásit se",
+      "emailExists": "Účet s tímto emailem již existuje"
+    },
+    "resetPassword": {
+      "title": "Resetování hesla",
+      "subtitle": "Na váš email pošleme odkaz, který vám umožní změnit heslo",
+      "sendResetLink": "Poslat reset link",
+      "linkSent": "Link odeslán",
+      "linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
+      "emailRequired": "Email musí být vyplněn.",
+      "enterEmail": "Zadejte email"
+    }
+  },
+  "playlist": {
+    "myPlaylists": "Moje playlisty",
+    "createNew": "Vytvořit nový",
+    "create": "Vytvořit",
+    "createNewPlaylist": "Vytvořit nový playlist",
+    "addToPlaylist": "Přidat do playlistu",
+    "removeFromPlaylist": "Odebrat z playlistu",
+    "addSongToPlaylist": "Přidat píseň do playlistu",
+    "createEditForPlaylist": "Upravit píseň pro playlist",
+    "save": "Uložit",
+    "saved": "Uloženo",
+    "saving": "Ukládání...",
+    "share": "Sdílet",
+    "linkCopiedToClipboard": "Odkaz zkopírován do schránky",
+    "presentation": "Prezentace",
+    "rename": "Přejmenovat",
+    "playlistNamePlaceholder": "Název playlistu",
+    "print": "Tisknout",
+    "openInNewTab": "Otevřít v nové kartě",
+    "loading": "Načítání...",
+    "noPlaylists": "Žádné playlisty",
+    "more": "Více",
+    "selectPlaylistFromList": "Vybrat playlist ze seznamu",
+    "close": "Zavřít",
+    "transpose": {
+      "up": "Transpose up",
+      "down": "Transpose down"
+    },
+    "search": {
+      "placeholder": "Hledat písně..."
+    }
+  },
+  "song": {
+    "transpose": "Transponovat",
+    "print": "Tisknout",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    "createCopy": "Vytvořit kopii",
+    "addToPlaylist": "Přidat do playlistu",
+    "source": "Zdroj",
+    "author": "Autor",
+    "language": "Jazyk",
+    "public": "Veřejné",
+    "validated": "Validováno",
+    "hidChords": "Skrýt akordy",
+    "teamNote": "Týmová poznámka",
+    "openInNewWindow": "Otevřít v novém okně",
+    "deleted": {
+      "restored": "Píseň {title} byla obnovena",
+      "message": "Tato píseň byla smazána",
+      "restore": "Obnovit"
+    },
+    "admin": {
+      "advancedOptions": "Pokročilé možnosti",
+      "adminSettings": "Admin nastavení",
+      "showTranslations": "Zobrazit jiné překlady",
+      "translationsList": "Seznam překladů",
+      "otherVersions": "Další verze této písně",
+      "dataCopied": "Data písně byla zkopírována do schránky",
+      "songOptions": "Možnosti k písni",
+      "manageManualVerification": "Spravovat manuální ověření",
+      "copy": "Zkopírovat",
+      "manualVerification": "Manuální ověření",
+      "cancel": "Zrušit"
+    },
+    "translations": {
+      "selectOther": "Vybrat jiný překlad"
+    },
+    "songAdmin": {
+      "mediaSection": "Média"
+    }
+  },
+  "songPage": {
+    "topPanel": {
+      "cannotEditPublished": "Nelze upravit veřejnou píseň.",
+      "updateSuccess": {
+        "withTitle": "Píseň {title} byla upravena.",
+        "withoutTitle": "Píseň byla upravena."
+      }
+    },
+    "editButton": {
+      "errorEmpty": "Nelze uložit píseň s prázdným polem",
+      "edit": "Upravit",
+      "save": "Uložit"
+    },
+    "createCopy": {
+      "menu": "Vytvořit kopii",
+      "tooltip": "Vytvořit soukromou kopii písně",
+      "button": "Vytvořit úpravu",
+      "subtitle": "Vytvoří soukromou kopii písně."
+    },
+    "optionsMenu": {
+      "more": "Další možnosti"
+    },
+    "sendToApproval": {
+      "menuTitle": "Zveřejnit",
+      "menuSubtitle": "Poslat píseň ke zveřejnění",
+      "dialogTitle": "Zveřejnit",
+      "confirm": "Ano, zveřejnit",
+      "success": "Píseň byla úspěšně zveřejněna a odeslána ke schválení.",
+      "question": "Chcete píseň zveřejnit, aby ji viděli ostatní uživatelé?"
+    },
+    "delete": {
+      "cannotDeletePublished": "Nelze smazat veřejnou píseň.",
+      "successWithTitle": "Píseň {title} byla smazána.",
+      "success": "Píseň byla smazána.",
+      "menu": {
+        "removing": "Odstraňování...",
+        "removeSong": "Odstranit píseň...",
+        "deleted": "Smazáno",
+        "remove": "Odstranit",
+        "removeSubtitle": "Odstranit píseň"
+      },
+      "button": {
+        "deleted": "Smazáno",
+        "delete": "Smazat"
+      },
+      "dialog": {
+        "title": "Opravdu chcete smazat píseň?",
+        "removing": "Probíhá odstraňování písně...",
+        "confirmation": "Píseň se smaže natrvalo."
+      }
+    },
+    "hideChords": {
+      "show": "Zobrazit akordy",
+      "hide": "Skrýt akordy"
+    },
+    "transpose": {
+      "title": "Transpozice",
+      "increase": "Zvýšit o půltón",
+      "decrease": "Snížit o půltón"
+    },
+    "print": {
+      "label": "Tisknout",
+      "tooltip": "Tisknout"
+    },
+    "rightPanel": {
+      "original": "Jedná se o originál",
+      "translationOf": "Překlad originálu",
+      "chooseOther": "Zvolit jiný překlad",
+      "noTranslations": "Zatím nemáme připnuté žádné další překlady",
+      "support": {
+        "title": "Podpořte ChvalOtce.cz 🚀",
+        "intro": "Ahoj! Tento zpěvník tvoříme pro vás ve svém volném čase.",
+        "description": "Podpořte nás, abychom mohli tvořit dál, přidat další vylepšení a odladit všechny chybičky.",
+        "button": "Podpořit"
+      }
+    },
+    "sources": {
+      "title": "Zdroje:"
+    }
+  },
+  "teamPage": {
+    "overviewTitle": "Přehled",
+    "welcomeTitle": "Vítejte na domovské stránce týmu",
+    "welcomeNote": "Ať vám aplikace dobře slouží",
+    "quickActions": "Rychlé akce",
+    "leftPanel": {
+      "title": "Chválící tým",
+      "expand": "Rozbalit menu",
+      "collapse": "Sbalit menu",
+      "menu": {
+        "overview": "Přehled",
+        "songlist": "Seznam písní",
+        "playlists": "Playlisty",
+        "statistics": "Statistiky",
+        "people": "Lidé",
+        "settings": "Nastavení"
+      }
+    }
+  },
+  "create": {
+    "validation": {
+      "invalidContent": "Neplatný obsah",
+      "contentRequirements": "Obsah musí být delší a mít alespoň dva řádky"
+    }
+  },
+  "admin": {
+    "validation": "Validace obsahu",
+    "textAndChords": "Text a akordy",
+    "automatic": "Automaticky",
+    "setValidation": "Zvol validaci obsahu",
+    "validationSet": "Filtrace nastavena na",
+    "parseFile": "Parsovat soubor",
+    "errorOccurred": "Nastala chyba",
+    "userNotAdmin": "Uživatel není admin",
+    "noFilesSelected": "Žádné soubory nevybrány",
+    "publishing": "Publikování",
+    "publishingResult": "Výsledek publikování",
+    "layout": {
+      "songs": "Písně",
+      "create": "Vytvořit"
+    },
+    "create": {
+      "unknownStep": "Neznámý krok",
+      "previous": "Předchozí",
+      "continue": "Pokračovat"
+    },
+    "mediaSection": "Sekce médií",
+    "songAdmin": {
+      "manageVerification": "Spravovat ověření",
+      "manualVerification": "Manuální ověření",
+      "cancel": "Zrušit",
+      "songManuallyVerified": "Píseň je manuálně ověřena",
+      "songManuallyRejected": "Píseň je manuálně odmítnuta",
+      "songNotManuallyVerified": "Píseň není manuálně ověřena"
+    },
+    "filter": {
+      "valid": "Validní",
+      "invalid": "Nevalidní",
+      "automatic": "Automatické",
+      "filterSetTo": "Filtr nastaven na {label}",
+      "buttonTitle": "Nastavit filtr",
+      "popupTitle": "Vyberte filtr"
+    },
+    "translationType": {
+      "original": "Originál",
+      "translation": "Překlad",
+      "officialTranslation": "Oficiální překlad",
+      "unknown": "Neznámý",
+      "setTo": "Typ překladu nastaven na {type}",
+      "chooseType": "Vybrat typ překladu",
+      "selectType": "Vyberte typ překladu"
+    },
+    "verification": {
+      "verify": "Ověřit",
+      "reject": "Odmítnout",
+      "cancelVerification": "Zrušit ověření",
+      "cancelRejection": "Zrušit odmítnutí"
+    },
+    "songInfo": {
+      "uploadedByProgram": "Nahráno programem",
+      "extendedInfo": "Rozšířené informace",
+      "language": "Jazyk",
+      "ggFilterCompliant": "GG Filter kompatibilní",
+      "public": "Veřejné",
+      "yes": "Ano",
+      "no": "Ne"
+    },
+    "goToSong": "Přejít na píseň",
+    "selectFileToProcess": "Vybrat soubor ke zpracování",
+    "openProcessedData": "Otevřít zpracovaná data",
+    "parentSong": "Rodičovská píseň",
+    "additionalVariant": "další varianta",
+    "additionalVariants": "další varianty",
+    "additionalVariantsGenitive": "dalších variant",
+    "selectDifferentSong": "Vybrat jinou píseň",
+    "addToEmptyFamily": "Přidat do prázdné rodiny",
+    "addToFamily": "Přidat do rodiny",
+    "menu": {
+      "dashboard": "Dashboard",
+      "addSong": "Přidat píseň",
+      "songs": "Písně",
+      "pendingApproval": "Ke schválení",
+      "recent": "Nedávné",
+      "tags": "Štítky"
+    },
+    "approval": {
+      "reject": "Odmítnout",
+      "continue": "Pokračovat"
+    },
+    "bridgeServices": {
+      "title": "Připojené programy",
+      "timeAgo": "{seconds}s zpět",
+      "external": "Externí",
+      "noConnectedPrograms": "Žádné připojené programy...",
+      "showAll": "Zobrazit vše"
+    },
+    "songCount": {
+      "title": "Aktuální počet písní",
+      "loading": "Načítání...",
+      "autoRefreshEnabled": "Automatické obnovování je zapnuto"
+    },
+    "interpret": {
+      "label": "Interpret",
+      "placeholder": "Zadejte jméno interpreta",
+      "addInterpreter": "Přidat interpreta",
+      "added": "Přidáno"
+    },
+    "userToken": {
+      "title": "Získat uživatelský token",
+      "getToken": "Získat token",
+      "myToken": "Můj token",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Heslo",
+      "tokenCopied": "Token zkopírován do schránky..."
+    }
+  },
+  "teams": {
+    "title": "Týmy",
+    "createTeam": "Vytvořit tým",
+    "joinTeam": "Připojit se k týmu",
+    "myTeams": "Moje týmy",
+    "teamSettings": "Nastavení týmu",
+    "createPrivateTeam": "Vytvořte soukromý tým",
+    "enterTeamName": "Zadejte název týmu",
+    "errorMessage": "Nastala chyba. Prosím, zkontrolujte název týmu",
+    "tryOut": "Vyzkoušet",
+    "simplifyWork": "Zjednodušte si práci ve vašem",
+    "inYourWorshipTeam": "chválícím týmu",
+    "freeToolsDescription": "Zdarma nabízíme nástroje, které vám usnadní přípravu na společné hraní",
+    "backgroundShape": "Náhodný tvar na pozadí",
+    "teamScreenPreview": "Ukázka obrazovky týmu",
+    "joinPanel": {
+      "cta": "Připoj se k existujícímu týmu pomocí kódu",
+      "button": "Připojit se"
+    },
+    "joinPopup": {
+      "title": "Připojit se k týmu",
+      "subtitle": "Připoj se k existujícímu týmu pomocí kódu",
+      "joinButton": "Připojit se",
+      "placeholder": "Zadejte kód",
+      "success": "Vítej v týmu!",
+      "errors": {
+        "notFound": "Skupina s tímto kódem neexistuje",
+        "unknown": "Neznámá chyba"
+      }
+    },
+    "settings": {
+      "title": "Nastavení",
+      "basicInfo": "Základní informace",
+      "teamName": "Název týmu",
+      "joinCode": "Kód pro připojení",
+      "confirmDelete": "Jste si jisti?",
+      "closePopupTooltip": "Zavřít popup bez akce",
+      "teamDeleted": "Tým byl smazán"
+    },
+    "statistics": {
+      "trendingSongs": "Populární písně",
+      "timeFrame": "Za posledních 40 dní",
+      "mostTrendSong": "Nejpopulárnější píseň je",
+      "mostPlayedSongs": "10 nejhranějších písní",
+      "timeFrame90": "Za posledních 90 dní",
+      "favoriteSongs": "Nejoblíbenější písně",
+      "leastPlayedSongs": "10 nejméně hraných písní",
+      "everySongPlayed": "Každá píseň zahrána",
+      "noDataAvailable": "Žádná data nejsou k dispozici",
+      "needAtLeastOneSong": "Pro zobrazení trendů musíte mít zahrán alespoň 1 píseň",
+      "plays": " přehrání",
+      "dataNotAvailable": "Data nejsou k dispozici",
+      "favoriteSongsRequirement": "Pro zobrazení oblíbených musíte mít alespoň 3 písně v týmových oblíbených",
+      "allTime": "Celý čas",
+      "howManyTimesPlayed": "Kolikrát co bylo zahráno",
+      "playedXTimes": "Zahráno {count}krát"
+    },
+    "events": {
+      "eventCreated": "Událost vytvořena",
+      "deleteEventTooltip": "Smazat událost",
+      "confirmDelete": "Potvrdit smazání",
+      "delete": "Smazat",
+      "cancel": "Zrušit",
+      "create": "Vytvořit",
+      "save": "Uložit",
+      "openPlaylistTooltip": "Otevřít playlist",
+      "openPlaylist": "Otevřít playlist",
+      "createEvent": "Vytvořit událost",
+      "eventDetail": "Detail události",
+      "edit": "Upravit",
+      "eventNamePlaceholder": "Název události",
+      "nameEventTooltip": "Pojmenovat událost",
+      "renameEventTooltip": "Přejmenovat událost",
+      "changeDescriptionTooltip": "Změnit popis",
+      "addDescriptionPlaceholder": "Přidat popis",
+      "date": "Datum",
+      "eventDateLabel": "Datum události",
+      "pastDateWarning": "Datum v minulosti",
+      "leader": "Vedoucí",
+      "chooseLeaderTooltip": "Vybrat vedoucího",
+      "choose": "Zvolit",
+      "members": "Členové",
+      "addMemberTooltip": "Přidat člena",
+      "add": "Přidat",
+      "selectPlaylistTooltip": "Vybrat playlist ze seznamu"
+    },
+    "menu": {
+      "songs": "Písně"
+    },
+    "playlists": {
+      "upcoming": "Nadcházející",
+      "schedulePlaylist": "Naplánovat playlist",
+      "schedule": "Naplánovat",
+      "pinNewPlaylist": "Připnout nový playlist",
+      "pinPlaylist": "Připnout playlist",
+      "createNew": "Vytvořit nový",
+      "lastUpdated": "Aktualizováno",
+      "yourRecent": "Vaše nedávné",
+      "yourRecentDescription": "Playlisty, na kterých jste nedávno pracovali",
+      "openPlaylist": "Otevřít playlist",
+      "events": {
+        "openDetail": "Otevřít detail"
+      }
+    },
+    "playlist": {
+      "openSongTooltip": "Otevřít píseň mimo playlist",
+      "open": "Otevřít"
+    },
+    "song": {
+      "edit": "Upravit",
+      "editTooltip": "Upravit píseň pro tento tým",
+      "cancel": "Zrušit",
+      "save": "Uložit",
+      "copyTitle": "Krok před úpravou",
+      "continue": "Pokračovat",
+      "copying": "Kopírování...",
+      "copyDescription": "Píseň, kterou chcete upravit je přidaná z veřejného zpěvníku. Pokud chcete píseň upravit, vytvoříme vám kopii této písně, kterou si můžete upravit."
+    },
+    "loading": {
+      "logoAlt": "Logo týmu"
+    },
+    "people": {
+      "people": "Lidé",
+      "invite": "Pozvat",
+      "inviteNewMembers": "Pozvat nové členy týmu",
+      "copyLink": "Zkopírovat odkaz",
+      "linkCopied": "Odkaz zkopírován",
+      "done": "Hotovo",
+      "leftTeam": "Opustili jste tým",
+      "cannotLeaveOwnedTeam": "Nelze opustit tým, který vlastníte",
+      "leaveTeam": "Opustit tým",
+      "leave": "Opustit",
+      "leaveTeamConfirm": "Opustit tým?",
+      "removeFromTeamConfirm": "Odebrat z týmu?",
+      "leaveTeamDescription": "Opravdu chcete opustit tento tým?",
+      "removeFromTeamDescription": "Opravdu chcete odebrat tuto osobu z týmu?",
+      "remove": "Odebrat",
+      "cancel": "Zrušit",
+      "removeFromTeam": "Odebrat z týmu",
+      "setRoleTo": "Nastavit roli na",
+      "actions": "Akce",
+      "cannotEditSelfOrOwner": "Nelze upravit sebe nebo vlastníka",
+      "confirmRemove": "Opravdu odebrat?",
+      "confirmRemoveSelectedPeople": "Opravdu chcete odebrat vybrané osoby ze skupiny?",
+      "cannotRemoveSelf": "Nelze se odebrat sám",
+      "saveRole": "Uložit roli",
+      "changeRole": "Změnit roli",
+      "roleWasSet": "Role byla nastavena.",
+      "selectAll": "Vybrat vše",
+      "name": "Jméno",
+      "email": "Email",
+      "role": "Role",
+      "you": "Vy",
+      "noOthersHere": "Nikdo jiný zde není",
+      "addNewMember": "Přidat nového člena",
+      "addUser": "Přidat uživatele",
+      "addUserSubtitle": "Přidejte uživatele do týmu pomocí emailu",
+      "addUserError": "Nastala chyba. Zkontrolujte, zda je email správně zadán...",
+      "invitation": {
+        "inviteNewMembers": "Pozvat nové členy týmu",
+        "copyLink": "Zkopírovat odkaz",
+        "linkCopied": "Odkaz zkopírován",
+        "done": "Hotovo",
+        "byCode": {
+          "title": "Pomocí kódu",
+          "info": {
+            "start": "Kód lze sdílet na stránce",
+            "teamsLink": "Týmy",
+            "end": "kde se můžete připojit k týmu."
+          },
+          "description": "Sdílejte tento kód"
+        },
+        "byLink": {
+          "title": "Pomocí odkazu",
+          "description": "Nebo sdílejte tento odkaz"
+        }
+      }
+    },
+    "layout": {
+      "adminOptions": {
+        "toggleMenuMode": {
+          "title": "Přepnout režim menu",
+          "toLightMode": "Přepnout na světlý režim",
+          "toDarkMode": "Přepnout na tmavý režim"
+        },
+        "statistics": {
+          "label": "Statistiky",
+          "subtitle": "Zobrazit statistiky týmu"
+        }
+      }
+    },
+    "providers": {
+      "songSelect": {
+        "teamsOption": "Týmová možnost"
+      },
+      "outsideLinkBlocker": {
+        "title": "Externí odkaz",
+        "message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
+      }
+    }
+  },
+  "account": {
+    "title": "Váš účet",
+    "tabs": {
+      "info": "Informace",
+      "changePassword": "Změnit heslo"
+    },
+    "basicInfo": {
+      "firstName": "Křestní jméno",
+      "lastName": "Příjmení",
+      "email": "Email"
+    },
+    "passwordChange": {
+      "title": "Změna hesla",
+      "oldPassword": "Staré heslo",
+      "newPassword": "Nové heslo",
+      "newPasswordAgain": "Nové heslo znovu",
+      "enterOldPassword": "Zadejte původní heslo",
+      "enterNewPassword": "Zadejte nové heslo",
+      "changePasswordButton": "Změnit heslo",
+      "googleAccountMessage": "Jsi přihlašen pomocí Google, nemáš heslo, které bys mohl změnit",
+      "errors": {
+        "somethingWrong": "Něco se pokazilo.",
+        "allFieldsRequired": "Všechna pole musí být vyplněna.",
+        "samePassword": "Nové heslo nesmí být stejné jako staré.",
+        "passwordMismatch": "Nová hesla se neshodují.",
+        "wrongOldPassword": "Něco se pokazilo. Zkontrolujte, zda jste správně zadal/a staré heslo.",
+        "invalidLink": "Neplatný nebo vypršený odkaz pro reset hesla."
+      },
+      "success": "Heslo bylo úspěšně změněno.",
+      "successMessage": "Heslo bylo úspěšně změněno. Můžete se nyní přihlásit."
+    },
+    "myToken": "Můj token",
+    "favourites": {
+      "title": "Mé oblíbené",
+      "totalSongs": "Celkem {count} písní",
+      "noFavourites": "Nemáte žádné oblíbené písně.",
+      "sortBy": {
+        "label": "Seřadit podle:",
+        "dateAdded": "Data přidání",
+        "title": "Názvu"
+      }
+    }
+  },
+  "upload": {
+    "title": "Nahrát",
+    "uploadFile": "Nahrát soubor",
+    "uploadFileSubtitle": "Automaticky převeďte píseň z obrázku",
+    "writeManually": "Sepsat ručně",
+    "createTooltip": "Přidat",
+    "createPrivately": "Vytvořit (neveřejně)",
+    "uploadSong": "Nahrát píseň",
+    "songTitle": "Název písně",
+    "songContent": "Obsah písně",
+    "dragAndDrop": "Přetáhněte soubory sem",
+    "selectFiles": "Vybrat soubory",
+    "supportedFormats": "Podporované formáty",
+    "songDataCopied": "Data písně zkopírovány.",
+    "uploading": "Nahrávání",
+    "queueing": "Čekání ve frontě",
+    "processing": "Zpracovávání souborů",
+    "processed": "Zpracováno",
+    "errorOccurred": "Nastala chyba",
+    "pleaseWait": "Počkejte prosím",
+    "withAI": "S pomocí AI",
+    "copy": "Zkopírovat",
+    "sheet": {
+      "foundIn": "Nalezeno v <strong>{fileName}</strong>",
+      "titlePlaceholder": "Zadejte název písně",
+      "contentPlaceholder": "Zde je místo pro obsah písně"
+    }
+  },
+  "songsList": {
+    "title": "Seznam všech písní"
+  },
+  "loadingScreen": {
+    "message": "Načítání aplikace..."
+  },
+  "search": {
+    "searchSongs": "Hledat písně",
+    "searchSong": "Vyhledej píseň",
+    "searchByTitleOrText": "Hledej podle názvu nebo části textu",
+    "noResults": "Žádné výsledky",
+    "searching": "Hledání...",
+    "globalSongbook": "Z globálního zpěvníku",
+    "mySongs": "Z mých písní",
+    "teamSongbook": "Z týmového zpěvníku"
+  },
+  "transpose": {
+    "title": "Transpozice",
+    "increaseHalfTone": "Zvýšit o půltón",
+    "decreaseHalfTone": "Snížit o půltón",
+    "noChords": "Píseň nemá akordy"
+  },
+  "userNote": {
+    "deleteNote": "Smazat soukromou poznámku",
+    "saveNote": "Uložit soukromou poznámku",
+    "add": "Přidat poznámku",
+    "title": "Vaše poznámka",
+    "edit": "Upravit poznámku",
+    "placeholder": "Napište svou poznámku...",
+    "cancel": "Zrušit",
+    "deleteTooltip": "Smazat poznámku",
+    "saveTooltip": "Uložit poznámku",
+    "delete": "Smazat",
+    "save": "Uložit"
+  },
+  "filters": {
+    "public": "Veřejné",
+    "private": "Soukromé",
+    "addFilter": "Přidat filtr"
+  },
+  "buttons": {
+    "addNewSong": "Přidat novou píseň",
+    "addSongToPlaylist": "Přidat píseň do playlistu",
+    "test": "Testuju",
+    "publish": "Zveřejnit",
+    "unpublish": "Zrušit zveřejnění"
+  },
+  "print": {
+    "print": "Tisknout",
+    "options": "Možnosti",
+    "advancedPrintSettings": "Pokročilé nastavení tisku",
+    "showChords": "Zobrazit akordy",
+    "printOptions": "Možnosti tisku",
+    "useLandscapeView": "Použít režim na šířku",
+    "afterPrintingCanClose": "Po vytištění můžete okno zavřít",
+    "closeAndGoBack": "Zavřít a vrátit se zpět"
+  },
+  "favourites": {
+    "title": "Oblíbené",
+    "noFavourites": "Žádné oblíbené písně",
+    "addToFavourites": "Přidat do oblíbených",
+    "removeFromFavourites": "Odebrat z oblíbených",
+    "songCreatedInTeam": "Píseň vytvořena v týmu",
+    "open": "Otevřít",
+    "remove": "Odebrat"
+  },
+  "mySongs": {
+    "title": "Moje písně",
+    "noSongs": "Žádné písně",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    "public": "Veřejná",
+    "private": "Soukromá",
+    "open": "Otevřít",
+    "deleteDialog": {
+      "title": "Opravdu chcete smazat píseň?",
+      "cancel": "Zrušit",
+      "delete": "Smazat",
+      "confirmMessage": "Opravdu chcete smazat píseň '{title}'?"
+    }
+  },
+  "songEditor": {
+    "title": "Editor písně",
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "mark": "Označit",
+    "verse": "Sloka",
+    "chorus": "Refrén",
+    "bridge": "Bridge",
+    "markVerse": "Označit sloku",
+    "markChorus": "Označit refrén",
+    "markBridge": "Označit bridge",
+    "insertChord": "Vložit akord",
+    "titlePlaceholder": "Zadejte název písně",
+    "contentPlaceholder": "Zde je místo pro obsah písně"
+  },
+  "subdomain": {
+    "title": "Subdoména",
+    "notFound": "Subdoména nenalezena",
+    "redirectingHome": "Brzy budete přesměrováni na domovskou stránku..."
+  },
+  "deleteDialog": {
+    "title": "Smazat",
+    "confirmMessage": "Opravdu chcete smazat?",
+    "confirm": "Smazat",
+    "cancel": "Zrušit"
+  },
+  "errors": {
+    "forbidden": "K zobrazení obsahu nemáte dostatečná oprávnění!",
+    "notFound": "Stránka nenalezena",
+    "notFoundDescription": "Zdá se, že jste se dostali do neprozkouraných oblastí aplikace. Můžete zkusit jít zpět na hlavní stránku.",
+    "goHome": "DOMŮ",
+    "serverError": "Někde nastala chyba!",
+    "unauthorized": "Neautorizovaný přístup",
+    "tokenExpired": "Token vypršel"
+  },
+  "maintenance": {
+    "workInProgress": "Stránka je momentálně v údržbě.",
+    "temporarilyUnavailable": "Omlouváme se, stránka je dočasně nedostupná.",
+    "tryAgainLater": "Zkuste to prosím znovu za <b>hodinu</b>."
+  },
+  "suggestions": {
+    "sheep": "Ovce",
+    "noIdea": "Žádný nápad?",
+    "chooseSuggestion": "Vyberte píseň z návrhů níže nebo ze seznamu všech písní"
+  },
+  "news": {
+    "popupLabel": "Novinka",
+    "popupTryIt": "Vyzkoušet",
+    "popupClose": "Zavřít",
+    "smartSearchTitle": "Vyhledávání podle významu",
+    "smartSearchDescription": "Najděte píseň podle toho, <strong>o čem je</strong>, ne jen podle slov v textu. Přepněte se do chytrého módu a napište téma nebo pocit – např. <strong>„naděje v těžkých chvílích“</strong>, <strong>„chvála uprostřed zkoušek“</strong> nebo <strong>„Boží věrnost“</strong>.",
+    "smartSearchNote": "💡 Funkce je stále ve vývoji a ladí se.",
+    "smartSearchStep1": "Přepněte na chytré vyhledávání",
+    "smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
+  },
+  "broadcastMessage": {
+    "popupLabel": "Zpráva od administrátora",
+    "popupDismiss": "Rozumím"
+  }
 };
 export default messages;

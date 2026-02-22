@@ -13,6 +13,10 @@ import { SnackbarProvider } from 'notistack'
 import { BottomPanelProvider } from '@/app/providers/BottomPanelProvider'
 import { FeatureFlagsProvider } from '@/common/providers/FeatureFlags/FeatureFlagsProvider'
 import { NewsProvider, NewsPopup } from '@/common/providers/News'
+import {
+	BroadcastMessageProvider,
+	BroadcastMessagePopup,
+} from '@/common/providers/BroadcastMessage'
 import { OutsideLinkBlockerProvider } from '@/common/ui/Link/useOutsideBlocker'
 import { TranslationLikesProvider } from '@/common/ui/SongCard/hooks/useTranslationsLikes'
 import { AllCommonData } from '@/hooks/common-data/common-data.types'
@@ -45,30 +49,33 @@ export default function AppClientProviders({
 						<AuthProvider>
 							<FeatureFlagsProvider>
 								<NewsProvider>
-									<PermissionsProvider>
-										<ErrorHandlerProvider>
-											<TranslationLikesProvider>
-												<BottomPanelProvider>
-													<FavouritesProvider>
-														<ToolbarProvider>
-															<FooterProvider>
-																<OutsideLinkBlockerProvider>
-																	<AppSongSelectSpecifierProvider>
-																		<CurrentPlaylistProvider>
-																			<SongDragProvider>
-																				{children}
-																				<NewsPopup />
-																			</SongDragProvider>
-																		</CurrentPlaylistProvider>
-																	</AppSongSelectSpecifierProvider>
-																</OutsideLinkBlockerProvider>
-															</FooterProvider>
-														</ToolbarProvider>
-													</FavouritesProvider>
-												</BottomPanelProvider>
-											</TranslationLikesProvider>
-										</ErrorHandlerProvider>
-									</PermissionsProvider>
+									<BroadcastMessageProvider>
+										<PermissionsProvider>
+											<ErrorHandlerProvider>
+												<TranslationLikesProvider>
+													<BottomPanelProvider>
+														<FavouritesProvider>
+															<ToolbarProvider>
+																<FooterProvider>
+																	<OutsideLinkBlockerProvider>
+																		<AppSongSelectSpecifierProvider>
+																			<CurrentPlaylistProvider>
+																				<SongDragProvider>
+																					{children}
+																					<NewsPopup />
+																					<BroadcastMessagePopup />
+																				</SongDragProvider>
+																			</CurrentPlaylistProvider>
+																		</AppSongSelectSpecifierProvider>
+																	</OutsideLinkBlockerProvider>
+																</FooterProvider>
+															</ToolbarProvider>
+														</FavouritesProvider>
+													</BottomPanelProvider>
+												</TranslationLikesProvider>
+											</ErrorHandlerProvider>
+										</PermissionsProvider>
+									</BroadcastMessageProvider>
 								</NewsProvider>
 							</FeatureFlagsProvider>
 						</AuthProvider>
