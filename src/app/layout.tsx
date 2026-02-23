@@ -1,6 +1,7 @@
 import AppProviders from '@/app/components/AppProviders'
 import UnavailableMessage from '@/app/components/UnavailableMessage'
 import { DragTemplatesContainer } from '@/common/components/DragTemplate/DragTemplateContainer'
+import ImplementIdeaProvider from '@/common/components/ImplementAndPreview/ImplementIdeaProvider'
 import PopupProvider from '@/common/components/Popup/PopupProvider'
 import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
@@ -54,6 +55,7 @@ export default async function RootLayout({
 							<PopupProvider />
 							<DragTemplatesContainer />
 							<AdminOptionsProvider />
+							<ImplementIdeaProvider />
 
 							<UnavailableMessage />
 						</AppProviders>

@@ -957,5 +957,41 @@
 		"smartSearchNote": "💡 Funkcja jest wciąż w fazie rozwoju.",
 		"smartSearchStep1": "Przełącz na inteligentne wyszukiwanie",
 		"smartSearchStep2": "Wpisz temat lub nastrój, którego szukasz"
+	},
+	"previewMode": {
+		"bannerLabel": "Wersja podglądu: {title}",
+		"bannerLabelPr": "Podgląd: PR #{prNumber}",
+		"dialogTitle": "Podgląd",
+		"historyTab": "Historia zmian",
+		"updateHeading": "Co chcesz zmienić?",
+		"updateSubtitle": "Opisz zmianę, a zostanie automatycznie zaimplementowana.",
+		"updatePlaceholder": "Opisz co chcesz zmienić...",
+		"submitButton": "Wyślij zmianę",
+		"submitSuccess": "Zmiana została wysłana",
+		"submitError": "Nie udało się wysłać zmiany",
+		"taskRunning": "Trwa zmiana, poczekaj na zakończenie…",
+		"noChainFound": "Nie znaleziono łańcucha do kontynuacji",
+		"refreshHistory": "Odśwież historię",
+		"loginTooltip": "Zaloguj się, aby uzyskać więcej opcji"
+	},
+	"implementIdea": {
+		"adminMenuTitle": "Wyślij pomysł",
+		"adminMenuSubtitle": "Otwórz dialog do przesłania pomysłu",
+		"title": "Implementuj pomysł",
+		"submitIdeaTab": "Wyślij pomysł",
+		"recentIdeasTab": "Ostatnie pomysły",
+		"recentIdeasTabActive": "Ostatnie pomysły ({count} aktywne)",
+		"heading": "Co chcesz zbudować?",
+		"subtitle": "Opisz swój pomysł, a zostanie automatycznie zaimplementowany.",
+		"placeholder": "Opisz swój pomysł...",
+		"submitButton": "Wyślij pomysł",
+		"loading": "Ładowanie...",
+		"noIdeas": "Nie przesłano jeszcze żadnych pomysłów.",
+		"ideaSubmitted": "Pomysł wysłany!",
+		"submitFailed": "Nie udało się wysłać pomysłu.",
+		"nextRefreshIn": "Odświeży się za {seconds}s",
+		"refreshButton": "Odśwież",
+		"noPr": "Brak PR",
+		"merged": "Połączone"
 	}
 }

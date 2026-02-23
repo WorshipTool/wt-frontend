@@ -974,5 +974,41 @@
 		"smartSearchNote": "💡 This feature is still in development.",
 		"smartSearchStep1": "Switch to smart search",
 		"smartSearchStep2": "Enter the theme or mood you're looking for"
+	},
+	"previewMode": {
+		"bannerLabel": "Preview version: {title}",
+		"bannerLabelPr": "Preview: PR #{prNumber}",
+		"dialogTitle": "Preview",
+		"historyTab": "Change history",
+		"updateHeading": "What would you like to change?",
+		"updateSubtitle": "Describe the change and it will be implemented automatically.",
+		"updatePlaceholder": "Describe what you want to change...",
+		"submitButton": "Submit change",
+		"submitSuccess": "Change submitted successfully",
+		"submitError": "Failed to submit change",
+		"taskRunning": "A change is in progress, please wait…",
+		"noChainFound": "No chain found to continue",
+		"refreshHistory": "Refresh history",
+		"loginTooltip": "Log in for more options"
+	},
+	"implementIdea": {
+		"adminMenuTitle": "Submit an idea",
+		"adminMenuSubtitle": "Open the idea submission dialog",
+		"title": "Implement an idea",
+		"submitIdeaTab": "Submit idea",
+		"recentIdeasTab": "Recent ideas",
+		"recentIdeasTabActive": "Recent ideas ({count} active)",
+		"heading": "What would you like to build?",
+		"subtitle": "Describe your idea and it will be implemented automatically.",
+		"placeholder": "Describe your idea...",
+		"submitButton": "Submit idea",
+		"loading": "Loading...",
+		"noIdeas": "No ideas submitted yet.",
+		"ideaSubmitted": "Idea submitted!",
+		"submitFailed": "Failed to submit idea.",
+		"nextRefreshIn": "Refreshes in {seconds}s",
+		"refreshButton": "Refresh",
+		"noPr": "No PR",
+		"merged": "Merged"
 	}
 }
