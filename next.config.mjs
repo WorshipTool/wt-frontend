@@ -1,6 +1,8 @@
 import createNextIntlPlugin from 'next-intl/plugin'
 import nextRoutes from 'nextjs-routes/config'
 
+const BUILD_HASH = `${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`
+
 const withRoutes = nextRoutes()
 const withNextIntl = createNextIntlPlugin({
 	experimental: {
@@ -21,6 +23,10 @@ export default (phase, { defaultConfig }) => {
 				})
 				return config
 			},
+			env: {
+				NEXT_PUBLIC_BUILD_HASH: BUILD_HASH,
+			},
+
 			redirects() {
 				return [
 					{
