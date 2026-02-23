@@ -23,6 +23,20 @@ export const config = {
 
 const excludedPaths = ['/_next', '/static', '/manifest', '/public']
 
+// The configured basePath prefix (e.g. "/dev"). Empty string when not set.
+const NEXT_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
+/**
+ * Returns the application pathname with the basePath prefix stripped.
+ * e.g. "/dev/prihlaseni" → "/prihlaseni" when basePath is "/dev".
+ */
+const getAppPathname = (pathname: string): string => {
+	if (NEXT_BASE_PATH && pathname.startsWith(NEXT_BASE_PATH)) {
+		return pathname.slice(NEXT_BASE_PATH.length) || '/'
+	}
+	return pathname
+}
+
 /**
  * This middleware checks if the user is authenticated.
  * All paths with dot in the path are excluded.
@@ -33,19 +47,22 @@ export async function middleware(request: NextRequest) {
 		nextUrl: { pathname },
 	} = request
 
+	// Strip basePath prefix so application routing logic works with logical paths
+	const appPathname = getAppPathname(pathname)
+
 	// Check if the path is in the excluded paths
-	if (excludedPaths.some((path) => pathname.startsWith(path))) {
-		return setResponse(NextResponse.next(), pathname)
+	if (excludedPaths.some((path) => appPathname.startsWith(path))) {
+		return setResponse(NextResponse.next(), appPathname)
 	}
 
 	// Check authentication
-	const auth = await checkAuthentication(request)
+	const auth = await checkAuthentication(request, appPathname)
 
 	if (auth.response) return auth.response
 
 	// Subdomains
 	if (shouldUseSubdomains()) {
-		const checkSub = await checkSubdomain(request, auth.user)
+		const checkSub = await checkSubdomain(request, auth.user, appPathname)
 		if (checkSub !== true) {
 			if (auth.removeAuthCookie) removeAuthCookie(checkSub)
 			return checkSub
@@ -54,16 +71,16 @@ export async function middleware(request: NextRequest) {
 	}
 
 	const url = request.nextUrl.clone()
-	const newPathname = await replaceTeamInSubPathname(url.pathname)
-	if (newPathname !== url.pathname) {
-		url.pathname = newPathname
+	const newPathname = await replaceTeamInSubPathname(appPathname)
+	if (newPathname !== appPathname) {
+		url.pathname = NEXT_BASE_PATH + newPathname
 		const r = await setResponse(NextResponse.rewrite(url), newPathname)
 
 		if (auth.removeAuthCookie) removeAuthCookie(r)
 		return r
 	}
 
-	const a = await setResponse(NextResponse.next(), pathname)
+	const a = await setResponse(NextResponse.next(), appPathname)
 	if (auth.removeAuthCookie) removeAuthCookie(a)
 	return a
 }
@@ -94,7 +111,8 @@ const setResponse = async (
 
 const checkSubdomain = async (
 	request: NextRequest,
-	_user?: UserDto
+	_user?: UserDto,
+	appPathname?: string
 ): Promise<NextResponse | true> => {
 	const url = request.nextUrl.clone()
 	const host = request.headers.get('host')
@@ -116,8 +134,11 @@ const checkSubdomain = async (
 			pathname = aPathname + pathname
 		}
 
-		url.pathname = pathname + url.pathname
-		url.pathname = await replaceTeamInSubPathname(url.pathname)
+		const currentAppPathname = appPathname ?? getAppPathname(url.pathname)
+		const newAppPathname = await replaceTeamInSubPathname(
+			pathname + currentAppPathname
+		)
+		url.pathname = NEXT_BASE_PATH + newAppPathname
 
 		return setResponse(NextResponse.rewrite(url), pathname)
 	}
@@ -133,7 +154,8 @@ const removeAuthCookie = (response: NextResponse): NextResponse => {
 }
 
 const checkAuthentication = async (
-	request: NextRequest
+	request: NextRequest,
+	appPathname: string
 ): Promise<{
 	user?: UserDto | undefined
 	response?: NextResponse
@@ -163,17 +185,18 @@ const checkAuthentication = async (
 		}
 	} catch (e) {
 		console.log('token expired, going to login', e)
-		const loginUrl = new URL('/prihlaseni', request.url)
-		loginUrl.searchParams.set('previousPage', request.nextUrl.pathname)
+		const loginUrl = request.nextUrl.clone()
+		loginUrl.pathname = NEXT_BASE_PATH + '/prihlaseni'
+		loginUrl.search = ''
+		loginUrl.searchParams.set('previousPage', appPathname)
 		const response: NextResponse = await setResponse(
 			NextResponse.redirect(loginUrl),
 			'/prihlaseni'
 		)
 		removeAuthCookie(response)
 
-		// Not redicert if the user is already on the login page
-		const onLoginPage: boolean =
-			request.nextUrl.pathname.startsWith('/prihlaseni')
+		// Not redirect if the user is already on the login page
+		const onLoginPage: boolean = appPathname.startsWith('/prihlaseni')
 		if (onLoginPage) {
 			return { user, removeAuthCookie: true }
 		}
