@@ -1,0 +1,70 @@
+name: Preview Deploy, Basic tests
+
+env:
+  DOCKER_IMAGE_NAME: worshiptool
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  build-pr-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build PR image (with Next.js build-time env)
+        run: |
+          PR=${{ github.event.pull_request.number }}
+          docker build \
+            --build-arg NEXT_PUBLIC_FRONTEND_URL="https://preview.chvalotce.cz/pr-${PR}" \
+            --build-arg NEXT_PUBLIC_FRONTEND_HOSTNAME="preview.chvalotce.cz" \
+            --build-arg NEXT_PUBLIC_BASE_PATH="/pr-${PR}" \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:pr-${PR} \
+            .
+
+      - name: Push PR image
+        run: |
+          PR=${{ github.event.pull_request.number }}
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:pr-${PR}
+
+  deploy-pr-preview-to-server:
+    if: github.event.action != 'closed'
+    needs: build-pr-preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
+          known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
+
+      - name: Deploy PR preview on server
+        run: |
+          PR=${{ github.event.pull_request.number }}
+          ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
+          "/root/worshiptool/preview/deploy-preview.sh $PR"
+
+  destroy-pr-preview-on-server:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
+          known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
+
+      - name: Destroy PR preview on server
+        run: |
+          PR=${{ github.event.pull_request.number }}
+          ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
+          "/root/worshiptool/preview/destroy-preview.sh $PR"

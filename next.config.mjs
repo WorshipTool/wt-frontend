@@ -85,6 +85,9 @@ export default (phase, { defaultConfig }) => {
 					},
 				]
 			},
+			...(process.env.NEXT_PUBLIC_BASE_PATH
+				? { basePath: process.env.NEXT_PUBLIC_BASE_PATH }
+				: {}),
 			reactStrictMode: false,
 			output: 'standalone',
 			experimental: {
