@@ -1,4 +1,5 @@
 import { FRONTEND_URL } from '@/api/constants'
+import { deriveBasePath, stripBasePath } from '@/tech/url/basePath'
 import {
 	AuthApiAxiosParamCreator,
 	GetTeamAliasFromSubdomainOutDto,
@@ -23,19 +24,15 @@ export const config = {
 
 const excludedPaths = ['/_next', '/static', '/manifest', '/public']
 
-// The configured basePath prefix (e.g. "/dev"). Empty string when not set.
-const NEXT_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
+// The configured basePath prefix derived from NEXT_PUBLIC_FRONTEND_URL pathname.
+const NEXT_BASE_PATH = deriveBasePath(process.env.NEXT_PUBLIC_FRONTEND_URL)
 
 /**
  * Returns the application pathname with the basePath prefix stripped.
- * e.g. "/dev/prihlaseni" → "/prihlaseni" when basePath is "/dev".
+ * e.g. "/pr-55/prihlaseni" → "/prihlaseni" when basePath is "/pr-55".
  */
-const getAppPathname = (pathname: string): string => {
-	if (NEXT_BASE_PATH && pathname.startsWith(NEXT_BASE_PATH)) {
-		return pathname.slice(NEXT_BASE_PATH.length) || '/'
-	}
-	return pathname
-}
+const getAppPathname = (pathname: string): string =>
+	stripBasePath(pathname, NEXT_BASE_PATH)
 
 /**
  * This middleware checks if the user is authenticated.

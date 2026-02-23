@@ -1,4 +1,4 @@
-name: Preview Deploy, Basic tests
+name: Preview Deploy
 
 env:
   DOCKER_IMAGE_NAME: worshiptool
@@ -14,6 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
+          known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
+
+      - name: Copy .env from remote server
+        run: scp -o StrictHostKeyChecking=no "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}:/root/worshiptool/preview/frontend/.env" ./.env
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -26,7 +35,6 @@ jobs:
           docker build \
             --build-arg NEXT_PUBLIC_FRONTEND_URL="https://preview.chvalotce.cz/pr-${PR}" \
             --build-arg NEXT_PUBLIC_FRONTEND_HOSTNAME="preview.chvalotce.cz" \
-            --build-arg NEXT_PUBLIC_BASE_PATH="/pr-${PR}" \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:pr-${PR} \
             .
 
