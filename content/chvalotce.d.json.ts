@@ -960,6 +960,42 @@ declare const messages: {
 		"smartSearchNote": "💡 Funkce je stále ve vývoji a ladí se.",
 		"smartSearchStep1": "Přepněte na chytré vyhledávání",
 		"smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
+	},
+	"previewMode": {
+		"bannerLabel": "Preview verze: {title}",
+		"bannerLabelPr": "Preview: PR #{prNumber}",
+		"dialogTitle": "Preview",
+		"historyTab": "Historie změn",
+		"updateHeading": "Co chcete změnit?",
+		"updateSubtitle": "Popište úpravu a bude automaticky implementována.",
+		"updatePlaceholder": "Popište co chcete upravit...",
+		"submitButton": "Odeslat úpravu",
+		"submitSuccess": "Úprava byla odeslána",
+		"submitError": "Nepodařilo se odeslat úpravu",
+		"taskRunning": "Probíhá úprava, počkejte na dokončení…",
+		"noChainFound": "Nebyl nalezen žádný chain k pokračování",
+		"refreshHistory": "Obnovit historii",
+		"loginTooltip": "Pro více možností se přihlaste"
+	},
+	"implementIdea": {
+		"adminMenuTitle": "Odeslat nápad",
+		"adminMenuSubtitle": "Poslat nápad k implementaci",
+		"title": "Implementovat nápad",
+		"submitIdeaTab": "Odeslat nápad",
+		"recentIdeasTab": "Poslední nápady",
+		"recentIdeasTabActive": "Poslední nápady ({count} aktivní)",
+		"heading": "Co chcete vytvořit?",
+		"subtitle": "Popište svůj nápad a bude automaticky implementován.",
+		"placeholder": "Popište svůj nápad...",
+		"submitButton": "Odeslat nápad",
+		"loading": "Načítání...",
+		"noIdeas": "Zatím žádné nápady.",
+		"ideaSubmitted": "Nápad odeslán!",
+		"submitFailed": "Nepodařilo se odeslat nápad.",
+		"nextRefreshIn": "Obnoví se za {seconds}s",
+		"refreshButton": "Obnovit",
+		"noPr": "Nemá PR",
+		"merged": "Sloučeno"
 	}
 };
 export default messages;
