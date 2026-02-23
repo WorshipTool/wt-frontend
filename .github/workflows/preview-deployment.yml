@@ -7,6 +7,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
+permissions:
+  pull-requests: write
+  deployments: write
+
 jobs:
   build-pr-preview:
     if: github.event.action != 'closed'
@@ -55,11 +59,71 @@ jobs:
           key: ${{ secrets.DEVELOPMENT_SSH_KEY }}
           known_hosts: ${{ secrets.DEVELOPMENT_SSH_KNOWN_HOSTS }}
 
+      - name: Create GitHub Deployment
+        id: deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const PR = context.payload.pull_request.number;
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: `pr-${PR}`,
+              description: 'PR Preview',
+              auto_merge: false,
+              required_contexts: [],
+              transient_environment: true,
+            });
+            return deployment.data.id;
+
       - name: Deploy PR preview on server
         run: |
           PR=${{ github.event.pull_request.number }}
           ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
           "/root/worshiptool/preview/deploy-preview.sh $PR"
+
+      - name: Update GitHub Deployment status
+        if: always() && steps.deployment.outputs.result != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const PR = context.payload.pull_request.number;
+            const deploymentId = ${{ steps.deployment.outputs.result }};
+            const success = '${{ job.status }}' === 'success';
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deploymentId,
+              state: success ? 'success' : 'failure',
+              environment_url: success ? `https://preview.chvalotce.cz/pr-${PR}` : undefined,
+              description: success ? 'Preview deployed' : 'Deployment failed',
+            });
+
+      - name: Find existing preview comment
+        if: success()
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- preview-deployment -->'
+
+      - name: Create or update PR comment
+        if: success()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- preview-deployment -->
+            ## Preview deployed
+
+            | | |
+            |---|---|
+            | **URL** | https://preview.chvalotce.cz/pr-${{ github.event.pull_request.number }} |
+            | **Commit** | `${{ github.sha }}` |
+          edit-mode: replace
 
   destroy-pr-preview-on-server:
     if: github.event.action == 'closed'
@@ -76,3 +140,23 @@ jobs:
           PR=${{ github.event.pull_request.number }}
           ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
           "/root/worshiptool/preview/destroy-preview.sh $PR"
+
+      - name: Find existing preview comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- preview-deployment -->'
+
+      - name: Update PR comment on close
+        if: steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          body: |
+            <!-- preview-deployment -->
+            ## Preview removed
+
+            _Preview for this PR has been destroyed._
+          edit-mode: replace
