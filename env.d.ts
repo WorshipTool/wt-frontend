@@ -17,5 +17,6 @@ declare namespace NodeJS {
 
 		CONTENT_VERSION: string
 		NEXT_PUBLIC_STRIPE_SUPPORT_URL: string
+		NEXT_PUBLIC_IMPLEMENT_IDEA_URL: string
 	}
 }

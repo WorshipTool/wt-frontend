@@ -22,12 +22,27 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG NEXT_PUBLIC_FRONTEND_URL
+ARG NEXT_PUBLIC_FRONTEND_HOSTNAME
+ARG NEXT_PUBLIC_PREVIEW_BASE_URL
+ARG NEXT_PUBLIC_PREVIEW_MODE
+ARG NEXT_PUBLIC_PREVIEW_PR_NUMBER
+ARG NEXT_PUBLIC_PREVIEW_PR_TITLE
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# When --build-arg is passed (e.g. for preview PRs), use it.
+# When it is empty (dev/prod), unset so Next.js falls back to the .env file.
 RUN \
+  if [ -z "${NEXT_PUBLIC_FRONTEND_URL}" ]; then unset NEXT_PUBLIC_FRONTEND_URL; fi; \
+  if [ -z "${NEXT_PUBLIC_FRONTEND_HOSTNAME}" ]; then unset NEXT_PUBLIC_FRONTEND_HOSTNAME; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_BASE_URL}" ]; then unset NEXT_PUBLIC_PREVIEW_BASE_URL; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_MODE}" ]; then unset NEXT_PUBLIC_PREVIEW_MODE; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_PR_NUMBER}" ]; then unset NEXT_PUBLIC_PREVIEW_PR_NUMBER; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_PR_TITLE}" ]; then unset NEXT_PUBLIC_PREVIEW_PR_TITLE; fi; \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
