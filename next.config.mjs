@@ -85,9 +85,12 @@ export default (phase, { defaultConfig }) => {
 					},
 				]
 			},
-			...(process.env.NEXT_PUBLIC_BASE_PATH
-				? { basePath: process.env.NEXT_PUBLIC_BASE_PATH }
-				: {}),
+			...((() => {
+				const p = process.env.NEXT_PUBLIC_FRONTEND_URL
+					? new URL(process.env.NEXT_PUBLIC_FRONTEND_URL).pathname
+					: ''
+				return p && p !== '/' ? { basePath: p } : {}
+			})()),
 			reactStrictMode: false,
 			output: 'standalone',
 			experimental: {

@@ -1,5 +1,6 @@
 import { FRONTEND_URL } from '@/api/constants'
 import { routesPaths } from '@/routes/routes'
+import { deriveBasePath } from '@/tech/url/basePath'
 import { ParamValueType, RoutesKeys, SmartParams } from '@/routes/routes.types'
 import { SubdomainData } from '@/routes/subdomains/SubdomainPathnameAliasProvider'
 import { shouldUseSubdomains } from '@/routes/tech/routes.tech'
@@ -103,6 +104,13 @@ export const getReplacedUrlWithParams = (
 		if (initial === result) {
 			queryParams[key] = params[key] as string
 		}
+	}
+
+	// When FRONTEND_URL has a non-root basePath (e.g. /pr-55), new URL(relativePath, base)
+	// drops the basePath because the path starts with '/'. Prepend it explicitly.
+	const basePath = deriveBasePath(FRONTEND_URL)
+	if (basePath && result.startsWith('/') && !result.startsWith(basePath)) {
+		result = basePath + result
 	}
 
 	// Handling query params
