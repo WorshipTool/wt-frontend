@@ -24,15 +24,17 @@ COPY . .
 
 ARG NEXT_PUBLIC_FRONTEND_URL
 ARG NEXT_PUBLIC_FRONTEND_HOSTNAME
-ENV NEXT_PUBLIC_FRONTEND_URL=$NEXT_PUBLIC_FRONTEND_URL
-ENV NEXT_PUBLIC_FRONTEND_HOSTNAME=$NEXT_PUBLIC_FRONTEND_HOSTNAME
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# When --build-arg is passed (e.g. for preview PRs), use it.
+# When it is empty (dev/prod), unset so Next.js falls back to the .env file.
 RUN \
+  if [ -z "${NEXT_PUBLIC_FRONTEND_URL}" ]; then unset NEXT_PUBLIC_FRONTEND_URL; fi; \
+  if [ -z "${NEXT_PUBLIC_FRONTEND_HOSTNAME}" ]; then unset NEXT_PUBLIC_FRONTEND_HOSTNAME; fi; \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
