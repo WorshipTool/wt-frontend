@@ -11,7 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
+import { Lock, MusicNote, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -112,6 +112,7 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const hasChords = !!sheet.getKeyChord()
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -289,7 +290,7 @@ export const SongVariantCard = memo(function S({
 								/>
 								{title}
 							</Typography>
-							<Box>
+							<Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'} gap={0.5}>
 								{showPrivate || showYourPublic ? (
 									<CustomChip
 										icon={showPrivate ? <Lock /> : <Public />}
@@ -306,6 +307,14 @@ export const SongVariantCard = memo(function S({
 										}
 									/>
 								) : null}
+								{hasChords && (
+									<CustomChip
+										icon={<MusicNote />}
+										label={t('hasChords')}
+										color={theme.palette.success.main}
+										borderColor={theme.palette.success.light}
+									/>
+								)}
 								{createdByLoaderEnabled && data.createdByLoader ? (
 									<Typography size={'small'}>{t('uploadedByProgram')}</Typography>
 								) : null}

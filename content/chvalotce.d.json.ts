@@ -33,6 +33,7 @@ declare const messages: {
 		"createdByYou": "Vytvořeno vámi",
 		"uploadedByProgram": "Nahráno programem",
 		"addedOn": "Přidáno dne",
+		"hasChords": "Akordy",
 		"authors": "Autoři",
 		"authorName": "Jméno autora",
 		"sections": {
