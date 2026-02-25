@@ -286,7 +286,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
-		it('shows preview link for completed task with no PR and direct previewUrl', async () => {
+		it('does not show preview link for completed task with no PR even when previewUrl is set', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			const completedNoPr = {
 				taskId: '10',
@@ -303,13 +303,11 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const links = screen.getAllByRole('link')
-			const hrefs = links.map(l => l.getAttribute('href'))
-			expect(hrefs).toContain('https://dev.example.com/idea')
-			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 
-		it('shows active preview link for completed task with no PR, falling back to base preview URL', async () => {
+		it('does not show preview link for completed task with no PR and no previewUrl', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			const completedNoUrl = {
 				taskId: '11',
@@ -325,11 +323,8 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			// Preview button is always active for completed tasks, falls back to base URL
-			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
-			const links = screen.getAllByRole('link')
-			const hrefs = links.map(l => l.getAttribute('href'))
-			expect(hrefs).toContain('https://preview.chvalotce.cz')
+			// Preview button requires a PR to be visible
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
 			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 
