@@ -271,7 +271,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
-		it('does not show preview link when NEXT_PUBLIC_PREVIEW_BASE_URL is not set', async () => {
+		it('shows preview link falling back to PR URL when NEXT_PUBLIC_PREVIEW_BASE_URL is not set', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
@@ -283,10 +283,54 @@ describe('ImplementIdeaDialog', () => {
 
 			const links = screen.queryAllByRole('link')
 			const hrefs = links.map(l => l.getAttribute('href'))
+			// No generated preview URL (env var not set), but Preview button still shows using PR URL as fallback
 			expect(hrefs).not.toContain(expect.stringContaining('preview.example.com'))
 			expect(hrefs).toContain('https://github.com/org/repo/pull/42')
-			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
+		})
+
+		it('shows preview link for completed task with no PR and direct previewUrl', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const completedNoPr = {
+				taskId: '10',
+				status: 'completed',
+				prompt: 'Direct deploy idea',
+				pullRequests: [],
+				previewUrl: 'https://dev.example.com/idea',
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [completedNoPr] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const links = screen.getAllByRole('link')
+			const hrefs = links.map(l => l.getAttribute('href'))
+			expect(hrefs).toContain('https://dev.example.com/idea')
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
+		})
+
+		it('does not show preview link for completed task with no URL at all', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const completedNoUrl = {
+				taskId: '11',
+				status: 'completed',
+				prompt: 'No URL idea',
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [completedNoUrl] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 
 		it('clicking a task card with previewUrl opens it in new tab', async () => {
@@ -330,7 +374,7 @@ describe('ImplementIdeaDialog', () => {
 			})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await waitFor(() => screen.getByText(/1 active/))
+			await waitFor(() => screen.getByText(/recentIdeasTabActive:1/))
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
