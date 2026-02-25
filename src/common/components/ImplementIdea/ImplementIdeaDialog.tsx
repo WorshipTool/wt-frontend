@@ -8,6 +8,7 @@ import { alpha, Tab, Tabs } from '@/common/ui/mui'
 import { keyframes } from '@emotion/react'
 import { Close, Lightbulb, OpenInNew } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 type TaskStatus =
@@ -45,13 +46,13 @@ const bgMove = keyframes`
 const BLUE = '#0085FF'
 const BLUE_DARK = '#0060cc'
 
-const STATUS_STYLE: Record<TaskStatus, { bg: string; color: string; label: string }> = {
-	queued:      { bg: alpha('#888888', 0.1), color: '#666',    label: 'Queued'      },
-	running:     { bg: alpha(BLUE, 0.12),     color: BLUE,      label: 'Running'     },
-	retrying:    { bg: '#fff3e0',             color: '#e65100', label: 'Retrying'    },
-	completed:   { bg: '#e8f5e9',             color: '#2e7d32', label: 'Completed'   },
-	failed:      { bg: '#ffebee',             color: '#c62828', label: 'Failed'      },
-	interrupted: { bg: alpha('#888888', 0.1), color: '#666',    label: 'Interrupted' },
+const STATUS_STYLE: Record<TaskStatus, { bg: string; color: string }> = {
+	queued:      { bg: alpha('#888888', 0.1), color: '#666'    },
+	running:     { bg: alpha(BLUE, 0.12),     color: BLUE      },
+	retrying:    { bg: '#fff3e0',             color: '#e65100' },
+	completed:   { bg: '#e8f5e9',             color: '#2e7d32' },
+	failed:      { bg: '#ffebee',             color: '#c62828' },
+	interrupted: { bg: alpha('#888888', 0.1), color: '#666'    },
 }
 
 function extractPrNumber(prUrl: string): string | null {
@@ -73,6 +74,7 @@ export default function ImplementIdeaDialog({
 	open,
 	onClose,
 }: ImplementIdeaDialogProps) {
+	const t = useTranslations('implementIdea')
 	const [message, setMessage] = useState('')
 	const [loading, setLoading] = useState(false)
 	const [tasks, setTasks] = useState<Task[]>([])
@@ -128,12 +130,12 @@ export default function ImplementIdeaDialog({
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ message }),
 			})
-			enqueueSnackbar('Idea submitted!', { variant: 'success' })
+			enqueueSnackbar(t('ideaSubmitted'), { variant: 'success' })
 			setMessage('')
 			setActiveTab(1)
 			fetchTasks()
 		} catch {
-			enqueueSnackbar('Failed to submit idea.', { variant: 'error' })
+			enqueueSnackbar(t('submitFailed'), { variant: 'error' })
 		} finally {
 			setLoading(false)
 		}
@@ -188,7 +190,7 @@ export default function ImplementIdeaDialog({
 					>
 						<Lightbulb sx={{ fontSize: 15 }} />
 						<Typography variant="subtitle1" strong={600}>
-							Implement an idea
+							{t('title')}
 						</Typography>
 					</Box>
 					<IconButton small onClick={handleClose} disabled={loading}>
@@ -209,12 +211,12 @@ export default function ImplementIdeaDialog({
 						'& .Mui-selected': { color: `${BLUE} !important` },
 					}}
 				>
-					<Tab label="Submit idea" />
+					<Tab label={t('submitIdeaTab')} />
 					<Tab
 						label={
 							tasksLoaded && (inProgressCount > 0 || queuedCount > 0)
-								? `Recent ideas (${inProgressCount + queuedCount} active)`
-								: 'Recent ideas'
+								? t('recentIdeasTabActive', { count: String(inProgressCount + queuedCount) })
+								: t('recentIdeasTab')
 						}
 					/>
 				</Tabs>
@@ -225,11 +227,11 @@ export default function ImplementIdeaDialog({
 				{activeTab === 0 && (
 					<>
 						<Typography variant="h4" strong sx={{ letterSpacing: '0.02em' }}>
-							What would you like to build?
+							{t('heading')}
 						</Typography>
 						<Gap value={0.5} />
 						<Typography variant="subtitle1" strong={300} color="grey.600">
-							Describe your idea and it will be implemented automatically.
+							{t('subtitle')}
 						</Typography>
 
 						<Gap value={2} />
@@ -249,7 +251,7 @@ export default function ImplementIdeaDialog({
 							<TextField
 								value={message}
 								onChange={setMessage}
-								placeholder="Describe your idea..."
+								placeholder={t('placeholder')}
 								multiline
 								autoFocus
 								sx={{ minHeight: 80 }}
@@ -276,7 +278,7 @@ export default function ImplementIdeaDialog({
 								disabled={!message.trim() || urlMissing}
 								sx={{ borderRadius: 3, paddingX: 5, opacity: 0.9 }}
 							>
-								Submit idea
+								{t('submitButton')}
 							</Button>
 						</Box>
 
@@ -297,13 +299,13 @@ export default function ImplementIdeaDialog({
 					>
 						{!tasksLoaded && (
 							<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
-								Loading...
+								{t('loading')}
 							</Typography>
 						)}
 
 						{tasksLoaded && tasks.length === 0 && (
 							<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
-								No ideas submitted yet.
+								{t('noIdeas')}
 							</Typography>
 						)}
 
@@ -341,7 +343,7 @@ export default function ImplementIdeaDialog({
 											mt: 0.25,
 										}}
 									>
-										{style.label}
+										{t(`status.${task.status}`)}
 									</Box>
 
 									{/* Prompt */}

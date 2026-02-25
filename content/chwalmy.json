@@ -957,5 +957,27 @@
 		"smartSearchNote": "💡 Funkcja jest wciąż w fazie rozwoju.",
 		"smartSearchStep1": "Przełącz na inteligentne wyszukiwanie",
 		"smartSearchStep2": "Wpisz temat lub nastrój, którego szukasz"
+	},
+	"implementIdea": {
+		"title": "Implementuj pomysł",
+		"submitIdeaTab": "Wyślij pomysł",
+		"recentIdeasTab": "Ostatnie pomysły",
+		"recentIdeasTabActive": "Ostatnie pomysły ({count} aktywne)",
+		"heading": "Co chcesz zbudować?",
+		"subtitle": "Opisz swój pomysł, a zostanie automatycznie zaimplementowany.",
+		"placeholder": "Opisz swój pomysł...",
+		"submitButton": "Wyślij pomysł",
+		"loading": "Ładowanie...",
+		"noIdeas": "Nie przesłano jeszcze żadnych pomysłów.",
+		"ideaSubmitted": "Pomysł wysłany!",
+		"submitFailed": "Nie udało się wysłać pomysłu.",
+		"status": {
+			"queued": "W kolejce",
+			"running": "W toku",
+			"retrying": "Ponowna próba",
+			"completed": "Ukończono",
+			"failed": "Nieudane",
+			"interrupted": "Przerwano"
+		}
 	}
 }
