@@ -47,6 +47,7 @@ export default function AdminOptionsProvider() {
 	const { height } = useBottomPanel()
 
 	// FAB is at bottom: 30, height: 56px → admin button goes above it: 30 + 56 + 10 = 96
+	// zIndex: 1051 ensures it's always above MUI Fab (theme z-index: 1050)
 	return !isAdmin() ? null : (
 		<>
 			{itemsCount > 0 && (
@@ -55,6 +56,7 @@ export default function AdminOptionsProvider() {
 						position: 'fixed',
 						bottom: 96 + height,
 						right: 30,
+						zIndex: 1051,
 					}}
 				>
 					<Badge
