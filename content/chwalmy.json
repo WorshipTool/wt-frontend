@@ -958,6 +958,20 @@
 		"smartSearchStep1": "Przełącz na inteligentne wyszukiwanie",
 		"smartSearchStep2": "Wpisz temat lub nastrój, którego szukasz"
 	},
+	"previewMode": {
+		"bannerLabel": "Wersja podglądu: {title}",
+		"bannerLabelPr": "Podgląd: PR #{prNumber}",
+		"dialogTitle": "Podgląd",
+		"updateTab": "Edytuj podgląd",
+		"historyTab": "Historia zmian",
+		"updateHeading": "Co chcesz zmienić?",
+		"updateSubtitle": "Opisz zmianę, a zostanie automatycznie zaimplementowana.",
+		"updatePlaceholder": "Opisz co chcesz zmienić...",
+		"submitButton": "Wyślij zmianę",
+		"submitComingSoon": "Wkrótce dostępne",
+		"noHistory": "Brak historii zmian.",
+		"refreshHistory": "Odśwież historię"
+	},
 	"implementIdea": {
 		"title": "Implementuj pomysł",
 		"submitIdeaTab": "Wyślij pomysł",

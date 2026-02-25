@@ -5,13 +5,17 @@ import { FRONTEND_URL } from '@/api/constants'
 import { useImplementKosmickey } from '@/hooks/useImplementKosmickey/useImplementKosmickey'
 import useAuth from '@/hooks/auth/useAuth'
 import { deriveBasePath } from '@/tech/url/basePath'
+import { isPreviewMode } from '@/tech/preview/previewMode'
 import { Lightbulb } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useEffect, useRef, useState } from 'react'
 import ImplementIdeaDialog from './ImplementIdeaDialog'
+import PreviewModeBanner from './PreviewModeBanner'
+import PreviewModeDialog from './PreviewModeDialog'
 
 const POLL_INTERVAL_MS = 60_000
 const INITIAL_HASH = process.env.NEXT_PUBLIC_BUILD_HASH
+const previewMode = isPreviewMode()
 
 export default function ImplementIdeaProvider() {
 	const [open, setOpen] = useState(false)
@@ -60,7 +64,7 @@ export default function ImplementIdeaProvider() {
 
 	return (
 		<>
-			{isAdmin() && (
+			{!previewMode && isAdmin() && (
 				<AdminOption
 					icon={<Lightbulb />}
 					title="Submit an idea"
@@ -69,7 +73,14 @@ export default function ImplementIdeaProvider() {
 					stayOpenedOnClick={false}
 				/>
 			)}
-			<ImplementIdeaDialog open={open} onClose={() => setOpen(false)} />
+			{previewMode && isAdmin() && (
+				<PreviewModeBanner onClick={() => setOpen(true)} />
+			)}
+			{previewMode ? (
+				<PreviewModeDialog open={open} onClose={() => setOpen(false)} />
+			) : (
+				<ImplementIdeaDialog open={open} onClose={() => setOpen(false)} />
+			)}
 		</>
 	)
 }

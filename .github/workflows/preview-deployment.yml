@@ -39,6 +39,7 @@ jobs:
           docker build \
             --build-arg NEXT_PUBLIC_FRONTEND_URL="https://preview.chvalotce.cz/pr-${PR}" \
             --build-arg NEXT_PUBLIC_FRONTEND_HOSTNAME="preview.chvalotce.cz" \
+            --build-arg NEXT_PUBLIC_PREVIEW_PR_TITLE="${{ github.event.pull_request.title }}" \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:pr-${PR} \
             .
 

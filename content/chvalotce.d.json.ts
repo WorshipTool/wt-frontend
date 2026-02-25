@@ -961,6 +961,20 @@ declare const messages: {
 		"smartSearchStep1": "Přepněte na chytré vyhledávání",
 		"smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
 	},
+	"previewMode": {
+		"bannerLabel": "Preview verze: {title}",
+		"bannerLabelPr": "Preview: PR #{prNumber}",
+		"dialogTitle": "Preview",
+		"updateTab": "Upravit preview",
+		"historyTab": "Historie změn",
+		"updateHeading": "Co chcete změnit?",
+		"updateSubtitle": "Popište úpravu a bude automaticky implementována.",
+		"updatePlaceholder": "Popište co chcete upravit...",
+		"submitButton": "Odeslat úpravu",
+		"submitComingSoon": "Brzy dostupné",
+		"noHistory": "Žádná historie změn.",
+		"refreshHistory": "Obnovit historii"
+	},
 	"implementIdea": {
 		"title": "Implementovat nápad",
 		"submitIdeaTab": "Odeslat nápad",

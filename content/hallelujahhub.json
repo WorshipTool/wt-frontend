@@ -975,6 +975,20 @@
 		"smartSearchStep1": "Switch to smart search",
 		"smartSearchStep2": "Enter the theme or mood you're looking for"
 	},
+	"previewMode": {
+		"bannerLabel": "Preview version: {title}",
+		"bannerLabelPr": "Preview: PR #{prNumber}",
+		"dialogTitle": "Preview",
+		"updateTab": "Edit preview",
+		"historyTab": "Change history",
+		"updateHeading": "What would you like to change?",
+		"updateSubtitle": "Describe the change and it will be implemented automatically.",
+		"updatePlaceholder": "Describe what you want to change...",
+		"submitButton": "Submit change",
+		"submitComingSoon": "Coming soon",
+		"noHistory": "No change history.",
+		"refreshHistory": "Refresh history"
+	},
 	"implementIdea": {
 		"title": "Implement an idea",
 		"submitIdeaTab": "Submit idea",
