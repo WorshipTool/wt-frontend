@@ -973,6 +973,8 @@
 		"submitFailed": "Nie udało się wysłać pomysłu.",
 		"nextRefreshIn": "Odświeży się za {seconds}s",
 		"refreshButton": "Odśwież",
+		"noPr": "Brak PR",
+		"merged": "Połączone",
 		"status": {
 			"queued": "W kolejce",
 			"running": "W toku",

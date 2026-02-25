@@ -990,6 +990,8 @@
 		"submitFailed": "Failed to submit idea.",
 		"nextRefreshIn": "Refreshes in {seconds}s",
 		"refreshButton": "Refresh",
+		"noPr": "No PR",
+		"merged": "Merged",
 		"status": {
 			"queued": "Queued",
 			"running": "Running",
