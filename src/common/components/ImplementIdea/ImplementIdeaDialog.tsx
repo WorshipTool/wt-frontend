@@ -428,9 +428,9 @@ export default function ImplementIdeaDialog({
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{task.status === 'completed' && previewUrl && (
+										{task.status === 'completed' && openUrl && (
 											<a
-												href={previewUrl}
+												href={openUrl}
 												target="_blank"
 												rel="noopener noreferrer"
 												title="Open preview"
