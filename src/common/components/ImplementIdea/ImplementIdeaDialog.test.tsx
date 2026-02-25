@@ -29,7 +29,7 @@ jest.mock('../Popup/Popup', () => ({
 }))
 
 jest.mock('../../ui', () => ({
-	Box: ({ children, onClick, title, onKeyDown }: { children: React.ReactNode; onClick?: () => void; title?: string; onKeyDown?: React.KeyboardEventHandler }) => (
+	Box: ({ children, onClick, title, onKeyDown, sx }: { children: React.ReactNode; onClick?: () => void; title?: string; onKeyDown?: React.KeyboardEventHandler; sx?: unknown }) => (
 		<div onClick={onClick} title={title} onKeyDown={onKeyDown}>{children}</div>
 	),
 	Button: ({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) => (
@@ -92,6 +92,16 @@ const MOCK_TASK_WITH_DIRECT_PREVIEW_URL = {
 	previewUrl: 'https://direct-preview.example.com/pr-55',
 }
 
+// Helper: mock GitHub merge API to return "not merged" (404)
+function mockGitHubNotMerged() {
+	return jest.fn().mockResolvedValue({ status: 404 })
+}
+
+// Helper: mock GitHub merge API to return "merged" (204)
+function mockGitHubMerged() {
+	return jest.fn().mockResolvedValue({ status: 204 })
+}
+
 describe('ImplementIdeaDialog', () => {
 	const defaultProps = { open: true, onClose: jest.fn() }
 
@@ -109,9 +119,11 @@ describe('ImplementIdeaDialog', () => {
 	describe('Task counts display', () => {
 		it('shows active count in tab label after fetching tasks', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValueOnce({
-				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
@@ -123,9 +135,11 @@ describe('ImplementIdeaDialog', () => {
 
 		it('does not show active count when no active tasks', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValueOnce({
-				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
@@ -138,9 +152,10 @@ describe('ImplementIdeaDialog', () => {
 	describe('Recent ideas tab', () => {
 		it('shows task list when switching to recent ideas tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValue({
+					json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+				})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
@@ -154,9 +169,10 @@ describe('ImplementIdeaDialog', () => {
 
 		it('shows tasks in reversed order (newest first)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValue({
+					json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+				})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
@@ -195,14 +211,16 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByText('noIdeas')).toBeInTheDocument()
 		})
 
-		it('shows preview link for completed task with PR using hardcoded preview URL', async () => {
+		it('shows preview link for completed task with PR using hardcoded preview URL (not merged)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const links = screen.getAllByRole('link')
@@ -216,12 +234,14 @@ describe('ImplementIdeaDialog', () => {
 		it('uses task.previewUrl directly when provided, ignoring env var', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			// No NEXT_PUBLIC_PREVIEW_BASE_URL set — should still show preview via task.previewUrl
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const links = screen.getAllByRole('link')
@@ -232,12 +252,14 @@ describe('ImplementIdeaDialog', () => {
 
 		it('prefers task.previewUrl over hardcoded-URL-generated preview URL', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const links = screen.getAllByRole('link')
@@ -267,14 +289,16 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
-		it('always generates preview URL from hardcoded base URL when task has PR', async () => {
+		it('always generates preview URL from hardcoded base URL when task has PR (not merged)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const links = screen.queryAllByRole('link')
@@ -330,12 +354,14 @@ describe('ImplementIdeaDialog', () => {
 
 		it('clicking a task card with previewUrl opens it in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const card = screen.getByTitle('Open in new tab')
@@ -346,12 +372,14 @@ describe('ImplementIdeaDialog', () => {
 
 		it('clicking a task card with a PR opens the generated preview URL in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
-			})
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 }) // GitHub API: not merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const card = screen.getByTitle('Open in new tab')
@@ -377,6 +405,179 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(promptEl)
 
 			expect(window.open).not.toHaveBeenCalled()
+		})
+	})
+
+	describe('Completed task without PR', () => {
+		it('shows noPr message for completed task without any PR', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const completedNoPr = {
+				taskId: '20',
+				status: 'completed',
+				prompt: 'Completed without PR',
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [completedNoPr] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('noPr')).toBeInTheDocument()
+		})
+
+		it('completed task without PR is not clickable', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const completedNoPr = {
+				taskId: '21',
+				status: 'completed',
+				prompt: 'Completed no PR task',
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [completedNoPr] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Card should not have "Open in new tab" title (no clickable URL)
+			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
+
+			// Clicking the prompt text should not call window.open
+			const promptEl = screen.getByText('Completed no PR task')
+			fireEvent.click(promptEl)
+			expect(window.open).not.toHaveBeenCalled()
+		})
+
+		it('does not show noPr message for non-completed tasks without PR', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASKS[0]] }), // running, no PR
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByText('noPr')).not.toBeInTheDocument()
+		})
+	})
+
+	describe('Merged PR behavior', () => {
+		it('shows merged badge when PR is merged', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('merged')).toBeInTheDocument()
+		})
+
+		it('does not show preview button when PR is merged', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+		})
+
+		it('still shows PR link button when PR is merged', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
+		})
+
+		it('merged task card is not clickable (no card click URL)', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Card should not have "Open in new tab" title when merged
+			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
+		})
+
+		it('does not show merged badge when PR is not merged', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValueOnce({ status: 404 }) // GitHub API: not merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByText('merged')).not.toBeInTheDocument()
+		})
+
+		it('calls GitHub API to check merge status for completed tasks with PRs', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const fetchMock = jest.fn()
+			global.fetch = fetchMock
+			fetchMock
+				.mockResolvedValueOnce({
+					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+				})
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+
+			// Should have called the main API and then the GitHub merge API
+			expect(fetchMock).toHaveBeenCalledWith(
+				'https://api.github.com/repos/org/repo/pulls/42/merge',
+				expect.objectContaining({ method: 'GET' })
+			)
+		})
+
+		it('does not call GitHub API for non-completed tasks', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const fetchMock = jest.fn()
+			global.fetch = fetchMock
+			fetchMock.mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASKS[0]] }), // running, no PR
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+
+			// Should only have called the main API
+			expect(fetchMock).toHaveBeenCalledTimes(1)
+			expect(fetchMock).toHaveBeenCalledWith(MOCK_URL, { method: 'GET' })
 		})
 	})
 

@@ -45,6 +45,8 @@ const bgMove = keyframes`
 
 const BLUE = '#0085FF'
 const BLUE_DARK = '#0060cc'
+const PURPLE = '#9c27b0'
+const PURPLE_DARK = '#7b1fa2'
 
 const STATUS_STYLE: Record<TaskStatus, { bg: string; color: string }> = {
 	queued:      { bg: alpha('#888888', 0.1), color: '#666'    },
@@ -58,6 +60,26 @@ const STATUS_STYLE: Record<TaskStatus, { bg: string; color: string }> = {
 function extractPrNumber(prUrl: string): string | null {
 	const match = prUrl.match(/\/pull\/(\d+)$/)
 	return match ? match[1] : null
+}
+
+function extractGitHubPrInfo(prUrl: string): { owner: string; repo: string; number: string } | null {
+	const match = prUrl.match(/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)/)
+	if (!match) return null
+	return { owner: match[1], repo: match[2], number: match[3] }
+}
+
+async function checkPrMerged(prUrl: string): Promise<boolean> {
+	const info = extractGitHubPrInfo(prUrl)
+	if (!info) return false
+	try {
+		const res = await fetch(
+			`https://api.github.com/repos/${info.owner}/${info.repo}/pulls/${info.number}/merge`,
+			{ method: 'GET', headers: { Accept: 'application/vnd.github.v3+json' } }
+		)
+		return res.status === 204
+	} catch {
+		return false
+	}
 }
 
 const PREVIEW_BASE_URL = 'https://preview.chvalotce.cz'
@@ -82,22 +104,45 @@ export default function ImplementIdeaDialog({
 	const [tasksLoaded, setTasksLoaded] = useState(false)
 	const [activeTab, setActiveTab] = useState(0)
 	const [countdown, setCountdown] = useState(POLL_INTERVAL_S)
+	const [mergedPrUrls, setMergedPrUrls] = useState<Set<string>>(new Set())
 	const { enqueueSnackbar } = useSnackbar()
 
 	const url = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	const urlMissing = !url
 
-	const fetchTasks = () => {
+	const fetchTasks = async () => {
 		if (!url) return
-		fetch(url, { method: 'GET' })
-			.then((res) => res.json())
-			.then((data: { tasks: Task[] }) => {
-				setTasks([...(data.tasks ?? [])].reverse())
-				setTasksLoaded(true)
-			})
-			.catch(() => {
-				setTasksLoaded(true)
-			})
+		try {
+			const res = await fetch(url, { method: 'GET' })
+			const data: { tasks: Task[] } = await res.json()
+			const newTasks = [...(data.tasks ?? [])].reverse()
+			setTasks(newTasks)
+			setTasksLoaded(true)
+
+			// Check merge status for completed tasks with PRs
+			const completedWithPr = newTasks.filter(
+				(task) => task.status === 'completed' && task.pullRequests?.length > 0
+			)
+			if (completedWithPr.length > 0) {
+				const checks = await Promise.all(
+					completedWithPr.map(async (task) => {
+						const pr = task.pullRequests[0]
+						const merged = await checkPrMerged(pr.url)
+						return { prUrl: pr.url, merged }
+					})
+				)
+				setMergedPrUrls((prev) => {
+					const next = new Set(prev)
+					checks.forEach(({ prUrl, merged }) => {
+						if (merged) next.add(prUrl)
+						else next.delete(prUrl)
+					})
+					return next
+				})
+			}
+		} catch {
+			setTasksLoaded(true)
+		}
 	}
 
 	useEffect(() => {
@@ -373,10 +418,17 @@ export default function ImplementIdeaDialog({
 							const pr = task.pullRequests?.[0]
 							const prNumber = pr ? extractPrNumber(pr.url) : null
 							const previewUrl = task.previewUrl ?? (prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)
-							// Completed tasks always get an active preview URL
-							const openUrl = task.status === 'completed'
-								? (previewUrl ?? PREVIEW_BASE_URL)
-								: (previewUrl ?? pr?.url ?? null)
+
+							const isCompletedNoPr = task.status === 'completed' && !pr
+							const isMerged = task.status === 'completed' && !!pr && mergedPrUrls.has(pr.url)
+							const isDisabled = isCompletedNoPr || isMerged
+
+							// Preview URL is only valid for non-merged tasks
+							const openUrl = isDisabled
+								? null
+								: task.status === 'completed'
+									? (previewUrl ?? PREVIEW_BASE_URL)
+									: (previewUrl ?? pr?.url ?? null)
 
 							return (
 								<Box
@@ -389,9 +441,16 @@ export default function ImplementIdeaDialog({
 										gap: 1.5,
 										p: 1.5,
 										borderRadius: 2,
-										bgcolor: 'rgba(255,255,255,0.6)',
+										bgcolor: isMerged
+											? alpha(PURPLE, 0.06)
+											: isCompletedNoPr
+												? alpha('#000', 0.03)
+												: 'rgba(255,255,255,0.6)',
 										border: '1px solid',
-										borderColor: alpha('#000', 0.06),
+										borderColor: isMerged
+											? alpha(PURPLE, 0.2)
+											: alpha('#000', 0.06),
+										opacity: isCompletedNoPr ? 0.55 : 1,
 										cursor: openUrl ? 'pointer' : 'default',
 										transition: 'background 0.15s, border-color 0.15s',
 										'&:hover': openUrl ? {
@@ -400,39 +459,68 @@ export default function ImplementIdeaDialog({
 										} : undefined,
 									}}
 								>
-									{/* Status chip */}
-									<Box
-										sx={{
-											flexShrink: 0,
-											bgcolor: style.bg,
-											color: style.color,
-											px: 1,
-											py: 0.25,
-											borderRadius: 1,
-											fontSize: '0.7rem',
-											fontWeight: 600,
-											whiteSpace: 'nowrap',
-											mt: 0.25,
-										}}
-									>
-										{t(`status.${task.status}`)}
+									{/* Status chip + merged badge */}
+									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0 }}>
+										<Box
+											sx={{
+												bgcolor: style.bg,
+												color: style.color,
+												px: 1,
+												py: 0.25,
+												borderRadius: 1,
+												fontSize: '0.7rem',
+												fontWeight: 600,
+												whiteSpace: 'nowrap',
+												mt: 0.25,
+											}}
+										>
+											{t(`status.${task.status}`)}
+										</Box>
+										{isMerged && (
+											<Box
+												sx={{
+													bgcolor: alpha(PURPLE, 0.12),
+													color: PURPLE_DARK,
+													px: 1,
+													py: 0.25,
+													borderRadius: 1,
+													fontSize: '0.65rem',
+													fontWeight: 600,
+													whiteSpace: 'nowrap',
+												}}
+											>
+												{t('merged')}
+											</Box>
+										)}
 									</Box>
 
-									{/* Prompt */}
-									<Typography
-										variant="normal"
-										size="0.82rem"
-										color="grey.800"
-										sx={{ flex: 1, lineHeight: 1.4 }}
-									>
-										{task.prompt?.length > 120
-											? task.prompt.slice(0, 120) + '…'
-											: task.prompt}
-									</Typography>
+									{/* Prompt + no-PR notice */}
+									<Box sx={{ flex: 1 }}>
+										<Typography
+											variant="normal"
+											size="0.82rem"
+											color="grey.800"
+											sx={{ lineHeight: 1.4 }}
+										>
+											{task.prompt?.length > 120
+												? task.prompt.slice(0, 120) + '…'
+												: task.prompt}
+										</Typography>
+										{isCompletedNoPr && (
+											<Typography
+												variant="normal"
+												size="0.72rem"
+												color="grey.400"
+												sx={{ display: 'block', mt: 0.5 }}
+											>
+												{t('noPr')}
+											</Typography>
+										)}
+									</Box>
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{task.status === 'completed' && pr && (
+										{task.status === 'completed' && pr && !isMerged && (
 											<a
 												href={openUrl!}
 												target="_blank"
@@ -479,18 +567,18 @@ export default function ImplementIdeaDialog({
 														display: 'flex',
 														alignItems: 'center',
 														gap: 0.4,
-														color: '#666',
+														color: isMerged ? PURPLE_DARK : '#666',
 														fontSize: '0.7rem',
 														fontWeight: 600,
-														bgcolor: alpha('#000', 0.04),
+														bgcolor: isMerged ? alpha(PURPLE, 0.08) : alpha('#000', 0.04),
 														border: '1px solid',
-														borderColor: alpha('#000', 0.1),
+														borderColor: isMerged ? alpha(PURPLE, 0.2) : alpha('#000', 0.1),
 														px: 0.75,
 														py: 0.25,
 														borderRadius: 1,
 														whiteSpace: 'nowrap',
 														transition: 'background 0.15s',
-														'&:hover': { bgcolor: alpha('#000', 0.08) },
+														'&:hover': { bgcolor: isMerged ? alpha(PURPLE, 0.15) : alpha('#000', 0.08) },
 													}}
 												>
 													<OpenInNew sx={{ fontSize: 11 }} />
