@@ -229,6 +229,27 @@ describe('ImplementIdeaDialog', () => {
 			expect(hrefs).not.toContain('https://preview.example.com/pr-55')
 		})
 
+		it('does not show preview link for non-completed tasks even when previewUrl is available', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
+			const runningTaskWithPr = {
+				taskId: '5',
+				status: 'running',
+				prompt: 'Work in progress',
+				pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/99' }],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [runningTaskWithPr] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
+		})
+
 		it('does not show preview link when NEXT_PUBLIC_PREVIEW_BASE_URL is not set', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({

@@ -350,7 +350,7 @@ export default function ImplementIdeaDialog({
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{previewUrl && (
+										{task.status === 'completed' && previewUrl && (
 											<a
 												href={previewUrl}
 												target="_blank"
