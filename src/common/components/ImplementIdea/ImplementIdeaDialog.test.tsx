@@ -26,12 +26,14 @@ jest.mock('../Popup/Popup', () => ({
 }))
 
 jest.mock('../../ui', () => ({
-	Box: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+	Box: ({ children, onClick, title, onKeyDown }: { children: React.ReactNode; onClick?: () => void; title?: string; onKeyDown?: React.KeyboardEventHandler }) => (
+		<div onClick={onClick} title={title} onKeyDown={onKeyDown}>{children}</div>
+	),
 	Button: ({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) => (
 		<button disabled={disabled}>{children}</button>
 	),
-	TextField: ({ disabled }: { disabled?: boolean }) => (
-		<input data-testid="text-field" disabled={disabled} />
+	TextField: ({ disabled, onChange, value }: { disabled?: boolean; onChange?: (v: string) => void; value?: string }) => (
+		<input data-testid="text-field" disabled={disabled} value={value} onChange={e => onChange?.(e.target.value)} />
 	),
 	IconButton: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
 		<button onClick={onClick}>{children}</button>
@@ -92,6 +94,7 @@ describe('ImplementIdeaDialog', () => {
 	beforeEach(() => {
 		jest.clearAllMocks()
 		global.fetch = jest.fn()
+		window.open = jest.fn()
 	})
 
 	afterEach(() => {
@@ -280,6 +283,58 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
+
+		it('clicking a task card with previewUrl opens it in new tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const card = screen.getByTitle('Open in new tab')
+			fireEvent.click(card)
+
+			expect(window.open).toHaveBeenCalledWith('https://preview.example.com/pr-42', '_blank')
+		})
+
+		it('clicking a task card with only a PR URL opens PR in new tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			// No NEXT_PUBLIC_PREVIEW_BASE_URL — only PR link available
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const card = screen.getByTitle('Open in new tab')
+			fireEvent.click(card)
+
+			expect(window.open).toHaveBeenCalledWith('https://github.com/org/repo/pull/42', '_blank')
+		})
+
+		it('task card without any URL has no title and does not trigger window.open', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASKS[0]] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await waitFor(() => screen.getByText(/1 active/))
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
+
+			const promptEl = screen.getByText('Add dark mode')
+			fireEvent.click(promptEl)
+
+			expect(window.open).not.toHaveBeenCalled()
+		})
 	})
 
 	describe('URL missing state', () => {
@@ -376,6 +431,46 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { jest.advanceTimersByTime(30_000) })
 			await act(async () => { await Promise.resolve() })
 			expect(global.fetch).not.toHaveBeenCalled()
+		})
+	})
+
+	describe('Ctrl+Enter submit', () => {
+		it('shows Ctrl+Enter hint text in submit tab', () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			expect(screen.getByText('Ctrl+Enter to submit')).toBeInTheDocument()
+		})
+
+		it('submits on Ctrl+Enter keydown in textarea wrapper', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			// Use mockResolvedValue (not Once) so all GET and POST fetches resolve without error
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			// Wait for initial fetch to settle
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			// Type something in the text field — updates message state
+			const textField = screen.getByTestId('text-field')
+			fireEvent.change(textField, { target: { value: 'My great idea' } })
+
+			// Fire Ctrl+Enter on the input — bubbles up to the Box wrapper's onKeyDown
+			fireEvent.keyDown(textField, { key: 'Enter', ctrlKey: true })
+
+			await waitFor(() => {
+				expect(global.fetch).toHaveBeenCalledWith(
+					MOCK_URL,
+					expect.objectContaining({ method: 'POST' })
+				)
+			})
 		})
 	})
 })

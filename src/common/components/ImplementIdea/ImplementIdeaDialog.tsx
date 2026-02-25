@@ -237,6 +237,12 @@ export default function ImplementIdeaDialog({
 						<Gap value={2} />
 
 						<Box
+							onKeyDown={(e: React.KeyboardEvent) => {
+								if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+									e.preventDefault()
+									handleSubmit()
+								}
+							}}
 							sx={{
 								border: '1.5px solid',
 								borderColor: urlMissing ? 'error.light' : alpha(BLUE, 0.45),
@@ -268,7 +274,12 @@ export default function ImplementIdeaDialog({
 							</>
 						)}
 
-						<Gap value={2} />
+						<Gap value={0.5} />
+						<Typography variant="normal" size="0.72rem" color="grey.400" sx={{ textAlign: 'right' }}>
+							Ctrl+Enter to submit
+						</Typography>
+
+						<Gap value={1} />
 
 						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
 							<Button
@@ -313,10 +324,13 @@ export default function ImplementIdeaDialog({
 							const style = STATUS_STYLE[task.status]
 							const pr = task.pullRequests?.[0]
 							const previewUrl = task.previewUrl ?? (pr ? getPreviewUrl(pr.url) : null)
+							const openUrl = previewUrl ?? pr?.url ?? null
 
 							return (
 								<Box
 									key={task.taskId}
+									onClick={() => openUrl && window.open(openUrl, '_blank')}
+									title={openUrl ? 'Open in new tab' : undefined}
 									sx={{
 										display: 'flex',
 										alignItems: 'flex-start',
@@ -326,6 +340,12 @@ export default function ImplementIdeaDialog({
 										bgcolor: 'rgba(255,255,255,0.6)',
 										border: '1px solid',
 										borderColor: alpha('#000', 0.06),
+										cursor: openUrl ? 'pointer' : 'default',
+										transition: 'background 0.15s, border-color 0.15s',
+										'&:hover': openUrl ? {
+											bgcolor: 'rgba(255,255,255,0.9)',
+											borderColor: alpha(BLUE, 0.25),
+										} : undefined,
 									}}
 								>
 									{/* Status chip */}
@@ -367,6 +387,7 @@ export default function ImplementIdeaDialog({
 												rel="noopener noreferrer"
 												title="Open preview"
 												style={{ textDecoration: 'none' }}
+												onClick={(e) => e.stopPropagation()}
 											>
 												<Box
 													sx={{
@@ -399,6 +420,7 @@ export default function ImplementIdeaDialog({
 												rel="noopener noreferrer"
 												title="View GitHub PR"
 												style={{ textDecoration: 'none' }}
+												onClick={(e) => e.stopPropagation()}
 											>
 												<Box
 													sx={{
