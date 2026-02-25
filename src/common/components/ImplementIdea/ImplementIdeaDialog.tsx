@@ -60,12 +60,12 @@ function extractPrNumber(prUrl: string): string | null {
 	return match ? match[1] : null
 }
 
+const PREVIEW_BASE_URL = 'https://preview.chvalotce.cz'
+
 function getPreviewUrl(prUrl: string): string | null {
-	const base = process.env.NEXT_PUBLIC_PREVIEW_BASE_URL
-	if (!base) return null
 	const prNumber = extractPrNumber(prUrl)
 	if (!prNumber) return null
-	return `${base}/pr-${prNumber}`
+	return `${PREVIEW_BASE_URL}/pr-${prNumber}`
 }
 
 const POLL_INTERVAL_MS = 30_000
@@ -428,38 +428,61 @@ export default function ImplementIdeaDialog({
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{task.status === 'completed' && openUrl && (
-											<a
-												href={openUrl}
-												target="_blank"
-												rel="noopener noreferrer"
-												title="Open preview"
-												style={{ textDecoration: 'none' }}
-												onClick={(e) => e.stopPropagation()}
-											>
+										{task.status === 'completed' && (
+											openUrl ? (
+												<a
+													href={openUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+													title="Open preview"
+													style={{ textDecoration: 'none' }}
+													onClick={(e) => e.stopPropagation()}
+												>
+													<Box
+														sx={{
+															display: 'flex',
+															alignItems: 'center',
+															gap: 0.4,
+															color: BLUE,
+															fontSize: '0.7rem',
+															fontWeight: 700,
+															bgcolor: alpha(BLUE, 0.1),
+															border: '1px solid',
+															borderColor: alpha(BLUE, 0.25),
+															px: 0.75,
+															py: 0.25,
+															borderRadius: 1,
+															whiteSpace: 'nowrap',
+															transition: 'background 0.15s',
+															'&:hover': { bgcolor: alpha(BLUE, 0.18) },
+														}}
+													>
+														<OpenInNew sx={{ fontSize: 11 }} />
+														Preview
+													</Box>
+												</a>
+											) : (
 												<Box
 													sx={{
 														display: 'flex',
 														alignItems: 'center',
 														gap: 0.4,
-														color: BLUE,
+														color: '#aaa',
 														fontSize: '0.7rem',
 														fontWeight: 700,
-														bgcolor: alpha(BLUE, 0.1),
+														bgcolor: alpha('#000', 0.04),
 														border: '1px solid',
-														borderColor: alpha(BLUE, 0.25),
+														borderColor: alpha('#000', 0.1),
 														px: 0.75,
 														py: 0.25,
 														borderRadius: 1,
 														whiteSpace: 'nowrap',
-														transition: 'background 0.15s',
-														'&:hover': { bgcolor: alpha(BLUE, 0.18) },
 													}}
 												>
 													<OpenInNew sx={{ fontSize: 11 }} />
 													Preview
 												</Box>
-											</a>
+											)
 										)}
 										{pr && (
 											<a
