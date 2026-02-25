@@ -67,6 +67,8 @@ function getPreviewUrl(prUrl: string): string | null {
 	return `${base}/pr-${prNumber}`
 }
 
+const POLL_INTERVAL_MS = 30_000
+
 export default function ImplementIdeaDialog({
 	open,
 	onClose,
@@ -102,6 +104,12 @@ export default function ImplementIdeaDialog({
 	useEffect(() => {
 		if (open && activeTab === 1) fetchTasks()
 	}, [activeTab])
+
+	useEffect(() => {
+		if (!open) return
+		const interval = setInterval(fetchTasks, POLL_INTERVAL_MS)
+		return () => clearInterval(interval)
+	}, [open])
 
 	const handleClose = () => {
 		if (loading) return

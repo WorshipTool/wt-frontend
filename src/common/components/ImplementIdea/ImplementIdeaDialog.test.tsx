@@ -303,4 +303,66 @@ describe('ImplementIdeaDialog', () => {
 			expect(global.fetch).not.toHaveBeenCalled()
 		})
 	})
+
+	describe('Polling behavior', () => {
+		beforeEach(() => {
+			jest.useFakeTimers()
+		})
+
+		afterEach(() => {
+			jest.useRealTimers()
+		})
+
+		it('polls every 30 seconds while dialog is open', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			// Initial fetch on open
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).toHaveBeenCalledTimes(1)
+
+			// Advance 30 seconds — second poll
+			await act(async () => { jest.advanceTimersByTime(30_000) })
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).toHaveBeenCalledTimes(2)
+
+			// Advance another 30 seconds — third poll
+			await act(async () => { jest.advanceTimersByTime(30_000) })
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).toHaveBeenCalledTimes(3)
+		})
+
+		it('stops polling when dialog is closed', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			const { rerender } = render(<ImplementIdeaDialog {...defaultProps} />)
+
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).toHaveBeenCalledTimes(1)
+
+			// Close the dialog
+			rerender(<ImplementIdeaDialog open={false} onClose={jest.fn()} />)
+
+			// Advance time — no additional fetches should happen
+			await act(async () => { jest.advanceTimersByTime(60_000) })
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).toHaveBeenCalledTimes(1)
+		})
+
+		it('does not poll when URL is missing', async () => {
+			// No NEXT_PUBLIC_IMPLEMENT_IDEA_URL set
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			await act(async () => { jest.advanceTimersByTime(30_000) })
+			await act(async () => { await Promise.resolve() })
+			expect(global.fetch).not.toHaveBeenCalled()
+		})
+	})
 })
