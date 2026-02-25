@@ -99,8 +99,9 @@ describe('ImplementIdeaDialog', () => {
 	})
 
 	afterEach(() => {
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
-		delete process.env.NEXT_PUBLIC_PREVIEW_BASE_URL
+		const env = process.env as Record<string, string | undefined>
+		delete env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete env.NEXT_PUBLIC_PREVIEW_BASE_URL
 	})
 
 	describe('Task counts display', () => {
@@ -346,7 +347,7 @@ describe('ImplementIdeaDialog', () => {
 			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			expect(screen.getByTitle('refreshButton')).toBeInTheDocument()
+			expect(screen.getByLabelText('refreshButton')).toBeInTheDocument()
 		})
 
 		it('clicking refresh button triggers a new fetch', async () => {
@@ -360,7 +361,7 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const fetchCountBefore = (global.fetch as jest.Mock).mock.calls.length
-			fireEvent.click(screen.getByTitle('refreshButton'))
+			fireEvent.click(screen.getByLabelText('refreshButton'))
 
 			await waitFor(() => {
 				expect(global.fetch).toHaveBeenCalledTimes(fetchCountBefore + 1)

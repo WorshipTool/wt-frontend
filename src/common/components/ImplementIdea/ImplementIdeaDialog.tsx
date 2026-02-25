@@ -331,7 +331,6 @@ export default function ImplementIdeaDialog({
 								small
 								onClick={handleRefresh}
 								aria-label={t('refreshButton')}
-								title={t('refreshButton')}
 							>
 								<Refresh fontSize="inherit" />
 							</IconButton>
