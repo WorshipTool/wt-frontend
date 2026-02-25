@@ -1,7 +1,6 @@
 'use client'
 import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import Menu from '@/common/components/Menu/Menu'
-import { useDownSize } from '@/common/hooks/useDownSize'
 import { Box, IconButton } from '@/common/ui'
 import { Badge } from '@/common/ui/mui'
 import { grey } from '@/common/ui/mui/colors'
@@ -47,17 +46,15 @@ export default function AdminOptionsProvider() {
 
 	const { height } = useBottomPanel()
 
-	const isSmall = useDownSize('sm')
-
-	const offset = isSmall ? 24 : 32
+	// FAB is at bottom: 30, height: 56px → admin button goes above it: 30 + 56 + 10 = 96
 	return !isAdmin() ? null : (
 		<>
 			{itemsCount > 0 && (
 				<Box
 					sx={{
 						position: 'fixed',
-						bottom: offset + height,
-						right: offset,
+						bottom: 96 + height,
+						right: 30,
 					}}
 				>
 					<Badge
