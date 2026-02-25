@@ -24,6 +24,8 @@ COPY . .
 
 ARG NEXT_PUBLIC_FRONTEND_URL
 ARG NEXT_PUBLIC_FRONTEND_HOSTNAME
+ARG NEXT_PUBLIC_PREVIEW_BASE_URL
+ARG NEXT_PUBLIC_PREVIEW_PR_TITLE
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -35,6 +37,8 @@ ARG NEXT_PUBLIC_FRONTEND_HOSTNAME
 RUN \
   if [ -z "${NEXT_PUBLIC_FRONTEND_URL}" ]; then unset NEXT_PUBLIC_FRONTEND_URL; fi; \
   if [ -z "${NEXT_PUBLIC_FRONTEND_HOSTNAME}" ]; then unset NEXT_PUBLIC_FRONTEND_HOSTNAME; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_BASE_URL}" ]; then unset NEXT_PUBLIC_PREVIEW_BASE_URL; fi; \
+  if [ -z "${NEXT_PUBLIC_PREVIEW_PR_TITLE}" ]; then unset NEXT_PUBLIC_PREVIEW_PR_TITLE; fi; \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
