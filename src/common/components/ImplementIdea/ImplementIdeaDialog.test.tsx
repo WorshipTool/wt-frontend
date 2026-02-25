@@ -66,6 +66,14 @@ const MOCK_TASKS = [
 	},
 ]
 
+const MOCK_TASK_WITH_DIRECT_PREVIEW_URL = {
+	taskId: '4',
+	status: 'completed',
+	prompt: 'Add search feature',
+	pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/55' }],
+	previewUrl: 'https://direct-preview.example.com/pr-55',
+}
+
 describe('ImplementIdeaDialog', () => {
 	const defaultProps = { open: true, onClose: jest.fn() }
 
@@ -182,6 +190,43 @@ describe('ImplementIdeaDialog', () => {
 			const hrefs = links.map(l => l.getAttribute('href'))
 			expect(hrefs).toContain('https://preview.example.com/pr-42')
 			expect(hrefs).toContain('https://github.com/org/repo/pull/42')
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
+			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
+		})
+
+		it('uses task.previewUrl directly when provided, ignoring env var', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			// No NEXT_PUBLIC_PREVIEW_BASE_URL set — should still show preview via task.previewUrl
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const links = screen.getAllByRole('link')
+			const hrefs = links.map(l => l.getAttribute('href'))
+			expect(hrefs).toContain('https://direct-preview.example.com/pr-55')
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
+		})
+
+		it('prefers task.previewUrl over env-var-generated preview URL', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const links = screen.getAllByRole('link')
+			const hrefs = links.map(l => l.getAttribute('href'))
+			// Should use the direct URL, not the generated one
+			expect(hrefs).toContain('https://direct-preview.example.com/pr-55')
+			expect(hrefs).not.toContain('https://preview.example.com/pr-55')
 		})
 
 		it('does not show preview link when NEXT_PUBLIC_PREVIEW_BASE_URL is not set', async () => {
@@ -198,6 +243,8 @@ describe('ImplementIdeaDialog', () => {
 			const hrefs = links.map(l => l.getAttribute('href'))
 			expect(hrefs).not.toContain(expect.stringContaining('preview.example.com'))
 			expect(hrefs).toContain('https://github.com/org/repo/pull/42')
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 	})
 
