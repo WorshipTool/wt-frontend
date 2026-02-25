@@ -9,6 +9,9 @@ jest.mock('next-intl', () => ({
 			if (params && typeof params.count !== 'undefined') {
 				return `${key}:${params.count}`
 			}
+			if (params && typeof params.seconds !== 'undefined') {
+				return `${key}:${params.seconds}`
+			}
 			return key
 		}
 		return t
@@ -33,8 +36,8 @@ jest.mock('../../ui', () => ({
 	TextField: ({ disabled }: { disabled?: boolean }) => (
 		<input data-testid="text-field" disabled={disabled} />
 	),
-	IconButton: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
-		<button onClick={onClick}>{children}</button>
+	IconButton: ({ children, onClick, 'aria-label': ariaLabel, title }: { children: React.ReactNode; onClick?: () => void; 'aria-label'?: string; title?: string }) => (
+		<button onClick={onClick} aria-label={ariaLabel} title={title}>{children}</button>
 	),
 }))
 
@@ -63,6 +66,7 @@ jest.mock('@mui/icons-material', () => ({
 	Lightbulb: () => null,
 	Close: () => null,
 	OpenInNew: () => <span>open</span>,
+	Refresh: () => <span>refresh-icon</span>,
 }))
 
 const MOCK_URL = 'https://example.com/webhook'
@@ -314,6 +318,74 @@ describe('ImplementIdeaDialog', () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			render(<ImplementIdeaDialog open={false} onClose={jest.fn()} />)
 			expect(global.fetch).not.toHaveBeenCalled()
+		})
+	})
+
+	describe('Refresh button and countdown', () => {
+		it('shows countdown timer in recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// countdown renders as "nextRefreshIn:30" from our mock
+			expect(screen.getByText(/nextRefreshIn:/)).toBeInTheDocument()
+		})
+
+		it('shows refresh button in recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByTitle('refreshButton')).toBeInTheDocument()
+		})
+
+		it('clicking refresh button triggers a new fetch', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: MOCK_TASKS }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const fetchCountBefore = (global.fetch as jest.Mock).mock.calls.length
+			fireEvent.click(screen.getByTitle('refreshButton'))
+
+			await waitFor(() => {
+				expect(global.fetch).toHaveBeenCalledTimes(fetchCountBefore + 1)
+			})
+		})
+
+		it('countdown decrements over time', async () => {
+			jest.useFakeTimers()
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await Promise.resolve() })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Initially shows 30s
+			expect(screen.getByText('nextRefreshIn:30')).toBeInTheDocument()
+
+			// After 5 seconds countdown decrements
+			await act(async () => { jest.advanceTimersByTime(5_000) })
+			expect(screen.getByText('nextRefreshIn:25')).toBeInTheDocument()
+
+			jest.useRealTimers()
 		})
 	})
 

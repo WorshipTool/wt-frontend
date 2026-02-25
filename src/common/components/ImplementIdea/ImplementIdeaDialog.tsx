@@ -6,7 +6,7 @@ import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { alpha, Tab, Tabs } from '@/common/ui/mui'
 import { keyframes } from '@emotion/react'
-import { Close, Lightbulb, OpenInNew } from '@mui/icons-material'
+import { Close, Lightbulb, OpenInNew, Refresh } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
@@ -69,6 +69,7 @@ function getPreviewUrl(prUrl: string): string | null {
 }
 
 const POLL_INTERVAL_MS = 30_000
+const POLL_INTERVAL_S = POLL_INTERVAL_MS / 1000
 
 export default function ImplementIdeaDialog({
 	open,
@@ -80,6 +81,7 @@ export default function ImplementIdeaDialog({
 	const [tasks, setTasks] = useState<Task[]>([])
 	const [tasksLoaded, setTasksLoaded] = useState(false)
 	const [activeTab, setActiveTab] = useState(0)
+	const [countdown, setCountdown] = useState(POLL_INTERVAL_S)
 	const { enqueueSnackbar } = useSnackbar()
 
 	const url = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
@@ -101,17 +103,34 @@ export default function ImplementIdeaDialog({
 	useEffect(() => {
 		if (!open) return
 		fetchTasks()
+		setCountdown(POLL_INTERVAL_S)
 	}, [open])
 
 	useEffect(() => {
-		if (open && activeTab === 1) fetchTasks()
+		if (open && activeTab === 1) {
+			fetchTasks()
+			setCountdown(POLL_INTERVAL_S)
+		}
 	}, [activeTab])
 
 	useEffect(() => {
 		if (!open) return
-		const interval = setInterval(fetchTasks, POLL_INTERVAL_MS)
-		return () => clearInterval(interval)
+		const timer = setInterval(() => {
+			setCountdown((prev) => {
+				if (prev <= 1) {
+					fetchTasks()
+					return POLL_INTERVAL_S
+				}
+				return prev - 1
+			})
+		}, 1000)
+		return () => clearInterval(timer)
 	}, [open])
+
+	const handleRefresh = () => {
+		fetchTasks()
+		setCountdown(POLL_INTERVAL_S)
+	}
 
 	const handleClose = () => {
 		if (loading) return
@@ -290,26 +309,56 @@ export default function ImplementIdeaDialog({
 				{activeTab === 1 && (
 					<Box
 						sx={{
-							maxHeight: '50vh',
-							overflowY: 'auto',
 							display: 'flex',
 							flexDirection: 'column',
 							gap: 1,
 						}}
 					>
-						{!tasksLoaded && (
-							<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
-								{t('loading')}
+						{/* Refresh bar */}
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'flex-end',
+								gap: 1,
+								mb: 0.25,
+							}}
+						>
+							<Typography variant="normal" size="0.72rem" color="grey.400">
+								{t('nextRefreshIn', { seconds: String(countdown) })}
 							</Typography>
-						)}
+							<IconButton
+								small
+								onClick={handleRefresh}
+								aria-label={t('refreshButton')}
+								title={t('refreshButton')}
+							>
+								<Refresh fontSize="inherit" />
+							</IconButton>
+						</Box>
 
-						{tasksLoaded && tasks.length === 0 && (
-							<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
-								{t('noIdeas')}
-							</Typography>
-						)}
+						<Box
+							sx={{
+								maxHeight: '50vh',
+								overflowY: 'auto',
+								display: 'flex',
+								flexDirection: 'column',
+								gap: 1,
+							}}
+						>
+							{!tasksLoaded && (
+								<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
+									{t('loading')}
+								</Typography>
+							)}
 
-						{tasks.map((task) => {
+							{tasksLoaded && tasks.length === 0 && (
+								<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
+									{t('noIdeas')}
+								</Typography>
+							)}
+
+							{tasks.map((task) => {
 							const style = STATUS_STYLE[task.status]
 							const pr = task.pullRequests?.[0]
 							const previewUrl = task.previewUrl ?? (pr ? getPreviewUrl(pr.url) : null)
@@ -430,6 +479,7 @@ export default function ImplementIdeaDialog({
 						})}
 
 						<Gap value={0.5} />
+						</Box>
 					</Box>
 				)}
 			</Box>

@@ -974,6 +974,8 @@ declare const messages: {
 		"noIdeas": "Zatím žádné nápady.",
 		"ideaSubmitted": "Nápad odeslán!",
 		"submitFailed": "Nepodařilo se odeslat nápad.",
+		"nextRefreshIn": "Obnoví se za {seconds}s",
+		"refreshButton": "Obnovit",
 		"status": {
 			"queued": "Ve frontě",
 			"running": "Probíhá",
