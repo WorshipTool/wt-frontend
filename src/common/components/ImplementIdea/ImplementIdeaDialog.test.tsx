@@ -3,6 +3,18 @@ import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import React from 'react'
 import ImplementIdeaDialog from './ImplementIdeaDialog'
 
+jest.mock('next-intl', () => ({
+	useTranslations: () => {
+		const t = (key: string, params?: Record<string, unknown>) => {
+			if (params && typeof params.count !== 'undefined') {
+				return `${key}:${params.count}`
+			}
+			return key
+		}
+		return t
+	},
+}))
+
 jest.mock('notistack', () => ({
 	useSnackbar: () => ({ enqueueSnackbar: jest.fn() }),
 }))
@@ -97,7 +109,8 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
 			await waitFor(() => {
-				expect(screen.getByText(/2 active/)).toBeInTheDocument()
+				// Mock returns 'recentIdeasTabActive:2' for t('recentIdeasTabActive', { count: 2 })
+				expect(screen.getByText(/recentIdeasTabActive:2/)).toBeInTheDocument()
 			})
 		})
 
@@ -110,7 +123,7 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
 			await waitFor(() => {
-				expect(screen.getByText('Recent ideas')).toBeInTheDocument()
+				expect(screen.getByText('recentIdeasTab')).toBeInTheDocument()
 			})
 		})
 	})
@@ -124,7 +137,7 @@ describe('ImplementIdeaDialog', () => {
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 
-			await waitFor(() => screen.getByText(/2 active/))
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
 
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
@@ -139,7 +152,7 @@ describe('ImplementIdeaDialog', () => {
 			})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await waitFor(() => screen.getByText(/2 active/))
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const items = screen.getAllByText(/mode|bug|auth/i)
@@ -156,7 +169,7 @@ describe('ImplementIdeaDialog', () => {
 			})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
-			await waitFor(() => screen.getByText(/1 active/))
+			await waitFor(() => screen.getByText(/recentIdeasTabActive/))
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			expect(screen.getByText('A'.repeat(120) + '…')).toBeInTheDocument()
@@ -172,7 +185,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			expect(screen.getByText('No ideas submitted yet.')).toBeInTheDocument()
+			expect(screen.getByText('noIdeas')).toBeInTheDocument()
 		})
 
 		it('shows preview link when NEXT_PUBLIC_PREVIEW_BASE_URL is set and task has PR', async () => {

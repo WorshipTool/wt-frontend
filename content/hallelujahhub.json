@@ -974,5 +974,27 @@
 		"smartSearchNote": "💡 This feature is still in development.",
 		"smartSearchStep1": "Switch to smart search",
 		"smartSearchStep2": "Enter the theme or mood you're looking for"
+	},
+	"implementIdea": {
+		"title": "Implement an idea",
+		"submitIdeaTab": "Submit idea",
+		"recentIdeasTab": "Recent ideas",
+		"recentIdeasTabActive": "Recent ideas ({count} active)",
+		"heading": "What would you like to build?",
+		"subtitle": "Describe your idea and it will be implemented automatically.",
+		"placeholder": "Describe your idea...",
+		"submitButton": "Submit idea",
+		"loading": "Loading...",
+		"noIdeas": "No ideas submitted yet.",
+		"ideaSubmitted": "Idea submitted!",
+		"submitFailed": "Failed to submit idea.",
+		"status": {
+			"queued": "Queued",
+			"running": "Running",
+			"retrying": "Retrying",
+			"completed": "Completed",
+			"failed": "Failed",
+			"interrupted": "Interrupted"
+		}
 	}
 }
