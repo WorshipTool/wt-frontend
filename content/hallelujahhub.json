@@ -988,6 +988,8 @@
 		"noIdeas": "No ideas submitted yet.",
 		"ideaSubmitted": "Idea submitted!",
 		"submitFailed": "Failed to submit idea.",
+		"nextRefreshIn": "Refreshes in {seconds}s",
+		"refreshButton": "Refresh",
 		"status": {
 			"queued": "Queued",
 			"running": "Running",

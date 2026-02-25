@@ -971,6 +971,8 @@
 		"noIdeas": "Nie przesłano jeszcze żadnych pomysłów.",
 		"ideaSubmitted": "Pomysł wysłany!",
 		"submitFailed": "Nie udało się wysłać pomysłu.",
+		"nextRefreshIn": "Odświeży się za {seconds}s",
+		"refreshButton": "Odśwież",
 		"status": {
 			"queued": "W kolejce",
 			"running": "W toku",
