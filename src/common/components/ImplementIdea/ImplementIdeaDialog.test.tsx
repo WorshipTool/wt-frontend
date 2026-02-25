@@ -9,17 +9,29 @@ jest.mock('notistack', () => ({
 
 jest.mock('../Popup/Popup', () => ({
 	__esModule: true,
-	default: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
-		open ? <div data-testid="popup">{children}</div> : null,
+	default: ({ children, open, onSubmit }: { children: React.ReactNode; open: boolean; onSubmit?: () => void }) =>
+		open ? (
+			<div data-testid="popup">
+				<form data-testid="popup-form" onSubmit={(e) => { e.preventDefault(); onSubmit?.() }}>
+					{children}
+				</form>
+			</div>
+		) : null,
 }))
 
 jest.mock('../../ui', () => ({
 	Box: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-	Button: ({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) => (
-		<button disabled={disabled}>{children}</button>
+	Button: ({ children, disabled, type }: { children: React.ReactNode; disabled?: boolean; type?: string }) => (
+		<button type={(type as 'button' | 'submit' | 'reset') ?? 'button'} disabled={disabled}>{children}</button>
 	),
-	TextField: ({ disabled }: { disabled?: boolean }) => (
-		<input data-testid="text-field" disabled={disabled} />
+	TextField: ({ disabled, value, onChange, placeholder }: { disabled?: boolean; value?: string; onChange?: (v: string) => void; placeholder?: string }) => (
+		<input
+			data-testid="text-field"
+			disabled={disabled}
+			value={value ?? ''}
+			placeholder={placeholder}
+			onChange={(e) => onChange?.(e.target.value)}
+		/>
 	),
 	IconButton: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
 		<button onClick={onClick}>{children}</button>
@@ -233,6 +245,217 @@ describe('ImplementIdeaDialog', () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			render(<ImplementIdeaDialog open={false} onClose={jest.fn()} />)
 			expect(global.fetch).not.toHaveBeenCalled()
+		})
+
+		it('fetches immediately when switching to Recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			const callsBefore = (global.fetch as jest.Mock).mock.calls.length
+
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			await waitFor(() => {
+				expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(callsBefore)
+			})
+		})
+	})
+
+	describe('Submit behavior', () => {
+		it('switches to Recent ideas tab after submitting an idea', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockImplementation((_, options) => {
+				if (options?.method === 'POST') {
+					return Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+				}
+				return Promise.resolve({ json: () => Promise.resolve({ tasks: MOCK_TASKS }) })
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			fireEvent.change(screen.getByTestId('text-field'), { target: { value: 'Great new idea' } })
+			fireEvent.submit(screen.getByTestId('popup-form'))
+
+			await waitFor(() => {
+				expect(screen.getByText('Add dark mode')).toBeInTheDocument()
+			})
+		})
+
+		it('fetches tasks immediately after submitting an idea', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockImplementation((_, options) => {
+				if (options?.method === 'POST') {
+					return Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+				}
+				return Promise.resolve({ json: () => Promise.resolve({ tasks: MOCK_TASKS }) })
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			const callsBefore = (global.fetch as jest.Mock).mock.calls.length
+
+			fireEvent.change(screen.getByTestId('text-field'), { target: { value: 'Great new idea' } })
+			fireEvent.submit(screen.getByTestId('popup-form'))
+
+			await waitFor(() => {
+				const getCalls = (global.fetch as jest.Mock).mock.calls.filter(
+					([, opts]) => !opts || opts.method === 'GET'
+				)
+				expect(getCalls.length).toBeGreaterThan(callsBefore)
+			})
+		})
+
+		it('sends POST with the submitted message', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockImplementation((_, options) => {
+				if (options?.method === 'POST') {
+					return Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+				}
+				return Promise.resolve({ json: () => Promise.resolve({ tasks: [] }) })
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			fireEvent.change(screen.getByTestId('text-field'), { target: { value: 'My brilliant idea' } })
+			fireEvent.submit(screen.getByTestId('popup-form'))
+
+			await waitFor(() => {
+				expect(global.fetch).toHaveBeenCalledWith(
+					MOCK_URL,
+					expect.objectContaining({
+						method: 'POST',
+						body: JSON.stringify({ message: 'My brilliant idea' }),
+					})
+				)
+			})
+		})
+
+		it('clears the message field after successful submit', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockImplementation((_, options) => {
+				if (options?.method === 'POST') {
+					return Promise.resolve({ ok: true, json: () => Promise.resolve({}) })
+				}
+				return Promise.resolve({ json: () => Promise.resolve({ tasks: [] }) })
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+
+			const input = screen.getByTestId('text-field')
+			fireEvent.change(input, { target: { value: 'Some idea' } })
+			expect(input).toHaveValue('Some idea')
+
+			fireEvent.submit(screen.getByTestId('popup-form'))
+
+			// After submit, component switches to Recent ideas tab (tab 1); switch back to verify field cleared
+			await waitFor(() => {
+				expect(screen.queryByTestId('text-field')).not.toBeInTheDocument()
+			})
+
+			fireEvent.click(screen.getAllByRole('tab')[0])
+
+			await waitFor(() => {
+				expect(screen.getByTestId('text-field')).toHaveValue('')
+			})
+		})
+	})
+
+	describe('Polling behavior', () => {
+		beforeEach(() => {
+			jest.useFakeTimers()
+		})
+
+		afterEach(() => {
+			jest.runOnlyPendingTimers()
+			jest.useRealTimers()
+		})
+
+		it('polls every 30 seconds while on Recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			// Switch to Recent ideas tab
+			await act(async () => {
+				fireEvent.click(screen.getAllByRole('tab')[1])
+			})
+
+			const callsAfterSwitch = (global.fetch as jest.Mock).mock.calls.length
+
+			// Advance 30 seconds
+			await act(async () => {
+				jest.advanceTimersByTime(30_000)
+			})
+
+			expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(callsAfterSwitch)
+		})
+
+		it('stops polling when switching away from Recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+
+			// Switch to Recent ideas tab
+			await act(async () => {
+				fireEvent.click(screen.getAllByRole('tab')[1])
+			})
+
+			// Switch back to Submit tab
+			await act(async () => {
+				fireEvent.click(screen.getAllByRole('tab')[0])
+			})
+
+			const callsAfterSwitchBack = (global.fetch as jest.Mock).mock.calls.length
+
+			// Advance 60 seconds — should NOT trigger more fetches
+			await act(async () => {
+				jest.advanceTimersByTime(60_000)
+			})
+
+			expect((global.fetch as jest.Mock).mock.calls.length).toBe(callsAfterSwitchBack)
+		})
+
+		it('stops polling when dialog is closed', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			const { rerender } = render(<ImplementIdeaDialog {...defaultProps} />)
+
+			// Switch to Recent ideas tab
+			await act(async () => {
+				fireEvent.click(screen.getAllByRole('tab')[1])
+			})
+
+			// Close dialog
+			await act(async () => {
+				rerender(<ImplementIdeaDialog open={false} onClose={jest.fn()} />)
+			})
+
+			const callsAfterClose = (global.fetch as jest.Mock).mock.calls.length
+
+			// Advance 60 seconds — should NOT trigger more fetches
+			await act(async () => {
+				jest.advanceTimersByTime(60_000)
+			})
+
+			expect((global.fetch as jest.Mock).mock.calls.length).toBe(callsAfterClose)
 		})
 	})
 })

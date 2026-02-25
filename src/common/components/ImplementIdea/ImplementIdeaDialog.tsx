@@ -8,7 +8,7 @@ import { alpha, Tab, Tabs } from '@/common/ui/mui'
 import { keyframes } from '@emotion/react'
 import { Close, Lightbulb, OpenInNew } from '@mui/icons-material'
 import { useSnackbar } from 'notistack'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 type TaskStatus =
 	| 'queued'
@@ -80,7 +80,9 @@ export default function ImplementIdeaDialog({
 	const url = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	const urlMissing = !url
 
-	const fetchTasks = () => {
+	const POLL_INTERVAL_MS = 30_000
+
+	const fetchTasks = useCallback(() => {
 		if (!url) return
 		fetch(url, { method: 'GET' })
 			.then((res) => res.json())
@@ -91,16 +93,21 @@ export default function ImplementIdeaDialog({
 			.catch(() => {
 				setTasksLoaded(true)
 			})
-	}
+	}, [url])
 
+	// Fetch on dialog open for initial badge count
 	useEffect(() => {
 		if (!open) return
 		fetchTasks()
-	}, [open])
+	}, [open, fetchTasks])
 
+	// Fetch immediately and poll every 30s while on Recent ideas tab
 	useEffect(() => {
-		if (open && activeTab === 1) fetchTasks()
-	}, [activeTab])
+		if (!open || activeTab !== 1) return
+		fetchTasks()
+		const interval = setInterval(fetchTasks, POLL_INTERVAL_MS)
+		return () => clearInterval(interval)
+	}, [open, activeTab, fetchTasks])
 
 	const handleClose = () => {
 		if (loading) return
