@@ -28,6 +28,7 @@ type Task = {
 	status: TaskStatus
 	prompt: string
 	pullRequests: PullRequest[]
+	previewUrl?: string
 }
 
 type ImplementIdeaDialogProps = {
@@ -301,7 +302,7 @@ export default function ImplementIdeaDialog({
 						{tasks.map((task) => {
 							const style = STATUS_STYLE[task.status]
 							const pr = task.pullRequests?.[0]
-							const previewUrl = pr ? getPreviewUrl(pr.url) : null
+							const previewUrl = task.previewUrl ?? (pr ? getPreviewUrl(pr.url) : null)
 
 							return (
 								<Box
@@ -348,30 +349,72 @@ export default function ImplementIdeaDialog({
 									</Typography>
 
 									{/* Action buttons */}
-									{pr && (
-										<Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
-											{previewUrl && (
-												<a
-													href={previewUrl}
-													target="_blank"
-													rel="noopener noreferrer"
-													title="Open preview"
-													style={{ display: 'flex', alignItems: 'center' }}
+									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
+										{previewUrl && (
+											<a
+												href={previewUrl}
+												target="_blank"
+												rel="noopener noreferrer"
+												title="Open preview"
+												style={{ textDecoration: 'none' }}
+											>
+												<Box
+													sx={{
+														display: 'flex',
+														alignItems: 'center',
+														gap: 0.4,
+														color: BLUE,
+														fontSize: '0.7rem',
+														fontWeight: 700,
+														bgcolor: alpha(BLUE, 0.1),
+														border: '1px solid',
+														borderColor: alpha(BLUE, 0.25),
+														px: 0.75,
+														py: 0.25,
+														borderRadius: 1,
+														whiteSpace: 'nowrap',
+														transition: 'background 0.15s',
+														'&:hover': { bgcolor: alpha(BLUE, 0.18) },
+													}}
 												>
-													<OpenInNew sx={{ fontSize: 16, color: BLUE }} />
-												</a>
-											)}
+													<OpenInNew sx={{ fontSize: 11 }} />
+													Preview
+												</Box>
+											</a>
+										)}
+										{pr && (
 											<a
 												href={pr.url}
 												target="_blank"
 												rel="noopener noreferrer"
 												title="View GitHub PR"
-												style={{ display: 'flex', alignItems: 'center' }}
+												style={{ textDecoration: 'none' }}
 											>
-												<OpenInNew sx={{ fontSize: 14, color: '#666' }} />
+												<Box
+													sx={{
+														display: 'flex',
+														alignItems: 'center',
+														gap: 0.4,
+														color: '#666',
+														fontSize: '0.7rem',
+														fontWeight: 600,
+														bgcolor: alpha('#000', 0.04),
+														border: '1px solid',
+														borderColor: alpha('#000', 0.1),
+														px: 0.75,
+														py: 0.25,
+														borderRadius: 1,
+														whiteSpace: 'nowrap',
+														transition: 'background 0.15s',
+														'&:hover': { bgcolor: alpha('#000', 0.08) },
+													}}
+												>
+													<OpenInNew sx={{ fontSize: 11 }} />
+													PR
+												</Box>
 											</a>
-										</Box>
-									)}
+										)}
+									</Box>
 								</Box>
 							)
 						})}
