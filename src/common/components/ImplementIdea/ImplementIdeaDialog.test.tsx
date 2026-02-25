@@ -309,7 +309,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 		})
 
-		it('shows disabled preview button (no link) for completed task with no URL at all', async () => {
+		it('shows active preview link for completed task with no PR, falling back to base preview URL', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			const completedNoUrl = {
 				taskId: '11',
@@ -325,9 +325,11 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			// Preview button is shown but not as a link (disabled state)
-			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
-			expect(screen.getByText('Preview')).toBeInTheDocument()
+			// Preview button is always active for completed tasks, falls back to base URL
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
+			const links = screen.getAllByRole('link')
+			const hrefs = links.map(l => l.getAttribute('href'))
+			expect(hrefs).toContain('https://preview.chvalotce.cz')
 			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 

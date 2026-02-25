@@ -371,8 +371,12 @@ export default function ImplementIdeaDialog({
 							{tasks.map((task) => {
 							const style = STATUS_STYLE[task.status]
 							const pr = task.pullRequests?.[0]
-							const previewUrl = task.previewUrl ?? (pr ? getPreviewUrl(pr.url) : null)
-							const openUrl = previewUrl ?? pr?.url ?? null
+							const prNumber = pr ? extractPrNumber(pr.url) : null
+							const previewUrl = task.previewUrl ?? (prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)
+							// Completed tasks always get an active preview URL
+							const openUrl = task.status === 'completed'
+								? (previewUrl ?? PREVIEW_BASE_URL)
+								: (previewUrl ?? pr?.url ?? null)
 
 							return (
 								<Box
@@ -429,60 +433,37 @@ export default function ImplementIdeaDialog({
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
 										{task.status === 'completed' && (
-											openUrl ? (
-												<a
-													href={openUrl}
-													target="_blank"
-													rel="noopener noreferrer"
-													title="Open preview"
-													style={{ textDecoration: 'none' }}
-													onClick={(e) => e.stopPropagation()}
-												>
-													<Box
-														sx={{
-															display: 'flex',
-															alignItems: 'center',
-															gap: 0.4,
-															color: BLUE,
-															fontSize: '0.7rem',
-															fontWeight: 700,
-															bgcolor: alpha(BLUE, 0.1),
-															border: '1px solid',
-															borderColor: alpha(BLUE, 0.25),
-															px: 0.75,
-															py: 0.25,
-															borderRadius: 1,
-															whiteSpace: 'nowrap',
-															transition: 'background 0.15s',
-															'&:hover': { bgcolor: alpha(BLUE, 0.18) },
-														}}
-													>
-														<OpenInNew sx={{ fontSize: 11 }} />
-														Preview
-													</Box>
-												</a>
-											) : (
+											<a
+												href={openUrl!}
+												target="_blank"
+												rel="noopener noreferrer"
+												title="Open preview"
+												style={{ textDecoration: 'none' }}
+												onClick={(e) => e.stopPropagation()}
+											>
 												<Box
 													sx={{
 														display: 'flex',
 														alignItems: 'center',
 														gap: 0.4,
-														color: '#aaa',
+														color: BLUE,
 														fontSize: '0.7rem',
 														fontWeight: 700,
-														bgcolor: alpha('#000', 0.04),
+														bgcolor: alpha(BLUE, 0.1),
 														border: '1px solid',
-														borderColor: alpha('#000', 0.1),
+														borderColor: alpha(BLUE, 0.25),
 														px: 0.75,
 														py: 0.25,
 														borderRadius: 1,
 														whiteSpace: 'nowrap',
+														transition: 'background 0.15s',
+														'&:hover': { bgcolor: alpha(BLUE, 0.18) },
 													}}
 												>
 													<OpenInNew sx={{ fontSize: 11 }} />
 													Preview
 												</Box>
-											)
+											</a>
 										)}
 										{pr && (
 											<a
