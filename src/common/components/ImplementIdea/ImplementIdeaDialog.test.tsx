@@ -104,7 +104,6 @@ describe('ImplementIdeaDialog', () => {
 	afterEach(() => {
 		const env = process.env as Record<string, string | undefined>
 		delete env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
-		delete env.NEXT_PUBLIC_PREVIEW_BASE_URL
 	})
 
 	describe('Task counts display', () => {
@@ -196,9 +195,8 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByText('noIdeas')).toBeInTheDocument()
 		})
 
-		it('shows preview link when NEXT_PUBLIC_PREVIEW_BASE_URL is set and task has PR', async () => {
+		it('shows preview link for completed task with PR using hardcoded preview URL', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
 			})
@@ -209,7 +207,7 @@ describe('ImplementIdeaDialog', () => {
 
 			const links = screen.getAllByRole('link')
 			const hrefs = links.map(l => l.getAttribute('href'))
-			expect(hrefs).toContain('https://preview.example.com/pr-42')
+			expect(hrefs).toContain('https://preview.chvalotce.cz/pr-42')
 			expect(hrefs).toContain('https://github.com/org/repo/pull/42')
 			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
@@ -232,9 +230,8 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 		})
 
-		it('prefers task.previewUrl over env-var-generated preview URL', async () => {
+		it('prefers task.previewUrl over hardcoded-URL-generated preview URL', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASK_WITH_DIRECT_PREVIEW_URL] }),
 			})
@@ -247,12 +244,11 @@ describe('ImplementIdeaDialog', () => {
 			const hrefs = links.map(l => l.getAttribute('href'))
 			// Should use the direct URL, not the generated one
 			expect(hrefs).toContain('https://direct-preview.example.com/pr-55')
-			expect(hrefs).not.toContain('https://preview.example.com/pr-55')
+			expect(hrefs).not.toContain('https://preview.chvalotce.cz/pr-55')
 		})
 
 		it('does not show preview link for non-completed tasks even when previewUrl is available', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
 			const runningTaskWithPr = {
 				taskId: '5',
 				status: 'running',
@@ -271,7 +267,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
-		it('shows preview link falling back to PR URL when NEXT_PUBLIC_PREVIEW_BASE_URL is not set', async () => {
+		it('always generates preview URL from hardcoded base URL when task has PR', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
@@ -283,8 +279,8 @@ describe('ImplementIdeaDialog', () => {
 
 			const links = screen.queryAllByRole('link')
 			const hrefs = links.map(l => l.getAttribute('href'))
-			// No generated preview URL (env var not set), but Preview button still shows using PR URL as fallback
-			expect(hrefs).not.toContain(expect.stringContaining('preview.example.com'))
+			// Always generates preview URL using hardcoded base URL
+			expect(hrefs).toContain('https://preview.chvalotce.cz/pr-42')
 			expect(hrefs).toContain('https://github.com/org/repo/pull/42')
 			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
@@ -313,7 +309,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 		})
 
-		it('does not show preview link for completed task with no URL at all', async () => {
+		it('shows disabled preview button (no link) for completed task with no URL at all', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			const completedNoUrl = {
 				taskId: '11',
@@ -329,13 +325,14 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
+			// Preview button is shown but not as a link (disabled state)
 			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			expect(screen.getByText('Preview')).toBeInTheDocument()
 			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 
 		it('clicking a task card with previewUrl opens it in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			process.env.NEXT_PUBLIC_PREVIEW_BASE_URL = 'https://preview.example.com'
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
 			})
@@ -347,12 +344,11 @@ describe('ImplementIdeaDialog', () => {
 			const card = screen.getByTitle('Open in new tab')
 			fireEvent.click(card)
 
-			expect(window.open).toHaveBeenCalledWith('https://preview.example.com/pr-42', '_blank')
+			expect(window.open).toHaveBeenCalledWith('https://preview.chvalotce.cz/pr-42', '_blank')
 		})
 
-		it('clicking a task card with only a PR URL opens PR in new tab', async () => {
+		it('clicking a task card with a PR opens the generated preview URL in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			// No NEXT_PUBLIC_PREVIEW_BASE_URL — only PR link available
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
 			})
@@ -364,7 +360,8 @@ describe('ImplementIdeaDialog', () => {
 			const card = screen.getByTitle('Open in new tab')
 			fireEvent.click(card)
 
-			expect(window.open).toHaveBeenCalledWith('https://github.com/org/repo/pull/42', '_blank')
+			// Uses hardcoded preview base URL to generate preview link
+			expect(window.open).toHaveBeenCalledWith('https://preview.chvalotce.cz/pr-42', '_blank')
 		})
 
 		it('task card without any URL has no title and does not trigger window.open', async () => {
