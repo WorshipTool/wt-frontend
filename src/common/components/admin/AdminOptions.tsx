@@ -50,7 +50,7 @@ export default function AdminOptionsProvider() {
 	// Position admin button above the FAB so they never overlap
 	const FAB_BOTTOM = 30
 	const FAB_SIZE = 56
-	const BUTTON_GAP = 10
+	const BUTTON_GAP = 16
 	const adminBottom = FAB_BOTTOM + FAB_SIZE + BUTTON_GAP + height
 
 	return !isAdmin() ? null : (
@@ -61,6 +61,7 @@ export default function AdminOptionsProvider() {
 						position: 'fixed',
 						bottom: adminBottom,
 						right: FAB_BOTTOM,
+						zIndex: 1100,
 					}}
 				>
 					<Badge
