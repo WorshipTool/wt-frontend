@@ -286,6 +286,7 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
+			// PR link is still shown in group header (task has a PR)
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
@@ -352,7 +353,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
 		})
 
-		it('clicking a task card with previewUrl opens it in new tab', async () => {
+		it('clicking the group container with previewUrl opens it in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
@@ -370,7 +371,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(window.open).toHaveBeenCalledWith('https://preview.chvalotce.cz/pr-42', '_blank')
 		})
 
-		it('clicking a task card with a PR opens the generated preview URL in new tab', async () => {
+		it('clicking the group container with a PR opens the generated preview URL in new tab', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
@@ -405,6 +406,172 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(promptEl)
 
 			expect(window.open).not.toHaveBeenCalled()
+		})
+	})
+
+	describe('Task grouping by PR', () => {
+		it('groups tasks with the same PR URL together', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const tasks = [
+				{
+					taskId: '1',
+					status: 'completed',
+					prompt: 'Initial dark mode',
+					pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/10' }],
+				},
+				{
+					taskId: '2',
+					status: 'running',
+					prompt: 'Dark mode iteration 2',
+					pullRequestNumber: 10,
+					pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/10' }],
+				},
+			]
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Both prompts should be visible
+			expect(screen.getByText('Initial dark mode')).toBeInTheDocument()
+			expect(screen.getByText('Dark mode iteration 2')).toBeInTheDocument()
+			// Only one PR link (group header)
+			const links = screen.queryAllByRole('link')
+			const prLinks = links.filter(l => l.getAttribute('href') === 'https://github.com/org/repo/pull/10')
+			expect(prLinks).toHaveLength(1)
+		})
+
+		it('groups tasks with the same pullRequestNumber together', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const tasks = [
+				{
+					taskId: '1',
+					status: 'completed',
+					prompt: 'First iteration',
+					pullRequests: [{ repo: 'repo', url: 'https://github.com/org/repo/pull/7' }],
+				},
+				{
+					taskId: '2',
+					status: 'running',
+					prompt: 'Second iteration',
+					pullRequestNumber: 7,
+					pullRequests: [],
+				},
+			]
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('First iteration')).toBeInTheDocument()
+			expect(screen.getByText('Second iteration')).toBeInTheDocument()
+		})
+
+		it('groups tasks with the same branch together', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const tasks = [
+				{
+					taskId: '1',
+					status: 'running',
+					prompt: 'Task on branch A',
+					branch: 'feature/my-feature',
+					pullRequests: [],
+				},
+				{
+					taskId: '2',
+					status: 'queued',
+					prompt: 'Task on branch A also',
+					branch: 'feature/my-feature',
+					pullRequests: [],
+				},
+				{
+					taskId: '3',
+					status: 'running',
+					prompt: 'Task on branch B',
+					branch: 'feature/other',
+					pullRequests: [],
+				},
+			]
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks }) })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('Task on branch A')).toBeInTheDocument()
+			expect(screen.getByText('Task on branch A also')).toBeInTheDocument()
+			expect(screen.getByText('Task on branch B')).toBeInTheDocument()
+		})
+
+		it('shows branch name in group header', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const tasks = [
+				{
+					taskId: '1',
+					status: 'running',
+					prompt: 'Add feature',
+					branch: 'feature/awesome',
+					pullRequests: [],
+				},
+			]
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks }) })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('feature/awesome')).toBeInTheDocument()
+		})
+
+		it('shows PR # in group header for task with PR', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// PR #42 should appear in the group header link
+			expect(screen.getByText(/PR #42/)).toBeInTheDocument()
+		})
+
+		it('shows preview button only for groups with completed tasks and PR', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const tasks = [
+				{
+					taskId: '1',
+					status: 'completed',
+					prompt: 'First iteration',
+					pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/20' }],
+				},
+				{
+					taskId: '2',
+					status: 'running',
+					prompt: 'Second iteration (still running)',
+					pullRequestNumber: 20,
+					pullRequests: [],
+				},
+			]
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Group has a completed task → preview button shown
+			expect(screen.getByTitle('Open preview')).toBeInTheDocument()
 		})
 	})
 
@@ -444,7 +611,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			// Card should not have "Open in new tab" title (no clickable URL)
+			// Group container should not have "Open in new tab" title (no clickable URL)
 			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
 
 			// Clicking the prompt text should not call window.open
@@ -465,10 +632,31 @@ describe('ImplementIdeaDialog', () => {
 
 			expect(screen.queryByText('noPr')).not.toBeInTheDocument()
 		})
+
+		it('does not show noPr for iteration task with pullRequestNumber but no pullRequests', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const iterationTask = {
+				taskId: '30',
+				status: 'completed',
+				prompt: 'Iteration task',
+				pullRequestNumber: 5,
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [iterationTask] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Iteration task has pullRequestNumber, so no "No PR" message
+			expect(screen.queryByText('noPr')).not.toBeInTheDocument()
+		})
 	})
 
 	describe('Merged PR behavior', () => {
-		it('shows merged badge when PR is merged', async () => {
+		it('shows merged badge in group header when PR is merged', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
@@ -513,7 +701,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
 		})
 
-		it('merged task card is not clickable (no card click URL)', async () => {
+		it('merged group container is not clickable (no card click URL)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
@@ -525,7 +713,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			// Card should not have "Open in new tab" title when merged
+			// Group tasks container should not have "Open in new tab" title when merged
 			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
 		})
 

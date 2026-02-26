@@ -985,7 +985,10 @@
 		"updateSubtitle": "Describe the change and it will be implemented automatically.",
 		"updatePlaceholder": "Describe what you want to change...",
 		"submitButton": "Submit change",
-		"submitComingSoon": "Coming soon",
+		"changeSubmitted": "Change submitted!",
+		"submitFailed": "Failed to submit change.",
+		"loading": "Loading...",
+		"nextRefreshIn": "Refreshes in {seconds}s",
 		"noHistory": "No change history.",
 		"refreshHistory": "Refresh history"
 	},

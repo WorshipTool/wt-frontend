@@ -968,7 +968,10 @@
 		"updateSubtitle": "Opisz zmianę, a zostanie automatycznie zaimplementowana.",
 		"updatePlaceholder": "Opisz co chcesz zmienić...",
 		"submitButton": "Wyślij zmianę",
-		"submitComingSoon": "Wkrótce dostępne",
+		"changeSubmitted": "Zmiana wysłana!",
+		"submitFailed": "Nie udało się wysłać zmiany.",
+		"loading": "Ładowanie...",
+		"nextRefreshIn": "Odświeży się za {seconds}s",
 		"noHistory": "Brak historii zmian.",
 		"refreshHistory": "Odśwież historię"
 	},

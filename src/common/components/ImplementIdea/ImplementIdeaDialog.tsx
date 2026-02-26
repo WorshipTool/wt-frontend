@@ -28,8 +28,21 @@ type Task = {
 	taskId: string
 	status: TaskStatus
 	prompt: string
+	title?: string
+	branch?: string
+	pullRequestNumber?: number
 	pullRequests: PullRequest[]
 	previewUrl?: string
+	startedAt?: string
+	completedAt?: string
+}
+
+type TaskGroup = {
+	key: string
+	pullRequestNumber: number | null
+	branch: string | null
+	pullRequests: PullRequest[]
+	tasks: Task[]
 }
 
 type ImplementIdeaDialogProps = {
@@ -84,10 +97,69 @@ async function checkPrMerged(prUrl: string): Promise<boolean> {
 
 const PREVIEW_BASE_URL = 'https://preview.chvalotce.cz'
 
-function getPreviewUrl(prUrl: string): string | null {
-	const prNumber = extractPrNumber(prUrl)
-	if (!prNumber) return null
-	return `${PREVIEW_BASE_URL}/pr-${prNumber}`
+function getGroupKey(task: Task): string {
+	// Primary: group by PR number from pullRequests URL
+	if (task.pullRequests?.length > 0) {
+		const prNumber = extractPrNumber(task.pullRequests[0].url)
+		if (prNumber) return `pr:${prNumber}`
+	}
+	// Secondary: group by pullRequestNumber (for iteration tasks before PR info is updated)
+	if (task.pullRequestNumber != null && task.pullRequestNumber > 0) {
+		return `pr:${task.pullRequestNumber}`
+	}
+	// Tertiary: group by branch
+	if (task.branch) {
+		return `branch:${task.branch}`
+	}
+	// Fallback: standalone group per task
+	return `task:${task.taskId}`
+}
+
+function groupTasks(tasks: Task[]): TaskGroup[] {
+	// tasks is expected to be in newest-first order (already reversed from API response)
+	// Map preserves insertion order, so groups are ordered by their newest task
+	const groups = new Map<string, TaskGroup>()
+
+	for (const task of tasks) {
+		const key = getGroupKey(task)
+
+		if (!groups.has(key)) {
+			groups.set(key, {
+				key,
+				pullRequestNumber: null,
+				branch: null,
+				pullRequests: [],
+				tasks: [],
+			})
+		}
+
+		const group = groups.get(key)!
+		group.tasks.push(task)
+
+		// Merge PR info into group (deduplicated by URL)
+		for (const pr of (task.pullRequests ?? [])) {
+			if (!group.pullRequests.some(gpr => gpr.url === pr.url)) {
+				group.pullRequests.push(pr)
+			}
+		}
+
+		// Set pullRequestNumber from task if not already set
+		if (!group.pullRequestNumber) {
+			if (task.pullRequestNumber && task.pullRequestNumber > 0) {
+				group.pullRequestNumber = task.pullRequestNumber
+			} else if (task.pullRequests?.length > 0) {
+				const num = extractPrNumber(task.pullRequests[0].url)
+				if (num) group.pullRequestNumber = parseInt(num, 10)
+			}
+		}
+
+		// Set branch if available and not yet set
+		if (!group.branch && task.branch) {
+			group.branch = task.branch
+		}
+	}
+
+	return Array.from(groups.values())
 }
 
 const POLL_INTERVAL_MS = 30_000
@@ -209,6 +281,8 @@ export default function ImplementIdeaDialog({
 		(t) => t.status === 'running' || t.status === 'retrying'
 	).length
 	const queuedCount = tasks.filter((t) => t.status === 'queued').length
+
+	const groups = groupTasks(tasks)
 
 	return (
 		<Popup
@@ -361,7 +435,7 @@ export default function ImplementIdeaDialog({
 					</>
 				)}
 
-				{/* Tab 1 — Recent ideas */}
+				{/* Tab 1 — Recent ideas (grouped by PR / branch) */}
 				{activeTab === 1 && (
 					<Box
 						sx={{
@@ -413,185 +487,248 @@ export default function ImplementIdeaDialog({
 								</Typography>
 							)}
 
-							{tasks.map((task) => {
-							const style = STATUS_STYLE[task.status]
-							const pr = task.pullRequests?.[0]
-							const prNumber = pr ? extractPrNumber(pr.url) : null
-							const previewUrl = task.previewUrl ?? (prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)
+							{groups.map((group) => {
+								const mainPr = group.pullRequests[0]
+								const prNumber = mainPr
+									? extractPrNumber(mainPr.url)
+									: (group.pullRequestNumber != null ? String(group.pullRequestNumber) : null)
 
-							const isCompletedNoPr = task.status === 'completed' && !pr
-							const isMerged = task.status === 'completed' && !!pr && mergedPrUrls.has(pr.url)
-							const isDisabled = isCompletedNoPr || isMerged
+								// Use the first completed task's previewUrl, or derive from PR number
+								const latestPreviewTask = group.tasks.find(t => t.previewUrl && t.status === 'completed')
+								const groupPreviewUrl = latestPreviewTask?.previewUrl
+									?? (prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)
 
-							// Preview URL is only valid for non-merged tasks
-							const openUrl = isDisabled
-								? null
-								: task.status === 'completed'
-									? (previewUrl ?? PREVIEW_BASE_URL)
-									: (previewUrl ?? pr?.url ?? null)
+								const isGroupMerged = mainPr ? mergedPrUrls.has(mainPr.url) : false
+								const hasCompletedWithPr = group.tasks.some(t => t.status === 'completed') && prNumber != null
+								const showPreviewButton = !isGroupMerged && hasCompletedWithPr && groupPreviewUrl != null
 
-							return (
-								<Box
-									key={task.taskId}
-									onClick={() => openUrl && window.open(openUrl, '_blank')}
-									title={openUrl ? 'Open in new tab' : undefined}
-									sx={{
-										display: 'flex',
-										alignItems: 'flex-start',
-										gap: 1.5,
-										p: 1.5,
-										borderRadius: 2,
-										bgcolor: isMerged
-											? alpha(PURPLE, 0.06)
-											: isCompletedNoPr
-												? alpha('#000', 0.03)
+								// URL opened when clicking the group container
+								const openUrl = isGroupMerged
+									? null
+									: groupPreviewUrl != null
+										? groupPreviewUrl
+										: (mainPr ? mainPr.url : null)
+
+								const showGroupHeader = !!(group.branch || mainPr || isGroupMerged)
+
+								return (
+									<Box
+										key={group.key}
+										sx={{
+											borderRadius: 2,
+											border: '1px solid',
+											borderColor: isGroupMerged
+												? alpha(PURPLE, 0.2)
+												: alpha('#000', 0.06),
+											bgcolor: isGroupMerged
+												? alpha(PURPLE, 0.06)
 												: 'rgba(255,255,255,0.6)',
-										border: '1px solid',
-										borderColor: isMerged
-											? alpha(PURPLE, 0.2)
-											: alpha('#000', 0.06),
-										opacity: isCompletedNoPr ? 0.55 : 1,
-										cursor: openUrl ? 'pointer' : 'default',
-										transition: 'background 0.15s, border-color 0.15s',
-										'&:hover': openUrl ? {
-											bgcolor: 'rgba(255,255,255,0.9)',
-											borderColor: alpha(BLUE, 0.25),
-										} : undefined,
-									}}
-								>
-									{/* Status chip + merged badge */}
-									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0 }}>
-										<Box
-											sx={{
-												bgcolor: style.bg,
-												color: style.color,
-												px: 1,
-												py: 0.25,
-												borderRadius: 1,
-												fontSize: '0.7rem',
-												fontWeight: 600,
-												whiteSpace: 'nowrap',
-												mt: 0.25,
-											}}
-										>
-											{t(`status.${task.status}`)}
-										</Box>
-										{isMerged && (
+											overflow: 'hidden',
+										}}
+									>
+										{/* Group header — shows branch/PR info + action buttons */}
+										{showGroupHeader && (
 											<Box
 												sx={{
-													bgcolor: alpha(PURPLE, 0.12),
-													color: PURPLE_DARK,
-													px: 1,
-													py: 0.25,
-													borderRadius: 1,
-													fontSize: '0.65rem',
-													fontWeight: 600,
-													whiteSpace: 'nowrap',
+													display: 'flex',
+													alignItems: 'center',
+													gap: 1,
+													px: 1.5,
+													py: 0.75,
+													borderBottom: `1px solid ${isGroupMerged ? alpha(PURPLE, 0.1) : alpha('#000', 0.06)}`,
+													bgcolor: isGroupMerged ? alpha(PURPLE, 0.04) : alpha('#000', 0.02),
 												}}
 											>
-												{t('merged')}
+												{/* Branch name + merged badge */}
+												<Box sx={{ flex: 1, display: 'flex', gap: 0.75, alignItems: 'center', minWidth: 0 }}>
+													{group.branch && (
+														<Typography
+															variant="normal"
+															size="0.7rem"
+															color="grey.500"
+															sx={{
+																fontFamily: 'monospace',
+																overflow: 'hidden',
+																textOverflow: 'ellipsis',
+																whiteSpace: 'nowrap',
+															}}
+														>
+															{group.branch}
+														</Typography>
+													)}
+													{isGroupMerged && (
+														<Box
+															sx={{
+																bgcolor: alpha(PURPLE, 0.12),
+																color: PURPLE_DARK,
+																px: 1,
+																py: 0.25,
+																borderRadius: 1,
+																fontSize: '0.65rem',
+																fontWeight: 600,
+																whiteSpace: 'nowrap',
+																flexShrink: 0,
+															}}
+														>
+															{t('merged')}
+														</Box>
+													)}
+												</Box>
+
+												{/* Action buttons: Preview + PR link */}
+												<Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
+													{showPreviewButton && groupPreviewUrl && (
+														<a
+															href={groupPreviewUrl}
+															target="_blank"
+															rel="noopener noreferrer"
+															title="Open preview"
+															style={{ textDecoration: 'none' }}
+															onClick={(e) => e.stopPropagation()}
+														>
+															<Box
+																sx={{
+																	display: 'flex',
+																	alignItems: 'center',
+																	gap: 0.4,
+																	color: BLUE,
+																	fontSize: '0.7rem',
+																	fontWeight: 700,
+																	bgcolor: alpha(BLUE, 0.1),
+																	border: '1px solid',
+																	borderColor: alpha(BLUE, 0.25),
+																	px: 0.75,
+																	py: 0.25,
+																	borderRadius: 1,
+																	whiteSpace: 'nowrap',
+																	transition: 'background 0.15s',
+																	'&:hover': { bgcolor: alpha(BLUE, 0.18) },
+																}}
+															>
+																<OpenInNew sx={{ fontSize: 11 }} />
+																Preview
+															</Box>
+														</a>
+													)}
+													{mainPr && (
+														<a
+															href={mainPr.url}
+															target="_blank"
+															rel="noopener noreferrer"
+															title="View GitHub PR"
+															style={{ textDecoration: 'none' }}
+															onClick={(e) => e.stopPropagation()}
+														>
+															<Box
+																sx={{
+																	display: 'flex',
+																	alignItems: 'center',
+																	gap: 0.4,
+																	color: isGroupMerged ? PURPLE_DARK : '#666',
+																	fontSize: '0.7rem',
+																	fontWeight: 600,
+																	bgcolor: isGroupMerged ? alpha(PURPLE, 0.08) : alpha('#000', 0.04),
+																	border: '1px solid',
+																	borderColor: isGroupMerged ? alpha(PURPLE, 0.2) : alpha('#000', 0.1),
+																	px: 0.75,
+																	py: 0.25,
+																	borderRadius: 1,
+																	whiteSpace: 'nowrap',
+																	transition: 'background 0.15s',
+																	'&:hover': {
+																		bgcolor: isGroupMerged ? alpha(PURPLE, 0.15) : alpha('#000', 0.08),
+																	},
+																}}
+															>
+																<OpenInNew sx={{ fontSize: 11 }} />
+																{prNumber ? `PR #${prNumber}` : 'PR'}
+															</Box>
+														</a>
+													)}
+												</Box>
 											</Box>
 										)}
-									</Box>
 
-									{/* Prompt + no-PR notice */}
-									<Box sx={{ flex: 1 }}>
-										<Typography
-											variant="normal"
-											size="0.82rem"
-											color="grey.800"
-											sx={{ lineHeight: 1.4 }}
+										{/* Tasks within the group (iterations) */}
+										<Box
+											onClick={() => openUrl && window.open(openUrl, '_blank')}
+											title={openUrl ? 'Open in new tab' : undefined}
+											sx={{
+												cursor: openUrl ? 'pointer' : 'default',
+												'&:hover': openUrl ? {
+													bgcolor: 'rgba(255,255,255,0.3)',
+												} : undefined,
+												transition: 'background 0.15s',
+											}}
 										>
-											{task.prompt?.length > 120
-												? task.prompt.slice(0, 120) + '…'
-												: task.prompt}
-										</Typography>
-										{isCompletedNoPr && (
-											<Typography
-												variant="normal"
-												size="0.72rem"
-												color="grey.400"
-												sx={{ display: 'block', mt: 0.5 }}
-											>
-												{t('noPr')}
-											</Typography>
-										)}
-									</Box>
+											{group.tasks.map((task, idx) => {
+												const style = STATUS_STYLE[task.status]
+												const isCompletedNoPr = task.status === 'completed'
+													&& !task.pullRequests?.length
+													&& !task.pullRequestNumber
 
-									{/* Action buttons */}
-									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{task.status === 'completed' && pr && !isMerged && (
-											<a
-												href={openUrl!}
-												target="_blank"
-												rel="noopener noreferrer"
-												title="Open preview"
-												style={{ textDecoration: 'none' }}
-												onClick={(e) => e.stopPropagation()}
-											>
-												<Box
-													sx={{
-														display: 'flex',
-														alignItems: 'center',
-														gap: 0.4,
-														color: BLUE,
-														fontSize: '0.7rem',
-														fontWeight: 700,
-														bgcolor: alpha(BLUE, 0.1),
-														border: '1px solid',
-														borderColor: alpha(BLUE, 0.25),
-														px: 0.75,
-														py: 0.25,
-														borderRadius: 1,
-														whiteSpace: 'nowrap',
-														transition: 'background 0.15s',
-														'&:hover': { bgcolor: alpha(BLUE, 0.18) },
-													}}
-												>
-													<OpenInNew sx={{ fontSize: 11 }} />
-													Preview
-												</Box>
-											</a>
-										)}
-										{pr && (
-											<a
-												href={pr.url}
-												target="_blank"
-												rel="noopener noreferrer"
-												title="View GitHub PR"
-												style={{ textDecoration: 'none' }}
-												onClick={(e) => e.stopPropagation()}
-											>
-												<Box
-													sx={{
-														display: 'flex',
-														alignItems: 'center',
-														gap: 0.4,
-														color: isMerged ? PURPLE_DARK : '#666',
-														fontSize: '0.7rem',
-														fontWeight: 600,
-														bgcolor: isMerged ? alpha(PURPLE, 0.08) : alpha('#000', 0.04),
-														border: '1px solid',
-														borderColor: isMerged ? alpha(PURPLE, 0.2) : alpha('#000', 0.1),
-														px: 0.75,
-														py: 0.25,
-														borderRadius: 1,
-														whiteSpace: 'nowrap',
-														transition: 'background 0.15s',
-														'&:hover': { bgcolor: isMerged ? alpha(PURPLE, 0.15) : alpha('#000', 0.08) },
-													}}
-												>
-													<OpenInNew sx={{ fontSize: 11 }} />
-													PR
-												</Box>
-											</a>
-										)}
-									</Box>
-								</Box>
-							)
-						})}
+												return (
+													<Box
+														key={task.taskId}
+														sx={{
+															display: 'flex',
+															alignItems: 'flex-start',
+															gap: 1.5,
+															p: 1.5,
+															borderTop: idx > 0 ? `1px solid ${alpha('#000', 0.05)}` : 'none',
+															opacity: isCompletedNoPr ? 0.55 : 1,
+														}}
+													>
+														{/* Status chip */}
+														<Box
+															sx={{
+																bgcolor: style.bg,
+																color: style.color,
+																px: 1,
+																py: 0.25,
+																borderRadius: 1,
+																fontSize: '0.7rem',
+																fontWeight: 600,
+																whiteSpace: 'nowrap',
+																mt: 0.25,
+																flexShrink: 0,
+															}}
+														>
+															{t(`status.${task.status}`)}
+														</Box>
 
-						<Gap value={0.5} />
+														{/* Prompt + no-PR notice */}
+														<Box sx={{ flex: 1 }}>
+															<Typography
+																variant="normal"
+																size="0.82rem"
+																color="grey.800"
+																sx={{ lineHeight: 1.4 }}
+															>
+																{task.prompt?.length > 120
+																	? task.prompt.slice(0, 120) + '…'
+																	: task.prompt}
+															</Typography>
+															{isCompletedNoPr && (
+																<Typography
+																	variant="normal"
+																	size="0.72rem"
+																	color="grey.400"
+																	sx={{ display: 'block', mt: 0.5 }}
+																>
+																	{t('noPr')}
+																</Typography>
+															)}
+														</Box>
+													</Box>
+												)
+											})}
+										</Box>
+									</Box>
+								)
+							})}
+
+							<Gap value={0.5} />
 						</Box>
 					</Box>
 				)}

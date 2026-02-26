@@ -968,7 +968,10 @@
 		"updateSubtitle": "Popište úpravu a bude automaticky implementována.",
 		"updatePlaceholder": "Popište co chcete upravit...",
 		"submitButton": "Odeslat úpravu",
-		"submitComingSoon": "Brzy dostupné",
+		"changeSubmitted": "Úprava odeslána!",
+		"submitFailed": "Nepodařilo se odeslat úpravu.",
+		"loading": "Načítání...",
+		"nextRefreshIn": "Obnoví se za {seconds}s",
 		"noHistory": "Žádná historie změn.",
 		"refreshHistory": "Obnovit historii"
 	},
