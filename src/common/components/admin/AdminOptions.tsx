@@ -1,12 +1,13 @@
 'use client'
 import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import Menu from '@/common/components/Menu/Menu'
-import { Box, IconButton } from '@/common/ui'
-import { Badge } from '@/common/ui/mui'
-import { grey } from '@/common/ui/mui/colors'
+import { Box } from '@/common/ui'
+import { Badge, Fab } from '@/common/ui/mui'
+import { Tooltip } from '@/common/ui'
 import useAuth from '@/hooks/auth/useAuth'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { AdminPanelSettings } from '@mui/icons-material'
+import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 export const ADMIN_OPTIONS_PROVIDER_ID = 'admin-options-provider'
@@ -63,29 +64,70 @@ export default function AdminOptionsProvider() {
 					pointerEvents: itemsCount > 0 ? 'auto' : 'none',
 				}}
 			>
-				<Badge
-					badgeContent={notifyItemsCount}
-					sx={{
-						'& .MuiBadge-badge': {
-							right: 8,
-							top: 4,
-							pointerEvents: 'none',
-							bgcolor: 'grey.900',
-							color: 'white',
-							border: '3px solid',
-							borderColor: grey[200],
-						},
-					}}
-				>
-					<IconButton
-						size="small"
-						color="black"
-						onClick={onClick}
-						variant="contained"
+				<Tooltip title="Admin panel" placement="left" arrow>
+					<motion.div
+						animate={
+							notifyItemsCount > 0
+								? {
+										scale: [1, 1.06, 1],
+								  }
+								: {}
+						}
+						transition={{
+							duration: 2,
+							repeat: notifyItemsCount > 0 ? Infinity : 0,
+							ease: 'easeInOut',
+						}}
+						style={{ borderRadius: '50%', display: 'inline-flex' }}
 					>
-						<AdminPanelSettings />
-					</IconButton>
-				</Badge>
+						<Badge
+							badgeContent={notifyItemsCount}
+							sx={{
+								'& .MuiBadge-badge': {
+									right: 6,
+									top: 6,
+									pointerEvents: 'none',
+									bgcolor: '#e53935',
+									color: 'white',
+									border: '2px solid white',
+									fontWeight: 700,
+									fontSize: '0.65rem',
+									minWidth: 20,
+									height: 20,
+									borderRadius: 10,
+								},
+							}}
+						>
+							<Fab
+								onClick={onClick}
+								size="medium"
+								aria-label="Admin panel"
+								sx={{
+									background:
+										'linear-gradient(135deg, #532EE7 0%, #0085FF 100%)',
+									color: 'white',
+									boxShadow:
+										'0 4px 16px rgba(83, 46, 231, 0.45), 0 2px 6px rgba(0,0,0,0.18)',
+									'&:hover': {
+										background:
+											'linear-gradient(135deg, #3d21b0 0%, #006bcc 100%)',
+										boxShadow:
+											'0 6px 22px rgba(83, 46, 231, 0.6), 0 3px 8px rgba(0,0,0,0.2)',
+										transform: 'translateY(-2px) scale(1.05)',
+									},
+									'&:active': {
+										transform: 'scale(0.96)',
+										boxShadow:
+											'0 2px 8px rgba(83, 46, 231, 0.35)',
+									},
+									transition: 'all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
+								}}
+							>
+								<AdminPanelSettings sx={{ fontSize: 26 }} />
+							</Fab>
+						</Badge>
+					</motion.div>
+				</Tooltip>
 			</Box>
 
 			<Menu
