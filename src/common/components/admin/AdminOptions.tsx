@@ -46,46 +46,47 @@ export default function AdminOptionsProvider() {
 
 	const { height } = useBottomPanel()
 
-	// FAB is at bottom: 30, height: 56px → admin button goes above it: 30 + 56 + 10 = 96
-	// zIndex: 1051 ensures it's always above MUI Fab (theme z-index: 1050)
+	// FAB (FloatingAddButton) is at bottom: 30, height: 56px → top edge at 86px
+	// Admin button sits above FAB: 30 + 56 + 10 = 96px from bottom
+	// Always render the button in the DOM (visibility: hidden when no items) so it
+	// never gets conditionally removed and then re-rendered behind the FAB.
+	// zIndex: 1100 (MUI appBar level) reliably renders above FAB (zIndex.fab = 1050).
 	return !isAdmin() ? null : (
 		<>
-			{itemsCount > 0 && (
-				<Box
+			<Box
+				sx={{
+					position: 'fixed',
+					bottom: 96 + height,
+					right: 30,
+					zIndex: 1100,
+					visibility: itemsCount > 0 ? 'visible' : 'hidden',
+					pointerEvents: itemsCount > 0 ? 'auto' : 'none',
+				}}
+			>
+				<Badge
+					badgeContent={notifyItemsCount}
 					sx={{
-						position: 'fixed',
-						bottom: 96 + height,
-						right: 30,
-						zIndex: 1051,
+						'& .MuiBadge-badge': {
+							right: 8,
+							top: 4,
+							pointerEvents: 'none',
+							bgcolor: 'grey.900',
+							color: 'white',
+							border: '3px solid',
+							borderColor: grey[200],
+						},
 					}}
 				>
-					<Badge
-						badgeContent={notifyItemsCount}
-						// overlap="circular"
-						// variant="dot"
-						sx={{
-							'& .MuiBadge-badge': {
-								right: 8,
-								top: 4,
-								pointerEvents: 'none',
-								bgcolor: 'grey.900',
-								color: 'white',
-								border: '3px solid',
-								borderColor: grey[200],
-							},
-						}}
+					<IconButton
+						size="small"
+						color="black"
+						onClick={onClick}
+						variant="contained"
 					>
-						<IconButton
-							size="small"
-							color="black"
-							onClick={onClick}
-							variant="contained"
-						>
-							<AdminPanelSettings />
-						</IconButton>
-					</Badge>
-				</Box>
-			)}
+						<AdminPanelSettings />
+					</IconButton>
+				</Badge>
+			</Box>
 
 			<Menu
 				anchor={anchor}
