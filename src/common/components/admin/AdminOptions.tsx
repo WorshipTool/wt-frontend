@@ -3,7 +3,6 @@ import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import Menu from '@/common/components/Menu/Menu'
 import { Box } from '@/common/ui'
 import { Badge, Fab } from '@/common/ui/mui'
-import { Tooltip } from '@/common/ui'
 import useAuth from '@/hooks/auth/useAuth'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { AdminPanelSettings } from '@mui/icons-material'
@@ -58,76 +57,91 @@ export default function AdminOptionsProvider() {
 				sx={{
 					position: 'fixed',
 					bottom: 96 + height,
-					right: 30,
+					right: 24,
 					zIndex: 1100,
 					visibility: itemsCount > 0 ? 'visible' : 'hidden',
 					pointerEvents: itemsCount > 0 ? 'auto' : 'none',
 				}}
 			>
-				<Tooltip title="Admin panel" placement="left" arrow>
-					<motion.div
-						animate={
-							notifyItemsCount > 0
+				<motion.div
+					initial={{ scale: 0.8, opacity: 0 }}
+					animate={
+						itemsCount > 0
+							? notifyItemsCount > 0
 								? {
-										scale: [1, 1.06, 1],
+										scale: [1, 1.04, 1],
+										opacity: 1,
 								  }
-								: {}
-						}
-						transition={{
-							duration: 2,
-							repeat: notifyItemsCount > 0 ? Infinity : 0,
-							ease: 'easeInOut',
+								: { scale: 1, opacity: 1 }
+							: { scale: 0.8, opacity: 0 }
+					}
+					transition={{
+						duration: notifyItemsCount > 0 ? 2.5 : 0.3,
+						repeat: notifyItemsCount > 0 ? Infinity : 0,
+						ease: 'easeInOut',
+					}}
+					style={{ display: 'inline-flex', borderRadius: 40 }}
+				>
+					<Badge
+						badgeContent={notifyItemsCount}
+						sx={{
+							'& .MuiBadge-badge': {
+								right: 10,
+								top: 10,
+								pointerEvents: 'none',
+								bgcolor: '#e53935',
+								color: 'white',
+								border: '2px solid white',
+								fontWeight: 700,
+								fontSize: '0.65rem',
+								minWidth: 20,
+								height: 20,
+								borderRadius: 10,
+								boxShadow: '0 2px 6px rgba(229, 57, 53, 0.6)',
+							},
 						}}
-						style={{ borderRadius: '50%', display: 'inline-flex' }}
 					>
-						<Badge
-							badgeContent={notifyItemsCount}
+						<Fab
+							onClick={onClick}
+							variant="extended"
+							size="large"
+							aria-label="Admin panel"
 							sx={{
-								'& .MuiBadge-badge': {
-									right: 6,
-									top: 6,
-									pointerEvents: 'none',
-									bgcolor: '#e53935',
-									color: 'white',
-									border: '2px solid white',
-									fontWeight: 700,
-									fontSize: '0.65rem',
-									minWidth: 20,
-									height: 20,
-									borderRadius: 10,
+								background:
+									'linear-gradient(135deg, #532EE7 0%, #0085FF 100%)',
+								color: 'white',
+								height: 52,
+								px: 2.5,
+								gap: 1,
+								borderRadius: 40,
+								boxShadow:
+									'0 4px 20px rgba(83, 46, 231, 0.5), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)',
+								fontWeight: 700,
+								fontSize: '0.82rem',
+								letterSpacing: '0.08em',
+								textTransform: 'uppercase',
+								minWidth: 130,
+								'&:hover': {
+									background:
+										'linear-gradient(135deg, #3d21b0 0%, #006bcc 100%)',
+									boxShadow:
+										'0 8px 28px rgba(83, 46, 231, 0.65), 0 4px 10px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2)',
+									transform: 'translateY(-3px) scale(1.03)',
 								},
+								'&:active': {
+									transform: 'translateY(0) scale(0.97)',
+									boxShadow:
+										'0 2px 10px rgba(83, 46, 231, 0.4)',
+								},
+								transition:
+									'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
 							}}
 						>
-							<Fab
-								onClick={onClick}
-								size="medium"
-								aria-label="Admin panel"
-								sx={{
-									background:
-										'linear-gradient(135deg, #532EE7 0%, #0085FF 100%)',
-									color: 'white',
-									boxShadow:
-										'0 4px 16px rgba(83, 46, 231, 0.45), 0 2px 6px rgba(0,0,0,0.18)',
-									'&:hover': {
-										background:
-											'linear-gradient(135deg, #3d21b0 0%, #006bcc 100%)',
-										boxShadow:
-											'0 6px 22px rgba(83, 46, 231, 0.6), 0 3px 8px rgba(0,0,0,0.2)',
-										transform: 'translateY(-2px) scale(1.05)',
-									},
-									'&:active': {
-										transform: 'scale(0.96)',
-										boxShadow:
-											'0 2px 8px rgba(83, 46, 231, 0.35)',
-									},
-									transition: 'all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
-								}}
-							>
-								<AdminPanelSettings sx={{ fontSize: 26 }} />
-							</Fab>
-						</Badge>
-					</motion.div>
-				</Tooltip>
+							<AdminPanelSettings sx={{ fontSize: 22 }} />
+							Admin
+						</Fab>
+					</Badge>
+				</motion.div>
 			</Box>
 
 			<Menu
