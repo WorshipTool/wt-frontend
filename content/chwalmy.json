@@ -1001,5 +1001,11 @@
 		"merged": "Połączone",
 		"filterActive": "Aktywne i otwarte PR",
 		"noActiveOrOpenPr": "Brak aktywnych zadań ani otwartych PR"
+	},
+	"broadcast": {
+		"dismiss": "Zamknij",
+		"next": "Następne",
+		"previous": "Poprzednie",
+		"pageIndicator": "{current} / {total}"
 	}
 }
