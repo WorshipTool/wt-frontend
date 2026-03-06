@@ -546,7 +546,7 @@ export default function ImplementIdeaDialog({
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{effectiveStatus === 'completed' && pr && !isMerged && (
+										{effectiveStatus === 'completed' && pr && pr.state === 'open' && (
 											<a
 												href={openUrl!}
 												target="_blank"
@@ -579,7 +579,7 @@ export default function ImplementIdeaDialog({
 												</Box>
 											</a>
 										)}
-										{pr && (
+										{pr && pr.state === 'open' && (
 											<a
 												href={pr.url}
 												target="_blank"

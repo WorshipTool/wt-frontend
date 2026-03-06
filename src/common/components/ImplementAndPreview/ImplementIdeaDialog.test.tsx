@@ -84,7 +84,7 @@ const MOCK_TASKS = [
 		taskId: '3',
 		status: 'completed',
 		prompt: 'Refactor auth service with better error handling and logging',
-		pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/42' }],
+		pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/42', state: 'open' }],
 		previewUrl: 'https://preview.chvalotce.cz/pr-42',
 	},
 ]
@@ -93,7 +93,7 @@ const MOCK_TASK_WITH_DIRECT_PREVIEW_URL = {
 	taskId: '4',
 	status: 'completed',
 	prompt: 'Add search feature',
-	pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/55' }],
+	pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/55', state: 'open' }],
 	previewUrl: 'https://direct-preview.example.com/pr-55',
 }
 
@@ -280,7 +280,7 @@ describe('ImplementIdeaDialog', () => {
 				taskId: '5',
 				status: 'running',
 				prompt: 'Work in progress',
-				pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/99' }],
+				pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/99', state: 'open' }],
 			}
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [runningTaskWithPr] }),
@@ -488,11 +488,15 @@ describe('ImplementIdeaDialog', () => {
 
 		it('does not show preview button when PR is merged', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const mergedPrTask = {
+				...MOCK_TASKS[2],
+				pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/42', state: 'merged' }],
+			}
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
-					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+					json: () => Promise.resolve({ tasks: [mergedPrTask] }),
 				})
-				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+				.mockResolvedValue({ status: 204 }) // GitHub API: merged
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
@@ -501,19 +505,24 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
 		})
 
-		it('still shows PR link button when PR is merged', async () => {
+		it('does not show PR link button when PR state is not open', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const closedPrTask = {
+				...MOCK_TASKS[2],
+				pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/42', state: 'closed' }],
+			}
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({
-					json: () => Promise.resolve({ tasks: [MOCK_TASKS[2]] }),
+					json: () => Promise.resolve({ tasks: [closedPrTask] }),
 				})
-				.mockResolvedValueOnce({ status: 204 }) // GitHub API: merged
+				.mockResolvedValue({ status: 404 })
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			expect(screen.getByTitle('View GitHub PR')).toBeInTheDocument()
+			expect(screen.queryByTitle('View GitHub PR')).not.toBeInTheDocument()
+			expect(screen.queryByTitle('Open preview')).not.toBeInTheDocument()
 		})
 
 		it('merged task card is not clickable (no card click URL)', async () => {
@@ -793,7 +802,7 @@ describe('ImplementIdeaDialog', () => {
 		it('inherits PRs from newer tasks when oldest has none', async () => {
 			const CHAIN_WITH_PR = [
 				{ taskId: 'c1', status: 'failed', prompt: 'Original idea', chainId: 'chain-B', startedAt: '2025-01-01T10:00:00Z', completedAt: '2025-01-01T10:05:00Z', pullRequests: [] },
-				{ taskId: 'c2', status: 'completed', prompt: 'Retry', chainId: 'chain-B', startedAt: '2025-01-02T10:00:00Z', completedAt: '2025-01-02T10:10:00Z', pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/99' }] },
+				{ taskId: 'c2', status: 'completed', prompt: 'Retry', chainId: 'chain-B', startedAt: '2025-01-02T10:00:00Z', completedAt: '2025-01-02T10:10:00Z', pullRequests: [{ repo: 'my-repo', url: 'https://github.com/org/repo/pull/99', state: 'open' }] },
 			]
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
