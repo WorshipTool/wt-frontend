@@ -44,10 +44,10 @@ export default async function RootLayout({
 	const messages = await getMessages()
 
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<HeadersProviders />
 			<Analytics />
-			<body>
+			<body suppressHydrationWarning>
 				<AppRouterCacheProvider>
 					<NextIntlClientProvider messages={messages} locale="en">
 						<AppProviders>
