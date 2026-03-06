@@ -992,6 +992,8 @@
 		"nextRefreshIn": "Odświeży się za {seconds}s",
 		"refreshButton": "Odśwież",
 		"noPr": "Brak PR",
-		"merged": "Połączone"
+		"merged": "Połączone",
+		"filterOpenPr": "Tylko otwarte PR",
+		"noIdeasWithOpenPr": "Brak pomysłów z otwartymi PR"
 	}
 }

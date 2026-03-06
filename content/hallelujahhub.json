@@ -1009,6 +1009,8 @@
 		"nextRefreshIn": "Refreshes in {seconds}s",
 		"refreshButton": "Refresh",
 		"noPr": "No PR",
-		"merged": "Merged"
+		"merged": "Merged",
+		"filterOpenPr": "Open PRs only",
+		"noIdeasWithOpenPr": "No ideas with open PRs"
 	}
 }

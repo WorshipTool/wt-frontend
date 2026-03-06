@@ -77,6 +77,7 @@ export default function ImplementIdeaDialog({
 	const [activeTab, setActiveTab] = useState(0)
 	const [countdown, setCountdown] = useState(POLL_INTERVAL_S)
 	const [mergedPrUrls, setMergedPrUrls] = useState<Set<string>>(new Set())
+	const [filterOpenPr, setFilterOpenPr] = useState(false)
 	const { enqueueSnackbar } = useSnackbar()
 
 	const url = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
@@ -233,6 +234,13 @@ export default function ImplementIdeaDialog({
 		(t) => ACTIVE_STATUSES.includes((t.displayStatus ?? t.status) as TaskStatus)
 	).length
 	const queuedCount = tasks.filter((t) => (t.displayStatus ?? t.status) === 'queued').length
+
+	const displayedTasks = filterOpenPr
+		? tasks.filter((task) => {
+				const pr = task.pullRequests?.[0]
+				return pr && pr.state === 'open' && !mergedPrUrls.has(pr.url)
+		  })
+		: tasks
 
 	return (
 		<Popup
@@ -394,26 +402,58 @@ export default function ImplementIdeaDialog({
 							gap: 1,
 						}}
 					>
-						{/* Refresh bar */}
+						{/* Toolbar: filter + refresh */}
 						<Box
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
-								justifyContent: 'flex-end',
+								justifyContent: 'space-between',
 								gap: 1,
 								mb: 0.25,
 							}}
 						>
-							<Typography variant="normal" size="0.72rem" color="grey.400">
-								{t('nextRefreshIn', { seconds: String(countdown) })}
-							</Typography>
-							<IconButton
-								small
-								onClick={handleRefresh}
-								aria-label={t('refreshButton')}
+							{/* Filter toggle chip */}
+							<Box
+								onClick={() => setFilterOpenPr((v) => !v)}
+								aria-pressed={filterOpenPr}
+								role="button"
+								sx={{
+									display: 'inline-flex',
+									alignItems: 'center',
+									cursor: 'pointer',
+									px: 1,
+									py: 0.3,
+									borderRadius: 1.5,
+									fontSize: '0.72rem',
+									fontWeight: 600,
+									border: '1px solid',
+									bgcolor: filterOpenPr ? alpha(BLUE, 0.12) : 'transparent',
+									borderColor: filterOpenPr ? alpha(BLUE, 0.3) : alpha('#000', 0.12),
+									color: filterOpenPr ? BLUE : 'grey.500',
+									transition: 'all 0.15s',
+									userSelect: 'none',
+									'&:hover': {
+										borderColor: alpha(BLUE, 0.3),
+										bgcolor: filterOpenPr ? alpha(BLUE, 0.16) : alpha(BLUE, 0.04),
+									},
+								}}
 							>
-								<Refresh fontSize="inherit" />
-							</IconButton>
+								{t('filterOpenPr')}
+							</Box>
+
+							{/* Countdown + refresh */}
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+								<Typography variant="normal" size="0.72rem" color="grey.400">
+									{t('nextRefreshIn', { seconds: String(countdown) })}
+								</Typography>
+								<IconButton
+									small
+									onClick={handleRefresh}
+									aria-label={t('refreshButton')}
+								>
+									<Refresh fontSize="inherit" />
+								</IconButton>
+							</Box>
 						</Box>
 
 						<Box
@@ -437,7 +477,13 @@ export default function ImplementIdeaDialog({
 								</Typography>
 							)}
 
-							{tasks.map((task) => {
+							{tasksLoaded && tasks.length > 0 && displayedTasks.length === 0 && (
+								<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
+									{t('noIdeasWithOpenPr')}
+								</Typography>
+							)}
+
+							{displayedTasks.map((task) => {
 							const effectiveStatus = task.displayStatus ?? task.status
 							const style = STATUS_STYLE[effectiveStatus]
 							const pr = task.pullRequests?.[0]
@@ -546,7 +592,7 @@ export default function ImplementIdeaDialog({
 
 									{/* Action buttons */}
 									<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flexShrink: 0, alignItems: 'flex-end' }}>
-										{effectiveStatus === 'completed' && pr && !isMerged && (
+										{effectiveStatus === 'completed' && pr && pr.state === 'open' && (
 											<a
 												href={openUrl!}
 												target="_blank"
@@ -579,7 +625,7 @@ export default function ImplementIdeaDialog({
 												</Box>
 											</a>
 										)}
-										{pr && (
+										{pr && pr.state === 'open' && (
 											<a
 												href={pr.url}
 												target="_blank"

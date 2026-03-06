@@ -84,6 +84,7 @@ describe('PreviewModeDialog', () => {
 	const defaultProps = { open: true, onClose: jest.fn() }
 
 	beforeEach(() => {
+		process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = 'http://test-api/tasks'
 		jest.clearAllMocks()
 		jest.useFakeTimers()
 		mockFetchWithTasks()
@@ -91,6 +92,10 @@ describe('PreviewModeDialog', () => {
 
 	afterEach(() => {
 		jest.useRealTimers()
+	})
+
+	afterAll(() => {
+		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	})
 
 	it('shows loading spinner initially', () => {
