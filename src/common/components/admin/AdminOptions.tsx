@@ -1,7 +1,6 @@
 'use client'
-import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import Menu from '@/common/components/Menu/Menu'
-import { useDownSize } from '@/common/hooks/useDownSize'
+import { CornerStack } from '@/common/components/CornerStack'
 import { Box, IconButton } from '@/common/ui'
 import { Badge } from '@/common/ui/mui'
 import { grey } from '@/common/ui/mui/colors'
@@ -45,48 +44,37 @@ export default function AdminOptionsProvider() {
 	}, [])
 	const { isAdmin } = useAuth()
 
-	const { height } = useBottomPanel()
-
-	const isSmall = useDownSize('sm')
-
-	const offset = isSmall ? 24 : 32
 	return !isAdmin() ? null : (
 		<>
-			{itemsCount > 0 && (
-				<Box
-					sx={{
-						position: 'fixed',
-						bottom: offset + height,
-						right: offset,
-					}}
-				>
-					<Badge
-						badgeContent={notifyItemsCount}
-						// overlap="circular"
-						// variant="dot"
-						sx={{
-							'& .MuiBadge-badge': {
-								right: 8,
-								top: 4,
-								pointerEvents: 'none',
-								bgcolor: 'grey.900',
-								color: 'white',
-								border: '3px solid',
-								borderColor: grey[200],
-							},
-						}}
-					>
-						<IconButton
-							size="small"
-							color="black"
-							onClick={onClick}
-							variant="contained"
+			<CornerStack corner="bottom-right">
+				{itemsCount > 0 && (
+					<Box>
+						<Badge
+							badgeContent={notifyItemsCount}
+							sx={{
+								'& .MuiBadge-badge': {
+									right: 8,
+									top: 4,
+									pointerEvents: 'none',
+									bgcolor: 'grey.900',
+									color: 'white',
+									border: '3px solid',
+									borderColor: grey[200],
+								},
+							}}
 						>
-							<AdminPanelSettings />
-						</IconButton>
-					</Badge>
-				</Box>
-			)}
+							<IconButton
+								size="small"
+								color="black"
+								onClick={onClick}
+								variant="contained"
+							>
+								<AdminPanelSettings />
+							</IconButton>
+						</Badge>
+					</Box>
+				)}
+			</CornerStack>
 
 			<Menu
 				anchor={anchor}

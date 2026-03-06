@@ -1,3 +1,4 @@
+import { CornerStack } from '@/common/components/CornerStack'
 import { Box, Tooltip } from '@/common/ui'
 import { Fab } from '@/common/ui/mui'
 import { Add } from '@mui/icons-material'
@@ -20,74 +21,55 @@ export default function FloatingAddButton({
 	const transition = 'all 0.2s ease'
 	const titleWidth = '90px'
 	return (
-		<Link to="addMenu" params={{}}>
-			<AnimatePresence>
-				{isLoggedIn() && (
-					<motion.div
-						initial={{
-							opacity: 0,
-						}}
-						animate={{
-							opacity: 1,
-						}}
-						exit={{
-							opacity: 0,
-						}}
-					>
-						<Tooltip title={tNavigation('tooltips.addSong')} placement="left">
-							<Fab
-								sx={{
-									position: 'fixed',
-									bottom: 30,
-									right: 30,
-									transition,
-									...(extended
-										? {
-												width: `calc( ${titleWidth} + 56px)`,
-										  }
-										: {
-												width: 56,
-										  }),
-								}}
-								color="primary"
-								variant={extended ? 'extended' : 'circular'}
+		<CornerStack corner="bottom-right">
+			<Link to="addMenu" params={{}}>
+				<AnimatePresence>
+					{isLoggedIn() && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+						>
+							<Tooltip
+								title={tNavigation('tooltips.addSong')}
+								placement="left"
 							>
-								<Add
-									sx={{
-										position: 'absolute',
-										transition,
-										...(extended
-											? {
-													mr: titleWidth,
-											  }
-											: {
-													mr: 0,
-											  }),
-									}}
-								/>
-								<Add sx={{ opacity: 0 }} />
-								<Box
+								<Fab
 									sx={{
 										transition,
-										overflowWrap: 'none',
-										overflow: 'hidden',
 										...(extended
-											? {
-													width: titleWidth,
-											  }
-											: {
-													width: 0,
-													opacity: 0,
-											  }),
+											? { width: `calc( ${titleWidth} + 56px)` }
+											: { width: 56 }),
 									}}
+									color="primary"
+									variant={extended ? 'extended' : 'circular'}
 								>
-									{tHome('floatingAdd.label')}
-								</Box>
-							</Fab>
-						</Tooltip>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</Link>
+									<Add
+										sx={{
+											position: 'absolute',
+											transition,
+											...(extended ? { mr: titleWidth } : { mr: 0 }),
+										}}
+									/>
+									<Add sx={{ opacity: 0 }} />
+									<Box
+										sx={{
+											transition,
+											overflowWrap: 'none',
+											overflow: 'hidden',
+											...(extended
+												? { width: titleWidth }
+												: { width: 0, opacity: 0 }),
+										}}
+									>
+										{tHome('floatingAdd.label')}
+									</Box>
+								</Fab>
+							</Tooltip>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</Link>
+		</CornerStack>
 	)
 }
