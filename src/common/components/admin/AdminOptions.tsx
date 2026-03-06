@@ -42,10 +42,12 @@ export default function AdminOptionsProvider() {
 	}, [])
 	const { isAdmin } = useAuth()
 
+	const hasItems = basicItemsCount > 0 || notifyItemsCount > 0
+
 	return !isAdmin() ? null : (
 		<>
 			<CornerStack corner="bottom-right" order={1}>
-				<Box>
+				<Box sx={{ display: hasItems ? undefined : 'none' }}>
 					<Badge
 						badgeContent={notifyItemsCount > 0 ? notifyItemsCount : undefined}
 						sx={{
