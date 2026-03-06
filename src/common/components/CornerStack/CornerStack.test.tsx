@@ -86,6 +86,55 @@ describe('CornerStack', () => {
 		expect(container).toContainElement(screen.getByTestId('second'))
 	})
 
+	it('applies CSS order style to control visual stacking position', async () => {
+		createContainer()
+
+		render(
+			<>
+				<CornerStack corner="bottom-right" order={1}>
+					<span data-testid="high-order">high</span>
+				</CornerStack>
+				<CornerStack corner="bottom-right" order={0}>
+					<span data-testid="low-order">low</span>
+				</CornerStack>
+			</>
+		)
+
+		await waitFor(() => {
+			expect(screen.getByTestId('high-order')).toBeInTheDocument()
+			expect(screen.getByTestId('low-order')).toBeInTheDocument()
+		})
+
+		const highWrapper = screen
+			.getByTestId('high-order')
+			.closest('div') as HTMLDivElement
+		const lowWrapper = screen
+			.getByTestId('low-order')
+			.closest('div') as HTMLDivElement
+
+		expect(highWrapper.style.order).toBe('1')
+		expect(lowWrapper.style.order).toBe('0')
+	})
+
+	it('uses order=0 as the default when order prop is not provided', async () => {
+		createContainer()
+
+		render(
+			<CornerStack corner="bottom-right">
+				<span data-testid="default-order">default</span>
+			</CornerStack>
+		)
+
+		await waitFor(() => {
+			expect(screen.getByTestId('default-order')).toBeInTheDocument()
+		})
+
+		const wrapper = screen
+			.getByTestId('default-order')
+			.closest('div') as HTMLDivElement
+		expect(wrapper.style.order).toBe('0')
+	})
+
 	it('removes portal content from the DOM on unmount', async () => {
 		createContainer()
 

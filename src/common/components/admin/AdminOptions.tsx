@@ -46,7 +46,7 @@ export default function AdminOptionsProvider() {
 
 	return !isAdmin() ? null : (
 		<>
-			<CornerStack corner="bottom-right">
+			<CornerStack corner="bottom-right" order={1}>
 				{itemsCount > 0 && (
 					<Box>
 						<Badge

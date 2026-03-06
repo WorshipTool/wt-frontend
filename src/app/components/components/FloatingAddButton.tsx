@@ -21,7 +21,7 @@ export default function FloatingAddButton({
 	const transition = 'all 0.2s ease'
 	const titleWidth = '90px'
 	return (
-		<CornerStack corner="bottom-right">
+		<CornerStack corner="bottom-right" order={0}>
 			<Link to="addMenu" params={{}}>
 				<AnimatePresence>
 					{isLoggedIn() && (

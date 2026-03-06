@@ -16,6 +16,15 @@ const CORNER_CONTAINER_IDS: Record<CornerPosition, string> = {
 interface CornerStackProps {
 	corner: CornerPosition
 	children: ReactNode
+	/**
+	 * CSS flex `order` value controlling the visual stacking position.
+	 * Lower values appear closer to the corner (bottom), higher values
+	 * appear further from the corner (above). Does not depend on DOM
+	 * insertion order or effect timing.
+	 *
+	 * Default: 0
+	 */
+	order?: number
 }
 
 /**
@@ -23,17 +32,24 @@ interface CornerStackProps {
  * CornerStackProvider. Multiple elements using the same corner will be
  * stacked vertically (column) above each other, never overlapping.
  *
- * Elements mount in React tree order: elements that mount earlier appear
- * at the bottom (closest to the corner), later ones stack above.
+ * Use the `order` prop to explicitly control the visual stacking position.
+ * Lower order = closer to the corner; higher order = further from the corner.
  *
  * Usage:
  * ```tsx
- * <CornerStack corner="bottom-right">
+ * <CornerStack corner="bottom-right" order={0}>
  *   <MyFloatingButton />
+ * </CornerStack>
+ * <CornerStack corner="bottom-right" order={1}>
+ *   <MyAdminButton />  {/* appears above MyFloatingButton *\/}
  * </CornerStack>
  * ```
  */
-export default function CornerStack({ corner, children }: CornerStackProps) {
+export default function CornerStack({
+	corner,
+	children,
+	order = 0,
+}: CornerStackProps) {
 	const containerRef = useRef<HTMLElement | null>(null)
 	const [mounted, setMounted] = useState(false)
 
@@ -49,7 +65,7 @@ export default function CornerStack({ corner, children }: CornerStackProps) {
 	if (!containerRef.current || !mounted) return null
 
 	return createPortal(
-		<div style={{ pointerEvents: 'auto' }}>{children}</div>,
+		<div style={{ pointerEvents: 'auto', order }}>{children}</div>,
 		containerRef.current
 	)
 }
