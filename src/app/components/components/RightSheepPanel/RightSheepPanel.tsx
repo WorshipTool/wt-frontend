@@ -1,10 +1,9 @@
 'use client'
 import AllListPanel from '@/app/components/components/AllListPanel/AllListPanel'
 import LastAddedPanel from '@/app/components/components/LastAddedPanel/LastAddedPanel'
+import SheepAnimation from '@/app/components/components/RightSheepPanel/SheepAnimation'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
-import { Box, Image, Typography } from '@/common/ui'
-import { getAssetUrl } from '@/tech/paths.tech'
-import { motion } from 'framer-motion'
+import { Box, Typography } from '@/common/ui'
 import { useTranslations } from 'next-intl'
 
 type Props = {
@@ -32,31 +31,7 @@ export default function RightSheepPanel(props: Props) {
 					zIndex: -1,
 				}}
 			>
-				<motion.div
-					animate={{
-						y: [0, -12, 0],
-						rotate: [0, -1.5, 0, 1.5, 0],
-					}}
-					transition={{
-						y: {
-							duration: 3,
-							repeat: Infinity,
-							ease: 'easeInOut',
-						},
-						rotate: {
-							duration: 4,
-							repeat: Infinity,
-							ease: 'easeInOut',
-						},
-					}}
-				>
-					<Image
-						src={getAssetUrl('/sheeps/ovce3.svg')}
-						alt={t('sheep')}
-						width={sheepSize}
-						height={sheepSize}
-					/>
-				</motion.div>
+				<SheepAnimation size={sheepSize} aria-label={t('sheep')} />
 			</Box>
 			{showLastAdded ? (
 				<LastAddedPanel mobileVersion={props.mobileVersion} />
