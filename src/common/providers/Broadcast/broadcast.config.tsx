@@ -33,28 +33,25 @@ import { BroadcastMessage } from './broadcast.types'
 export function getBroadcastMessages(): BroadcastMessage[] {
   return [
     // ─── Add operational messages here ─────────────────────────────────────
-    //
-    // Example — uncomment and edit to activate:
-    //
-    // {
-    //   id: 'maintenance-2026-04',
-    //   title: 'Scheduled Maintenance',
-    //   message:
-    //     'The service will be unavailable on Sunday 6 April from 02:00 to 04:00 UTC for scheduled maintenance.',
-    //   severity: 'warning',
-    //   createdAt: '2026-04-01T00:00:00Z',
-    //   expiresAt:  '2026-04-06T04:00:00Z',
-    //   active: true,
-    // },
-    //
-    // {
-    //   id: 'outage-2026-03',
-    //   title: 'Service Disruption',
-    //   message: 'We are experiencing issues with search. Our team is investigating.',
-    //   severity: 'critical',
-    //   createdAt: '2026-03-15T10:00:00Z',
-    //   active: true,
-    // },
+    {
+      id: 'info-2026-03-01',
+      title: 'Vítejte v nové verzi',
+      message:
+        'Spustili jsme aktualizovanou verzi aplikace s vylepšeným výkonem a novými funkcemi. Děkujeme za vaši trpělivost.',
+      severity: 'info',
+      createdAt: '2026-03-06T08:00:00Z',
+      active: true,
+    },
+    {
+      id: 'maintenance-2026-03-01',
+      title: 'Plánovaná údržba',
+      message:
+        'Tuto neděli 8. března od 02:00 do 04:00 SEČ proběhne plánovaná údržba. Během této doby může být aplikace nedostupná.',
+      severity: 'warning',
+      createdAt: '2026-03-06T08:00:00Z',
+      expiresAt: '2026-03-08T04:00:00Z',
+      active: true,
+    },
     // ───────────────────────────────────────────────────────────────────────
   ]
 }
