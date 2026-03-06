@@ -81,10 +81,15 @@ jobs:
             return deployment.data.id;
 
       - name: Deploy PR preview on server
-        run: |
-          PR=${{ github.event.pull_request.number }}
-          ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
-          "/root/worshiptool/preview/deploy-preview.sh $PR"
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            PR=${{ github.event.pull_request.number }}
+            ssh -o ServerAliveInterval=1000 "${{ secrets.DEVELOPMENT_SERVER_USERNAME }}@${{ secrets.DEVELOPMENT_SERVER_URL }}" \
+            "/root/worshiptool/preview/deploy-preview.sh $PR"
 
       - name: Update GitHub Deployment status
         if: always() && steps.deployment.outputs.result != ''
