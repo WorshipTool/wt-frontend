@@ -1,12 +1,10 @@
 import { BACKEND_URL } from '@/api/constants'
 import { ImagesApiAxiosParamCreator } from '@/api/generated'
 import { useTeamChecker } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
-import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { CommonLinkProps } from '@/common/ui/Link/Link'
 import { SxProps } from '@/common/ui/mui'
 import useAuth from '@/hooks/auth/useAuth'
 import { RoutesKeys } from '@/routes'
-import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { isDevelopment } from '@/tech/development.tech'
 import { getIconUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
@@ -29,15 +27,11 @@ export type MenuItemProps<T extends RoutesKeys> = {
 export const searchGroupsEvent = new Event('searchGroups')
 
 export default function useToolsMenuItems() {
-	const navigate = useSmartNavigate()
-
 	const { isAdmin } = useAuth()
 	const tNavigation = useTranslations('navigation')
 
 	const { teams } = useUserTeams()
 	const isTeamOn = useTeamChecker()
-
-	const showAdminPage = useFlag('show_admin_page')
 
 	const imagesApi = ImagesApiAxiosParamCreator({
 		isJsonMime: () => true,
@@ -91,20 +85,6 @@ export default function useToolsMenuItems() {
 				to: 'home',
 				hidden: !isTeamOn,
 			},
-			{
-				title: 'Admin',
-				to: 'admin',
-				image: getIconUrl('admin.png'),
-				hidden: !showAdminPage,
-				imageSizeCoef: 0.8,
-			},
-			{
-				title: 'ML Trénink',
-				to: 'adminMlTraining',
-				image: getIconUrl('ai-song.png'),
-				hidden: !showAdminPage,
-				imageSizeCoef: 0.8,
-			},
 
 			...(isDevelopment
 				? [
@@ -124,7 +104,7 @@ export default function useToolsMenuItems() {
 				: []),
 			...teamsItems,
 		]
-	}, [isAdmin, isTeamOn, showAdminPage, tNavigation, teamsItems])
+	}, [isAdmin, isTeamOn, tNavigation, teamsItems])
 
 	return {
 		items,
