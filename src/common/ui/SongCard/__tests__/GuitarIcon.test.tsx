@@ -13,12 +13,12 @@ describe('GuitarIcon', () => {
 		expect(document.querySelector('svg[aria-label="guitar"]')).toBeInTheDocument()
 	})
 
-	it('applies the default size of 18 when no size prop is given', () => {
+	it('applies the default size of 22 when no size prop is given', () => {
 		render(<GuitarIcon />)
 		const svg = document.querySelector('svg[aria-label="guitar"]') as SVGSVGElement
 		expect(svg).toBeInTheDocument()
-		expect(svg.getAttribute('width')).toBe('18')
-		expect(svg.getAttribute('height')).toBe('18')
+		expect(svg.getAttribute('width')).toBe('22')
+		expect(svg.getAttribute('height')).toBe('22')
 	})
 
 	it('applies a custom size when the size prop is provided', () => {
