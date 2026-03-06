@@ -4,6 +4,7 @@ import { DragTemplatesContainer } from '@/common/components/DragTemplate/DragTem
 import ImplementIdeaProvider from '@/common/components/ImplementAndPreview/ImplementIdeaProvider'
 import PopupProvider from '@/common/components/Popup/PopupProvider'
 import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
+import GlobalAdminNavOptions from '@/common/components/admin/GlobalAdminNavOptions'
 import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
@@ -57,6 +58,7 @@ export default async function RootLayout({
 							<CornerStackProvider />
 							<DragTemplatesContainer />
 							<AdminOptionsProvider />
+							<GlobalAdminNavOptions />
 							<ImplementIdeaProvider />
 
 							<UnavailableMessage />
