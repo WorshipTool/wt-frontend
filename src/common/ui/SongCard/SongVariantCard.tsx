@@ -20,6 +20,7 @@ import { BasicVariantPack } from '../../../api/dtos'
 import useAuth from '../../../hooks/auth/useAuth'
 import { CustomChip } from '../CustomChip/CustomChip'
 import { CommonLinkProps, Link } from '../Link/Link'
+import GuitarIcon from './components/GuitarIcon'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -112,6 +113,7 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const hasChords = !!sheet.getKeyChord()
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -358,6 +360,21 @@ export const SongVariantCard = memo(function S({
 							/>
 						</Box>
 					</Box>
+
+					{hasChords && (
+						<Box
+							sx={{
+								position: 'absolute',
+								bottom: '0.5rem',
+								right: '0.5rem',
+								color: 'grey.400',
+								lineHeight: 0,
+								pointerEvents: 'none',
+							}}
+						>
+							<GuitarIcon size={16} tooltip={t('hasChords')} />
+						</Box>
+					)}
 				</StyledContainer>
 			</Link>
 		</DraggableSong>

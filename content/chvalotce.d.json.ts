@@ -32,6 +32,7 @@ declare const messages: {
 		"private": "Soukromé",
 		"createdByYou": "Vytvořeno vámi",
 		"uploadedByProgram": "Nahráno programem",
+		"hasChords": "Obsahuje akordy",
 		"addedOn": "Přidáno dne",
 		"authors": "Autoři",
 		"authorName": "Jméno autora",
