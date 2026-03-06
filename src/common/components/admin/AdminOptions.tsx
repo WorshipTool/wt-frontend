@@ -26,8 +26,6 @@ export default function AdminOptionsProvider() {
 	const [basicItemsCount, setBasicItemsCount] = useState(0)
 	const [notifyItemsCount, setNotifyItemsCount] = useState(0)
 
-	const itemsCount = basicItemsCount + notifyItemsCount
-
 	useEffect(() => {
 		const closeAdminOptions = () => {
 			setOpen(false)
@@ -47,33 +45,31 @@ export default function AdminOptionsProvider() {
 	return !isAdmin() ? null : (
 		<>
 			<CornerStack corner="bottom-right" order={1}>
-				{itemsCount > 0 && (
-					<Box>
-						<Badge
-							badgeContent={notifyItemsCount}
-							sx={{
-								'& .MuiBadge-badge': {
-									right: 8,
-									top: 4,
-									pointerEvents: 'none',
-									bgcolor: 'grey.900',
-									color: 'white',
-									border: '3px solid',
-									borderColor: grey[200],
-								},
-							}}
+				<Box>
+					<Badge
+						badgeContent={notifyItemsCount > 0 ? notifyItemsCount : undefined}
+						sx={{
+							'& .MuiBadge-badge': {
+								right: 8,
+								top: 4,
+								pointerEvents: 'none',
+								bgcolor: 'grey.900',
+								color: 'white',
+								border: '3px solid',
+								borderColor: grey[200],
+							},
+						}}
+					>
+						<IconButton
+							size="small"
+							color="black"
+							onClick={onClick}
+							variant="contained"
 						>
-							<IconButton
-								size="small"
-								color="black"
-								onClick={onClick}
-								variant="contained"
-							>
-								<AdminPanelSettings />
-							</IconButton>
-						</Badge>
-					</Box>
-				)}
+							<AdminPanelSettings />
+						</IconButton>
+					</Badge>
+				</Box>
 			</CornerStack>
 
 			<Menu
