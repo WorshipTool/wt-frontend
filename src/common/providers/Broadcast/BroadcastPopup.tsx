@@ -198,7 +198,7 @@ export function BroadcastPopup() {
           >
             {currentBroadcast.title}
           </Typography>
-          <Typography variant="subtitle1" strong={300}>
+          <Typography variant="subtitle1" strong={300} sx={{ whiteSpace: 'pre-line' }}>
             {currentBroadcast.message}
           </Typography>
         </Box>

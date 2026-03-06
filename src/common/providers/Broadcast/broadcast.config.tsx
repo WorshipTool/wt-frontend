@@ -34,22 +34,13 @@ export function getBroadcastMessages(): BroadcastMessage[] {
   return [
     // ─── Add operational messages here ─────────────────────────────────────
     {
-      id: 'info-2026-03-01',
-      title: 'Vítejte v nové verzi',
+      id: 'apology-2026-03',
+      title: 'Omlouváme se za výpadky aplikace',
       message:
-        'Spustili jsme aktualizovanou verzi aplikace s vylepšeným výkonem a novými funkcemi. Děkujeme za vaši trpělivost.',
-      severity: 'info',
-      createdAt: '2026-03-06T08:00:00Z',
-      active: true,
-    },
-    {
-      id: 'maintenance-2026-03-01',
-      title: 'Plánovaná údržba',
-      message:
-        'Tuto neděli 8. března od 02:00 do 04:00 SEČ proběhne plánovaná údržba. Během této doby může být aplikace nedostupná.',
+        'Dobrý den,\n\nchci se vám osobně omluvit za problémy, které jste v posledním měsíci s naší aplikací zažívali. Vím, že časté pády aplikace jsou frustrující a narušují vaši práci — a to mi není lhostejné.\n\nIntenzivně na opravě pracujeme a situaci sledujeme každý den. Věříme, že ji brzy vyřešíme.\n\nPokud byste se mezitím dostali do nesnází nebo potřebovali cokoliv vyřešit, neváhejte mi přímo zavolat.\n\nDěkuji za vaši trpělivost a pochopení.',
       severity: 'warning',
-      createdAt: '2026-03-06T08:00:00Z',
-      expiresAt: '2026-03-08T04:00:00Z',
+      createdAt: '2026-03-06T09:00:00Z',
+      expiresAt: '2026-03-22T23:59:59Z',
       active: true,
     },
     // ───────────────────────────────────────────────────────────────────────
