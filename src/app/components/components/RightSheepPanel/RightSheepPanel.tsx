@@ -4,6 +4,7 @@ import LastAddedPanel from '@/app/components/components/LastAddedPanel/LastAdded
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Box, Image, Typography } from '@/common/ui'
 import { getAssetUrl } from '@/tech/paths.tech'
+import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 
 type Props = {
@@ -31,12 +32,31 @@ export default function RightSheepPanel(props: Props) {
 					zIndex: -1,
 				}}
 			>
-				<Image
-					src={getAssetUrl('/sheeps/ovce3.svg')}
-					alt={t('sheep')}
-					width={sheepSize}
-					height={sheepSize}
-				/>
+				<motion.div
+					animate={{
+						y: [0, -12, 0],
+						rotate: [0, -1.5, 0, 1.5, 0],
+					}}
+					transition={{
+						y: {
+							duration: 3,
+							repeat: Infinity,
+							ease: 'easeInOut',
+						},
+						rotate: {
+							duration: 4,
+							repeat: Infinity,
+							ease: 'easeInOut',
+						},
+					}}
+				>
+					<Image
+						src={getAssetUrl('/sheeps/ovce3.svg')}
+						alt={t('sheep')}
+						width={sheepSize}
+						height={sheepSize}
+					/>
+				</motion.div>
 			</Box>
 			{showLastAdded ? (
 				<LastAddedPanel mobileVersion={props.mobileVersion} />
