@@ -67,6 +67,10 @@ export type BroadcastContextValue = {
   currentIndex: number
   /** Total number of active undismissed messages */
   totalCount: number
+  /** Whether the broadcast popup is currently open */
+  isPopupOpen: boolean
+  /** Close the broadcast popup (without dismissing messages) */
+  closePopup: () => void
   /** Dismiss a specific message by ID (persisted to localStorage) */
   dismiss: (id: BroadcastMessageId) => void
   /** Dismiss all active messages at once */

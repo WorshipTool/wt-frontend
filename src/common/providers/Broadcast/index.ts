@@ -7,7 +7,7 @@
  * ## Setup (already done in AppClientProviders)
  *
  * 1. Wrap your app with `BroadcastProvider`
- * 2. Render `<BroadcastBanner />` inside the provider
+ * 2. Render `<BroadcastPopup />` inside the provider
  *
  * ## Adding a message
  *
@@ -49,3 +49,4 @@ export { BroadcastProvider, useBroadcast } from './BroadcastContext'
 
 // UI
 export { BroadcastBanner } from './BroadcastBanner'
+export { BroadcastPopup } from './BroadcastPopup'

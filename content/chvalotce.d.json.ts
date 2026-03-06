@@ -1009,7 +1009,9 @@ declare const messages: {
 		"dismiss": "Zavřít",
 		"next": "Další",
 		"previous": "Předchozí",
-		"pageIndicator": "{current} / {total}"
+		"pageIndicator": "{current} / {total}",
+		"popupLabel": "Systémové oznámení",
+		"dismissAll": "Zavřít vše"
 	}
 };
 export default messages;

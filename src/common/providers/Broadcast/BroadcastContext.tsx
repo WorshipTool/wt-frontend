@@ -20,6 +20,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { getActiveBroadcasts } from './broadcast.config'
@@ -28,6 +29,9 @@ import {
   BroadcastMessage,
   BroadcastMessageId,
 } from './broadcast.types'
+
+/** Delay before the popup auto-appears (ms) — matches news system */
+const POPUP_AUTO_SHOW_DELAY_MS = 500
 
 // ─── localStorage helpers ─────────────────────────────────────────────────────
 
@@ -69,13 +73,21 @@ function useBroadcastProvider(): BroadcastContextValue {
   /** Per-user set of dismissed message IDs */
   const [dismissedIds, setDismissedIds] = useState<BroadcastMessageId[]>([])
 
-  /** Index of the message currently shown in the banner */
+  /** Index of the message currently shown in the popup */
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  /** Popup open/closed state */
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
+
+  /** Guard: popup auto-shown at most once per session */
+  const alreadyShownRef = useRef(false)
 
   // Hydrate dismissed IDs from localStorage once the user is known
   useEffect(() => {
     if (!isLoggedIn() || !user) {
       setDismissedIds([])
+      setIsPopupOpen(false)
+      alreadyShownRef.current = false
       return
     }
     setDismissedIds(getDismissedIds(user.guid as string))
@@ -94,6 +106,28 @@ function useBroadcastProvider(): BroadcastContextValue {
       return Math.min(prev, activeBroadcasts.length - 1)
     })
   }, [activeBroadcasts.length])
+
+  // Auto-close popup when all messages are dismissed
+  useEffect(() => {
+    if (activeBroadcasts.length === 0) {
+      setIsPopupOpen(false)
+    }
+  }, [activeBroadcasts.length])
+
+  // Auto-open popup once per session when active broadcasts appear
+  useEffect(() => {
+    if (
+      !alreadyShownRef.current &&
+      isLoggedIn() &&
+      activeBroadcasts.length > 0
+    ) {
+      alreadyShownRef.current = true
+      const timer = setTimeout(() => {
+        setIsPopupOpen(true)
+      }, POPUP_AUTO_SHOW_DELAY_MS)
+      return () => clearTimeout(timer)
+    }
+  }, [activeBroadcasts.length, isLoggedIn])
 
   const currentBroadcast: BroadcastMessage | null =
     activeBroadcasts[currentIndex] ?? null
@@ -130,11 +164,17 @@ function useBroadcastProvider(): BroadcastContextValue {
     )
   }, [totalCount])
 
+  const closePopup = useCallback(() => {
+    setIsPopupOpen(false)
+  }, [])
+
   return {
     activeBroadcasts,
     currentBroadcast,
     currentIndex,
     totalCount,
+    isPopupOpen,
+    closePopup,
     dismiss,
     dismissAll,
     navigateNext,

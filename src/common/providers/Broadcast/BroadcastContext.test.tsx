@@ -261,4 +261,46 @@ describe('BroadcastContext', () => {
       consoleSpy.mockRestore()
     })
   })
+
+  describe('popup state', () => {
+    it('starts with popup closed', async () => {
+      mockMessages = [makeMessage('msg-1')]
+      const { result } = renderHook(() => useBroadcast(), { wrapper })
+      // Before the auto-show delay fires, popup should be closed
+      expect(result.current.isPopupOpen).toBe(false)
+    })
+
+    it('closePopup sets isPopupOpen to false', async () => {
+      mockMessages = [makeMessage('msg-1')]
+      const { result } = renderHook(() => useBroadcast(), { wrapper })
+
+      await act(async () => {})
+
+      act(() => {
+        result.current.closePopup()
+      })
+
+      expect(result.current.isPopupOpen).toBe(false)
+    })
+
+    it('popup closes automatically when all messages are dismissed', async () => {
+      jest.useFakeTimers()
+      mockMessages = [makeMessage('msg-1')]
+      const { result } = renderHook(() => useBroadcast(), { wrapper })
+
+      await act(async () => {
+        jest.advanceTimersByTime(600) // past POPUP_AUTO_SHOW_DELAY_MS
+      })
+
+      expect(result.current.isPopupOpen).toBe(true)
+
+      act(() => {
+        result.current.dismiss('msg-1')
+      })
+
+      expect(result.current.isPopupOpen).toBe(false)
+
+      jest.useRealTimers()
+    })
+  })
 })

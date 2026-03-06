@@ -13,7 +13,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { SnackbarProvider } from 'notistack'
 
 import { BottomPanelProvider } from '@/app/providers/BottomPanelProvider'
-import { BroadcastBanner, BroadcastProvider } from '@/common/providers/Broadcast'
+import { BroadcastPopup, BroadcastProvider } from '@/common/providers/Broadcast'
 import { FeatureFlagsProvider } from '@/common/providers/FeatureFlags/FeatureFlagsProvider'
 import { NewsProvider, NewsPopup } from '@/common/providers/News'
 import { OutsideLinkBlockerProvider } from '@/common/ui/Link/useOutsideBlocker'
@@ -64,7 +64,7 @@ export default function AppClientProviders({
 																					<EditProposalsProvider>
 																						{children}
 																						<NewsPopup />
-																						<BroadcastBanner />
+																						<BroadcastPopup />
 																					</EditProposalsProvider>
 																				</SongDragProvider>
 																			</CurrentPlaylistProvider>

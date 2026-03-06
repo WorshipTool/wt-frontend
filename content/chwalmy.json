@@ -1006,6 +1006,8 @@
 		"dismiss": "Zamknij",
 		"next": "Następne",
 		"previous": "Poprzednie",
-		"pageIndicator": "{current} / {total}"
+		"pageIndicator": "{current} / {total}",
+		"popupLabel": "Ogłoszenie systemowe",
+		"dismissAll": "Zamknij wszystkie"
 	}
 }

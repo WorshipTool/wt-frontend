@@ -1006,6 +1006,8 @@
 		"dismiss": "Dismiss",
 		"next": "Next",
 		"previous": "Previous",
-		"pageIndicator": "{current} / {total}"
+		"pageIndicator": "{current} / {total}",
+		"popupLabel": "System notice",
+		"dismissAll": "Dismiss all"
 	}
 }
