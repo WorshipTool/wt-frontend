@@ -367,12 +367,12 @@ export const SongVariantCard = memo(function S({
 								position: 'absolute',
 								bottom: '0.5rem',
 								right: '0.5rem',
-								color: 'grey.400',
+								color: 'grey.600',
 								lineHeight: 0,
 								pointerEvents: 'none',
 							}}
 						>
-							<GuitarIcon size={16} tooltip={t('hasChords')} />
+							<GuitarIcon size={22} tooltip={t('hasChords')} />
 						</Box>
 					)}
 				</StyledContainer>
