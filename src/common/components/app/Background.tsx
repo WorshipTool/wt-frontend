@@ -5,7 +5,10 @@ import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
 
 const Bg = styled(Box)(({ theme }) => ({
-	background: `linear-gradient(160deg, ${theme.palette.grey[200]}, ${theme.palette.grey[300]})`,
+	background:
+		theme.palette.mode === 'dark'
+			? `linear-gradient(160deg, ${theme.palette.grey[900]}, ${theme.palette.grey[800]})`
+			: `linear-gradient(160deg, #e8f5e9, #c8e6c9)`,
 	position: 'fixed',
 	width: '100%',
 	top: 0,
