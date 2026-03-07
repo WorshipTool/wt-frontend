@@ -37,7 +37,7 @@ export function getBroadcastMessages(): BroadcastMessage[] {
       id: 'apology-2026-03',
       title: 'Omlouváme se za výpadky aplikace',
       message:
-        'Omlouváme se za opakované výpadky aplikace v posledních týdnech. Intenzivně pracujeme na nápravě. Děkujeme za trpělivost.',
+        'Upřímně se omlouváme za výpadky, které vás v poslední době omezovaly. Intenzivně pracujeme na nápravě — děkujeme za vaši trpělivost.',
       severity: 'warning',
       createdAt: '2026-03-06T09:00:00Z',
       expiresAt: '2026-03-22T23:59:59Z',

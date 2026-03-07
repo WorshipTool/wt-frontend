@@ -252,8 +252,9 @@ export function BroadcastPopup() {
             display: 'flex',
             justifyContent: 'center',
             gap: 1.5,
-            flexDirection: hasPagination ? 'row' : 'column',
+            flexDirection: 'row',
             alignItems: 'center',
+            flexWrap: 'wrap',
           }}
         >
           {hasPagination && (
