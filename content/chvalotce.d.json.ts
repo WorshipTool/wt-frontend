@@ -995,7 +995,9 @@ declare const messages: {
 		"nextRefreshIn": "Obnoví se za {seconds}s",
 		"refreshButton": "Obnovit",
 		"noPr": "Nemá PR",
-		"merged": "Sloučeno"
+		"merged": "Sloučeno",
+		"filterOpenPr": "Jen otevřené PR",
+		"noIdeasWithOpenPr": "Žádné nápady s otevřenými PR"
 	}
 };
 export default messages;

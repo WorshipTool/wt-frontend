@@ -33,8 +33,8 @@ jest.mock('../Popup/Popup', () => ({
 }))
 
 jest.mock('../../ui', () => ({
-	Box: ({ children, onClick, title, onKeyDown, sx }: { children: React.ReactNode; onClick?: () => void; title?: string; onKeyDown?: React.KeyboardEventHandler; sx?: unknown }) => (
-		<div onClick={onClick} title={title} onKeyDown={onKeyDown}>{children}</div>
+	Box: ({ children, onClick, title, onKeyDown, role, 'aria-pressed': ariaPressed }: { children: React.ReactNode; onClick?: () => void; title?: string; onKeyDown?: React.KeyboardEventHandler; sx?: unknown; role?: string; 'aria-pressed'?: boolean }) => (
+		<div onClick={onClick} title={title} onKeyDown={onKeyDown} role={role} aria-pressed={ariaPressed}>{children}</div>
 	),
 	Button: ({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) => (
 		<button disabled={disabled}>{children}</button>
@@ -853,6 +853,202 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			expect(screen.getByText('My prompt text')).toBeInTheDocument()
+		})
+	})
+
+	describe('Open PR filter', () => {
+		const TASKS_MIXED = [
+			{
+				taskId: 'f1',
+				status: 'running',
+				prompt: 'Running task no PR',
+				pullRequests: [],
+			},
+			{
+				taskId: 'f2',
+				status: 'completed',
+				prompt: 'Completed with open PR',
+				pullRequests: [{ repo: 'r', url: 'https://github.com/org/repo/pull/10', state: 'open' }],
+				previewUrl: 'https://preview.chvalotce.cz/pr-10',
+			},
+			{
+				taskId: 'f3',
+				status: 'completed',
+				prompt: 'Completed with closed PR',
+				pullRequests: [{ repo: 'r', url: 'https://github.com/org/repo/pull/11', state: 'closed' }],
+			},
+			{
+				taskId: 'f4',
+				status: 'completed',
+				prompt: 'Completed no PR',
+				pullRequests: [],
+			},
+		]
+
+		it('shows filter toggle chip in recent ideas tab', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('filterOpenPr')).toBeInTheDocument()
+		})
+
+		it('filter chip is inactive by default (aria-pressed=false)', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			expect(filterBtn).toHaveAttribute('aria-pressed', 'false')
+		})
+
+		it('toggling filter activates it (aria-pressed=true)', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			fireEvent.click(filterBtn)
+
+			expect(filterBtn).toHaveAttribute('aria-pressed', 'true')
+		})
+
+		it('shows all tasks when filter is off', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: TASKS_MIXED }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
+			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
+			expect(screen.getByText('Completed with closed PR')).toBeInTheDocument()
+			expect(screen.getByText('Completed no PR')).toBeInTheDocument()
+		})
+
+		it('shows only tasks with open (non-merged) PRs when filter is on', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: TASKS_MIXED }) })
+				.mockResolvedValue({ status: 404 }) // all PRs not merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			fireEvent.click(filterBtn)
+
+			// Only the task with open PR should be shown
+			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
+			// Others should be hidden
+			expect(screen.queryByText('Running task no PR')).not.toBeInTheDocument()
+			expect(screen.queryByText('Completed with closed PR')).not.toBeInTheDocument()
+			expect(screen.queryByText('Completed no PR')).not.toBeInTheDocument()
+		})
+
+		it('shows noIdeasWithOpenPr message when filter is on and no tasks have open PRs', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const noOpenPrTasks = [
+				{ taskId: 'x1', status: 'running', prompt: 'Running task', pullRequests: [] },
+				{ taskId: 'x2', status: 'completed', prompt: 'Done no PR', pullRequests: [] },
+			]
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: noOpenPrTasks }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			fireEvent.click(filterBtn)
+
+			expect(screen.getByText('noIdeasWithOpenPr')).toBeInTheDocument()
+			expect(screen.queryByText('noIdeas')).not.toBeInTheDocument()
+		})
+
+		it('does not show noIdeasWithOpenPr when total tasks is zero (shows noIdeas instead)', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			fireEvent.click(filterBtn)
+
+			expect(screen.getByText('noIdeas')).toBeInTheDocument()
+			expect(screen.queryByText('noIdeasWithOpenPr')).not.toBeInTheDocument()
+		})
+
+		it('excludes merged PRs from filtered results', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const mergedPrTask = {
+				taskId: 'm1',
+				status: 'completed',
+				prompt: 'Merged PR task',
+				pullRequests: [{ repo: 'r', url: 'https://github.com/org/repo/pull/77', state: 'open' }],
+				previewUrl: 'https://preview.chvalotce.cz/pr-77',
+			}
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: [mergedPrTask] }) })
+				.mockResolvedValue({ status: 204 }) // GitHub: merged
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			fireEvent.click(filterBtn)
+
+			// Merged task should be excluded from open PR filter
+			expect(screen.queryByText('Merged PR task')).not.toBeInTheDocument()
+			expect(screen.getByText('noIdeasWithOpenPr')).toBeInTheDocument()
+		})
+
+		it('toggling filter off restores all tasks', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			;(global.fetch as jest.Mock)
+				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: TASKS_MIXED }) })
+				.mockResolvedValue({ status: 404 })
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+
+			// Enable filter
+			fireEvent.click(filterBtn)
+			expect(screen.queryByText('Running task no PR')).not.toBeInTheDocument()
+
+			// Disable filter
+			fireEvent.click(filterBtn)
+			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
+			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
+			expect(screen.getByText('Completed with closed PR')).toBeInTheDocument()
 		})
 	})
 
