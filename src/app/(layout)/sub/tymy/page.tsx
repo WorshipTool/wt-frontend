@@ -110,10 +110,11 @@ async function Page() {
 							position={'relative'}
 						>
 							<Image
-								src={getAssetUrl('team-preview.png')}
+								src={getAssetUrl('team-preview.webp')}
 								alt={t('teamScreenPreview')}
 								fill
 								priority
+								sizes="(max-width: 600px) 400px, 70vw"
 							/>
 						</Box>
 						<Box marginBottom={4}>

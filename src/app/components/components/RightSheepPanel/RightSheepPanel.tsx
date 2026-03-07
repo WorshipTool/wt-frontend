@@ -36,6 +36,7 @@ export default function RightSheepPanel(props: Props) {
 					alt={t('sheep')}
 					width={sheepSize}
 					height={sheepSize}
+					priority
 				/>
 			</Box>
 			{showLastAdded ? (

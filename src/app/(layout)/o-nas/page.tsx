@@ -122,6 +122,7 @@ function Page() {
 						src={'/assets/sheeps/ovce1.svg'}
 						alt={t('graphics.introSheepAlt')}
 						fill
+						priority
 						style={{
 							transform: 'translateY(15%)',
 						}}

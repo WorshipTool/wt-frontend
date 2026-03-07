@@ -115,7 +115,7 @@ export default function Footer() {
 							{tFooter('cooperation')}
 						</Typography>
 						<Image
-							src={getAssetUrl('worshipko.png')}
+							src={getAssetUrl('worshipko.webp')}
 							alt={tFooter('logoAlt')}
 							width={150}
 							height={30}
