@@ -20,7 +20,7 @@ import { BasicVariantPack } from '../../../api/dtos'
 import useAuth from '../../../hooks/auth/useAuth'
 import { CustomChip } from '../CustomChip/CustomChip'
 import { CommonLinkProps, Link } from '../Link/Link'
-import GuitarIcon from './components/GuitarIcon'
+import ChordKeyBadge from './components/ChordKeyBadge'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -113,7 +113,7 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
-	const hasChords = !!sheet.getKeyChord()
+	const keyChord = sheet.getKeyChord()?.toString() ?? null
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -361,21 +361,17 @@ export const SongVariantCard = memo(function S({
 						</Box>
 					</Box>
 
-					{hasChords && (
+					{keyChord && (
 						<Box
 							sx={{
 								position: 'absolute',
 								bottom: '0.4rem',
 								right: '0.4rem',
-								color: 'grey.600',
 								lineHeight: 0,
 								pointerEvents: 'none',
-								backgroundColor: 'inherit',
-								borderRadius: '4px',
-								padding: '2px',
 							}}
 						>
-							<GuitarIcon size={16} tooltip={t('hasChords')} />
+							<ChordKeyBadge chordKey={keyChord} tooltip={t('hasChords')} />
 						</Box>
 					)}
 				</StyledContainer>
