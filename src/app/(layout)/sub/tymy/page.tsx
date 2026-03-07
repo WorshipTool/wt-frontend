@@ -65,7 +65,7 @@ async function Page() {
 						}}
 					>
 						<Image
-							src={'/assets/gradient-shapes/shape1.svg'}
+							src={getAssetUrl('gradient-shapes/shape1.svg')}
 							alt={t('backgroundShape')}
 							width={500}
 							height={500}
@@ -77,7 +77,7 @@ async function Page() {
 						}}
 					>
 						<Image
-							src={'/assets/gradient-shapes/shape2.svg'}
+							src={getAssetUrl('gradient-shapes/shape2.svg')}
 							alt={t('backgroundShape')}
 							width={500}
 							height={500}

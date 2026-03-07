@@ -42,7 +42,7 @@ export default function SheepBigGraphics() {
 					}}
 				>
 					<Image
-						src={'/assets/bubble.svg'}
+						src={getAssetUrl('bubble.svg')}
 						alt={tAbout('graphics.bubbleAlt')}
 						fill
 					/>
