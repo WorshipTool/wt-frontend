@@ -370,7 +370,7 @@ export const SongVariantCard = memo(function S({
 								color: 'grey.600',
 								lineHeight: 0,
 								pointerEvents: 'none',
-								backgroundColor: 'white',
+								backgroundColor: 'inherit',
 								borderRadius: '4px',
 								padding: '2px',
 							}}
