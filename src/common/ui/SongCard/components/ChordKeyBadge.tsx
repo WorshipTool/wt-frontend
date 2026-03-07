@@ -9,7 +9,7 @@ type ChordKeyBadgeProps = {
 }
 
 /**
- * Displays the song's key chord as a letter inside a dark filled circle.
+ * Displays the song's key chord as a letter inside a subtle light circle.
  * Used to indicate that a song variant contains chord notation.
  */
 export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgeProps) {
@@ -24,7 +24,7 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 				width: 22,
 				height: 22,
 				borderRadius: '50%',
-				backgroundColor: 'grey.800',
+				backgroundColor: 'grey.300',
 				flexShrink: 0,
 				...sx,
 			}}
@@ -32,9 +32,9 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 			<Typography
 				component="span"
 				sx={{
-					color: 'white',
+					color: 'grey.600',
 					fontSize: '0.6rem',
-					fontWeight: 700,
+					fontWeight: 600,
 					lineHeight: 1,
 					letterSpacing: 0,
 					userSelect: 'none',
