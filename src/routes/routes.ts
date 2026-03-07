@@ -53,6 +53,7 @@ export const routesPaths = {
 	teamPlaylists: '/sub/tymy/[alias]/playlisty',
 	teamPublic: '/sub/tymy/v/[alias]',
 	teamPublicSong: '/sub/tymy/v/[alias]/pisen/[hex]/[title-alias]',
+	teamNoAccess: '/sub/tymy/brez-pristupu/[alias]',
 } as const
 
 // DONT REMOVE

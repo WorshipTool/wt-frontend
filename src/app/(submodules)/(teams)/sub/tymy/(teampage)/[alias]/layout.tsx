@@ -49,7 +49,10 @@ export default async function TeamLayout(layout: LayoutProps<'team'>) {
 
 	const membershipCheck = await checkLayoutUserMembership(info.alias)
 	if (!membershipCheck) {
-		if (payload.showSongbookForNotMembers) {
+		const isPlaylistPath = pathname.includes('/playlist/')
+		if (isPlaylistPath) {
+			smartRedirect('teamNoAccess', { alias: info.alias })
+		} else if (payload.showSongbookForNotMembers) {
 			smartRedirect('teamPublic', { alias: info.alias })
 		} else if (membershipCheck === null) {
 			smartRedirect('login', {
@@ -57,7 +60,7 @@ export default async function TeamLayout(layout: LayoutProps<'team'>) {
 				message: 'Pro vstup do týmu se musíte přihlásit',
 			})
 		} else {
-			smartRedirect('teams', {})
+			smartRedirect('teamNoAccess', { alias: info.alias })
 		}
 	}
 
