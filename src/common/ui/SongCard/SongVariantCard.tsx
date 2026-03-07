@@ -365,8 +365,8 @@ export const SongVariantCard = memo(function S({
 						<Box
 							sx={{
 								position: 'absolute',
-								bottom: '0.4rem',
-								right: '0.4rem',
+								bottom: '1rem',
+								right: '1rem',
 								lineHeight: 0,
 								pointerEvents: 'none',
 							}}
