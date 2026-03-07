@@ -47,6 +47,7 @@ export default function SongGroupCard({
 					display: 'flex',
 					flexDirection: 'column-reverse',
 					position: 'relative',
+					isolation: 'isolate',
 					zIndex: hovered ? 1 : undefined,
 				}}
 			>
@@ -78,7 +79,7 @@ export default function SongGroupCard({
 									bottom: MAX_STACK_OFFSET - offsetY,
 									filter: `brightness(${brightness}) `,
 									transform: `rotate(${rotate}deg)`,
-									zIndex: -_i,
+									zIndex: restSliced.length - _i,
 									transition: 'bottom 0.2s, transform 0.2s',
 								}}
 							>
