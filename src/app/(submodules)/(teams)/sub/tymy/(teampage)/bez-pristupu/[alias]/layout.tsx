@@ -1,5 +1,5 @@
 import { LayoutProps } from '@/common/types'
 
-export default function BrezPristupuLayout(props: LayoutProps<'teamNoAccess'>) {
+export default function BezPristupuLayout(props: LayoutProps<'teamNoAccess'>) {
 	return <>{props.children}</>
 }

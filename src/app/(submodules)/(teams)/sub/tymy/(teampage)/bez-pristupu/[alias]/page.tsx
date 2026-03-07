@@ -6,9 +6,9 @@ import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { LockPerson } from '@mui/icons-material'
 import { notFound } from 'next/navigation'
-import BrezPristupuActions from './BrezPristupuActions'
+import BezPristupuActions from './BezPristupuActions'
 
-export default async function BrezPristupuPage(
+export default async function BezPristupuPage(
 	props: PageProps<'teamNoAccess'>
 ) {
 	const info = await getLayoutTeamInfo(props.params.alias)
@@ -61,7 +61,7 @@ export default async function BrezPristupuPage(
 
 				<Gap value={1.5} />
 
-				<BrezPristupuActions />
+				<BezPristupuActions />
 			</Box>
 		</Box>
 	)

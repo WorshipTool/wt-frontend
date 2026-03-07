@@ -4,7 +4,7 @@ import { Button } from '@/common/ui'
 import useAuth from '@/hooks/auth/useAuth'
 import { useState } from 'react'
 
-export default function BrezPristupuActions() {
+export default function BezPristupuActions() {
 	const { user } = useAuth()
 	const [open, setOpen] = useState(false)
 
