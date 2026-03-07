@@ -274,6 +274,13 @@ export const SongVariantCard = memo(function S({
 							overflow: 'hidden',
 						}}
 					>
+						{keyChord && (
+							<ChordKeyBadge
+								chordKey={keyChord}
+								tooltip={t('hasChords')}
+								sx={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
+							/>
+						)}
 						<Box display={'flex'} flexDirection={'row'} gap={1} alignItems={'center'}>
 							<Typography
 								strong
@@ -291,9 +298,6 @@ export const SongVariantCard = memo(function S({
 								/>
 								{title}
 							</Typography>
-							{keyChord && (
-								<ChordKeyBadge chordKey={keyChord} tooltip={t('hasChords')} />
-							)}
 							<Box>
 								{showPrivate || showYourPublic ? (
 									<CustomChip

@@ -21,8 +21,8 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 				display: 'inline-flex',
 				alignItems: 'center',
 				justifyContent: 'center',
-				width: 22,
-				height: 22,
+				width: 18,
+				height: 18,
 				borderRadius: '50%',
 				backgroundColor: 'grey.300',
 				flexShrink: 0,
@@ -33,7 +33,7 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 				component="span"
 				sx={{
 					color: 'grey.600',
-					fontSize: '0.6rem',
+					fontSize: '0.55rem',
 					fontWeight: 600,
 					lineHeight: 1,
 					letterSpacing: 0,
