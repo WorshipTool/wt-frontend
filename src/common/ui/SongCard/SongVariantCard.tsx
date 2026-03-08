@@ -278,7 +278,7 @@ export const SongVariantCard = memo(function S({
 							<ChordKeyBadge
 								chordKey={keyChord}
 								tooltip={t('hasChords')}
-								sx={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
+								sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
 							/>
 						)}
 						<Box display={'flex'} flexDirection={'row'} gap={1} alignItems={'center'}>
