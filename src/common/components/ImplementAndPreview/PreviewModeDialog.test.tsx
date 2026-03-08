@@ -113,6 +113,10 @@ describe('PreviewModeDialog', () => {
 		jest.useRealTimers()
 	})
 
+	afterAll(() => {
+		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+	})
+
 	it('shows loading spinner initially', () => {
 		render(<PreviewModeDialog {...defaultProps} />)
 		expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
