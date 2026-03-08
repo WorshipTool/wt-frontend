@@ -1080,6 +1080,51 @@ describe('ImplementIdeaDialog', () => {
 		})
 	})
 
+	describe('Unknown/unexpected status handling', () => {
+		it('does not crash when a task has an unknown status', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const taskWithUnknownStatus = {
+				taskId: 'u1',
+				status: 'pending', // not in STATUS_STYLE
+				prompt: 'Unknown status task',
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [taskWithUnknownStatus] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// The dialog should still render without crashing
+			expect(screen.getByText('Unknown status task')).toBeInTheDocument()
+			// The status text itself should be rendered
+			expect(screen.getByText('pending')).toBeInTheDocument()
+		})
+
+		it('does not crash when displayStatus is an unknown value', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const taskWithUnknownDisplayStatus = {
+				taskId: 'u2',
+				status: 'running',
+				prompt: 'Chain task with unknown displayStatus',
+				pullRequests: [],
+				chainId: 'chain-X',
+				displayStatus: 'cancelled', // not in STATUS_STYLE
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [taskWithUnknownDisplayStatus] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('Chain task with unknown displayStatus')).toBeInTheDocument()
+		})
+	})
+
 	describe('Ctrl+Enter submit', () => {
 		it('shows Ctrl+Enter hint text in submit tab', () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
