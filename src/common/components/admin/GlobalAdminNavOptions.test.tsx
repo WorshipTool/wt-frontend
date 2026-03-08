@@ -34,6 +34,23 @@ jest.mock('./AdminOption', () => ({
 jest.mock('@mui/icons-material', () => ({
 	AdminPanelSettings: () => <span>AdminPanelSettingsIcon</span>,
 	Psychology: () => <span>PsychologyIcon</span>,
+	PersonAdd: () => <span>PersonAddIcon</span>,
+}))
+
+// Mock useAuth used by LoginAsTestUser
+const mockSignup = jest.fn()
+const mockLogin = jest.fn()
+jest.mock('../../../hooks/auth/useAuth', () => ({
+	__esModule: true,
+	default: () => ({
+		signup: mockSignup,
+		login: mockLogin,
+	}),
+}))
+
+// Mock generateTestEmail used by LoginAsTestUser
+jest.mock('../../../tech/test-user/generateTestEmail', () => ({
+	generateTestEmail: () => 'testABC123@test.cz',
 }))
 
 import GlobalAdminNavOptions from './GlobalAdminNavOptions'
@@ -43,12 +60,20 @@ describe('GlobalAdminNavOptions', () => {
 		jest.clearAllMocks()
 	})
 
-	it('renders nothing when show_admin_page flag is false', () => {
+	it('renders only the test user option when show_admin_page flag is false', () => {
 		mockUseFlag.mockReturnValue(false)
 
-		const { container } = render(<GlobalAdminNavOptions />)
+		render(<GlobalAdminNavOptions />)
 
-		expect(container).toBeEmptyDOMElement()
+		expect(
+			screen.queryByTestId('admin-option-Admin'),
+		).not.toBeInTheDocument()
+		expect(
+			screen.queryByTestId('admin-option-ML Trénink'),
+		).not.toBeInTheDocument()
+		expect(
+			screen.getByTestId('admin-option-Přihlásit si jako test'),
+		).toBeInTheDocument()
 	})
 
 	it('renders Admin and ML Trénink options when show_admin_page flag is true', () => {
@@ -58,6 +83,16 @@ describe('GlobalAdminNavOptions', () => {
 
 		expect(screen.getByTestId('admin-option-Admin')).toBeInTheDocument()
 		expect(screen.getByTestId('admin-option-ML Trénink')).toBeInTheDocument()
+	})
+
+	it('always renders LoginAsTestUser option regardless of feature flag', () => {
+		mockUseFlag.mockReturnValue(false)
+
+		render(<GlobalAdminNavOptions />)
+
+		expect(
+			screen.getByTestId('admin-option-Přihlásit si jako test'),
+		).toBeInTheDocument()
 	})
 
 	it('calls navigate with "admin" when Admin option is clicked', () => {
