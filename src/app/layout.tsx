@@ -5,6 +5,11 @@ import ImplementIdeaProvider from '@/common/components/ImplementAndPreview/Imple
 import PopupProvider from '@/common/components/Popup/PopupProvider'
 import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
 import GlobalAdminNavOptions from '@/common/components/admin/GlobalAdminNavOptions'
+import {
+	AdminEditOverlay,
+	ProposalCornerButton,
+	ProposalDialog,
+} from '@/common/components/admin/EditProposals'
 import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
@@ -69,6 +74,9 @@ export default async function RootLayout({
 							<AdminOptionsProvider />
 							<GlobalAdminNavOptions />
 							<ImplementIdeaProvider />
+							<AdminEditOverlay />
+							<ProposalDialog />
+							<ProposalCornerButton />
 							<UnavailableMessage />
 						</AppProviders>
 					</NextIntlClientProvider>

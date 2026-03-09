@@ -4,6 +4,7 @@ import { FooterProvider } from '@/common/components/Footer/hooks/useFooter'
 import { ToolbarProvider } from '@/common/components/Toolbar/hooks/useToolbar'
 import ErrorBoundary from '@/common/components/app/ErrorBoundary'
 import ErrorHandlerProvider from '@/common/components/app/providers/ErrorHandlerProvider'
+import { EditProposalsProvider } from '@/common/components/admin/EditProposals'
 import { AuthProvider } from '@/hooks/auth/useAuth'
 import SongDragProvider from '@/hooks/dragsong/SongDragProvider'
 import { CurrentPlaylistProvider } from '@/hooks/playlist/useCurrentPlaylist'
@@ -58,8 +59,10 @@ export default function AppClientProviders({
 																		<AppSongSelectSpecifierProvider>
 																			<CurrentPlaylistProvider>
 																				<SongDragProvider>
-																					{children}
-																					<NewsPopup />
+																					<EditProposalsProvider>
+																						{children}
+																						<NewsPopup />
+																					</EditProposalsProvider>
 																				</SongDragProvider>
 																			</CurrentPlaylistProvider>
 																		</AppSongSelectSpecifierProvider>
