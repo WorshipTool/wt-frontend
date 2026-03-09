@@ -2,26 +2,32 @@
 /**
  * AdminEditOverlay
  *
- * Attaches global DOM event listeners (contextmenu, mouseup) for admin users.
- * When the admin right-clicks on an element, the element is visually highlighted
- * and a small floating proposal panel appears next to it.
- * When text is selected (mouseup), the floating panel appears near the selection.
+ * Attaches a global `contextmenu` DOM event listener for admin users.
  *
- * Renders no visible DOM by itself — it is a pure side-effect component.
+ * Behaviour:
+ *  - If the admin right-clicks WITHOUT any text selected → the native browser
+ *    context menu is shown as usual (no interception).
+ *  - If the admin right-clicks WITH text selected → the native context menu is
+ *    suppressed and a compact custom context menu appears at the cursor with a
+ *    single "Navrhnout úpravu" action. Clicking that action opens the proposal
+ *    panel for the selected text.
+ *
+ * Renders: the custom AdminContextMenu when a text-selection right-click is
+ * in progress.
  */
 import useAuth from '@/hooks/auth/useAuth'
-import { useEffect, useRef } from 'react'
-import { captureElement, captureTextSelection, isEditableTarget } from './captureUtils'
+import { useEffect, useRef, useState } from 'react'
+import AdminContextMenu, { ContextMenuState } from './AdminContextMenu'
+import { captureTextSelection, isEditableTarget } from './captureUtils'
 import { useEditProposals } from './useEditProposals'
 
 /** Data attribute used to mark UI elements that should NOT trigger captures */
 export const EDIT_PROPOSALS_UI_ATTR = 'data-edit-proposals-ui'
 
-/** CSS applied to a right-clicked element to highlight it */
+/** CSS applied to the element whose text is being captured */
 const HIGHLIGHT_OUTLINE = '2px solid #2563eb'
 const HIGHLIGHT_OUTLINE_OFFSET = '2px'
 
-/** Shape stored for cleaning up the highlight on close */
 type HighlightEntry = {
 	el: HTMLElement
 	origOutline: string
@@ -32,13 +38,11 @@ export default function AdminEditOverlay() {
 	const { isAdmin } = useAuth()
 	const { openProposalFor, pendingCapture } = useEditProposals()
 
-	// Keep stable refs so event listeners don't need to be re-registered on
-	// every state update.
 	const openProposalForRef = useRef(openProposalFor)
 	const pendingCaptureRef = useRef(pendingCapture)
 
-	// Tracks which element is currently highlighted so we can restore it
 	const highlightRef = useRef<HighlightEntry | null>(null)
+	const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
 
 	useEffect(() => {
 		openProposalForRef.current = openProposalFor
@@ -48,8 +52,7 @@ export default function AdminEditOverlay() {
 		pendingCaptureRef.current = pendingCapture
 	}, [pendingCapture])
 
-	// Remove highlight whenever the pending capture is cleared (dialog confirmed
-	// or cancelled).
+	// Remove highlight when the proposal dialog is closed
 	useEffect(() => {
 		if (pendingCapture === null) {
 			removeHighlight()
@@ -66,7 +69,6 @@ export default function AdminEditOverlay() {
 	}
 
 	function applyHighlight(el: HTMLElement) {
-		// Remove any previous highlight first
 		removeHighlight()
 		highlightRef.current = {
 			el,
@@ -77,71 +79,70 @@ export default function AdminEditOverlay() {
 		el.style.outlineOffset = HIGHLIGHT_OUTLINE_OFFSET
 	}
 
+	// Also remove highlight when context menu is closed without opening the dialog
+	const handleContextMenuClose = () => {
+		setContextMenu(null)
+		removeHighlight()
+	}
+
+	const handleEditFromContextMenu = (capture: Parameters<typeof openProposalFor>[0]) => {
+		openProposalForRef.current(capture)
+		// Highlight is kept while the proposal dialog is open;
+		// it will be cleared by the pendingCapture effect above.
+	}
+
 	useEffect(() => {
 		if (!isAdmin()) return
 
-		// ── Right-click context menu ────────────────────────────────────────
 		const handleContextMenu = (e: MouseEvent) => {
 			const target = e.target as Element | null
 			if (!target) return
 
-			// Don't intercept on editable fields — let browser handle it
+			// Never intercept inside editable fields
 			if (isEditableTarget(target)) return
 
-			// While a proposal dialog is open, ignore additional right-clicks
-			// so the admin can focus on the current proposal
-			if (pendingCaptureRef.current !== null) return
-
-			// Skip elements that are part of our own admin UI
+			// Never intercept inside our own admin UI
 			if (target.closest(`[${EDIT_PROPOSALS_UI_ATTR}]`)) return
 
-			e.preventDefault()
-
-			// Highlight the target element
-			applyHighlight(target as HTMLElement)
-
-			const capture = captureElement(target)
-			openProposalForRef.current(capture)
-		}
-
-		// ── Text selection (mouseup) ────────────────────────────────────────
-		const handleMouseUp = (e: MouseEvent) => {
-			// We only act when there IS a selection
 			const selection = window.getSelection()
 			const selectedText = selection?.toString().trim() ?? ''
+
+			// Only intercept when the user has text selected.
+			// Without a selection, let the native browser context menu show normally.
 			if (!selectedText) return
 
-			const target = e.target as Element | null
-			if (!target) return
-
-			// Don't intercept inside editable fields
-			if (isEditableTarget(target)) return
-
-			// While a proposal dialog is open, don't trigger new captures
+			// If a proposal dialog is already open, don't stack another one
 			if (pendingCaptureRef.current !== null) return
 
-			// Skip elements that are part of our own admin UI
-			if (target.closest(`[${EDIT_PROPOSALS_UI_ATTR}]`)) return
+			e.preventDefault()
 
 			const anchorNode = selection?.anchorNode
 			const anchorEl =
 				anchorNode instanceof Element
 					? anchorNode
-					: anchorNode?.parentElement ?? target
+					: (anchorNode?.parentElement ?? target)
+
+			// Highlight the element containing the selection
+			applyHighlight(anchorEl as HTMLElement)
 
 			const capture = captureTextSelection(selectedText, anchorEl)
-			openProposalForRef.current(capture)
+			setContextMenu({ x: e.clientX, y: e.clientY, capture })
 		}
 
 		document.addEventListener('contextmenu', handleContextMenu)
-		document.addEventListener('mouseup', handleMouseUp)
-
 		return () => {
 			document.removeEventListener('contextmenu', handleContextMenu)
-			document.removeEventListener('mouseup', handleMouseUp)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAdmin()])
 
-	return null
+	if (!contextMenu) return null
+
+	return (
+		<AdminContextMenu
+			state={contextMenu}
+			onEdit={handleEditFromContextMenu}
+			onClose={handleContextMenuClose}
+		/>
+	)
 }
