@@ -501,7 +501,6 @@
 			"no": "Nie"
 		},
 		"goToSong": "Przejdź do pieśni",
-		"parseFile": "Parsuj plik",
 		"selectFileToProcess": "Wybierz plik do przetworzenia",
 		"openProcessedData": "Otwórz przetworzone dane",
 		"parentSong": "Pieśń nadrzędna",
@@ -749,6 +748,13 @@
 				"title": "Link zewnętrzny",
 				"message": "Próbujesz opuścić środowisko zespołu. Czy chcesz kontynuować?"
 			}
+		},
+		"noAccess": {
+			"title": "Nie można wyświetlić zawartości",
+			"description": "Nie masz uprawnień do wyświetlania zawartości zespołu {name}, ponieważ nie jesteś jego członkiem.",
+			"joinDescription": "Aby uzyskać dostęp, dołącz do tego zespołu. Możesz dołączyć za pomocą kodu dołączenia lub linku dołączenia – o który należy poprosić któregoś z członków zespołu.",
+			"loginButton": "Zaloguj się",
+			"joinButton": "Dołącz do zespołu"
 		}
 	},
 	"account": {
@@ -953,7 +959,7 @@
 		"popupTryIt": "Wypróbuj",
 		"popupClose": "Zamknij",
 		"smartSearchTitle": "Wyszukiwanie według znaczenia",
-		"smartSearchDescription": "Znajdź pieśń według tego, <strong>o czym jest</strong>, nie tylko według słów w tekście. Przełącz się na tryb inteligentny i wpisz temat lub nastrój – np. <strong>\u201Enadzieja w trudnych chwilach\u201C</strong>, <strong>\u201Euwielbienie w próbach\u201C</strong> lub <strong>\u201EBoża wierność\u201C</strong>.",
+		"smartSearchDescription": "Znajdź pieśń według tego, <strong>o czym jest</strong>, nie tylko według słów w tekście. Przełącz się na tryb inteligentny i wpisz temat lub nastrój – np. <strong>„nadzieja w trudnych chwilach“</strong>, <strong>„uwielbienie w próbach“</strong> lub <strong>„Boża wierność“</strong>.",
 		"smartSearchNote": "💡 Funkcja jest wciąż w fazie rozwoju.",
 		"smartSearchStep1": "Przełącz na inteligentne wyszukiwanie",
 		"smartSearchStep2": "Wpisz temat lub nastrój, którego szukasz"

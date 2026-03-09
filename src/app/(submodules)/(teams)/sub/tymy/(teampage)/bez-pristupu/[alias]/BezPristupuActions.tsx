@@ -2,16 +2,18 @@
 import JoinTeamPopup from '@/app/(layout)/sub/tymy/components/JoinTeamPopup'
 import { Button } from '@/common/ui'
 import useAuth from '@/hooks/auth/useAuth'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 export default function BezPristupuActions() {
 	const { user } = useAuth()
 	const [open, setOpen] = useState(false)
+	const t = useTranslations('teams.noAccess')
 
 	if (!user) {
 		return (
 			<Button to="login" toParams={{}}>
-				Přihlásit se
+				{t('loginButton')}
 			</Button>
 		)
 	}
@@ -19,7 +21,7 @@ export default function BezPristupuActions() {
 	return (
 		<>
 			<Button color="primarygradient" onClick={() => setOpen(true)}>
-				Připojit se k týmu
+				{t('joinButton')}
 			</Button>
 			<JoinTeamPopup open={open} onClose={() => setOpen(false)} />
 		</>
