@@ -11,6 +11,7 @@ type CustomTypographyProps = {
 	sx?: SxProps
 	className?: string
 	noWrap?: boolean
+	component?: React.ElementType
 
 	onClick?: (e: React.MouseEvent<HTMLElement>) => void
 
@@ -64,6 +65,7 @@ export function Typography({
 			align={props.align}
 			className={props.className}
 			onClick={props.onClick}
+			{...(props.component ? { component: props.component } : {})}
 		>
 			{props.italic ? <i>{children}</i> : children}
 		</Typo>
