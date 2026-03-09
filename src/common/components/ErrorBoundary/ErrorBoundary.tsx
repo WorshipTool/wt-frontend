@@ -1,5 +1,6 @@
 'use client'
 
+import { clientErrorEvent } from '@/tech/fetch/handleApiCall'
 import React, { Component, type ErrorInfo, type ReactNode } from 'react'
 
 type Props = {
@@ -13,8 +14,10 @@ type State = {
 }
 
 /**
- * A generic React ErrorBoundary that catches client-side errors and
- * renders a fallback UI instead of crashing the entire page.
+ * A generic React ErrorBoundary that catches client-side errors.
+ * Logs the error to console and dispatches a clientErrorEvent on the window
+ * so that ErrorHandlerProvider can show a snackbar notification.
+ * By default renders null (page keeps running), custom fallback prop still supported.
  */
 export class ErrorBoundary extends Component<Props, State> {
 	constructor(props: Props) {
@@ -28,6 +31,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
 	componentDidCatch(error: Error, info: ErrorInfo) {
 		console.error('[ErrorBoundary] Caught error:', error, info.componentStack)
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(new CustomEvent(clientErrorEvent, { detail: { error } }))
+		}
 	}
 
 	reset = () => {
@@ -42,42 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
 			if (fallback) {
 				return fallback(error, this.reset)
 			}
-			return <DefaultFallback error={error} reset={this.reset} />
+			// No visual fallback – error is reported via snackbar, page keeps running
+			return null
 		}
 
 		return children
 	}
-}
-
-function DefaultFallback({ error, reset }: { error: Error; reset: () => void }) {
-	return (
-		<div
-			style={{
-				padding: '16px',
-				border: '1px solid #ffcdd2',
-				borderRadius: '8px',
-				backgroundColor: '#fff8f8',
-				color: '#c62828',
-				fontSize: '0.85rem',
-			}}
-		>
-			<strong>Something went wrong.</strong>
-			<div style={{ marginTop: 4, color: '#888', fontSize: '0.78rem' }}>{error.message}</div>
-			<button
-				onClick={reset}
-				style={{
-					marginTop: 8,
-					padding: '4px 12px',
-					fontSize: '0.8rem',
-					cursor: 'pointer',
-					border: '1px solid #c62828',
-					borderRadius: 4,
-					background: 'transparent',
-					color: '#c62828',
-				}}
-			>
-				Try again
-			</button>
-		</div>
-	)
 }

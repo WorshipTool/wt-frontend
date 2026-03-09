@@ -7,6 +7,7 @@ import React, { useCallback, useEffect } from 'react'
 import useAuth from '../../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
 import {
+	clientErrorEvent,
 	networkErrorEvent,
 	norequiredPermissionEvent,
 	serviceUnavailableEvent,
@@ -71,18 +72,26 @@ export default function ErrorHandlerProvider(props: ErrorHandlerProviderProps) {
 		})
 	}, [enqueueSnackbar])
 
+	const clientError = useCallback((event: Event) => {
+		const detail = (event as CustomEvent<{ error?: Error }>).detail
+		const message = detail?.error?.message || 'Nastala neočekávaná chyba.'
+		enqueueSnackbar(message, { variant: 'error' })
+	}, [enqueueSnackbar])
+
 	useEffect(() => {
 		window.addEventListener(networkErrorEvent, ne)
 		window.addEventListener(unauthorizedEvent, ue)
 		window.addEventListener(norequiredPermissionEvent, noPermission)
 		window.addEventListener(serviceUnavailableEvent, serviceUnavailable)
+		window.addEventListener(clientErrorEvent, clientError)
 
 		return () => {
 			window.removeEventListener(networkErrorEvent, ne)
 			window.removeEventListener(unauthorizedEvent, ue)
 			window.removeEventListener(norequiredPermissionEvent, noPermission)
 			window.removeEventListener(serviceUnavailableEvent, serviceUnavailable)
+			window.removeEventListener(clientErrorEvent, clientError)
 		}
-	}, [ne, ue, noPermission, serviceUnavailable])
+	}, [ne, ue, noPermission, serviceUnavailable, clientError])
 	return <>{props.children}</>
 }

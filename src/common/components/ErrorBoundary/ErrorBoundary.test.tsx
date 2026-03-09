@@ -29,48 +29,31 @@ describe('ErrorBoundary', () => {
 		expect(screen.getByText('hello')).toBeInTheDocument()
 	})
 
-	it('catches errors and shows default fallback UI', () => {
+	it('renders null (no visual fallback) when error is caught without custom fallback', () => {
+		const { container } = render(
+			<ErrorBoundary>
+				<ThrowingComponent shouldThrow />
+			</ErrorBoundary>
+		)
+		// Default behaviour: render nothing so the page keeps running
+		expect(container.firstChild).toBeNull()
+	})
+
+	it('dispatches clientErrorEvent on window when error is caught', () => {
+		const listener = jest.fn()
+		window.addEventListener('clientErrorEvent', listener)
+
 		render(
 			<ErrorBoundary>
 				<ThrowingComponent shouldThrow />
 			</ErrorBoundary>
 		)
-		expect(screen.getByText('Something went wrong.')).toBeInTheDocument()
-		expect(screen.getByText('Test error')).toBeInTheDocument()
-	})
 
-	it('shows a "Try again" button in default fallback', () => {
-		render(
-			<ErrorBoundary>
-				<ThrowingComponent shouldThrow />
-			</ErrorBoundary>
-		)
-		expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
-	})
+		expect(listener).toHaveBeenCalledTimes(1)
+		const event = listener.mock.calls[0][0] as CustomEvent
+		expect(event.detail?.error?.message).toBe('Test error')
 
-	it('resets error state when "Try again" is clicked', () => {
-		// Use a mutable ref so we can change it before clicking reset
-		// (the child must not throw when the boundary resets)
-		const state = { shouldThrow: true }
-
-		function ControlledChild() {
-			if (state.shouldThrow) throw new Error('Test error')
-			return <div>OK</div>
-		}
-
-		render(
-			<ErrorBoundary>
-				<ControlledChild />
-			</ErrorBoundary>
-		)
-
-		expect(screen.getByText('Something went wrong.')).toBeInTheDocument()
-
-		// Stop throwing BEFORE clicking reset so the re-render succeeds
-		state.shouldThrow = false
-		fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
-
-		expect(screen.getByText('OK')).toBeInTheDocument()
+		window.removeEventListener('clientErrorEvent', listener)
 	})
 
 	it('renders custom fallback when provided', () => {
@@ -89,6 +72,32 @@ describe('ErrorBoundary', () => {
 
 		expect(screen.getByText('Custom: Test error')).toBeInTheDocument()
 		expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+	})
+
+	it('resets error state when custom fallback reset is called', () => {
+		const state = { shouldThrow: true }
+
+		function ControlledChild() {
+			if (state.shouldThrow) throw new Error('Test error')
+			return <div>OK</div>
+		}
+
+		const customFallback = (_error: Error, reset: () => void) => (
+			<button onClick={reset}>Retry</button>
+		)
+
+		render(
+			<ErrorBoundary fallback={customFallback}>
+				<ControlledChild />
+			</ErrorBoundary>
+		)
+
+		expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+
+		state.shouldThrow = false
+		fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+
+		expect(screen.getByText('OK')).toBeInTheDocument()
 	})
 
 	it('logs the error to console.error', () => {

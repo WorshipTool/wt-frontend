@@ -4,6 +4,7 @@ export const networkErrorEvent = 'networkErrorEvent'
 export const unauthorizedEvent = 'unauthorizedEvent'
 export const norequiredPermissionEvent = 'norequiredPermissionEvent'
 export const serviceUnavailableEvent = 'serviceUnavailableEvent'
+export const clientErrorEvent = 'clientErrorEvent'
 
 export type HandleApiCallOptions = {
 	ignoreUnauthorizedError?: boolean
