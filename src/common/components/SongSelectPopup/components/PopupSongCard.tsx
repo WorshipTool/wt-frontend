@@ -3,6 +3,7 @@ import { theme } from '@/common/constants/theme'
 import { Box } from '@/common/ui'
 import { IconButton } from '@/common/ui/IconButton'
 import { alpha } from '@/common/ui/mui'
+import ChordKeyBadge from '@/common/ui/SongCard/components/ChordKeyBadge'
 import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
@@ -20,7 +21,8 @@ type PopupSongCardProps = {
 
 const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 	const t = useTranslations('song')
-	
+	const tCommon = useTranslations('common')
+
 	const onSongClick = useCallback(() => {
 		if (props.selected) {
 			props.onDeselect()
@@ -30,6 +32,7 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 	}, [props.selected, props.onSelect, props.onDeselect])
 
 	const sheet = new Sheet(props.song.sheetData)
+	const keyChord = sheet.getKeyChord()?.toString() ?? null
 
 	return (
 		<Box
@@ -132,6 +135,13 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 						{sheet.getSections()[0].text}
 					</Typography>
 				</Box>
+				{keyChord && (
+					<ChordKeyBadge
+						chordKey={keyChord}
+						tooltip={tCommon('hasChords')}
+						sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
+					/>
+				)}
 			</DraggableSong>
 		</Box>
 	)
