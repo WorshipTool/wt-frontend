@@ -504,7 +504,6 @@ declare const messages: {
 			"no": "Ne"
 		},
 		"goToSong": "Přejít na píseň",
-		"parseFile": "Parsovat soubor",
 		"selectFileToProcess": "Vybrat soubor ke zpracování",
 		"openProcessedData": "Otevřít zpracovaná data",
 		"parentSong": "Rodičovská píseň",
@@ -752,6 +751,13 @@ declare const messages: {
 				"title": "Externí odkaz",
 				"message": "Pokoušíte se opustit prostředí týmu. Chcete pokračovat?"
 			}
+		},
+		"noAccess": {
+			"title": "Obsah nelze zobrazit",
+			"description": "Nemáte oprávnění zobrazit obsah týmu {name}, protože nejste jeho členem.",
+			"joinDescription": "Pro přístup se připojte do tohoto týmu. Připojit se lze například pomocí přihlašovacího kódu nebo přihlašovacího odkazu – o který je třeba poprosit některého člena týmu.",
+			"loginButton": "Přihlásit se",
+			"joinButton": "Připojit se k týmu"
 		}
 	},
 	"account": {
@@ -956,7 +962,7 @@ declare const messages: {
 		"popupTryIt": "Vyzkoušet",
 		"popupClose": "Zavřít",
 		"smartSearchTitle": "Vyhledávání podle významu",
-		"smartSearchDescription": "Najděte píseň podle toho, <strong>o čem je</strong>, ne jen podle slov v textu. Přepněte se do chytrého módu a napište téma nebo pocit – např. <strong>\u201Enaděje v těžkých chvílích\u201C</strong>, <strong>\u201Echvála uprostřed zkoušek\u201C</strong> nebo <strong>\u201EBoží věrnost\u201C</strong>.",
+		"smartSearchDescription": "Najděte píseň podle toho, <strong>o čem je</strong>, ne jen podle slov v textu. Přepněte se do chytrého módu a napište téma nebo pocit – např. <strong>„naděje v těžkých chvílích“</strong>, <strong>„chvála uprostřed zkoušek“</strong> nebo <strong>„Boží věrnost“</strong>.",
 		"smartSearchNote": "💡 Funkce je stále ve vývoji a ladí se.",
 		"smartSearchStep1": "Přepněte na chytré vyhledávání",
 		"smartSearchStep2": "Zadejte téma nebo náladu, kterou hledáte"
@@ -996,8 +1002,8 @@ declare const messages: {
 		"refreshButton": "Obnovit",
 		"noPr": "Nemá PR",
 		"merged": "Sloučeno",
-		"filterOpenPr": "Jen otevřené PR",
-		"noIdeasWithOpenPr": "Žádné nápady s otevřenými PR"
+		"filterActive": "Aktivní & otevřené PR",
+		"noActiveOrOpenPr": "Žádné aktivní úlohy ani otevřené PR"
 	}
 };
 export default messages;

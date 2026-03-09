@@ -9,6 +9,8 @@ jest.mock('../../../tech/preview/previewMode', () => ({
 	getPreviewPrNumber: () => mockPrNumber,
 }))
 
+const MOCK_IMPLEMENT_URL = 'http://localhost:4000/api/tasks'
+
 jest.mock('next-intl', () => ({
 	useTranslations: () => (key: string) => key,
 }))
@@ -87,7 +89,12 @@ describe('PreviewModeDialog', () => {
 		process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = 'http://test-api/tasks'
 		jest.clearAllMocks()
 		jest.useFakeTimers()
+		process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_IMPLEMENT_URL
 		mockFetchWithTasks()
+	})
+
+	afterAll(() => {
+		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	})
 
 	afterEach(() => {

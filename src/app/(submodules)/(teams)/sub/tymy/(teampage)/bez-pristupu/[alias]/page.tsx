@@ -1,0 +1,67 @@
+'use server'
+import { getLayoutTeamInfo } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/tech/layout.tech'
+import { PageProps } from '@/common/types'
+import { Box } from '@/common/ui/Box'
+import { Gap } from '@/common/ui/Gap'
+import { Typography } from '@/common/ui/Typography'
+import { LockPerson } from '@mui/icons-material'
+import { getTranslations } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import BezPristupuActions from './BezPristupuActions'
+
+export default async function BezPristupuPage(
+	props: PageProps<'teamNoAccess'>
+) {
+	const info = await getLayoutTeamInfo(props.params.alias)
+	if (!info) notFound()
+
+	const t = await getTranslations('teams.noAccess')
+
+	return (
+		<Box
+			sx={{
+				minHeight: '100vh',
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				padding: 3,
+			}}
+		>
+			<Box
+				sx={{
+					backgroundColor: 'white',
+					borderRadius: 4,
+					padding: { xs: 4, sm: 6 },
+					maxWidth: 560,
+					width: '100%',
+					boxShadow: '0px 2px 16px rgba(0, 0, 0, 0.10)',
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					gap: 1.5,
+				}}
+			>
+				<LockPerson sx={{ fontSize: 56, color: 'grey.400', mb: 1 }} />
+
+				<Typography variant="h5" strong align="center">
+					{t('title')}
+				</Typography>
+
+				<Typography align="center" color="grey.700">
+					{t('description', { name: info.name })}
+				</Typography>
+
+				<Gap value={0.5} />
+
+				<Typography align="center" color="grey.700">
+					{t('joinDescription')}
+				</Typography>
+
+				<Gap value={1.5} />
+
+				<BezPristupuActions />
+			</Box>
+		</Box>
+	)
+}
