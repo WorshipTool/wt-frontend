@@ -198,6 +198,18 @@ describe('captureElement', () => {
 
 		el.remove()
 	})
+
+	it('includes anchorRect from getBoundingClientRect', () => {
+		const el = document.createElement('p')
+		document.body.appendChild(el)
+		const mockRect = { top: 10, left: 20, right: 120, bottom: 40, width: 100, height: 30 }
+		jest.spyOn(el, 'getBoundingClientRect').mockReturnValue(mockRect as DOMRect)
+
+		const capture = captureElement(el)
+		expect(capture.anchorRect).toEqual(mockRect)
+
+		el.remove()
+	})
 })
 
 describe('captureTextSelection', () => {
@@ -229,5 +241,21 @@ describe('captureTextSelection', () => {
 		expect(capture.elementTag).toBe('span')
 
 		el.remove()
+	})
+
+	it('falls back to element bounding rect when no selection range is available', () => {
+		const el = document.createElement('p')
+		document.body.appendChild(el)
+		const mockRect = { top: 5, left: 15, right: 115, bottom: 35, width: 100, height: 30 }
+		jest.spyOn(el, 'getBoundingClientRect').mockReturnValue(mockRect as DOMRect)
+
+		// Ensure getSelection returns null so we use the fallback
+		jest.spyOn(window, 'getSelection').mockReturnValue(null)
+
+		const capture = captureTextSelection('text', el)
+		expect(capture.anchorRect).toEqual(mockRect)
+
+		el.remove()
+		jest.restoreAllMocks()
 	})
 })

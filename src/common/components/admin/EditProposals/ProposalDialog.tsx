@@ -2,27 +2,68 @@
 /**
  * ProposalDialog
  *
- * A focused modal that appears when the admin right-clicks an element or
- * selects text.  The admin writes a free-text description of the desired
- * change.  Confirming adds the proposal to the collection; cancelling
- * dismisses the dialog without adding anything.
+ * A compact floating panel that appears next to the element the admin
+ * right-clicked (or near a text selection).  The admin writes a free-text
+ * description of the desired change.  Confirming adds the proposal to the
+ * collection; cancelling (or pressing Escape / clicking outside) dismisses
+ * the panel without adding anything.
+ *
+ * Unlike a modal, this panel does NOT block the rest of the page — it sits
+ * at a fixed position calculated from the element's bounding rect so the
+ * highlighted element stays visible while the admin writes their note.
  */
-import Popup from '@/common/components/Popup/Popup'
 import { Box, Button, IconButton, TextField } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
-import { alpha } from '@/common/ui/mui'
+import { alpha, Paper } from '@/common/ui/mui'
 import { Close, EditNote, TextFields } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
-import { ElementCapture } from './types'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AnchorRect, ElementCapture } from './types'
 import { useEditProposals } from './useEditProposals'
 
 const ACCENT = '#2563eb' // blue-600
+const PANEL_WIDTH = 320
+const PANEL_HEIGHT_APPROX = 260 // used for placement; actual height may vary
+const MARGIN = 10 // minimum distance from viewport edges
+const GAP = 8 // gap between the element and the panel
+
+// ─── Position calculation ─────────────────────────────────────────────────────
+
+type PanelPosition = { top: number; left: number }
+
+function calcPosition(
+	anchorRect: AnchorRect,
+	panelWidth: number,
+	panelHeightApprox: number
+): PanelPosition {
+	const vw = window.innerWidth
+	const vh = window.innerHeight
+
+	// Prefer placing the panel BELOW the element
+	let top =
+		anchorRect.bottom + GAP + panelHeightApprox <= vh - MARGIN
+			? anchorRect.bottom + GAP
+			: anchorRect.top - panelHeightApprox - GAP
+
+	// Align to the left edge of the element, then clamp to viewport
+	let left = anchorRect.left
+	if (left + panelWidth > vw - MARGIN) left = vw - panelWidth - MARGIN
+	if (left < MARGIN) left = MARGIN
+
+	// Clamp top to viewport
+	if (top < MARGIN) top = MARGIN
+	if (top + panelHeightApprox > vh - MARGIN) top = vh - panelHeightApprox - MARGIN
+
+	return { top, left }
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ProposalDialog() {
 	const { pendingCapture, confirmProposal, cancelPendingProposal } =
 		useEditProposals()
 	const [proposalText, setProposalText] = useState('')
+	const panelRef = useRef<HTMLDivElement | null>(null)
 	const isOpen = pendingCapture !== null
 
 	// Reset textarea whenever a new capture comes in
@@ -32,17 +73,17 @@ export default function ProposalDialog() {
 		}
 	}, [pendingCapture])
 
-	const handleConfirm = () => {
+	const handleConfirm = useCallback(() => {
 		const trimmed = proposalText.trim()
 		if (!trimmed) return
 		confirmProposal(trimmed)
 		setProposalText('')
-	}
+	}, [proposalText, confirmProposal])
 
-	const handleClose = () => {
+	const handleClose = useCallback(() => {
 		cancelPendingProposal()
 		setProposalText('')
-	}
+	}, [cancelPendingProposal])
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -55,77 +96,98 @@ export default function ProposalDialog() {
 		}
 	}
 
+	// Close when clicking outside the panel
+	useEffect(() => {
+		if (!isOpen) return
+		const handleMouseDown = (e: MouseEvent) => {
+			if (
+				panelRef.current &&
+				!panelRef.current.contains(e.target as Node)
+			) {
+				handleClose()
+			}
+		}
+		// Delay by one tick so the very mousedown that opened the panel
+		// (right-click) doesn't immediately close it
+		const timer = setTimeout(
+			() => document.addEventListener('mousedown', handleMouseDown),
+			0
+		)
+		return () => {
+			clearTimeout(timer)
+			document.removeEventListener('mousedown', handleMouseDown)
+		}
+	}, [isOpen, handleClose])
+
+	const position = useMemo<PanelPosition | null>(() => {
+		if (!pendingCapture?.anchorRect) return null
+		return calcPosition(pendingCapture.anchorRect, PANEL_WIDTH, PANEL_HEIGHT_APPROX)
+	}, [pendingCapture])
+
+	if (!isOpen) return null
+
 	return (
-		<Popup open={isOpen} onClose={handleClose} width={480}>
-			{/* data-edit-proposals-ui prevents the overlay from re-triggering
-			    on mouseup / contextmenu events inside this dialog */}
+		<Paper
+			ref={panelRef}
+			elevation={8}
+			data-edit-proposals-ui
+			sx={{
+				position: 'fixed',
+				top: position?.top ?? '50%',
+				left: position?.left ?? '50%',
+				transform: position ? 'none' : 'translate(-50%, -50%)',
+				width: PANEL_WIDTH,
+				zIndex: 2000,
+				borderRadius: 2.5,
+				overflow: 'hidden',
+				bgcolor: 'white',
+				border: '1px solid',
+				borderColor: alpha(ACCENT, 0.18),
+				boxShadow: `0 8px 32px ${alpha(ACCENT, 0.14)}, 0 2px 8px rgba(0,0,0,0.12)`,
+			}}
+		>
+			{/* Header */}
 			<Box
-				data-edit-proposals-ui
 				sx={{
-					position: 'relative',
-					overflow: 'hidden',
-					'&::before': {
-						content: '""',
-						position: 'absolute',
-						inset: -100,
-						background: `radial-gradient(400px 300px at 50% 50%, ${alpha(ACCENT, 0.08)} 0%, transparent 70%)`,
-						zIndex: 0,
-						filter: 'blur(16px)',
-						pointerEvents: 'none',
-					},
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					px: 1.5,
+					py: 1,
+					bgcolor: alpha(ACCENT, 0.06),
+					borderBottom: '1px solid',
+					borderColor: alpha(ACCENT, 0.1),
 				}}
 			>
-				{/* Header */}
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						zIndex: 1,
-						position: 'relative',
-					}}
-				>
-					<Box
-						sx={{
-							display: 'flex',
-							alignItems: 'center',
-							gap: 0.75,
-							bgcolor: alpha(ACCENT, 0.1),
-							color: ACCENT,
-							px: '10px',
-							py: '4px',
-							borderRadius: 2,
-						}}
-					>
-						<EditNote sx={{ fontSize: 16 }} />
-						<Typography variant="subtitle1" strong={600}>
-							Navrhnout úpravu
-						</Typography>
-					</Box>
-					<IconButton small onClick={handleClose}>
-						<Close fontSize="inherit" />
-					</IconButton>
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+					<EditNote sx={{ fontSize: 15, color: ACCENT }} />
+					<Typography variant="subtitle1" strong={600} sx={{ color: ACCENT, fontSize: '0.82rem' }}>
+						Navrhnout úpravu
+					</Typography>
 				</Box>
+				<IconButton small onClick={handleClose} sx={{ p: 0.25 }}>
+					<Close sx={{ fontSize: 14 }} />
+				</IconButton>
+			</Box>
 
-				<Gap value={1.5} />
-
+			<Box sx={{ px: 1.5, py: 1.25 }}>
 				{/* Context preview */}
 				{pendingCapture && (
 					<CapturePreview capture={pendingCapture} />
 				)}
 
-				<Gap value={1.5} />
+				<Gap value={1} />
 
 				{/* Proposal textarea */}
 				<Box
 					onKeyDown={handleKeyDown}
 					sx={{
 						border: '1.5px solid',
-						borderColor: alpha(ACCENT, 0.35),
-						borderRadius: 2,
-						px: 1.5,
-						py: 1,
-						bgcolor: 'rgba(255,255,255,0.7)',
+						borderColor: alpha(ACCENT, 0.3),
+						borderRadius: 1.5,
+						px: 1,
+						py: 0.75,
+						bgcolor: 'rgba(255,255,255,0.9)',
 						transition: 'border-color 0.2s',
 						'&:focus-within': { borderColor: ACCENT },
 					}}
@@ -136,37 +198,52 @@ export default function ProposalDialog() {
 						placeholder="Popiš požadovanou změnu..."
 						multiline
 						autoFocus
-						sx={{ minHeight: 80 }}
+						sx={{ minHeight: 64, fontSize: '0.85rem' }}
 					/>
 				</Box>
 
-				<Gap value={0.5} />
-				<Typography
-					variant="normal"
-					size="0.72rem"
-					color="grey.400"
-					sx={{ textAlign: 'right' }}
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						mt: 0.75,
+					}}
 				>
-					Ctrl+Enter pro přidání
-				</Typography>
-
-				<Gap value={1} />
-
-				{/* Actions */}
-				<Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
-					<Button color="secondary" onClick={handleClose}>
-						Zrušit
-					</Button>
-					<Button
-						color="primary"
-						onClick={handleConfirm}
-						disabled={!proposalText.trim()}
+					<Typography
+						variant="normal"
+						size="0.68rem"
+						color="grey.400"
 					>
-						Přidat návrh
-					</Button>
+						Ctrl+Enter
+					</Typography>
+					<Box sx={{ display: 'flex', gap: 0.75 }}>
+						<Button
+							color="secondary"
+							onClick={handleClose}
+							sx={{ fontSize: '0.78rem', py: 0.5, px: 1.25, minWidth: 0 }}
+						>
+							Zrušit
+						</Button>
+						<Button
+							color="primary"
+							onClick={handleConfirm}
+							disabled={!proposalText.trim()}
+							sx={{
+								fontSize: '0.78rem',
+								py: 0.5,
+								px: 1.25,
+								minWidth: 0,
+								bgcolor: ACCENT,
+								'&:hover': { bgcolor: alpha(ACCENT, 0.85) },
+							}}
+						>
+							Přidat návrh
+						</Button>
+					</Box>
 				</Box>
 			</Box>
-		</Popup>
+		</Paper>
 	)
 }
 
@@ -174,27 +251,25 @@ export default function ProposalDialog() {
 
 function CapturePreview({ capture }: { capture: ElementCapture }) {
 	const isTextSelection = capture.type === 'text-selection'
-	const displayText = isTextSelection
-		? capture.selectedText
-		: capture.elementText
+	const displayText = isTextSelection ? capture.selectedText : capture.elementText
 
 	return (
 		<Box
 			sx={{
 				bgcolor: alpha('#000', 0.03),
 				border: '1px solid',
-				borderColor: alpha('#000', 0.08),
-				borderRadius: 2,
-				px: 1.5,
-				py: 1,
+				borderColor: alpha('#000', 0.07),
+				borderRadius: 1.5,
+				px: 1,
+				py: 0.75,
 				display: 'flex',
 				flexDirection: 'column',
-				gap: 0.5,
+				gap: 0.3,
 			}}
 		>
-			<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-				<TextFields sx={{ fontSize: 13, color: 'grey.500' }} />
-				<Typography variant="normal" size="0.72rem" color="grey.500">
+			<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
+				<TextFields sx={{ fontSize: 11, color: 'grey.500' }} />
+				<Typography variant="normal" size="0.68rem" color="grey.500">
 					{isTextSelection ? 'Označený text' : `Element <${capture.elementTag}>`}
 					{' · '}
 					<span style={{ fontFamily: 'monospace' }}>{capture.elementPath}</span>
@@ -203,13 +278,13 @@ function CapturePreview({ capture }: { capture: ElementCapture }) {
 			{displayText && (
 				<Typography
 					variant="normal"
-					size="0.82rem"
+					size="0.75rem"
 					color="grey.700"
 					sx={{
 						fontStyle: 'italic',
 						overflow: 'hidden',
 						display: '-webkit-box',
-						WebkitLineClamp: 3,
+						WebkitLineClamp: 2,
 						WebkitBoxOrient: 'vertical',
 					}}
 				>

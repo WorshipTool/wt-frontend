@@ -8,6 +8,19 @@
 export type CaptureType = 'element' | 'text-selection'
 
 /**
+ * A plain-object snapshot of a DOMRect, captured at interaction time.
+ * Used to position the floating proposal panel next to the target element.
+ */
+export type AnchorRect = {
+	top: number
+	left: number
+	right: number
+	bottom: number
+	width: number
+	height: number
+}
+
+/**
  * Snapshot of the captured DOM element or text selection that the admin
  * wants to propose a change for.
  */
@@ -25,6 +38,12 @@ export type ElementCapture = {
 	pageUrl: string
 	/** CSS selector built from the element hierarchy */
 	cssSelector?: string
+	/**
+	 * Viewport-relative bounding rect of the element or text selection,
+	 * captured at the moment of the right-click / selection.
+	 * Used to position the floating proposal panel next to the target.
+	 */
+	anchorRect?: AnchorRect
 }
 
 /**

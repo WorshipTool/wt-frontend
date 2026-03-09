@@ -3,8 +3,9 @@
  * AdminEditOverlay
  *
  * Attaches global DOM event listeners (contextmenu, mouseup) for admin users.
- * When the admin right-clicks on an element or selects text, this component
- * opens the proposal dialog via the EditProposals context.
+ * When the admin right-clicks on an element, the element is visually highlighted
+ * and a small floating proposal panel appears next to it.
+ * When text is selected (mouseup), the floating panel appears near the selection.
  *
  * Renders no visible DOM by itself — it is a pure side-effect component.
  */
@@ -16,6 +17,17 @@ import { useEditProposals } from './useEditProposals'
 /** Data attribute used to mark UI elements that should NOT trigger captures */
 export const EDIT_PROPOSALS_UI_ATTR = 'data-edit-proposals-ui'
 
+/** CSS applied to a right-clicked element to highlight it */
+const HIGHLIGHT_OUTLINE = '2px solid #2563eb'
+const HIGHLIGHT_OUTLINE_OFFSET = '2px'
+
+/** Shape stored for cleaning up the highlight on close */
+type HighlightEntry = {
+	el: HTMLElement
+	origOutline: string
+	origOutlineOffset: string
+}
+
 export default function AdminEditOverlay() {
 	const { isAdmin } = useAuth()
 	const { openProposalFor, pendingCapture } = useEditProposals()
@@ -25,6 +37,9 @@ export default function AdminEditOverlay() {
 	const openProposalForRef = useRef(openProposalFor)
 	const pendingCaptureRef = useRef(pendingCapture)
 
+	// Tracks which element is currently highlighted so we can restore it
+	const highlightRef = useRef<HighlightEntry | null>(null)
+
 	useEffect(() => {
 		openProposalForRef.current = openProposalFor
 	}, [openProposalFor])
@@ -32,6 +47,35 @@ export default function AdminEditOverlay() {
 	useEffect(() => {
 		pendingCaptureRef.current = pendingCapture
 	}, [pendingCapture])
+
+	// Remove highlight whenever the pending capture is cleared (dialog confirmed
+	// or cancelled).
+	useEffect(() => {
+		if (pendingCapture === null) {
+			removeHighlight()
+		}
+	}, [pendingCapture])
+
+	function removeHighlight() {
+		if (highlightRef.current) {
+			const { el, origOutline, origOutlineOffset } = highlightRef.current
+			el.style.outline = origOutline
+			el.style.outlineOffset = origOutlineOffset
+			highlightRef.current = null
+		}
+	}
+
+	function applyHighlight(el: HTMLElement) {
+		// Remove any previous highlight first
+		removeHighlight()
+		highlightRef.current = {
+			el,
+			origOutline: el.style.outline,
+			origOutlineOffset: el.style.outlineOffset,
+		}
+		el.style.outline = HIGHLIGHT_OUTLINE
+		el.style.outlineOffset = HIGHLIGHT_OUTLINE_OFFSET
+	}
 
 	useEffect(() => {
 		if (!isAdmin()) return
@@ -52,6 +96,10 @@ export default function AdminEditOverlay() {
 			if (target.closest(`[${EDIT_PROPOSALS_UI_ATTR}]`)) return
 
 			e.preventDefault()
+
+			// Highlight the target element
+			applyHighlight(target as HTMLElement)
+
 			const capture = captureElement(target)
 			openProposalForRef.current(capture)
 		}

@@ -3,7 +3,19 @@
  * when the admin right-clicks or selects text.
  */
 
-import { ElementCapture } from './types'
+import { AnchorRect, ElementCapture } from './types'
+
+/** Convert a DOMRect (or similar) to a plain AnchorRect object. */
+function toAnchorRect(rect: DOMRect): AnchorRect {
+	return {
+		top: rect.top,
+		left: rect.left,
+		right: rect.right,
+		bottom: rect.bottom,
+		width: rect.width,
+		height: rect.height,
+	}
+}
 
 /** Tags we never want to capture directly (the overlay itself, etc.) */
 const IGNORED_TAGS = new Set(['HTML', 'BODY', 'SCRIPT', 'STYLE', 'NOSCRIPT'])
@@ -96,17 +108,30 @@ export function captureElement(el: Element): ElementCapture {
 		elementPath: buildElementPath(el),
 		cssSelector: buildCssSelector(el),
 		pageUrl: window.location.href,
+		anchorRect: toAnchorRect(el.getBoundingClientRect()),
 	}
 }
 
 /**
  * Capture an ElementCapture snapshot for a text selection.
  * `anchorEl` is the element where the selection starts.
+ * Reads the current window selection to obtain an accurate bounding rect
+ * for the selected text range.
  */
 export function captureTextSelection(
 	selectedText: string,
 	anchorEl: Element
 ): ElementCapture {
+	// Prefer the selection range rect for accurate placement
+	const selection = window.getSelection()
+	const range =
+		selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null
+	const rangeRect = range?.getBoundingClientRect()
+	const anchorRect =
+		rangeRect && rangeRect.width > 0
+			? toAnchorRect(rangeRect)
+			: toAnchorRect(anchorEl.getBoundingClientRect())
+
 	return {
 		type: 'text-selection',
 		selectedText,
@@ -114,5 +139,6 @@ export function captureTextSelection(
 		elementPath: buildElementPath(anchorEl),
 		cssSelector: buildCssSelector(anchorEl),
 		pageUrl: window.location.href,
+		anchorRect,
 	}
 }
