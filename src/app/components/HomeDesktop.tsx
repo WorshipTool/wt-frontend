@@ -146,6 +146,8 @@ export default function HomeDesktop() {
 					src={getAssetUrl('/gradient-shapes/shape1.svg')}
 					alt={tHome('backgroundShape')}
 					fill
+					priority
+					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
 					style={{
 						filter: 'brightness(1)',
 					}}
@@ -154,6 +156,8 @@ export default function HomeDesktop() {
 					src={getAssetUrl('/gradient-shapes/shape2.svg')}
 					alt={tHome('backgroundShape')}
 					fill
+					priority
+					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
 					style={{
 						filter: 'brightness(1.1)',
 					}}

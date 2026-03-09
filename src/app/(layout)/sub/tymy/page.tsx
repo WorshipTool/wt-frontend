@@ -65,7 +65,7 @@ async function Page() {
 						}}
 					>
 						<Image
-							src={'/assets/gradient-shapes/shape1.svg'}
+							src={getAssetUrl('gradient-shapes/shape1.svg')}
 							alt={t('backgroundShape')}
 							width={500}
 							height={500}
@@ -77,7 +77,7 @@ async function Page() {
 						}}
 					>
 						<Image
-							src={'/assets/gradient-shapes/shape2.svg'}
+							src={getAssetUrl('gradient-shapes/shape2.svg')}
 							alt={t('backgroundShape')}
 							width={500}
 							height={500}
@@ -110,10 +110,11 @@ async function Page() {
 							position={'relative'}
 						>
 							<Image
-								src={getAssetUrl('team-preview.png')}
+								src={getAssetUrl('team-preview.webp')}
 								alt={t('teamScreenPreview')}
 								fill
 								priority
+								sizes="(max-width: 600px) 400px, 70vw"
 							/>
 						</Box>
 						<Box marginBottom={4}>
