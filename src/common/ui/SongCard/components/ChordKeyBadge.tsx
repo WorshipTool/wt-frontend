@@ -1,6 +1,7 @@
+import { Box } from '@/common/ui/Box'
+import { Typography } from '@/common/ui/Typography'
 import { Tooltip } from '@/common/ui/CustomTooltip/Tooltip'
 import { SxProps } from '@/common/ui/mui'
-import { Box, Typography } from '@mui/material'
 
 type ChordKeyBadgeProps = {
 	chordKey: string
@@ -31,10 +32,10 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 		>
 			<Typography
 				component="span"
+				size="0.55rem"
+				strong={600}
 				sx={{
 					color: 'grey.600',
-					fontSize: '0.55rem',
-					fontWeight: 600,
 					lineHeight: 1,
 					letterSpacing: 0,
 					userSelect: 'none',
