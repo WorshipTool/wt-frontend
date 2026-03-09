@@ -1,7 +1,6 @@
 import AppProviders from '@/app/components/AppProviders'
 import UnavailableMessage from '@/app/components/UnavailableMessage'
 import { DragTemplatesContainer } from '@/common/components/DragTemplate/DragTemplateContainer'
-import { ErrorBoundary } from '@/common/components/ErrorBoundary'
 import ImplementIdeaProvider from '@/common/components/ImplementAndPreview/ImplementIdeaProvider'
 import PopupProvider from '@/common/components/Popup/PopupProvider'
 import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
@@ -69,10 +68,7 @@ export default async function RootLayout({
 							<DragTemplatesContainer />
 							<AdminOptionsProvider />
 							<GlobalAdminNavOptions />
-							<ErrorBoundary>
 							<ImplementIdeaProvider />
-						</ErrorBoundary>
-
 							<UnavailableMessage />
 						</AppProviders>
 					</NextIntlClientProvider>
