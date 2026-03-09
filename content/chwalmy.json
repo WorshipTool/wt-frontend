@@ -993,7 +993,7 @@
 		"refreshButton": "Odśwież",
 		"noPr": "Brak PR",
 		"merged": "Połączone",
-		"filterOpenPr": "Tylko otwarte PR",
-		"noIdeasWithOpenPr": "Brak pomysłów z otwartymi PR"
+		"filterActive": "Aktywne i otwarte PR",
+		"noActiveOrOpenPr": "Brak aktywnych zadań ani otwartych PR"
 	}
 }

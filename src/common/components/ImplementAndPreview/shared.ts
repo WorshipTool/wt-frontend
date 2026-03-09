@@ -32,6 +32,16 @@ export const STATUS_STYLE: Record<string, { bg: string; color: string }> = {
 	interrupted: { bg: alpha('#888888', 0.1), color: '#666'    },
 }
 
+const DEFAULT_STATUS_STYLE: { bg: string; color: string } = {
+	bg: alpha('#888888', 0.1),
+	color: '#666',
+}
+
+/** Returns the style for a given status, falling back to a default for unknown statuses. */
+export function getStatusStyle(status: string): { bg: string; color: string } {
+	return STATUS_STYLE[status] ?? DEFAULT_STATUS_STYLE
+}
+
 export function extractPrNumber(prUrl: string): string | null {
 	const match = prUrl.match(/\/pull\/(\d+)$/)
 	return match ? match[1] : null

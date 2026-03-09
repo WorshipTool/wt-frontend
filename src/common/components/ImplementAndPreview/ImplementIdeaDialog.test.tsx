@@ -895,7 +895,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			expect(screen.getByText('filterOpenPr')).toBeInTheDocument()
+			expect(screen.getByText('filterActive')).toBeInTheDocument()
 		})
 
 		it('filter chip is inactive by default (aria-pressed=false)', async () => {
@@ -908,7 +908,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			expect(filterBtn).toHaveAttribute('aria-pressed', 'false')
 		})
 
@@ -922,7 +922,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
 			expect(filterBtn).toHaveAttribute('aria-pressed', 'true')
@@ -944,7 +944,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByText('Completed no PR')).toBeInTheDocument()
 		})
 
-		it('shows only tasks with open (non-merged) PRs when filter is on', async () => {
+		it('shows active tasks and tasks with open (non-merged) PRs when filter is on', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock)
 				.mockResolvedValueOnce({ json: () => Promise.resolve({ tasks: TASKS_MIXED }) })
@@ -954,39 +954,41 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
-			// Only the task with open PR should be shown
+			// Active task (running) should be shown even without a PR
+			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
+			// Task with open PR should also be shown
 			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
-			// Others should be hidden
-			expect(screen.queryByText('Running task no PR')).not.toBeInTheDocument()
+			// Non-active tasks without open PRs should be hidden
 			expect(screen.queryByText('Completed with closed PR')).not.toBeInTheDocument()
 			expect(screen.queryByText('Completed no PR')).not.toBeInTheDocument()
 		})
 
-		it('shows noIdeasWithOpenPr message when filter is on and no tasks have open PRs', async () => {
+		it('shows noActiveOrOpenPr message when filter is on and no tasks are active or have open PRs', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
-			const noOpenPrTasks = [
-				{ taskId: 'x1', status: 'running', prompt: 'Running task', pullRequests: [] },
-				{ taskId: 'x2', status: 'completed', prompt: 'Done no PR', pullRequests: [] },
+			// Only completed/failed tasks with no open PRs — neither active nor open PR
+			const inactiveTasks = [
+				{ taskId: 'x1', status: 'completed', prompt: 'Done no PR', pullRequests: [] },
+				{ taskId: 'x2', status: 'failed', prompt: 'Failed task', pullRequests: [] },
 			]
 			;(global.fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({ tasks: noOpenPrTasks }),
+				json: () => Promise.resolve({ tasks: inactiveTasks }),
 			})
 
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
-			expect(screen.getByText('noIdeasWithOpenPr')).toBeInTheDocument()
+			expect(screen.getByText('noActiveOrOpenPr')).toBeInTheDocument()
 			expect(screen.queryByText('noIdeas')).not.toBeInTheDocument()
 		})
 
-		it('does not show noIdeasWithOpenPr when total tasks is zero (shows noIdeas instead)', async () => {
+		it('does not show noActiveOrOpenPr when total tasks is zero (shows noIdeas instead)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [] }),
@@ -996,11 +998,36 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
 			expect(screen.getByText('noIdeas')).toBeInTheDocument()
-			expect(screen.queryByText('noIdeasWithOpenPr')).not.toBeInTheDocument()
+			expect(screen.queryByText('noActiveOrOpenPr')).not.toBeInTheDocument()
+		})
+
+		it('shows queued and retrying tasks when filter is on (all active statuses)', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const activeTasks = [
+				{ taskId: 'a1', status: 'queued', prompt: 'Queued task', pullRequests: [] },
+				{ taskId: 'a2', status: 'retrying', prompt: 'Retrying task', pullRequests: [] },
+				{ taskId: 'a3', status: 'interrupted', prompt: 'Interrupted task', pullRequests: [] },
+			]
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: activeTasks }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
+			fireEvent.click(filterBtn)
+
+			// Active statuses should be shown
+			expect(screen.getByText('Queued task')).toBeInTheDocument()
+			expect(screen.getByText('Retrying task')).toBeInTheDocument()
+			// Interrupted is not active
+			expect(screen.queryByText('Interrupted task')).not.toBeInTheDocument()
 		})
 
 		it('excludes merged PRs from filtered results', async () => {
@@ -1020,12 +1047,12 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
 			// Merged task should be excluded from open PR filter
 			expect(screen.queryByText('Merged PR task')).not.toBeInTheDocument()
-			expect(screen.getByText('noIdeasWithOpenPr')).toBeInTheDocument()
+			expect(screen.getByText('noActiveOrOpenPr')).toBeInTheDocument()
 		})
 
 		it('toggling filter off restores all tasks', async () => {
@@ -1038,17 +1065,63 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterOpenPr' })
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 
-			// Enable filter
+			// Enable filter — non-active tasks without open PRs should be hidden
 			fireEvent.click(filterBtn)
-			expect(screen.queryByText('Running task no PR')).not.toBeInTheDocument()
+			expect(screen.queryByText('Completed with closed PR')).not.toBeInTheDocument()
+			expect(screen.queryByText('Completed no PR')).not.toBeInTheDocument()
 
-			// Disable filter
+			// Disable filter — all tasks restored
 			fireEvent.click(filterBtn)
 			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
 			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
 			expect(screen.getByText('Completed with closed PR')).toBeInTheDocument()
+		})
+	})
+
+	describe('Unknown/unexpected status handling', () => {
+		it('does not crash when a task has an unknown status', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const taskWithUnknownStatus = {
+				taskId: 'u1',
+				status: 'pending', // not in STATUS_STYLE
+				prompt: 'Unknown status task',
+				pullRequests: [],
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [taskWithUnknownStatus] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// The dialog should still render without crashing
+			expect(screen.getByText('Unknown status task')).toBeInTheDocument()
+			// The status text itself should be rendered
+			expect(screen.getByText('pending')).toBeInTheDocument()
+		})
+
+		it('does not crash when displayStatus is an unknown value', async () => {
+			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
+			const taskWithUnknownDisplayStatus = {
+				taskId: 'u2',
+				status: 'running',
+				prompt: 'Chain task with unknown displayStatus',
+				pullRequests: [],
+				chainId: 'chain-X',
+				displayStatus: 'cancelled', // not in STATUS_STYLE
+			}
+			;(global.fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({ tasks: [taskWithUnknownDisplayStatus] }),
+			})
+
+			render(<ImplementIdeaDialog {...defaultProps} />)
+			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			expect(screen.getByText('Chain task with unknown displayStatus')).toBeInTheDocument()
 		})
 	})
 
