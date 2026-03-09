@@ -41,7 +41,7 @@ export default function CollaborationWithWorshipkoCard() {
 						{tAbout('collaboration.title')}
 					</Typography>
 					<Image
-						src={getAssetUrl('worshipko.png')}
+						src={getAssetUrl('worshipko.webp')}
 						alt={tFooter('logoAlt')}
 						height={70}
 						width={240}

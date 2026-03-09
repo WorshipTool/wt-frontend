@@ -75,7 +75,16 @@ export default (phase, { defaultConfig }) => {
 						  ]
 						: []),
 				],
+				// Serve modern image formats: AVIF first (smallest), WebP fallback
+				formats: ['image/avif', 'image/webp'],
+				// Cache optimized images for 7 days (default is 60s)
+				minimumCacheTTL: 60 * 60 * 24 * 7,
+				// Responsive breakpoints matching typical device widths
+				deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+				imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
 				dangerouslyAllowSVG: true,
+				contentDispositionType: 'attachment',
+				contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
 			},
 			headers() {
 				return [

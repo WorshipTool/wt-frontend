@@ -9,12 +9,21 @@ import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
+import { Roboto } from 'next/font/google'
 import { getMessages } from '../../i18n-config'
 
 import Analytics from '@/app/components/components/analytics/Analytics'
 import HeadersProviders from '@/app/providers/HeadersProviders'
 import './globals.classes.css'
 import './globals.css'
+
+const roboto = Roboto({
+	weight: ['300', '400', '500', '700'],
+	subsets: ['latin'],
+	display: 'swap',
+	variable: '--font-roboto',
+	preload: true,
+})
 
 export async function generateMetadata(): Promise<Metadata> {
 	const messages = await getMessages()
@@ -46,7 +55,7 @@ export default async function RootLayout({
 	const messages = await getMessages()
 
 	return (
-		<html lang="en">
+		<html lang="en" className={`${roboto.variable} ${roboto.className}`}>
 			<HeadersProviders />
 			<Analytics />
 			<body>
