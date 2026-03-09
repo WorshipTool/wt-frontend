@@ -993,7 +993,7 @@
 		"refreshButton": "Obnovit",
 		"noPr": "Nemá PR",
 		"merged": "Sloučeno",
-		"filterOpenPr": "Jen otevřené PR",
-		"noIdeasWithOpenPr": "Žádné nápady s otevřenými PR"
+		"filterActive": "Aktivní & otevřené PR",
+		"noActiveOrOpenPr": "Žádné aktivní úlohy ani otevřené PR"
 	}
 }
