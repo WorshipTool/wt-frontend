@@ -1010,7 +1010,7 @@
 		"refreshButton": "Refresh",
 		"noPr": "No PR",
 		"merged": "Merged",
-		"filterOpenPr": "Open PRs only",
-		"noIdeasWithOpenPr": "No ideas with open PRs"
+		"filterActive": "Active & open PRs",
+		"noActiveOrOpenPr": "No active tasks or open PRs"
 	}
 }

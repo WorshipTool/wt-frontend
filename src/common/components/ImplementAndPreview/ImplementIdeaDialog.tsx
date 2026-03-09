@@ -14,7 +14,7 @@ import {
 	BLUE_DARK,
 	PURPLE,
 	PURPLE_DARK,
-	STATUS_STYLE,
+	getStatusStyle,
 	bgMove,
 	extractPrNumber,
 	type PullRequest,
@@ -230,6 +230,7 @@ export default function ImplementIdeaDialog({
 	}
 
 	const ACTIVE_STATUSES: TaskStatus[] = ['running', 'starting', 'retrying']
+	const FILTER_ACTIVE_STATUSES: TaskStatus[] = ['queued', 'starting', 'running', 'retrying']
 	const inProgressCount = tasks.filter(
 		(t) => ACTIVE_STATUSES.includes((t.displayStatus ?? t.status) as TaskStatus)
 	).length
@@ -237,8 +238,11 @@ export default function ImplementIdeaDialog({
 
 	const displayedTasks = filterOpenPr
 		? tasks.filter((task) => {
+				const effectiveStatus = task.displayStatus ?? task.status
+				const isActive = FILTER_ACTIVE_STATUSES.includes(effectiveStatus as TaskStatus)
 				const pr = task.pullRequests?.[0]
-				return pr && pr.state === 'open' && !mergedPrUrls.has(pr.url)
+				const hasOpenPr = pr && pr.state === 'open' && !mergedPrUrls.has(pr.url)
+				return isActive || hasOpenPr
 		  })
 		: tasks
 
@@ -438,7 +442,7 @@ export default function ImplementIdeaDialog({
 									},
 								}}
 							>
-								{t('filterOpenPr')}
+								{t('filterActive')}
 							</Box>
 
 							{/* Countdown + refresh */}
@@ -479,13 +483,13 @@ export default function ImplementIdeaDialog({
 
 							{tasksLoaded && tasks.length > 0 && displayedTasks.length === 0 && (
 								<Typography variant="normal" size="0.85rem" color="grey.500" align="center">
-									{t('noIdeasWithOpenPr')}
+									{t('noActiveOrOpenPr')}
 								</Typography>
 							)}
 
 							{displayedTasks.map((task) => {
 							const effectiveStatus = task.displayStatus ?? task.status
-							const style = STATUS_STYLE[effectiveStatus]
+							const style = getStatusStyle(effectiveStatus)
 							const pr = task.pullRequests?.[0]
 							const prNumber = pr ? extractPrNumber(pr.url) : null
 							const previewUrl = task.previewUrl ?? (PREVIEW_BASE_URL && prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)
