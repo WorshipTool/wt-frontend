@@ -1,5 +1,4 @@
 import { Box } from '@/common/ui/Box'
-import { Typography } from '@/common/ui/Typography'
 import { Tooltip } from '@/common/ui/CustomTooltip/Tooltip'
 import { SxProps } from '@/common/ui/mui'
 
@@ -30,11 +29,11 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 				...sx,
 			}}
 		>
-			<Typography
+			<Box
 				component="span"
-				size="0.55rem"
-				strong={600}
 				sx={{
+					fontSize: '0.55rem',
+					fontWeight: 600,
 					color: 'grey.600',
 					lineHeight: 1,
 					letterSpacing: 0,
@@ -42,7 +41,7 @@ export default function ChordKeyBadge({ chordKey, sx, tooltip }: ChordKeyBadgePr
 				}}
 			>
 				{chordKey}
-			</Typography>
+			</Box>
 		</Box>
 	)
 
