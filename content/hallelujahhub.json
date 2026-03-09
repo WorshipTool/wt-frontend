@@ -444,7 +444,7 @@
 		"automatic": "Automatic",
 		"setValidation": "Choose content validation",
 		"validationSet": "Filter set to",
-		"parseFile": "Parse File",
+		"parseFile": "Parse file",
 		"errorOccurred": "An error occurred",
 		"userNotAdmin": "User is not admin",
 		"noFilesSelected": "No files selected",
@@ -501,7 +501,6 @@
 			"no": "No"
 		},
 		"goToSong": "Go to Song",
-		"parseFile": "Parse file",
 		"selectFileToProcess": "Select file to process",
 		"openProcessedData": "Open processed data",
 		"parentSong": "Parent song",
@@ -592,18 +591,20 @@
 	},
 	"search": {
 		"searchSongs": "Search songs",
-		"searchSong": "Search song",
 		"searchByTitleOrText": "Search by title or text content",
 		"noResults": "No results",
 		"searching": "Searching...",
 		"globalSongbook": "From global songbook",
 		"mySongs": "From my songs",
-		"teamSongbook": "From team songbook"
+		"teamSongbook": "From team songbook",
+		"searchSong": "Search song"
 	},
 	"errors": {
-		"forbidden": "Access forbidden",
+		"forbidden": "You don't have sufficient permissions to view this content!",
 		"notFound": "Page not found",
-		"serverError": "Server error",
+		"notFoundDescription": "It seems you've wandered into uncharted territories of the application. You can try going back to the main page.",
+		"goHome": "GO HOME",
+		"serverError": "Something went wrong!",
 		"unauthorized": "Unauthorized access",
 		"tokenExpired": "Token expired"
 	},
@@ -806,6 +807,13 @@
 				"title": "External link",
 				"message": "You are about to leave the team application. Do you want to continue?"
 			}
+		},
+		"noAccess": {
+			"title": "Content cannot be displayed",
+			"description": "You do not have permission to view the content of team {name} because you are not a member.",
+			"joinDescription": "To gain access, join this team. You can join using a join code or a join link – which you need to ask a team member for.",
+			"loginButton": "Log in",
+			"joinButton": "Join team"
 		}
 	},
 	"account": {
@@ -850,16 +858,6 @@
 				"title": "Title"
 			}
 		}
-	},
-	"search": {
-		"searchSongs": "Search songs",
-		"searchByTitleOrText": "Search by title or text content",
-		"noResults": "No results",
-		"searching": "Searching...",
-		"globalSongbook": "From global songbook",
-		"mySongs": "From my songs",
-		"teamSongbook": "From team songbook",
-		"searchSong": "Search song"
 	},
 	"transpose": {
 		"title": "Transpose",
@@ -918,7 +916,7 @@
 	},
 	"mySongs": {
 		"title": "My Songs",
-		"noSongs": "No Songs", 
+		"noSongs": "No Songs",
 		"edit": "Edit",
 		"public": "Public",
 		"private": "Private",
@@ -940,15 +938,6 @@
 		"useLandscapeView": "Use landscape view",
 		"afterPrintingCanClose": "After printing you can close the window",
 		"closeAndGoBack": "Close and go back"
-	},
-	"errors": {
-		"forbidden": "You don't have sufficient permissions to view this content!",
-		"notFound": "Page not found",
-		"notFoundDescription": "It seems you've wandered into uncharted territories of the application. You can try going back to the main page.",
-		"goHome": "GO HOME",
-		"serverError": "Something went wrong!",
-		"unauthorized": "Unauthorized access",
-		"tokenExpired": "Token expired"
 	},
 	"maintenance": {
 		"workInProgress": "The site is currently under maintenance.",
