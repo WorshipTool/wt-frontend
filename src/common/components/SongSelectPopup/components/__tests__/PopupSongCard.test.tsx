@@ -10,23 +10,23 @@ jest.mock('next-intl', () => ({
 }))
 
 // Mock DraggableSong (just renders children)
-jest.mock('@/hooks/dragsong/DraggableSong', () => ({
+jest.mock('../../../../../hooks/dragsong/DraggableSong', () => ({
 	__esModule: true,
 	default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
 // Mock IconButton
-jest.mock('@/common/ui/IconButton', () => ({
+jest.mock('../../../../../common/ui/IconButton', () => ({
 	IconButton: ({ children }: { children: React.ReactNode }) => <button>{children}</button>,
 }))
 
 // Mock parseVariantAlias
-jest.mock('@/tech/song/variant/variant.utils', () => ({
+jest.mock('../../../../../tech/song/variant/variant.utils', () => ({
 	parseVariantAlias: () => ({}),
 }))
 
 // Mock theme
-jest.mock('@/common/constants/theme', () => ({
+jest.mock('../../../../../common/constants/theme', () => ({
 	theme: {
 		palette: {
 			primary: { main: '#1976d2' },
