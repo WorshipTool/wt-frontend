@@ -21,7 +21,7 @@ const makeState = (overrides: Partial<ContextMenuState> = {}): ContextMenuState 
 })
 
 describe('AdminContextMenu', () => {
-	it('renders the "Navrhnout úpravu" action button', () => {
+	it('renders the "Upravit" action button', () => {
 		render(
 			<AdminContextMenu
 				state={makeState()}
@@ -29,7 +29,7 @@ describe('AdminContextMenu', () => {
 				onClose={jest.fn()}
 			/>
 		)
-		expect(screen.getByText('Navrhnout úpravu')).toBeInTheDocument()
+		expect(screen.getByText('Upravit')).toBeInTheDocument()
 	})
 
 	it('calls onEdit with the capture when action button is clicked', () => {
@@ -42,7 +42,7 @@ describe('AdminContextMenu', () => {
 				onClose={jest.fn()}
 			/>
 		)
-		fireEvent.click(screen.getByText('Navrhnout úpravu'))
+		fireEvent.click(screen.getByText('Upravit'))
 		expect(onEdit).toHaveBeenCalledWith(capture)
 	})
 
@@ -55,7 +55,7 @@ describe('AdminContextMenu', () => {
 				onClose={onClose}
 			/>
 		)
-		fireEvent.click(screen.getByText('Navrhnout úpravu'))
+		fireEvent.click(screen.getByText('Upravit'))
 		expect(onClose).toHaveBeenCalled()
 	})
 
@@ -124,6 +124,20 @@ describe('AdminContextMenu', () => {
 		)
 		const menu = container.firstChild as HTMLElement
 		expect(menu.style.position).toBe('fixed')
+	})
+
+	it('positions menu at cursor coordinates (not selection centre)', () => {
+		const { container } = render(
+			<AdminContextMenu
+				state={makeState({ x: 150, y: 300 })}
+				onEdit={jest.fn()}
+				onClose={jest.fn()}
+			/>
+		)
+		const menu = container.firstChild as HTMLElement
+		// The menu left should start at x (cursor), not x - menuWidth/2 (selection centre)
+		expect(parseInt(menu.style.left)).toBeGreaterThanOrEqual(4) // margin floor
+		expect(parseInt(menu.style.top)).toBeGreaterThanOrEqual(0)
 	})
 
 	it('has data-edit-proposals-ui attribute so it does not trigger captures', () => {

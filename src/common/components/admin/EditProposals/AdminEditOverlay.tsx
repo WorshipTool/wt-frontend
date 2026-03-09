@@ -5,13 +5,15 @@
  * Attaches a global `contextmenu` DOM event listener for admin users.
  *
  * Behaviour:
- *  - Right-click always shows the native browser context menu (no suppression).
- *  - If the admin right-clicks WITH text selected → a compact floating admin
- *    action button appears anchored to the bottom of the selected text.
- *    Clicking that button opens the proposal panel for the selected text.
- *  - The floating button stays visible while the selection exists and closes
- *    automatically when: the selection is cleared, Escape is pressed, the
- *    button is clicked, or the proposal dialog is already open.
+ *  - When the admin right-clicks WITH text selected, the native browser
+ *    context menu is suppressed and a custom admin context menu appears at
+ *    the cursor position with an "Upravit" option.
+ *  - A 300 ms cooldown prevents the menu from appearing on rapid double
+ *    right-clicks.
+ *  - Without text selected, right-click behaves normally (no interception).
+ *  - The floating menu closes when: the admin clicks "Upravit" (opens the
+ *    proposal panel), the selection is cleared, Escape is pressed, or the
+ *    proposal dialog is already open.
  *
  * Renders: the compact AdminContextMenu when a text-selection right-click is
  * in progress.
@@ -44,6 +46,10 @@ export default function AdminEditOverlay() {
 
 	/** Prevents creating a duplicate floating button when already open */
 	const isMenuOpenRef = useRef(false)
+
+	/** Timestamp of the last contextmenu event we showed a menu for.
+	 *  Used to prevent re-triggering on rapid double right-clicks. */
+	const lastContextMenuTimeRef = useRef(0)
 
 	const highlightRef = useRef<HighlightEntry | null>(null)
 	const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
@@ -111,19 +117,24 @@ export default function AdminEditOverlay() {
 			const selection = window.getSelection()
 			const selectedText = selection?.toString().trim() ?? ''
 
-			// Only show the admin edit button when the user has text selected.
+			// Only intercept when the admin has text selected.
 			if (!selectedText) return
 
-			// If a proposal dialog is already open, don't stack another one
+			// Suppress the native browser context menu — our custom menu replaces it.
+			// This also prevents the browser from clearing the selection on right-click,
+			// which eliminates the "double right-click re-triggers the menu" bug.
+			e.preventDefault()
+
+			// If a proposal dialog is already open, don't stack another one.
 			if (pendingCaptureRef.current !== null) return
 
-			// If the floating button is already showing, don't create a duplicate.
-			// The native browser context menu will still appear normally.
+			// If the floating menu is already visible, don't create a duplicate.
 			if (isMenuOpenRef.current) return
 
-			// NOTE: We deliberately do NOT call e.preventDefault() here.
-			// The native browser context menu will appear at the cursor as usual.
-			// Our floating admin button appears separately, anchored to the selection.
+			// Cooldown: ignore a second right-click within 300 ms of the first.
+			const now = Date.now()
+			if (now - lastContextMenuTimeRef.current < 300) return
+			lastContextMenuTimeRef.current = now
 
 			const anchorNode = selection?.anchorNode
 			const anchorEl =
@@ -136,18 +147,9 @@ export default function AdminEditOverlay() {
 
 			const capture = captureTextSelection(selectedText, anchorEl)
 
-			// Position the floating button at the bottom-centre of the selected text,
-			// so it does not conflict with the native context menu at the cursor.
-			let menuX = e.clientX
-			let menuY = e.clientY
-			if (selection && selection.rangeCount > 0) {
-				const range = selection.getRangeAt(0)
-				const rect = range.getBoundingClientRect()
-				menuX = rect.left + rect.width / 2
-				menuY = rect.bottom + 8
-			}
-
-			setContextMenu({ x: menuX, y: menuY, capture })
+			// Position the custom menu at the cursor so it appears where the native
+			// context menu would normally appear.
+			setContextMenu({ x: e.clientX, y: e.clientY, capture })
 			isMenuOpenRef.current = true
 		}
 

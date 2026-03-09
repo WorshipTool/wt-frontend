@@ -2,15 +2,14 @@
 /**
  * AdminContextMenu
  *
- * A compact floating admin action button that appears anchored to the bottom
- * of a text selection when an admin right-clicks on selected text.
+ * A custom context menu that replaces the native browser context menu when
+ * an admin right-clicks on selected text.
  *
- * Positioning: anchored to the selection bounding rect, NOT the cursor —
- * so it does not visually conflict with the native browser context menu
- * that appears at the cursor position.
+ * Positioning: appears at the cursor position (x/y passed from the
+ * contextmenu event), clamped to stay within the viewport.
  *
  * Closes when:
- *  - The admin clicks the "Navrhnout úpravu" button (opens the proposal dialog).
+ *  - The admin clicks the "Upravit" button (opens the proposal dialog).
  *  - The text selection is cleared (selectionchange event).
  *  - The Escape key is pressed.
  *
@@ -62,13 +61,13 @@ export default function AdminContextMenu({ state, onEdit, onClose }: Props) {
 	}, [onClose])
 
 	// Clamp position so the menu stays inside the viewport.
-	// state.x is the horizontal centre of the selection; state.y is its bottom edge.
+	// state.x / state.y are the cursor coordinates from the contextmenu event.
 	const menuWidth = 200
 	const menuHeight = 36 // single item
 	const margin = 4
 	const vw = typeof window !== 'undefined' ? window.innerWidth : 800
 	const vh = typeof window !== 'undefined' ? window.innerHeight : 600
-	const left = Math.max(margin, Math.min(state.x - menuWidth / 2, vw - menuWidth - margin))
+	const left = Math.max(margin, Math.min(state.x, vw - menuWidth - margin))
 	const top = Math.min(state.y, vh - menuHeight - margin)
 
 	const handleEditClick = (e: React.MouseEvent) => {
@@ -126,7 +125,7 @@ export default function AdminContextMenu({ state, onEdit, onClose }: Props) {
 				}}
 			>
 				<EditNote style={{ fontSize: 15, flexShrink: 0, color: 'inherit' }} />
-				Navrhnout úpravu
+				Upravit
 			</button>
 		</div>
 	)
