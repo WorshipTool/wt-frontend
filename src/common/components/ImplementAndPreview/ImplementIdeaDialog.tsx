@@ -14,7 +14,7 @@ import {
 	BLUE_DARK,
 	PURPLE,
 	PURPLE_DARK,
-	STATUS_STYLE,
+	getStatusStyle,
 	bgMove,
 	extractPrNumber,
 	type PullRequest,
@@ -489,7 +489,7 @@ export default function ImplementIdeaDialog({
 
 							{displayedTasks.map((task) => {
 							const effectiveStatus = task.displayStatus ?? task.status
-							const style = STATUS_STYLE[effectiveStatus]
+							const style = getStatusStyle(effectiveStatus)
 							const pr = task.pullRequests?.[0]
 							const prNumber = pr ? extractPrNumber(pr.url) : null
 							const previewUrl = task.previewUrl ?? (PREVIEW_BASE_URL && prNumber ? `${PREVIEW_BASE_URL}/pr-${prNumber}` : null)

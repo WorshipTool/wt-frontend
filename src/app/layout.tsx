@@ -69,7 +69,6 @@ export default async function RootLayout({
 							<AdminOptionsProvider />
 							<GlobalAdminNavOptions />
 							<ImplementIdeaProvider />
-
 							<UnavailableMessage />
 						</AppProviders>
 					</NextIntlClientProvider>
