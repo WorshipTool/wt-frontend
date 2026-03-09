@@ -3,12 +3,12 @@ import { theme } from '@/common/constants/theme'
 import { createTheme } from '@/common/ui/mui'
 import { responsiveFontSizes } from '@mui/material/styles'
 import { csCZ } from '@mui/x-date-pickers/locales'
-import { Roboto } from 'next/font/google'
 
 let muiTheme = createTheme(
 	{
 		...theme,
 		typography: {
+			fontFamily: 'var(--font-roboto)',
 			h1: {
 				fontSize: '5rem',
 				fontWeight: 400,
@@ -37,20 +37,3 @@ let muiTheme = createTheme(
 )
 muiTheme = responsiveFontSizes(muiTheme)
 export const _muiTheme = muiTheme
-
-// theme.typography.h4 = {
-// 	fontSize: '1.2rem',
-// }
-
-// theme.typography.h5 = {
-// 	fontSize: '1.1rem',
-// }
-
-// theme.typography.h6 = {
-// 	fontSize: '1rem',
-// }
-export const roboto = Roboto({
-	weight: '400',
-	subsets: ['latin'],
-	display: 'swap',
-})

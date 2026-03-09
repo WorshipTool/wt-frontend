@@ -19,9 +19,10 @@ export const Background = () => {
 	return (
 		<Bg>
 			<Image
-				src={getAssetUrl('wool-bg.png')}
+				src={getAssetUrl('wool-bg.webp')}
 				alt={t('backgroundAlt')}
 				fill
+				sizes="100vw"
 				style={{
 					filter: 'brightness(0.7) contrast(1.5)',
 					opacity: 0.05,

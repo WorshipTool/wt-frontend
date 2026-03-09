@@ -25,6 +25,7 @@ import HelpUsPanel from '@/app/(layout)/o-nas/components/HelpUsPanel'
 import SheepBigGraphics from '@/app/(layout)/o-nas/components/SheepBigGraphics'
 import { Divider } from '@/common/ui'
 import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
+import { getAssetUrl } from '@/tech/paths.tech'
 import breakpoints from '@/tech/theme/theme.tech'
 import './styles.css'
 
@@ -119,9 +120,10 @@ function Page() {
 					}}
 				>
 					<Image
-						src={'/assets/sheeps/ovce1.svg'}
+						src={getAssetUrl('sheeps/ovce1.svg')}
 						alt={t('graphics.introSheepAlt')}
 						fill
+						priority
 						style={{
 							transform: 'translateY(15%)',
 						}}
@@ -363,7 +365,7 @@ function Page() {
 								gap={1}
 							>
 								<Image
-									src={'/assets/icons/send-money.svg'}
+									src={getAssetUrl('icons/send-money.svg')}
 									alt={t('supportCard.iconAlt')}
 									width={40}
 									height={40}
