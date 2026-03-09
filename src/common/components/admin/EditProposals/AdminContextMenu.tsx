@@ -2,9 +2,17 @@
 /**
  * AdminContextMenu
  *
- * A custom context menu shown when the admin right-clicks on selected text.
- * It appears at the mouse cursor position and provides an "Upravit" (Edit) action
- * that opens the proposal dialog.
+ * A compact floating admin action button that appears anchored to the bottom
+ * of a text selection when an admin right-clicks on selected text.
+ *
+ * Positioning: anchored to the selection bounding rect, NOT the cursor —
+ * so it does not visually conflict with the native browser context menu
+ * that appears at the cursor position.
+ *
+ * Closes when:
+ *  - The admin clicks the "Navrhnout úpravu" button (opens the proposal dialog).
+ *  - The text selection is cleared (selectionchange event).
+ *  - The Escape key is pressed.
  *
  * Styled to blend with the native browser context menu aesthetic — minimal,
  * with a subtle shadow and hover effects.
@@ -28,44 +36,39 @@ type Props = {
 export default function AdminContextMenu({ state, onEdit, onClose }: Props) {
 	const menuRef = useRef<HTMLDivElement | null>(null)
 
-	// Close on click outside or on Escape
 	useEffect(() => {
-		const handleMouseDown = (e: MouseEvent) => {
-			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-				onClose()
-			}
-		}
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') {
 				e.preventDefault()
 				onClose()
 			}
 		}
-		// Also close on any contextmenu fired while we're open
-		const handleContextMenu = () => onClose()
 
-		// Slight delay so the originating right-click doesn't immediately close us
-		const timer = setTimeout(() => {
-			document.addEventListener('mousedown', handleMouseDown)
-			document.addEventListener('keydown', handleKeyDown)
-			document.addEventListener('contextmenu', handleContextMenu)
-		}, 0)
+		// Close when the text selection is cleared (e.g. user clicks elsewhere)
+		const handleSelectionChange = () => {
+			const sel = window.getSelection()
+			if (!sel || sel.toString().trim() === '') {
+				onClose()
+			}
+		}
+
+		document.addEventListener('keydown', handleKeyDown)
+		document.addEventListener('selectionchange', handleSelectionChange)
 
 		return () => {
-			clearTimeout(timer)
-			document.removeEventListener('mousedown', handleMouseDown)
 			document.removeEventListener('keydown', handleKeyDown)
-			document.removeEventListener('contextmenu', handleContextMenu)
+			document.removeEventListener('selectionchange', handleSelectionChange)
 		}
 	}, [onClose])
 
-	// Clamp position so the menu stays inside the viewport
+	// Clamp position so the menu stays inside the viewport.
+	// state.x is the horizontal centre of the selection; state.y is its bottom edge.
 	const menuWidth = 200
 	const menuHeight = 36 // single item
 	const margin = 4
 	const vw = typeof window !== 'undefined' ? window.innerWidth : 800
 	const vh = typeof window !== 'undefined' ? window.innerHeight : 600
-	const left = Math.min(state.x, vw - menuWidth - margin)
+	const left = Math.max(margin, Math.min(state.x - menuWidth / 2, vw - menuWidth - margin))
 	const top = Math.min(state.y, vh - menuHeight - margin)
 
 	const handleEditClick = (e: React.MouseEvent) => {

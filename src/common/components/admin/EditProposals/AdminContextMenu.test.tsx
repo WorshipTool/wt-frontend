@@ -60,7 +60,6 @@ describe('AdminContextMenu', () => {
 	})
 
 	it('closes on Escape key', () => {
-		jest.useFakeTimers()
 		const onClose = jest.fn()
 		render(
 			<AdminContextMenu
@@ -69,14 +68,53 @@ describe('AdminContextMenu', () => {
 				onClose={onClose}
 			/>
 		)
-		// Advance past the setTimeout(0) delay that defers listener registration
-		jest.runAllTimers()
 		fireEvent.keyDown(document, { key: 'Escape' })
 		expect(onClose).toHaveBeenCalled()
-		jest.useRealTimers()
 	})
 
-	it('is positioned at the provided coordinates', () => {
+	it('closes when text selection is cleared (selectionchange)', () => {
+		const onClose = jest.fn()
+
+		// Mock getSelection to return empty string
+		const originalGetSelection = window.getSelection
+		window.getSelection = jest.fn().mockReturnValue({ toString: () => '' })
+
+		render(
+			<AdminContextMenu
+				state={makeState()}
+				onEdit={jest.fn()}
+				onClose={onClose}
+			/>
+		)
+
+		fireEvent(document, new Event('selectionchange'))
+		expect(onClose).toHaveBeenCalled()
+
+		window.getSelection = originalGetSelection
+	})
+
+	it('does NOT close when text selection still has content (selectionchange)', () => {
+		const onClose = jest.fn()
+
+		// Mock getSelection to return non-empty string
+		const originalGetSelection = window.getSelection
+		window.getSelection = jest.fn().mockReturnValue({ toString: () => 'still selected' })
+
+		render(
+			<AdminContextMenu
+				state={makeState()}
+				onEdit={jest.fn()}
+				onClose={onClose}
+			/>
+		)
+
+		fireEvent(document, new Event('selectionchange'))
+		expect(onClose).not.toHaveBeenCalled()
+
+		window.getSelection = originalGetSelection
+	})
+
+	it('is positioned with fixed positioning', () => {
 		const { container } = render(
 			<AdminContextMenu
 				state={makeState({ x: 300, y: 450 })}

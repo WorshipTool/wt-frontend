@@ -5,14 +5,15 @@
  * Attaches a global `contextmenu` DOM event listener for admin users.
  *
  * Behaviour:
- *  - If the admin right-clicks WITHOUT any text selected → the native browser
- *    context menu is shown as usual (no interception).
- *  - If the admin right-clicks WITH text selected → the native context menu is
- *    suppressed and a compact custom context menu appears at the cursor with a
- *    single "Navrhnout úpravu" action. Clicking that action opens the proposal
- *    panel for the selected text.
+ *  - Right-click always shows the native browser context menu (no suppression).
+ *  - If the admin right-clicks WITH text selected → a compact floating admin
+ *    action button appears anchored to the bottom of the selected text.
+ *    Clicking that button opens the proposal panel for the selected text.
+ *  - The floating button stays visible while the selection exists and closes
+ *    automatically when: the selection is cleared, Escape is pressed, the
+ *    button is clicked, or the proposal dialog is already open.
  *
- * Renders: the custom AdminContextMenu when a text-selection right-click is
+ * Renders: the compact AdminContextMenu when a text-selection right-click is
  * in progress.
  */
 import useAuth from '@/hooks/auth/useAuth'
@@ -40,6 +41,9 @@ export default function AdminEditOverlay() {
 
 	const openProposalForRef = useRef(openProposalFor)
 	const pendingCaptureRef = useRef(pendingCapture)
+
+	/** Prevents creating a duplicate floating button when already open */
+	const isMenuOpenRef = useRef(false)
 
 	const highlightRef = useRef<HighlightEntry | null>(null)
 	const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
@@ -79,10 +83,10 @@ export default function AdminEditOverlay() {
 		el.style.outlineOffset = HIGHLIGHT_OUTLINE_OFFSET
 	}
 
-	// Also remove highlight when context menu is closed without opening the dialog
 	const handleContextMenuClose = () => {
 		setContextMenu(null)
 		removeHighlight()
+		isMenuOpenRef.current = false
 	}
 
 	const handleEditFromContextMenu = (capture: Parameters<typeof openProposalFor>[0]) => {
@@ -107,14 +111,19 @@ export default function AdminEditOverlay() {
 			const selection = window.getSelection()
 			const selectedText = selection?.toString().trim() ?? ''
 
-			// Only intercept when the user has text selected.
-			// Without a selection, let the native browser context menu show normally.
+			// Only show the admin edit button when the user has text selected.
 			if (!selectedText) return
 
 			// If a proposal dialog is already open, don't stack another one
 			if (pendingCaptureRef.current !== null) return
 
-			e.preventDefault()
+			// If the floating button is already showing, don't create a duplicate.
+			// The native browser context menu will still appear normally.
+			if (isMenuOpenRef.current) return
+
+			// NOTE: We deliberately do NOT call e.preventDefault() here.
+			// The native browser context menu will appear at the cursor as usual.
+			// Our floating admin button appears separately, anchored to the selection.
 
 			const anchorNode = selection?.anchorNode
 			const anchorEl =
@@ -126,7 +135,20 @@ export default function AdminEditOverlay() {
 			applyHighlight(anchorEl as HTMLElement)
 
 			const capture = captureTextSelection(selectedText, anchorEl)
-			setContextMenu({ x: e.clientX, y: e.clientY, capture })
+
+			// Position the floating button at the bottom-centre of the selected text,
+			// so it does not conflict with the native context menu at the cursor.
+			let menuX = e.clientX
+			let menuY = e.clientY
+			if (selection && selection.rangeCount > 0) {
+				const range = selection.getRangeAt(0)
+				const rect = range.getBoundingClientRect()
+				menuX = rect.left + rect.width / 2
+				menuY = rect.bottom + 8
+			}
+
+			setContextMenu({ x: menuX, y: menuY, capture })
+			isMenuOpenRef.current = true
 		}
 
 		document.addEventListener('contextmenu', handleContextMenu)
