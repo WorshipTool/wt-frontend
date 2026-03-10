@@ -1,5 +1,4 @@
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
-
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, IconButton, useTheme } from '@/common/ui'

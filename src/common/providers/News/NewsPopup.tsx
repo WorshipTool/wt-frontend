@@ -8,7 +8,6 @@
  */
 
 import Popup from '@/common/components/Popup/Popup'
-
 import { theme } from '@/common/constants/theme'
 import { Box, Button, IconButton } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'

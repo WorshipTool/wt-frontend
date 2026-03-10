@@ -12,7 +12,6 @@ import { Typography } from '@/common/ui/Typography'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { VariantPackGuid } from '../../../interfaces/variant/songVariant.types'
 import './styles.css'
 

@@ -1,5 +1,4 @@
 'use client'
-
 import { Box, Image } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { getAssetUrl } from '@/tech/paths.tech'

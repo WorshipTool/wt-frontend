@@ -7,8 +7,8 @@
  * Used for tutorial/onboarding effects.
  */
 
-import { Box } from '@/common/ui'
 import { Z_INDEX } from '@/common/constants/zIndex'
+import { Box } from '@/common/ui'
 import { keyframes } from '@emotion/react'
 import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'

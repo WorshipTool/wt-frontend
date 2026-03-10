@@ -1,4 +1,3 @@
-
 import { Box } from '@/common/ui/Box'
 import { Clickable } from '@/common/ui/Clickable'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'

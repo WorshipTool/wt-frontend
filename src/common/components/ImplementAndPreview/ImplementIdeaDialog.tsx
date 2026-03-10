@@ -1,7 +1,6 @@
 'use client'
 
 import Popup from '@/common/components/Popup/Popup'
-
 import { Box, Button, IconButton, TextField } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'

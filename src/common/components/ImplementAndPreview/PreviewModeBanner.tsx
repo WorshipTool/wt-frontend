@@ -2,8 +2,8 @@
 
 import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import { useDownSize } from '@/common/hooks/useDownSize'
-import { Box, Tooltip } from '@/common/ui'
 import { Z_INDEX } from '@/common/constants/zIndex'
+import { Box, Tooltip } from '@/common/ui'
 import { alpha } from '@/common/ui/mui'
 import { getPreviewPrNumber, getPreviewPrTitle } from '@/tech/preview/previewMode'
 import { Visibility } from '@mui/icons-material'

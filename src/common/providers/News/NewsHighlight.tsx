@@ -7,8 +7,8 @@
  * Wraps target component and displays tooltip/badge with news.
  */
 
-import { Box } from '@/common/ui'
 import { Z_INDEX } from '@/common/constants/zIndex'
+import { Box } from '@/common/ui'
 import { Typography } from '@/common/ui/Typography'
 import { alpha } from '@/common/ui/mui'
 import { AutoAwesome } from '@mui/icons-material'

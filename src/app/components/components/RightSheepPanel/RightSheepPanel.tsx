@@ -1,5 +1,4 @@
 'use client'
-
 import AllListPanel from '@/app/components/components/AllListPanel/AllListPanel'
 import LastAddedPanel from '@/app/components/components/LastAddedPanel/LastAddedPanel'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'

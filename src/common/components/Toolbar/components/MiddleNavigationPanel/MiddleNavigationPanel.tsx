@@ -6,7 +6,6 @@ import NavigationItem, {
 import { MOBILE_NAVIGATION_PANEL_ID } from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, Divider } from '@/common/ui'
-
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import { useSmartMatch } from '@/routes/useSmartMatch'

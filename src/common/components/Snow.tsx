@@ -1,5 +1,4 @@
 'use client'
-
 import { Box } from '@/common/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'

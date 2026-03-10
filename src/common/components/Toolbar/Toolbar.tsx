@@ -1,6 +1,5 @@
 'use client'
 
-
 import LeftWebTitle from '@/common/components/Toolbar/components/LeftWebTItle'
 import MiddleNavigationPanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/MiddleNavigationPanel'
 import NavigationMobilePanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'

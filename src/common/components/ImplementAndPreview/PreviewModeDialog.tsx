@@ -1,7 +1,6 @@
 'use client'
 
 import Popup from '@/common/components/Popup/Popup'
-
 import {
 	Box,
 	Button,
