@@ -220,4 +220,48 @@ describe('FloatingEditButton', () => {
 
 		Date.now = realDateNow
 	})
+
+	it('works with element-type capture (no text selected)', () => {
+		const onEdit = jest.fn()
+		const capture = makeCapture({
+			type: 'element',
+			selectedText: undefined,
+			elementText: 'Click me',
+			elementTag: 'button',
+			elementPath: 'main / button',
+		})
+		render(
+			<FloatingEditButton
+				state={makeState({ capture })}
+				onEdit={onEdit}
+				onClose={jest.fn()}
+			/>
+		)
+		fireEvent.click(screen.getByText('Upravit'))
+		expect(onEdit).toHaveBeenCalledWith(capture)
+	})
+
+	it('positions correctly with zero-size rect (cursor position for element clicks)', () => {
+		render(
+			<FloatingEditButton
+				state={makeState({
+					selectionRect: makeSelectionRect({
+						top: 300,
+						left: 400,
+						right: 400,
+						bottom: 300,
+						width: 0,
+						height: 0,
+					}),
+				})}
+				onEdit={jest.fn()}
+				onClose={jest.fn()}
+			/>
+		)
+		const btn = screen.getByTestId('floating-edit-button')
+		expect(btn.style.position).toBe('fixed')
+		// Should be above the cursor point (300 - height - gap)
+		const top = parseInt(btn.style.top)
+		expect(top).toBeLessThan(300)
+	})
 })

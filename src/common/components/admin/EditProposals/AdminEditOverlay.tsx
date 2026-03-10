@@ -5,18 +5,19 @@
  * Attaches a global `contextmenu` DOM event listener for admin users.
  *
  * Behaviour (Option B — floating button next to native menu):
- *  - When the admin right-clicks WITH text selected, the native browser
+ *  - When the admin right-clicks on ANY element, the native browser
  *    context menu is allowed to open normally (no preventDefault).
- *  - A compact floating "Upravit" pill button appears ABOVE the text
- *    selection, so it does not overlap the native menu.
- *  - The admin can use the native menu (Copy, etc.) and then click the
- *    floating button to open the proposal dialog, or the button auto-
- *    dismisses after a timeout / scroll / click elsewhere.
- *  - Without text selected, right-click behaves 100 % normally.
+ *  - A compact floating "Upravit" pill button appears near the
+ *    right-clicked element or text selection.
+ *  - If text is selected, the button appears above the selection range.
+ *  - If no text is selected, the button appears near the clicked element.
+ *  - The admin can use the native menu and then click the floating button
+ *    to open the proposal dialog, or the button auto-dismisses after a
+ *    timeout / scroll / click elsewhere.
  *  - A 300 ms cooldown prevents the button from re-appearing on rapid
  *    double right-clicks.
  *
- * Renders: the compact FloatingEditButton when a text-selection right-click
+ * Renders: the compact FloatingEditButton when an admin right-click
  * is detected.
  */
 import useAuth from '@/hooks/auth/useAuth'
@@ -25,6 +26,7 @@ import FloatingEditButton, {
 	FloatingEditButtonState,
 } from './FloatingEditButton'
 import {
+	captureElement,
 	captureTextSelection,
 	isEditableTarget,
 } from './captureUtils'
@@ -123,12 +125,6 @@ export default function AdminEditOverlay() {
 			// Never intercept inside our own admin UI
 			if (target.closest(`[${EDIT_PROPOSALS_UI_ATTR}]`)) return
 
-			const selection = window.getSelection()
-			const selectedText = selection?.toString().trim() ?? ''
-
-			// Only show the floating button when the admin has text selected.
-			if (!selectedText) return
-
 			// *** Option B: Do NOT call e.preventDefault() ***
 			// The native browser context menu opens normally.
 
@@ -143,35 +139,60 @@ export default function AdminEditOverlay() {
 			if (now - lastContextMenuTimeRef.current < 300) return
 			lastContextMenuTimeRef.current = now
 
-			const anchorNode = selection?.anchorNode
-			const anchorEl =
-				anchorNode instanceof Element
-					? anchorNode
-					: (anchorNode?.parentElement ?? target)
+			const selection = window.getSelection()
+			const selectedText = selection?.toString().trim() ?? ''
 
-			// Highlight the element containing the selection
-			applyHighlight(anchorEl as HTMLElement)
+			let capture: ReturnType<typeof captureTextSelection>
+			let selectionRect: typeof capture.anchorRect
 
-			const capture = captureTextSelection(selectedText, anchorEl)
+			if (selectedText) {
+				// ── Text selection mode ────────────────────────────────────
+				const anchorNode = selection?.anchorNode
+				const anchorEl =
+					anchorNode instanceof Element
+						? anchorNode
+						: (anchorNode?.parentElement ?? target)
 
-			// Use the selection's bounding rect for button placement (above the text).
-			const range =
-				selection && selection.rangeCount > 0
-					? selection.getRangeAt(0)
-					: null
-			const rangeRect = range?.getBoundingClientRect()
-			const selectionRect = rangeRect && rangeRect.width > 0
-				? {
-						top: rangeRect.top,
-						left: rangeRect.left,
-						right: rangeRect.right,
-						bottom: rangeRect.bottom,
-						width: rangeRect.width,
-						height: rangeRect.height,
-					}
-				: capture.anchorRect!
+				applyHighlight(anchorEl as HTMLElement)
 
-			setButtonState({ selectionRect, capture })
+				capture = captureTextSelection(selectedText, anchorEl)
+
+				const range =
+					selection && selection.rangeCount > 0
+						? selection.getRangeAt(0)
+						: null
+				const rangeRect = range?.getBoundingClientRect()
+				selectionRect = rangeRect && rangeRect.width > 0
+					? {
+							top: rangeRect.top,
+							left: rangeRect.left,
+							right: rangeRect.right,
+							bottom: rangeRect.bottom,
+							width: rangeRect.width,
+							height: rangeRect.height,
+						}
+					: capture.anchorRect!
+			} else {
+				// ── Element mode (no text selected) ───────────────────────
+				const el = target as HTMLElement
+				applyHighlight(el)
+
+				capture = captureElement(el)
+
+				// Position the button near the mouse cursor (where the
+				// user right-clicked), using a small virtual rect around
+				// the cursor point so FloatingEditButton can place itself.
+				selectionRect = {
+					top: e.clientY,
+					left: e.clientX,
+					right: e.clientX,
+					bottom: e.clientY,
+					width: 0,
+					height: 0,
+				}
+			}
+
+			setButtonState({ selectionRect: selectionRect!, capture })
 			isButtonOpenRef.current = true
 		}
 
