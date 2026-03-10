@@ -6,6 +6,7 @@ export {
 	ButtonGroup,
 	Checkbox,
 	Chip,
+	Collapse,
 	Container,
 	createTheme,
 	DialogContentText,
