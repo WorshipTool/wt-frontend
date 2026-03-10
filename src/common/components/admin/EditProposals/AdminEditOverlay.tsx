@@ -4,24 +4,30 @@
  *
  * Attaches a global `contextmenu` DOM event listener for admin users.
  *
- * Behaviour:
+ * Behaviour (Option B — floating button next to native menu):
  *  - When the admin right-clicks WITH text selected, the native browser
- *    context menu is suppressed and a custom admin context menu appears at
- *    the cursor position with an "Upravit" option.
- *  - A 300 ms cooldown prevents the menu from appearing on rapid double
- *    right-clicks.
- *  - Without text selected, right-click behaves normally (no interception).
- *  - The floating menu closes when: the admin clicks "Upravit" (opens the
- *    proposal panel), the selection is cleared, Escape is pressed, or the
- *    proposal dialog is already open.
+ *    context menu is allowed to open normally (no preventDefault).
+ *  - A compact floating "Upravit" pill button appears ABOVE the text
+ *    selection, so it does not overlap the native menu.
+ *  - The admin can use the native menu (Copy, etc.) and then click the
+ *    floating button to open the proposal dialog, or the button auto-
+ *    dismisses after a timeout / scroll / click elsewhere.
+ *  - Without text selected, right-click behaves 100 % normally.
+ *  - A 300 ms cooldown prevents the button from re-appearing on rapid
+ *    double right-clicks.
  *
- * Renders: the compact AdminContextMenu when a text-selection right-click is
- * in progress.
+ * Renders: the compact FloatingEditButton when a text-selection right-click
+ * is detected.
  */
 import useAuth from '@/hooks/auth/useAuth'
 import { useEffect, useRef, useState } from 'react'
-import AdminContextMenu, { ContextMenuState } from './AdminContextMenu'
-import { captureTextSelection, isEditableTarget } from './captureUtils'
+import FloatingEditButton, {
+	FloatingEditButtonState,
+} from './FloatingEditButton'
+import {
+	captureTextSelection,
+	isEditableTarget,
+} from './captureUtils'
 import { useEditProposals } from './useEditProposals'
 
 /** Data attribute used to mark UI elements that should NOT trigger captures */
@@ -45,14 +51,15 @@ export default function AdminEditOverlay() {
 	const pendingCaptureRef = useRef(pendingCapture)
 
 	/** Prevents creating a duplicate floating button when already open */
-	const isMenuOpenRef = useRef(false)
+	const isButtonOpenRef = useRef(false)
 
-	/** Timestamp of the last contextmenu event we showed a menu for.
+	/** Timestamp of the last contextmenu event we showed a button for.
 	 *  Used to prevent re-triggering on rapid double right-clicks. */
 	const lastContextMenuTimeRef = useRef(0)
 
 	const highlightRef = useRef<HighlightEntry | null>(null)
-	const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
+	const [buttonState, setButtonState] =
+		useState<FloatingEditButtonState | null>(null)
 
 	useEffect(() => {
 		openProposalForRef.current = openProposalFor
@@ -89,13 +96,15 @@ export default function AdminEditOverlay() {
 		el.style.outlineOffset = HIGHLIGHT_OUTLINE_OFFSET
 	}
 
-	const handleContextMenuClose = () => {
-		setContextMenu(null)
+	const handleButtonClose = () => {
+		setButtonState(null)
 		removeHighlight()
-		isMenuOpenRef.current = false
+		isButtonOpenRef.current = false
 	}
 
-	const handleEditFromContextMenu = (capture: Parameters<typeof openProposalFor>[0]) => {
+	const handleEditFromButton = (
+		capture: Parameters<typeof openProposalFor>[0]
+	) => {
 		openProposalForRef.current(capture)
 		// Highlight is kept while the proposal dialog is open;
 		// it will be cleared by the pendingCapture effect above.
@@ -117,19 +126,17 @@ export default function AdminEditOverlay() {
 			const selection = window.getSelection()
 			const selectedText = selection?.toString().trim() ?? ''
 
-			// Only intercept when the admin has text selected.
+			// Only show the floating button when the admin has text selected.
 			if (!selectedText) return
 
-			// Suppress the native browser context menu — our custom menu replaces it.
-			// This also prevents the browser from clearing the selection on right-click,
-			// which eliminates the "double right-click re-triggers the menu" bug.
-			e.preventDefault()
+			// *** Option B: Do NOT call e.preventDefault() ***
+			// The native browser context menu opens normally.
 
 			// If a proposal dialog is already open, don't stack another one.
 			if (pendingCaptureRef.current !== null) return
 
-			// If the floating menu is already visible, don't create a duplicate.
-			if (isMenuOpenRef.current) return
+			// If the floating button is already visible, don't create a duplicate.
+			if (isButtonOpenRef.current) return
 
 			// Cooldown: ignore a second right-click within 300 ms of the first.
 			const now = Date.now()
@@ -147,10 +154,25 @@ export default function AdminEditOverlay() {
 
 			const capture = captureTextSelection(selectedText, anchorEl)
 
-			// Position the custom menu at the cursor so it appears where the native
-			// context menu would normally appear.
-			setContextMenu({ x: e.clientX, y: e.clientY, capture })
-			isMenuOpenRef.current = true
+			// Use the selection's bounding rect for button placement (above the text).
+			const range =
+				selection && selection.rangeCount > 0
+					? selection.getRangeAt(0)
+					: null
+			const rangeRect = range?.getBoundingClientRect()
+			const selectionRect = rangeRect && rangeRect.width > 0
+				? {
+						top: rangeRect.top,
+						left: rangeRect.left,
+						right: rangeRect.right,
+						bottom: rangeRect.bottom,
+						width: rangeRect.width,
+						height: rangeRect.height,
+					}
+				: capture.anchorRect!
+
+			setButtonState({ selectionRect, capture })
+			isButtonOpenRef.current = true
 		}
 
 		document.addEventListener('contextmenu', handleContextMenu)
@@ -160,13 +182,13 @@ export default function AdminEditOverlay() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAdmin()])
 
-	if (!contextMenu) return null
+	if (!buttonState) return null
 
 	return (
-		<AdminContextMenu
-			state={contextMenu}
-			onEdit={handleEditFromContextMenu}
-			onClose={handleContextMenuClose}
+		<FloatingEditButton
+			state={buttonState}
+			onEdit={handleEditFromButton}
+			onClose={handleButtonClose}
 		/>
 	)
 }
