@@ -28,31 +28,36 @@ jest.mock('next-intl', () => ({
 }))
 
 // Mock framer-motion to render children directly (no animation in tests)
-jest.mock('framer-motion', () => ({
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
-  motion: {
-    div: React.forwardRef(
-      (
-        {
-          children,
-          initial,
-          animate,
-          exit,
-          transition,
-          style,
-          ...rest
-        }: any,
-        ref: any,
-      ) => (
-        <div ref={ref} data-testid="motion-div" style={style} {...rest}>
-          {children}
-        </div>
-      ),
+jest.mock('framer-motion', () => {
+  const MotionDiv = React.forwardRef(
+    (
+      {
+        children,
+        initial,
+        animate,
+        exit,
+        transition,
+        style,
+        ...rest
+      }: any,
+      ref: any,
+    ) => (
+      <div ref={ref} data-testid="motion-div" style={style} {...rest}>
+        {children}
+      </div>
     ),
-  },
-}))
+  )
+  MotionDiv.displayName = 'MotionDiv'
+
+  return {
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => (
+      <>{children}</>
+    ),
+    motion: {
+      div: MotionDiv,
+    },
+  }
+})
 
 const mockDismiss = jest.fn()
 const mockDismissAll = jest.fn()
