@@ -21,6 +21,40 @@ export type AnchorRect = {
 }
 
 /**
+ * Rich identifiers extracted from the DOM element to help AI find the
+ * corresponding element in source code. Compiled DOM paths may differ
+ * from JSX source, so we capture as many semantic identifiers as possible.
+ */
+export type ElementIdentifiers = {
+	/** Element's id attribute */
+	id?: string
+	/** Meaningful (non-generated) CSS class names on the element */
+	classNames?: string[]
+	/** data-testid attribute value */
+	testId?: string
+	/** All data-* attributes (key-value pairs, excluding data-testid) */
+	dataAttributes?: Record<string, string>
+	/** aria-label attribute value */
+	ariaLabel?: string
+	/** role attribute value */
+	role?: string
+	/** href for links */
+	href?: string
+	/** src for images / media */
+	src?: string
+	/** alt text for images */
+	alt?: string
+	/** name attribute (for forms) */
+	name?: string
+	/** placeholder attribute (for inputs) */
+	placeholder?: string
+	/** The element's opening HTML tag with all attributes (no children) */
+	openingTag: string
+	/** id or data-testid of the nearest identifiable ancestor (if the element itself lacks both) */
+	nearestIdentifiableAncestor?: string
+}
+
+/**
  * Snapshot of the captured DOM element or text selection that the admin
  * wants to propose a change for.
  */
@@ -38,6 +72,8 @@ export type ElementCapture = {
 	pageUrl: string
 	/** CSS selector built from the element hierarchy */
 	cssSelector?: string
+	/** Rich identifiers for AI to locate the element in source code */
+	identifiers?: ElementIdentifiers
 	/**
 	 * Viewport-relative bounding rect of the element or text selection,
 	 * captured at the moment of the right-click / selection.

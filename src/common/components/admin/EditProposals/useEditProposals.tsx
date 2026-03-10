@@ -1,6 +1,10 @@
 'use client'
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import useAuth from '@/hooks/auth/useAuth'
+import {
+	getPreviewPrNumber,
+	isPreviewMode,
+} from '@/tech/preview/previewMode'
 import { useSnackbar } from 'notistack'
 import {
 	createContext,
@@ -12,7 +16,10 @@ import {
 } from 'react'
 import { EditProposal, ElementCapture } from './types'
 
-const IMPLEMENT_IDEA_URL = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+/** Read at call time so tests can override via process.env */
+function getImplementIdeaUrl(): string | undefined {
+	return process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+}
 
 // ─── Context value shape ─────────────────────────────────────────────────────
 
@@ -110,12 +117,22 @@ export function EditProposalsProvider({
 		try {
 			const formattedMessage = formatProposalsAsMessage(proposals)
 
-			if (IMPLEMENT_IDEA_URL) {
-				// Primary: send as an implementation task (same endpoint as ImplementIdeaDialog)
-				const res = await fetch(IMPLEMENT_IDEA_URL, {
+			const implementIdeaUrl = getImplementIdeaUrl()
+			if (implementIdeaUrl) {
+				// Build the request body — in preview mode, attach the PR number
+				// so the backend adds the proposals as edits to the same preview branch
+				const body: Record<string, unknown> = {
+					message: formattedMessage,
+				}
+				const prNumber = getPreviewPrNumber()
+				if (isPreviewMode() && prNumber) {
+					body.continueInPRNumber = Number(prNumber)
+				}
+
+				const res = await fetch(implementIdeaUrl, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ message: formattedMessage }),
+					body: JSON.stringify(body),
 				})
 				if (!res.ok) throw new Error(`HTTP ${res.status}`)
 			} else {
@@ -131,9 +148,12 @@ export function EditProposalsProvider({
 				})
 			}
 
-			enqueueSnackbar('Návrhy úprav byly odeslány k implementaci', {
-				variant: 'success',
-			})
+			enqueueSnackbar(
+				isPreviewMode()
+					? 'Návrhy úprav byly přidány k aktuální preview verzi'
+					: 'Návrhy úprav byly odeslány k implementaci',
+				{ variant: 'success' },
+			)
 			setProposals([])
 		} catch {
 			enqueueSnackbar('Nepodařilo se odeslat návrhy', { variant: 'error' })
@@ -206,6 +226,36 @@ export function formatProposalsAsMessage(proposals: EditProposal[]): string {
 		if (p.capture.cssSelector) {
 			lines.push(`CSS selektor: ${p.capture.cssSelector}`)
 		}
+
+		// Rich identifiers for AI to locate the element in source code
+		const ids = p.capture.identifiers
+		if (ids) {
+			lines.push('')
+			lines.push('IDENTIFIKACE ELEMENTU (pro nalezení ve zdrojovém kódu):')
+			if (ids.id) lines.push(`  id: "${ids.id}"`)
+			if (ids.testId) lines.push(`  data-testid: "${ids.testId}"`)
+			if (ids.classNames?.length)
+				lines.push(`  třídy: ${ids.classNames.join(', ')}`)
+			if (ids.ariaLabel) lines.push(`  aria-label: "${ids.ariaLabel}"`)
+			if (ids.role) lines.push(`  role: "${ids.role}"`)
+			if (ids.href) lines.push(`  href: "${ids.href}"`)
+			if (ids.src) lines.push(`  src: "${ids.src}"`)
+			if (ids.alt) lines.push(`  alt: "${ids.alt}"`)
+			if (ids.name) lines.push(`  name: "${ids.name}"`)
+			if (ids.placeholder) lines.push(`  placeholder: "${ids.placeholder}"`)
+			if (ids.dataAttributes) {
+				for (const [key, value] of Object.entries(ids.dataAttributes)) {
+					lines.push(`  ${key}: "${value}"`)
+				}
+			}
+			if (ids.nearestIdentifiableAncestor) {
+				lines.push(
+					`  Nejbližší identifikovatelný rodič: ${ids.nearestIdentifiableAncestor}`
+				)
+			}
+			lines.push(`  HTML tag: ${ids.openingTag}`)
+		}
+
 		lines.push('')
 		lines.push(`NÁVRH ZMĚNY:`)
 		lines.push(p.proposalText)

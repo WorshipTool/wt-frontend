@@ -2,8 +2,11 @@ import '@testing-library/jest-dom'
 import {
 	buildCssSelector,
 	buildElementPath,
+	buildOpeningTag,
 	captureElement,
 	captureTextSelection,
+	extractIdentifiers,
+	findNearestIdentifiableAncestor,
 	isEditableTarget,
 } from './captureUtils'
 
@@ -257,5 +260,229 @@ describe('captureTextSelection', () => {
 
 		el.remove()
 		jest.restoreAllMocks()
+	})
+
+	it('includes identifiers in the capture', () => {
+		const el = document.createElement('p')
+		el.id = 'my-para'
+		document.body.appendChild(el)
+
+		jest.spyOn(window, 'getSelection').mockReturnValue(null)
+
+		const capture = captureTextSelection('text', el)
+		expect(capture.identifiers).toBeDefined()
+		expect(capture.identifiers?.id).toBe('my-para')
+
+		el.remove()
+		jest.restoreAllMocks()
+	})
+})
+
+// ─── buildOpeningTag ──────────────────────────────────────────────────────────
+
+describe('buildOpeningTag', () => {
+	it('builds a tag with no attributes', () => {
+		const el = document.createElement('div')
+		expect(buildOpeningTag(el)).toBe('<div>')
+	})
+
+	it('includes id and class attributes', () => {
+		const el = document.createElement('h2')
+		el.id = 'title'
+		el.className = 'section-title'
+		const tag = buildOpeningTag(el)
+		expect(tag).toContain('id="title"')
+		expect(tag).toContain('class="section-title"')
+		expect(tag).toMatch(/^<h2 /)
+		expect(tag).toMatch(/>$/)
+	})
+
+	it('includes data attributes', () => {
+		const el = document.createElement('button')
+		el.setAttribute('data-testid', 'submit-btn')
+		const tag = buildOpeningTag(el)
+		expect(tag).toContain('data-testid="submit-btn"')
+	})
+
+	it('truncates very long attribute values', () => {
+		const el = document.createElement('div')
+		el.setAttribute('style', 'a'.repeat(200))
+		const tag = buildOpeningTag(el)
+		// The value should be truncated with …
+		expect(tag).toContain('…')
+		expect(tag.length).toBeLessThan(600)
+	})
+})
+
+// ─── findNearestIdentifiableAncestor ────────────────────────────────────────
+
+describe('findNearestIdentifiableAncestor', () => {
+	it('returns undefined when no ancestor has id or data-testid', () => {
+		const el = document.createElement('span')
+		document.body.appendChild(el)
+		expect(findNearestIdentifiableAncestor(el)).toBeUndefined()
+		el.remove()
+	})
+
+	it('finds a parent with an id', () => {
+		const parent = document.createElement('section')
+		parent.id = 'pricing'
+		const child = document.createElement('p')
+		parent.appendChild(child)
+		document.body.appendChild(parent)
+
+		expect(findNearestIdentifiableAncestor(child)).toBe('#pricing')
+		parent.remove()
+	})
+
+	it('finds a parent with data-testid', () => {
+		const parent = document.createElement('div')
+		parent.setAttribute('data-testid', 'hero-section')
+		const child = document.createElement('h1')
+		parent.appendChild(child)
+		document.body.appendChild(parent)
+
+		expect(findNearestIdentifiableAncestor(child)).toBe('[data-testid="hero-section"]')
+		parent.remove()
+	})
+
+	it('prefers id over data-testid when both exist on same parent', () => {
+		const parent = document.createElement('div')
+		parent.id = 'my-section'
+		parent.setAttribute('data-testid', 'my-test')
+		const child = document.createElement('span')
+		parent.appendChild(child)
+		document.body.appendChild(parent)
+
+		expect(findNearestIdentifiableAncestor(child)).toBe('#my-section')
+		parent.remove()
+	})
+})
+
+// ─── extractIdentifiers ─────────────────────────────────────────────────────
+
+describe('extractIdentifiers', () => {
+	it('extracts id when present', () => {
+		const el = document.createElement('div')
+		el.id = 'test-id'
+		const ids = extractIdentifiers(el)
+		expect(ids.id).toBe('test-id')
+	})
+
+	it('extracts data-testid', () => {
+		const el = document.createElement('button')
+		el.setAttribute('data-testid', 'submit')
+		const ids = extractIdentifiers(el)
+		expect(ids.testId).toBe('submit')
+	})
+
+	it('extracts meaningful class names and filters generated ones', () => {
+		const el = document.createElement('div')
+		el.className = 'css-abc123 my-class another-class MuiButton-root'
+		const ids = extractIdentifiers(el)
+		expect(ids.classNames).toContain('my-class')
+		expect(ids.classNames).toContain('another-class')
+		expect(ids.classNames).not.toContain('css-abc123')
+		expect(ids.classNames).not.toContain('MuiButton-root')
+	})
+
+	it('extracts aria-label and role', () => {
+		const el = document.createElement('button')
+		el.setAttribute('aria-label', 'Close dialog')
+		el.setAttribute('role', 'button')
+		const ids = extractIdentifiers(el)
+		expect(ids.ariaLabel).toBe('Close dialog')
+		expect(ids.role).toBe('button')
+	})
+
+	it('extracts href for links', () => {
+		const el = document.createElement('a')
+		el.setAttribute('href', '/pricing')
+		const ids = extractIdentifiers(el)
+		expect(ids.href).toBe('/pricing')
+	})
+
+	it('extracts src and alt for images', () => {
+		const el = document.createElement('img')
+		el.setAttribute('src', '/logo.png')
+		el.setAttribute('alt', 'Company logo')
+		const ids = extractIdentifiers(el)
+		expect(ids.src).toBe('/logo.png')
+		expect(ids.alt).toBe('Company logo')
+	})
+
+	it('extracts name and placeholder for inputs', () => {
+		const el = document.createElement('input')
+		el.setAttribute('name', 'email')
+		el.setAttribute('placeholder', 'Enter email')
+		const ids = extractIdentifiers(el)
+		expect(ids.name).toBe('email')
+		expect(ids.placeholder).toBe('Enter email')
+	})
+
+	it('extracts other data-* attributes (excluding data-testid and data-edit-proposals-ui)', () => {
+		const el = document.createElement('div')
+		el.setAttribute('data-section', 'hero')
+		el.setAttribute('data-index', '3')
+		el.setAttribute('data-testid', 'skip-me')
+		el.setAttribute('data-edit-proposals-ui', '')
+		const ids = extractIdentifiers(el)
+		expect(ids.dataAttributes).toEqual({
+			'data-section': 'hero',
+			'data-index': '3',
+		})
+	})
+
+	it('always includes an opening tag', () => {
+		const el = document.createElement('span')
+		const ids = extractIdentifiers(el)
+		expect(ids.openingTag).toBe('<span>')
+	})
+
+	it('finds nearest identifiable ancestor when element has no id or testId', () => {
+		const parent = document.createElement('section')
+		parent.id = 'features'
+		const child = document.createElement('p')
+		parent.appendChild(child)
+		document.body.appendChild(parent)
+
+		const ids = extractIdentifiers(child)
+		expect(ids.nearestIdentifiableAncestor).toBe('#features')
+
+		parent.remove()
+	})
+
+	it('does not look for ancestor when element has an id', () => {
+		const parent = document.createElement('section')
+		parent.id = 'features'
+		const child = document.createElement('p')
+		child.id = 'my-paragraph'
+		parent.appendChild(child)
+		document.body.appendChild(parent)
+
+		const ids = extractIdentifiers(child)
+		expect(ids.nearestIdentifiableAncestor).toBeUndefined()
+
+		parent.remove()
+	})
+})
+
+// ─── captureElement includes identifiers ────────────────────────────────────
+
+describe('captureElement - identifiers', () => {
+	it('includes identifiers in the capture result', () => {
+		const el = document.createElement('a')
+		el.setAttribute('href', '/about')
+		el.id = 'about-link'
+		el.textContent = 'About us'
+		document.body.appendChild(el)
+
+		const capture = captureElement(el)
+		expect(capture.identifiers).toBeDefined()
+		expect(capture.identifiers?.id).toBe('about-link')
+		expect(capture.identifiers?.href).toBe('/about')
+		expect(capture.identifiers?.openingTag).toContain('href')
+
+		el.remove()
 	})
 })

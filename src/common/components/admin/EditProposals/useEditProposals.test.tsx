@@ -26,6 +26,14 @@ jest.mock('../../../../hooks/auth/useAuth', () => ({
 	}),
 }))
 
+const mockIsPreviewMode = jest.fn(() => false)
+const mockGetPreviewPrNumber = jest.fn(() => null as string | null)
+jest.mock('../../../../tech/preview/previewMode', () => ({
+	__esModule: true,
+	isPreviewMode: () => mockIsPreviewMode(),
+	getPreviewPrNumber: () => mockGetPreviewPrNumber(),
+}))
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -235,6 +243,73 @@ describe('useEditProposals', () => {
 		// Proposals should still be there after a failure
 		expect(result.current.proposals).toHaveLength(1)
 	})
+
+	it('sends continueInPRNumber when in preview mode', async () => {
+		process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = 'http://test-api/tasks'
+		mockIsPreviewMode.mockReturnValue(true)
+		mockGetPreviewPrNumber.mockReturnValue('42')
+
+		const mockFetch = jest.fn().mockResolvedValue({ ok: true })
+		globalThis.fetch = mockFetch
+
+		const { result } = renderHook(() => useEditProposals(), { wrapper })
+
+		act(() => {
+			result.current.openProposalFor(makeCapture())
+		})
+		act(() => {
+			result.current.confirmProposal('Fix the title')
+		})
+
+		await act(async () => {
+			await result.current.submitAll()
+		})
+
+		expect(mockFetch).toHaveBeenCalledTimes(1)
+		const fetchBody = JSON.parse(mockFetch.mock.calls[0][1]!.body as string)
+		expect(fetchBody.continueInPRNumber).toBe(42)
+		expect(fetchBody.message).toContain('Fix the title')
+
+		// Should show preview-specific success message
+		expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+			expect.stringContaining('preview'),
+			expect.objectContaining({ variant: 'success' })
+		)
+
+		delete (globalThis as any).fetch
+		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		mockIsPreviewMode.mockReturnValue(false)
+		mockGetPreviewPrNumber.mockReturnValue(null)
+	})
+
+	it('does not send continueInPRNumber when not in preview mode', async () => {
+		process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = 'http://test-api/tasks'
+		mockIsPreviewMode.mockReturnValue(false)
+		mockGetPreviewPrNumber.mockReturnValue(null)
+
+		const mockFetch = jest.fn().mockResolvedValue({ ok: true })
+		globalThis.fetch = mockFetch
+
+		const { result } = renderHook(() => useEditProposals(), { wrapper })
+
+		act(() => {
+			result.current.openProposalFor(makeCapture())
+		})
+		act(() => {
+			result.current.confirmProposal('Change color')
+		})
+
+		await act(async () => {
+			await result.current.submitAll()
+		})
+
+		expect(mockFetch).toHaveBeenCalledTimes(1)
+		const fetchBody = JSON.parse(mockFetch.mock.calls[0][1]!.body as string)
+		expect(fetchBody.continueInPRNumber).toBeUndefined()
+
+		delete (globalThis as any).fetch
+		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+	})
 })
 
 // ─── formatProposalsAsMessage ──────────────────────────────────────────────────
@@ -297,5 +372,68 @@ describe('formatProposalsAsMessage', () => {
 		expect(msg).toContain('First change')
 		expect(msg).toContain('Second change')
 		expect(msg).toContain('Celkem návrhů: 2')
+	})
+
+	it('includes element identifiers when present', () => {
+		const proposal = makeProposal({
+			capture: {
+				type: 'element',
+				elementTag: 'button',
+				elementText: 'Submit',
+				elementPath: 'form / button',
+				pageUrl: 'http://localhost/form',
+				identifiers: {
+					id: 'submit-btn',
+					testId: 'submit-button',
+					classNames: ['btn', 'btn-primary'],
+					ariaLabel: 'Submit form',
+					role: 'button',
+					openingTag: '<button id="submit-btn" class="btn btn-primary" data-testid="submit-button">',
+				},
+			},
+		})
+		const msg = formatProposalsAsMessage([proposal])
+		expect(msg).toContain('IDENTIFIKACE ELEMENTU')
+		expect(msg).toContain('id: "submit-btn"')
+		expect(msg).toContain('data-testid: "submit-button"')
+		expect(msg).toContain('btn, btn-primary')
+		expect(msg).toContain('aria-label: "Submit form"')
+		expect(msg).toContain('role: "button"')
+		expect(msg).toContain('HTML tag:')
+	})
+
+	it('includes nearest identifiable ancestor when element has no id', () => {
+		const proposal = makeProposal({
+			capture: {
+				type: 'element',
+				elementTag: 'p',
+				elementText: 'Hello',
+				elementPath: 'section / p',
+				pageUrl: 'http://localhost/',
+				identifiers: {
+					openingTag: '<p>',
+					nearestIdentifiableAncestor: '#pricing-section',
+				},
+			},
+		})
+		const msg = formatProposalsAsMessage([proposal])
+		expect(msg).toContain('Nejbližší identifikovatelný rodič: #pricing-section')
+	})
+
+	it('includes data attributes in the message', () => {
+		const proposal = makeProposal({
+			capture: {
+				type: 'element',
+				elementTag: 'div',
+				elementPath: 'main / div',
+				pageUrl: 'http://localhost/',
+				identifiers: {
+					openingTag: '<div data-section="hero">',
+					dataAttributes: { 'data-section': 'hero' },
+				},
+			},
+		})
+		const msg = formatProposalsAsMessage([proposal])
+		expect(msg).toContain('data-section: "hero"')
 	})
 })
