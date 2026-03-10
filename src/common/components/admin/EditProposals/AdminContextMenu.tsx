@@ -16,6 +16,7 @@
  * Styled to blend with the native browser context menu aesthetic — minimal,
  * with a subtle shadow and hover effects.
  */
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { EditNote } from '@mui/icons-material'
 import { useEffect, useRef } from 'react'
 import { ElementCapture } from './types'
@@ -84,7 +85,7 @@ export default function AdminContextMenu({ state, onEdit, onClose }: Props) {
 				position: 'fixed',
 				top,
 				left,
-				zIndex: 9999,
+				zIndex: Z_INDEX.CONTEXT_MENU,
 				minWidth: menuWidth,
 				backgroundColor: '#ffffff',
 				border: '1px solid rgba(0,0,0,0.15)',

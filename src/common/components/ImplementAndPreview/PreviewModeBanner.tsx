@@ -2,6 +2,7 @@
 
 import useBottomPanel from '@/app/providers/BottomPanelProvider'
 import { useDownSize } from '@/common/hooks/useDownSize'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box, Tooltip } from '@/common/ui'
 import { alpha } from '@/common/ui/mui'
 import { getPreviewPrNumber, getPreviewPrTitle } from '@/tech/preview/previewMode'
@@ -47,7 +48,7 @@ export default function PreviewModeBanner({ isAdmin, onClick }: PreviewModeBanne
 				position: 'fixed',
 				bottom: offset + height,
 				left: offset,
-				zIndex: 1300,
+				zIndex: Z_INDEX.OVERLAY,
 			}}
 		>
 			<Tooltip

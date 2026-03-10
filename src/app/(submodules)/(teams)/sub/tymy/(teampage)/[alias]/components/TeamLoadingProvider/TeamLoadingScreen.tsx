@@ -1,4 +1,5 @@
 import { Background } from '@/common'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box, CircularProgress, Image } from '@/common/ui'
 import { useTranslations } from 'next-intl'
 import './team.loading.styles.css'
@@ -19,7 +20,7 @@ export default function TeamLoadingScreen({
 		<div
 			style={{
 				position: 'fixed',
-				zIndex: 10000,
+				zIndex: Z_INDEX.LOADING,
 				top: 0,
 				left: 0,
 				right: 0,
