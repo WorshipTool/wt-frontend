@@ -77,7 +77,7 @@ export default function ImplementIdeaDialog({
 	const [activeTab, setActiveTab] = useState(0)
 	const [countdown, setCountdown] = useState(POLL_INTERVAL_S)
 	const [mergedPrUrls, setMergedPrUrls] = useState<Set<string>>(new Set())
-	const [filterOpenPr, setFilterOpenPr] = useState(false)
+	const [filterOpenPr, setFilterOpenPr] = useState(true)
 	const { enqueueSnackbar } = useSnackbar()
 
 	const url = process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL

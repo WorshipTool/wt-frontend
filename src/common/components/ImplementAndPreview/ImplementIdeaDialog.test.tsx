@@ -428,6 +428,9 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
+			// Disable filter (on by default) to show all tasks
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
+
 			expect(screen.getByText('noPr')).toBeInTheDocument()
 		})
 
@@ -446,6 +449,9 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Disable filter (on by default) to show all tasks
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
 
 			// Card should not have "Open in new tab" title (no clickable URL)
 			expect(screen.queryByTitle('Open in new tab')).not.toBeInTheDocument()
@@ -482,6 +488,9 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Disable filter (on by default) so merged task is visible
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
 
 			expect(screen.getByText('merged')).toBeInTheDocument()
 		})
@@ -835,6 +844,9 @@ describe('ImplementIdeaDialog', () => {
 			await waitFor(() => screen.getByText(/recentIdeasTab/))
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
+			// Disable filter (on by default) to show all tasks
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
+
 			expect(screen.getByText('Short title')).toBeInTheDocument()
 			expect(screen.queryByText('Long original prompt')).not.toBeInTheDocument()
 		})
@@ -898,7 +910,7 @@ describe('ImplementIdeaDialog', () => {
 			expect(screen.getByText('filterActive')).toBeInTheDocument()
 		})
 
-		it('filter chip is inactive by default (aria-pressed=false)', async () => {
+		it('filter chip is active by default (aria-pressed=true)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [] }),
@@ -909,10 +921,10 @@ describe('ImplementIdeaDialog', () => {
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
 			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			expect(filterBtn).toHaveAttribute('aria-pressed', 'false')
+			expect(filterBtn).toHaveAttribute('aria-pressed', 'true')
 		})
 
-		it('toggling filter activates it (aria-pressed=true)', async () => {
+		it('toggling filter deactivates it (aria-pressed=false)', async () => {
 			process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL = MOCK_URL
 			;(global.fetch as jest.Mock).mockResolvedValue({
 				json: () => Promise.resolve({ tasks: [] }),
@@ -925,7 +937,7 @@ describe('ImplementIdeaDialog', () => {
 			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 			fireEvent.click(filterBtn)
 
-			expect(filterBtn).toHaveAttribute('aria-pressed', 'true')
+			expect(filterBtn).toHaveAttribute('aria-pressed', 'false')
 		})
 
 		it('shows all tasks when filter is off', async () => {
@@ -937,6 +949,10 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Filter is on by default — click to turn it off
+			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
+			fireEvent.click(filterBtn)
 
 			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
 			expect(screen.getByText('Completed with open PR')).toBeInTheDocument()
@@ -954,9 +970,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			fireEvent.click(filterBtn)
-
+			// Filter is on by default — no click needed
 			// Active task (running) should be shown even without a PR
 			expect(screen.getByText('Running task no PR')).toBeInTheDocument()
 			// Task with open PR should also be shown
@@ -981,9 +995,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			fireEvent.click(filterBtn)
-
+			// Filter is on by default — no click needed
 			expect(screen.getByText('noActiveOrOpenPr')).toBeInTheDocument()
 			expect(screen.queryByText('noIdeas')).not.toBeInTheDocument()
 		})
@@ -998,9 +1010,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			fireEvent.click(filterBtn)
-
+			// Filter is on by default — no click needed
 			expect(screen.getByText('noIdeas')).toBeInTheDocument()
 			expect(screen.queryByText('noActiveOrOpenPr')).not.toBeInTheDocument()
 		})
@@ -1020,9 +1030,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			fireEvent.click(filterBtn)
-
+			// Filter is on by default — no click needed
 			// Active statuses should be shown
 			expect(screen.getByText('Queued task')).toBeInTheDocument()
 			expect(screen.getByText('Retrying task')).toBeInTheDocument()
@@ -1047,9 +1055,7 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 100)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
-			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
-			fireEvent.click(filterBtn)
-
+			// Filter is on by default — no click needed
 			// Merged task should be excluded from open PR filter
 			expect(screen.queryByText('Merged PR task')).not.toBeInTheDocument()
 			expect(screen.getByText('noActiveOrOpenPr')).toBeInTheDocument()
@@ -1067,8 +1073,7 @@ describe('ImplementIdeaDialog', () => {
 
 			const filterBtn = screen.getByRole('button', { name: 'filterActive' })
 
-			// Enable filter — non-active tasks without open PRs should be hidden
-			fireEvent.click(filterBtn)
+			// Filter is on by default — non-active tasks without open PRs should be hidden
 			expect(screen.queryByText('Completed with closed PR')).not.toBeInTheDocument()
 			expect(screen.queryByText('Completed no PR')).not.toBeInTheDocument()
 
@@ -1097,6 +1102,9 @@ describe('ImplementIdeaDialog', () => {
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
 
+			// Disable filter (on by default) to show all tasks
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
+
 			// The dialog should still render without crashing
 			expect(screen.getByText('Unknown status task')).toBeInTheDocument()
 			// The status text itself should be rendered
@@ -1120,6 +1128,9 @@ describe('ImplementIdeaDialog', () => {
 			render(<ImplementIdeaDialog {...defaultProps} />)
 			await act(async () => { await new Promise(r => setTimeout(r, 50)) })
 			fireEvent.click(screen.getAllByRole('tab')[1])
+
+			// Disable filter (on by default) — displayStatus "cancelled" is not active
+			fireEvent.click(screen.getByRole('button', { name: 'filterActive' }))
 
 			expect(screen.getByText('Chain task with unknown displayStatus')).toBeInTheDocument()
 		})
