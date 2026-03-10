@@ -20,6 +20,7 @@ import { BasicVariantPack } from '../../../api/dtos'
 import useAuth from '../../../hooks/auth/useAuth'
 import { CustomChip } from '../CustomChip/CustomChip'
 import { CommonLinkProps, Link } from '../Link/Link'
+import ChordKeyBadge from './components/ChordKeyBadge'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -44,6 +45,7 @@ const SONG_CARD_PROPERTIES = [
 	'SHOW_ADDED_BY_LOADER',
 	'ENABLE_TRANSLATION_LIKE',
 	'SHOW_PUBLISHED_DATE',
+	'HIDE_CHORD_KEY',
 ] as const
 type SongCardProperty = (typeof SONG_CARD_PROPERTIES)[number]
 
@@ -103,6 +105,7 @@ export const SongVariantCard = memo(function S({
 	const privateLabelEnabled = properties.SHOW_PRIVATE_LABEL
 	const yourPublicLabelEnabled = properties.SHOW_YOUR_PUBLIC_LABEL
 	const publishedDateEnabled = properties.SHOW_PUBLISHED_DATE
+	const hideChordKey = properties.HIDE_CHORD_KEY
 
 	// What display
 	const showPrivate = !data.public && createdByYou && privateLabelEnabled
@@ -112,6 +115,7 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const keyChord = sheet.getKeyChord()?.toString() ?? null
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -272,7 +276,14 @@ export const SongVariantCard = memo(function S({
 							overflow: 'hidden',
 						}}
 					>
-						<Box display={'flex'} flexDirection={'row'} gap={1}>
+						{keyChord && !hideChordKey && (
+							<ChordKeyBadge
+								chordKey={keyChord}
+								tooltip={t('hasChords')}
+								sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
+							/>
+						)}
+						<Box display={'flex'} flexDirection={'row'} gap={1} alignItems={'center'}>
 							<Typography
 								strong
 								sx={{
