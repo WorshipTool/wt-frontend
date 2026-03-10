@@ -1,0 +1,7 @@
+export { EditProposalsProvider, useEditProposals } from './useEditProposals'
+export type { EditProposalsContextValue } from './useEditProposals'
+export { default as AdminEditOverlay } from './AdminEditOverlay'
+export { default as FloatingEditButton } from './FloatingEditButton'
+export { default as ProposalDialog } from './ProposalDialog'
+export { default as ProposalCornerButton } from './ProposalCornerButton'
+export type { EditProposal, ElementCapture, ElementIdentifiers, CaptureType, AnchorRect } from './types'
