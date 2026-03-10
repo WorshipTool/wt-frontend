@@ -45,6 +45,7 @@ const SONG_CARD_PROPERTIES = [
 	'SHOW_ADDED_BY_LOADER',
 	'ENABLE_TRANSLATION_LIKE',
 	'SHOW_PUBLISHED_DATE',
+	'HIDE_CHORD_KEY',
 ] as const
 type SongCardProperty = (typeof SONG_CARD_PROPERTIES)[number]
 
@@ -104,6 +105,7 @@ export const SongVariantCard = memo(function S({
 	const privateLabelEnabled = properties.SHOW_PRIVATE_LABEL
 	const yourPublicLabelEnabled = properties.SHOW_YOUR_PUBLIC_LABEL
 	const publishedDateEnabled = properties.SHOW_PUBLISHED_DATE
+	const hideChordKey = properties.HIDE_CHORD_KEY
 
 	// What display
 	const showPrivate = !data.public && createdByYou && privateLabelEnabled
@@ -274,7 +276,7 @@ export const SongVariantCard = memo(function S({
 							overflow: 'hidden',
 						}}
 					>
-						{keyChord && (
+						{keyChord && !hideChordKey && (
 							<ChordKeyBadge
 								chordKey={keyChord}
 								tooltip={t('hasChords')}
