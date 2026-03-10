@@ -259,17 +259,11 @@ export function BroadcastPopup() {
         >
           {hasPagination && (
             <Button
-              variant="outlined"
-              size="small"
+              outlined
+              small
               onClick={handleDismissAll}
               sx={{
                 borderRadius: 3,
-                borderColor: alpha(theme.accent, 0.5),
-                color: theme.accent,
-                '&:hover': {
-                  borderColor: theme.accent,
-                  bgcolor: alpha(theme.accent, 0.06),
-                },
               }}
             >
               {t('dismissAll')}
@@ -277,16 +271,12 @@ export function BroadcastPopup() {
           )}
 
           <Button
-            variant="contained"
+            color="primarygradient"
             onClick={handleDismissCurrent}
             sx={{
               opacity: 0.9,
               borderRadius: 3,
               paddingX: 5,
-              bgcolor: theme.accent,
-              '&:hover': {
-                bgcolor: alpha(theme.accent, 0.85),
-              },
             }}
           >
             {t('dismiss')}
