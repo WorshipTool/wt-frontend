@@ -8,6 +8,7 @@
  */
 
 import Popup from '@/common/components/Popup/Popup'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { theme } from '@/common/constants/theme'
 import { Box, Button, IconButton } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
@@ -135,7 +136,7 @@ export function NewsPopup() {
                     radial-gradient(480px 380px at 85% 20%, ${theme.palette.primary.main}33 0%, transparent 65%),
                     radial-gradient(520px 420px at 60% 85%, ${theme.palette.primary.dark}22 0%, transparent 70%)
           `,
-					zIndex: 0,
+					zIndex: Z_INDEX.BASE,
 					filter: 'blur(22px)',
 					opacity: 1,
 					pointerEvents: 'none',
@@ -148,7 +149,7 @@ export function NewsPopup() {
 		>
 			<Box
 				sx={{
-					zIndex: 1,
+					zIndex: Z_INDEX.RAISED,
 				}}
 			>
 				<Box

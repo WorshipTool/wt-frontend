@@ -7,6 +7,7 @@ import { PlaylistItemGuid } from '@/interfaces/playlist/playlist.types'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Add, Edit, Remove } from '@mui/icons-material'
 import { Chord, Sheet } from '@pepavlin/sheet-api'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { useTranslations } from 'next-intl'
 import { memo } from 'react'
 
@@ -48,7 +49,7 @@ export const TopPlaylistItemPanel = memo(function TopPlaylistItemPanel({
 			flexDirection={'row'}
 			justifyContent={'space-between'}
 			sx={{
-				zIndex: 1,
+				zIndex: Z_INDEX.RAISED,
 			}}
 		>
 			{canUserEdit ? (

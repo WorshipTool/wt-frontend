@@ -7,6 +7,7 @@ import { Box, Image } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { getAssetUrl } from '@/tech/paths.tech'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { getTranslations } from 'next-intl/server'
 import JoinGroupPanel from './components/JoinGroupPanel'
 import './teams.styles.css'
@@ -99,7 +100,7 @@ async function Page() {
 							width={'70%'}
 							sx={{
 								aspectRatio: '8 / 5',
-								zIndex: 1,
+								zIndex: Z_INDEX.RAISED,
 
 								'&: hover': {
 									transform: 'scale(1.7)',

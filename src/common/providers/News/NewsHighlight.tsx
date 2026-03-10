@@ -8,6 +8,7 @@
  */
 
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Typography } from '@/common/ui/Typography'
 import { alpha } from '@/common/ui/mui'
 import { AutoAwesome } from '@mui/icons-material'
@@ -301,7 +302,7 @@ export function NewsHighlightWrapper({
 							top: tooltipPosition.top,
 							left: tooltipPosition.left,
 							transform: getTooltipTransform(),
-							zIndex: 1500,
+							zIndex: Z_INDEX.TOOLTIP,
 							whiteSpace: 'nowrap',
 							pointerEvents: triggerOn === 'confirm' ? 'auto' : 'none',
 							animation: `${fadeInAnimation} 0.2s ease-out`,
@@ -365,7 +366,7 @@ export function NewsHighlightWrapper({
 				display: 'inline-flex',
 				// Vyšší z-index když je spotlight aktivní
 				...(isSpotlightActive && {
-					zIndex: 1400,
+					zIndex: Z_INDEX.OVERLAY,
 				}),
 				...(!disablePulse && {
 					'&::before': {

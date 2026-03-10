@@ -1,4 +1,5 @@
 'use client'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box } from '@/common/ui'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
@@ -39,7 +40,7 @@ export default function Snow() {
 							color="#4faaff44"
 							radius={[5 * sizeCoef, 15 * sizeCoef]}
 							style={{
-								zIndex: -100,
+								zIndex: Z_INDEX.DEEP_BACKGROUND,
 								opacity: 0.8,
 								filter: `blur(${blur}px)`,
 

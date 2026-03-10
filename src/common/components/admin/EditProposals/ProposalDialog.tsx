@@ -13,6 +13,7 @@
  * highlighted element stays visible while the admin writes their note.
  */
 import { Box, Button, IconButton, TextField } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { alpha, Paper } from '@/common/ui/mui'
@@ -137,7 +138,7 @@ export default function ProposalDialog() {
 				left: position?.left ?? '50%',
 				transform: position ? 'none' : 'translate(-50%, -50%)',
 				width: PANEL_WIDTH,
-				zIndex: 2000,
+				zIndex: Z_INDEX.DIALOG,
 				borderRadius: 2.5,
 				overflow: 'hidden',
 				bgcolor: 'white',

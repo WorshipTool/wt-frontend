@@ -8,6 +8,7 @@
  */
 
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { keyframes } from '@emotion/react'
 import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -58,7 +59,7 @@ function OverlayWithHole({
 			sx={{
 				position: 'fixed',
 				inset: 0,
-				zIndex: 1300,
+				zIndex: Z_INDEX.OVERLAY,
 				width: '100vw',
 				height: '100vh',
 				pointerEvents: 'none',

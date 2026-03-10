@@ -5,6 +5,7 @@ import { Box, Typography } from '@/common/ui'
 // import { AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { Gap } from '../../../ui/Gap/Gap'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Background } from '../Background'
 import './LoadingScreen.styles.css'
 
@@ -25,7 +26,7 @@ export default function LoadingScreen({
 				<div
 					style={{
 						position: 'fixed',
-						zIndex: 10000,
+						zIndex: Z_INDEX.LOADING,
 						top: 0,
 						left: 0,
 						right: 0,

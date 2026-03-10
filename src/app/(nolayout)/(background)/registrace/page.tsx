@@ -11,6 +11,7 @@ import { Typography } from '@/common/ui/Typography'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import useAuth from '../../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
 
@@ -95,7 +96,7 @@ function SignUp() {
 						<Typography
 							sx={{
 								bgcolor: 'white',
-								zIndex: 1,
+								zIndex: Z_INDEX.RAISED,
 								padding: 1,
 							}}
 							color="grey.600"

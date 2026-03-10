@@ -6,6 +6,7 @@ import NavigationItem, {
 import { MOBILE_NAVIGATION_PANEL_ID } from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, Divider } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import { useSmartMatch } from '@/routes/useSmartMatch'
@@ -126,7 +127,7 @@ export default function MiddleNavigationPanel() {
 						top={56}
 						left={0}
 						right={0}
-						zIndex={2}
+						zIndex={Z_INDEX.ELEVATED}
 						boxShadow={2}
 						bgcolor={'grey.200'}
 						sx={{

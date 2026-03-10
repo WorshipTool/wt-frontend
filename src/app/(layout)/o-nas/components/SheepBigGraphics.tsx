@@ -3,6 +3,7 @@ import { Box, Typography } from '@/common/ui'
 import { grey } from '@/common/ui/mui/colors'
 import { getAssetUrl } from '@/tech/paths.tech'
 import Image from 'next/image'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { useTranslations } from 'next-intl'
 
 export default function SheepBigGraphics() {
@@ -20,7 +21,7 @@ export default function SheepBigGraphics() {
 		>
 			<Box
 				style={{
-					zIndex: 1,
+					zIndex: Z_INDEX.RAISED,
 					// transform: 'scaleX(-1)',
 					position: 'absolute',
 					top: '50%',
@@ -38,7 +39,7 @@ export default function SheepBigGraphics() {
 						width: 200,
 						aspectRatio: '2/1',
 						position: 'relative',
-						zIndex: 1,
+						zIndex: Z_INDEX.RAISED,
 					}}
 				>
 					<Image

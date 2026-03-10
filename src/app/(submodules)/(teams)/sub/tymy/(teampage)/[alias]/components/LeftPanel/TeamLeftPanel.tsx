@@ -3,6 +3,7 @@ import TeamLeftMenu from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]
 import TeamPanelTitle from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/LeftPanel/components/TeamPanelTitle'
 import { useTeamSideBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/SmartTeamPage/hooks/useTeamSideBar'
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
@@ -42,7 +43,7 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 					alignItems: 'center',
 					transition: TRANSITION,
 					boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.1)',
-					zIndex: 2,
+					zIndex: Z_INDEX.ELEVATED,
 					color: darkMode ? 'grey.100' : 'grey.800',
 					overflow: 'hidden',
 				}}

@@ -4,6 +4,7 @@ import { useTeamTopBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[a
 import TeamPageTitleContainer from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/TopPanel/components/TeamPageTitleContainer'
 import RightAccountPanel from '@/common/components/Toolbar/components/RightAccountPanel/RightAccountPanel'
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 
 export default function TeamTopPanel() {
 	const { fixed, sx } = useTeamTopBar()
@@ -22,7 +23,7 @@ export default function TeamTopPanel() {
 					left: hidden ? 0 : collapsed ? 60 : 250,
 					transition: 'all 0.2s',
 					right: 0,
-					zIndex: 1,
+					zIndex: Z_INDEX.RAISED,
 					// bgcolor: fixed ? 'grey.200' : undefined,
 					// gradient, grey on top, transparent on bottom
 					// background: `linear-gradient(180deg, ${alpha(

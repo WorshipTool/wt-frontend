@@ -1,4 +1,5 @@
 'use client'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Box } from '@/common/ui'
 import { InputBase } from '@/common/ui/mui'
@@ -21,7 +22,7 @@ const SearchContainer = styled(Box)(({ theme }) => ({
 const SearchInput = styled(InputBase)(({ theme }) => ({
 	flex: 1,
 	marginLeft: '0.5em',
-	zIndex: 100,
+	zIndex: Z_INDEX.SEARCH,
 }))
 
 type MainSearchInputProps = {

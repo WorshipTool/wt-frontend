@@ -19,6 +19,7 @@
  *  - The page is scrolled or resized.
  *  - A 10-second timeout elapses.
  */
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { EditNote } from '@mui/icons-material'
 import { useEffect, useRef } from 'react'
 import { AnchorRect, ElementCapture } from './types'
@@ -112,7 +113,7 @@ export default function FloatingEditButton({ state, onEdit, onClose }: Props) {
 				position: 'fixed',
 				top,
 				left,
-				zIndex: 10000,
+				zIndex: Z_INDEX.FLOATING_EDIT,
 				display: 'inline-flex',
 				alignItems: 'center',
 				gap: 5,

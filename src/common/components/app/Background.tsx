@@ -1,4 +1,5 @@
 'use client'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box, Image } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { getAssetUrl } from '@/tech/paths.tech'
@@ -10,7 +11,7 @@ const Bg = styled(Box)(({ theme }) => ({
 	width: '100%',
 	top: 0,
 	bottom: 0,
-	zIndex: -100,
+	zIndex: Z_INDEX.DEEP_BACKGROUND,
 }))
 
 export const Background = () => {

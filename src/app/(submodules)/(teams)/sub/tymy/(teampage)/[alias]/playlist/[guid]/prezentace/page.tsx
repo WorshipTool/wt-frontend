@@ -1,5 +1,6 @@
 import { PresentationPlaylistCards } from '@/app/(layout)/playlist/[guid]/prezentace/PresentationPlaylistCards'
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 
 export default function Page() {
 	return (
@@ -10,7 +11,7 @@ export default function Page() {
 				right: 0,
 				top: 0,
 				bottom: 0,
-				zIndex: 2,
+				zIndex: Z_INDEX.ELEVATED,
 			}}
 		>
 			<PresentationPlaylistCards />

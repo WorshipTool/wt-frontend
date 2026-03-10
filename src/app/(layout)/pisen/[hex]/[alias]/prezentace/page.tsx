@@ -5,6 +5,7 @@ import SongPresentationContainer from '@/app/(layout)/pisen/[hex]/[alias]/prezen
 import { getVariantAliasFromParams } from '@/app/(layout)/pisen/[hex]/[alias]/tech'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { SmartParams, SmartSearchParams } from '@/routes'
 import { Sheet } from '@pepavlin/sheet-api'
 
@@ -33,7 +34,7 @@ async function Page({
 				left: 0,
 				width: '100vw',
 				height: '100vh',
-				zIndex: 10,
+				zIndex: Z_INDEX.STICKY,
 			}}
 		>
 			<SongPresentationContainer data={variant} />

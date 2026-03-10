@@ -1,4 +1,5 @@
 import AdminBreadcrumbs from '@/app/(layout)/sub/admin/components/AdminBreadcrumbs'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import AdminBreadItem from '@/app/(layout)/sub/admin/components/AdminBreadItem'
 import AdminMenu from '@/app/(layout)/sub/admin/components/AdminMenu'
 import { checkFlag } from '@/common/providers/FeatureFlags/flags.tech'
@@ -23,7 +24,7 @@ export default async function Layout(props: LayoutProps<'admin'>) {
 					left: 0,
 					right: 0,
 					bottom: 0,
-					zIndex: -1,
+					zIndex: Z_INDEX.BEHIND,
 				}}
 			/>
 			<Box

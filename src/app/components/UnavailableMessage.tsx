@@ -1,6 +1,7 @@
 'use client'
 import { useCloudConfig } from '@/common/providers/FeatureFlags/cloud-config/useCloudConfig'
 import { Box } from '@/common/ui'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Card } from '@/common/ui/Card/Card'
 import { Typography } from '@/common/ui/Typography'
 import { BugReport, Build, PrecisionManufacturing } from '@mui/icons-material'
@@ -57,7 +58,7 @@ export default function UnavailableMessage() {
 						color: 'white',
 						padding: '1rem',
 						textAlign: 'center',
-						zIndex: 9999,
+						zIndex: Z_INDEX.CONTEXT_MENU,
 						backgroundColor: 'rgba(0, 0, 0, 0.5)',
 						backdropFilter: 'blur(20px)',
 						display: 'flex',

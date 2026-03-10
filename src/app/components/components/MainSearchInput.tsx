@@ -1,4 +1,5 @@
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, IconButton, useTheme } from '@/common/ui'
@@ -24,7 +25,7 @@ const SearchContainer = styled(Box)(({ theme }) => ({
 const SearchInput = styled(InputBase)(({ theme }) => ({
 	flex: 1,
 	marginLeft: '0.5em',
-	zIndex: 100,
+	zIndex: Z_INDEX.SEARCH,
 }))
 
 type MainSearchInputProps = {

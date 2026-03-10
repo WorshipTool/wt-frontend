@@ -12,6 +12,7 @@ import { Typography } from '@/common/ui/Typography'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { VariantPackGuid } from '../../../interfaces/variant/songVariant.types'
 import './styles.css'
 
@@ -194,7 +195,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 					bottom: 0,
 					right: 0,
 					pointerEvents: 'auto',
-					zIndex: 1,
+					zIndex: Z_INDEX.RAISED,
 				}}
 				onClick={onClose}
 			>

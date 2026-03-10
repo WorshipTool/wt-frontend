@@ -1,6 +1,7 @@
 'use client'
 
 import Popup from '@/common/components/Popup/Popup'
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box, Button, IconButton, TextField } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
@@ -265,7 +266,7 @@ export default function ImplementIdeaDialog({
 						radial-gradient(480px 380px at 85% 20%, ${BLUE}22 0%, transparent 65%),
 						radial-gradient(520px 420px at 60% 85%, ${BLUE}33 0%, transparent 70%)
 					`,
-					zIndex: 0,
+					zIndex: Z_INDEX.BASE,
 					filter: 'blur(22px)',
 					pointerEvents: 'none',
 					willChange: 'transform',
@@ -274,7 +275,7 @@ export default function ImplementIdeaDialog({
 				},
 			}}
 		>
-			<Box sx={{ zIndex: 1 }}>
+			<Box sx={{ zIndex: Z_INDEX.RAISED }}>
 				{/* Header */}
 				<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 					<Box

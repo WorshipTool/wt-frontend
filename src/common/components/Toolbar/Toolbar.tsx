@@ -1,5 +1,6 @@
 'use client'
 
+import { Z_INDEX } from '@/common/constants/zIndex'
 import LeftWebTitle from '@/common/components/Toolbar/components/LeftWebTItle'
 import MiddleNavigationPanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/MiddleNavigationPanel'
 import NavigationMobilePanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'
@@ -19,7 +20,7 @@ const TopBar = styled(Box)(({ theme }) => ({
 	display: 'flex',
 	flexDirection: 'column',
 	displayPrint: 'none',
-	zIndex: 10,
+	zIndex: Z_INDEX.STICKY,
 	pointerEvents: 'none',
 	transition: 'all 0.3s ease',
 }))
@@ -45,7 +46,7 @@ export function Toolbar() {
 			<TopBar
 				displayPrint={'none'}
 				position={'sticky'}
-				zIndex={0}
+				zIndex={Z_INDEX.BASE}
 				sx={{
 					transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
 				}}
@@ -75,7 +76,7 @@ export function Toolbar() {
 				/>
 
 				<Box
-					zIndex={0}
+					zIndex={Z_INDEX.BASE}
 					flexDirection={'row'}
 					justifyContent={'space-between'}
 					alignItems={'center'}

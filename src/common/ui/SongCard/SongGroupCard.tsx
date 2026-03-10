@@ -1,3 +1,4 @@
+import { Z_INDEX } from '@/common/constants/zIndex'
 import { Box } from '@/common/ui/Box'
 import { Clickable } from '@/common/ui/Clickable'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
@@ -47,7 +48,7 @@ export default function SongGroupCard({
 					display: 'flex',
 					flexDirection: 'column-reverse',
 					position: 'relative',
-					zIndex: hovered ? 1 : undefined,
+					zIndex: hovered ? Z_INDEX.RAISED : undefined,
 				}}
 			>
 				<Box
