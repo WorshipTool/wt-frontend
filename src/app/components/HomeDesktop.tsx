@@ -1,7 +1,7 @@
 'use client'
 
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
-import { Z_INDEX } from '@/common/constants/zIndex'
+
 import MainSearchInput from '@/app/components/components/MainSearchInput'
 import RecommendedSongsList from '@/app/components/components/RecommendedSongsList/RecommendedSongsList'
 import RightSheepPanel from '@/app/components/components/RightSheepPanel/RightSheepPanel'
@@ -136,7 +136,7 @@ export default function HomeDesktop() {
 					top: isTop ? '38vh' : '-100%',
 					right: isTop ? 0 : '-100%',
 					transform: 'translateX(50%) translateY(-50%) rotate(175deg)',
-					zIndex: Z_INDEX.BEHIND,
+					zIndex: -1,
 					opacity: isMobile ? 0 : 1,
 					transition: 'top 0.2s ease, right 0.2s ease, opacity 0.2s ease',
 					width: shapeSizeString,
@@ -180,7 +180,7 @@ export default function HomeDesktop() {
 						position: 'fixed',
 						display: 'flex',
 						flexDirection: 'column',
-						zIndex: phoneVersion ? Z_INDEX.RAISED : Z_INDEX.STICKY,
+						zIndex: phoneVersion ? 1 : 10,
 						alignItems: 'center',
 						pointerEvents: 'none',
 					}}

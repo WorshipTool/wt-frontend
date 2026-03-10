@@ -3,13 +3,6 @@ import { Z_INDEX, ZIndexLayer } from './zIndex'
 describe('Z_INDEX', () => {
 	it('exports all expected layer keys', () => {
 		const expectedKeys = [
-			'DEEP_BACKGROUND',
-			'BEHIND',
-			'BASE',
-			'RAISED',
-			'ELEVATED',
-			'STICKY',
-			'SEARCH',
 			'CORNER_STACK',
 			'OVERLAY',
 			'POPUP',
@@ -30,21 +23,14 @@ describe('Z_INDEX', () => {
 		}
 	})
 
-	it('maintains correct ordering (each layer >= previous, except background layers)', () => {
-		// Background layers are negative
-		expect(Z_INDEX.DEEP_BACKGROUND).toBeLessThan(Z_INDEX.BEHIND)
-		expect(Z_INDEX.BEHIND).toBeLessThan(Z_INDEX.BASE)
+	it('all values are greater than 100', () => {
+		for (const [key, value] of Object.entries(Z_INDEX)) {
+			expect(value).toBeGreaterThan(100)
+		}
+	})
 
-		// Content layers ascend
-		expect(Z_INDEX.BASE).toBeLessThanOrEqual(Z_INDEX.RAISED)
-		expect(Z_INDEX.RAISED).toBeLessThanOrEqual(Z_INDEX.ELEVATED)
-
-		// UI layers above content
-		expect(Z_INDEX.ELEVATED).toBeLessThanOrEqual(Z_INDEX.STICKY)
-		expect(Z_INDEX.STICKY).toBeLessThanOrEqual(Z_INDEX.SEARCH)
-		expect(Z_INDEX.SEARCH).toBeLessThanOrEqual(Z_INDEX.CORNER_STACK)
-
-		// Overlay layers above UI
+	it('maintains correct ordering (each layer >= previous)', () => {
+		// Overlay layers above corner stack
 		expect(Z_INDEX.CORNER_STACK).toBeLessThanOrEqual(Z_INDEX.OVERLAY)
 		expect(Z_INDEX.OVERLAY).toBeLessThanOrEqual(Z_INDEX.POPUP)
 		expect(Z_INDEX.POPUP).toBeLessThanOrEqual(Z_INDEX.TOOLTIP)
@@ -69,20 +55,13 @@ describe('Z_INDEX', () => {
 	it('has no unexpected key additions (snapshot of keys)', () => {
 		const keys = Object.keys(Z_INDEX).sort()
 		expect(keys).toEqual([
-			'BASE',
-			'BEHIND',
 			'CONTEXT_MENU',
 			'CORNER_STACK',
-			'DEEP_BACKGROUND',
 			'DIALOG',
-			'ELEVATED',
 			'FLOATING_EDIT',
 			'LOADING',
 			'OVERLAY',
 			'POPUP',
-			'RAISED',
-			'SEARCH',
-			'STICKY',
 			'TOOLTIP',
 		])
 	})

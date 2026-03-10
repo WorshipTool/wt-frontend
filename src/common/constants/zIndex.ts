@@ -1,21 +1,19 @@
 /**
  * Centralized Z-Index Layer System
  *
- * All z-index values used across the application are defined here.
- * Layers are ordered from back (negative) to front (highest positive).
+ * Only HIGH z-index values (> 100) used for overlays, popups, modals,
+ * and other stacking-critical UI elements are defined here.
  *
- * To change stacking order globally, adjust values in this single file.
+ * Low z-index values (-100 … 100) used for simple layout purposes
+ * (e.g. "slightly above sibling", "behind content") remain hardcoded
+ * in their respective components — centralizing them adds no value.
+ *
+ * To change stacking order of overlays globally, adjust values in this
+ * single file.
  *
  * Layer overview (back → front):
  *
- *   DEEP_BACKGROUND  (-100)  Background decorations (snow, gradients)
- *   BEHIND           (-1)    Elements behind main content
- *   BASE             (0)     Default / reset level
- *   RAISED           (1)     Slightly above siblings
- *   ELEVATED         (2)     Above RAISED (panels, overlays on content)
- *   STICKY           (10)    Sticky / fixed UI (toolbar, navigation bar)
- *   SEARCH           (100)   Search bars and inputs
- *   CORNER_STACK     (200)   Corner buttons (proposals, ideas) — intentionally below overlays
+ *   CORNER_STACK     (200)   Corner buttons (proposals, ideas) — below overlays
  *   OVERLAY          (1300)  Overlays (preview banner, spotlight)
  *   POPUP            (1360)  Popup containers (dropdowns, tooltips attached to popups)
  *   TOOLTIP          (1500)  Floating tooltips
@@ -25,25 +23,6 @@
  *   FLOATING_EDIT    (10000) Admin floating edit button — always on top
  */
 export const Z_INDEX = {
-	// ── Background Layers ────────────────────────────────────────────────
-	/** Background decorations: snow, animated backgrounds */
-	DEEP_BACKGROUND: -100,
-	/** Elements positioned behind main content */
-	BEHIND: -1,
-
-	// ── Content Layers ───────────────────────────────────────────────────
-	/** Default / reset level */
-	BASE: 0,
-	/** Slightly above siblings (cards, panels) */
-	RAISED: 1,
-	/** Above RAISED — presentation overlays, secondary panels */
-	ELEVATED: 2,
-
-	// ── UI Layers ────────────────────────────────────────────────────────
-	/** Sticky / fixed UI elements: toolbar, navigation bar */
-	STICKY: 10,
-	/** Search bars and search input overlays */
-	SEARCH: 100,
 	/** Corner stack buttons (proposals, ideas) — below overlays & popups */
 	CORNER_STACK: 200,
 

@@ -1,7 +1,6 @@
 'use client'
 import JoinTeamPopup from '@/app/(layout)/sub/tymy/components/JoinTeamPopup'
 import { Box, Button, Typography, useTheme } from '@/common/ui'
-import { Z_INDEX } from '@/common/constants/zIndex'
 import { grey } from '@/common/ui/mui/colors'
 import useAuth from '@/hooks/auth/useAuth'
 import { useState } from 'react'
@@ -18,7 +17,7 @@ export default function JoinTeamPublicPanel() {
 			alignItems={'center'}
 			justifyContent={'center'}
 			gap={2}
-			zIndex={Z_INDEX.RAISED}
+			zIndex={1}
 			sx={{
 				bgcolor: grey[300],
 				padding: 1.5,

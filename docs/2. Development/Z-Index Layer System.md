@@ -1,29 +1,24 @@
 # Z-Index Layer System
 
-All z-index values in the application are centralized in a single file:
+High z-index values (> 100) for overlays, popups, modals, and other stacking-critical UI elements are centralized in a single file:
 
 ```
 src/common/constants/zIndex.ts
 ```
 
+Low z-index values (-100 … 100) used for simple layout purposes (e.g. "slightly above sibling", "behind content") remain hardcoded in their respective components — centralizing them adds no value.
+
 ## Why
 
-- Single source of truth for all stacking layers
-- Easy to see what's above what
+- Single source of truth for overlay / popup / modal stacking
+- Easy to see what's above what in the critical z-index range
 - Change a value in one place to adjust globally
-- Prevents magic numbers scattered across components
+- Prevents magic numbers for high z-index values scattered across components
 
 ## Layer Map
 
 | Layer            | Value   | Purpose                                          |
 |------------------|---------|--------------------------------------------------|
-| `DEEP_BACKGROUND`| -100    | Background decorations (snow, gradients)          |
-| `BEHIND`         | -1      | Elements behind main content                      |
-| `BASE`           | 0       | Default / reset level                             |
-| `RAISED`         | 1       | Slightly above siblings (cards, panels)           |
-| `ELEVATED`       | 2       | Above RAISED (presentation, secondary panels)     |
-| `STICKY`         | 10      | Sticky/fixed UI (toolbar, navigation)             |
-| `SEARCH`         | 100     | Search bars and inputs                            |
 | `CORNER_STACK`   | 200     | Corner buttons (proposals, ideas) - below popups  |
 | `OVERLAY`        | 1300    | Overlays (preview banner, spotlight)              |
 | `POPUP`          | 1360    | Popup containers                                  |
@@ -42,13 +37,17 @@ import { Z_INDEX } from '@/common/constants/zIndex'
 <Box sx={{ zIndex: Z_INDEX.POPUP }}>
 
 // In styled components
-const TopBar = styled(Box)({
-  zIndex: Z_INDEX.STICKY,
+const Overlay = styled(Box)({
+  zIndex: Z_INDEX.OVERLAY,
 })
 
 // In inline styles
 <div style={{ zIndex: Z_INDEX.LOADING }}>
 ```
+
+## Low z-index values (not centralized)
+
+Values like `zIndex: 1`, `zIndex: -1`, `zIndex: 10`, etc. are kept as hardcoded numbers directly in the components. These are simple layout values that don't participate in the critical stacking order and don't benefit from centralization.
 
 ## Design Decisions
 
@@ -60,6 +59,7 @@ const TopBar = styled(Box)({
 
 Tests are located at `src/common/constants/zIndex.test.ts` and verify:
 - All layer keys exist
+- All values are > 100
 - Correct ordering of layers (each layer >= previous)
 - CORNER_STACK < POPUP (corner buttons below popups)
 - FLOATING_EDIT is the highest or equal-highest layer

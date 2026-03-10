@@ -1,7 +1,7 @@
 'use client'
 
 import Popup from '@/common/components/Popup/Popup'
-import { Z_INDEX } from '@/common/constants/zIndex'
+
 import {
 	Box,
 	Button,
@@ -214,7 +214,7 @@ export default function PreviewModeDialog({
 						radial-gradient(480px 380px at 85% 20%, ${BLUE}22 0%, transparent 65%),
 						radial-gradient(520px 420px at 60% 85%, ${BLUE}33 0%, transparent 70%)
 					`,
-					zIndex: Z_INDEX.BASE,
+					zIndex: 0,
 					filter: 'blur(22px)',
 					pointerEvents: 'none',
 					willChange: 'transform',
@@ -223,7 +223,7 @@ export default function PreviewModeDialog({
 				},
 			}}
 		>
-			<Box sx={{ zIndex: Z_INDEX.RAISED, alignSelf: 'stretch' }}>
+			<Box sx={{ zIndex: 1, alignSelf: 'stretch' }}>
 				{/* Header */}
 				<Box
 					sx={{

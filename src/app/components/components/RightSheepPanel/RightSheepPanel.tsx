@@ -1,5 +1,5 @@
 'use client'
-import { Z_INDEX } from '@/common/constants/zIndex'
+
 import AllListPanel from '@/app/components/components/AllListPanel/AllListPanel'
 import LastAddedPanel from '@/app/components/components/LastAddedPanel/LastAddedPanel'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
@@ -29,7 +29,7 @@ export default function RightSheepPanel(props: Props) {
 					position: 'absolute',
 					top: '-110px',
 					right: '10%',
-					zIndex: Z_INDEX.BEHIND,
+					zIndex: -1,
 				}}
 			>
 				<Image

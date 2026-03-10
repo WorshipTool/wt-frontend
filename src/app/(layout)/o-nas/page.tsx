@@ -5,7 +5,6 @@ import { Box } from '@/common/ui'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { useTranslations } from 'next-intl'
-import { Z_INDEX } from '@/common/constants/zIndex'
 
 import Image from 'next/image'
 
@@ -114,7 +113,7 @@ function Page() {
 						position: 'absolute',
 						bottom: 0,
 						right: '25%',
-						zIndex: Z_INDEX.RAISED,
+						zIndex: 1,
 						width: 'clamp(0px,25%, 180px)',
 						aspectRatio: '1/2',
 						transform: 'translateX(50%)',

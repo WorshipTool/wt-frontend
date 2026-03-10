@@ -10,7 +10,6 @@ import TitleBox from '@/app/(layout)/playlist/[guid]/components/TopPanel/compone
 import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlaylist'
 import { SmartPortalMenuProvider } from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
 import { Box, useTheme } from '@/common/ui'
-import { Z_INDEX } from '@/common/constants/zIndex'
 export default function TopPlaylistPanel() {
 	const { canUserEdit, guid } = useInnerPlaylist()
 	const theme = useTheme()
@@ -25,7 +24,7 @@ export default function TopPlaylistPanel() {
 					justifyContent: 'space-between',
 					position: 'sticky',
 					top: 56,
-					zIndex: Z_INDEX.RAISED,
+					zIndex: 1,
 					[theme.breakpoints.down('sm')]: {
 						position: 'relative',
 						top: 0,
