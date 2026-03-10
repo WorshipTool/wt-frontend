@@ -37,11 +37,24 @@ const POPUP_AUTO_SHOW_DELAY_MS = 500
 
 const LS_KEY_PREFIX = 'broadcast-dismissed'
 
-function getDismissedIds(userId: string): BroadcastMessageId[] {
+function getDismissedIds(
+  userId: string,
+  knownIds?: BroadcastMessageId[],
+): BroadcastMessageId[] {
   if (typeof window === 'undefined') return []
   try {
     const raw = localStorage.getItem(`${LS_KEY_PREFIX}-${userId}`)
-    return raw ? (JSON.parse(raw) as BroadcastMessageId[]) : []
+    const ids = raw ? (JSON.parse(raw) as BroadcastMessageId[]) : []
+    // Clean stale IDs that no longer correspond to any configured message
+    if (knownIds) {
+      const knownSet = new Set(knownIds)
+      const cleaned = ids.filter((id) => knownSet.has(id))
+      if (cleaned.length !== ids.length) {
+        saveDismissedIds(userId, cleaned)
+      }
+      return cleaned
+    }
+    return ids
   } catch {
     return []
   }
@@ -83,6 +96,7 @@ function useBroadcastProvider(): BroadcastContextValue {
   const alreadyShownRef = useRef(false)
 
   // Hydrate dismissed IDs from localStorage once the user is known
+  // Stale IDs (from removed messages) are cleaned up automatically
   useEffect(() => {
     if (!isLoggedIn() || !user) {
       setDismissedIds([])
@@ -90,8 +104,9 @@ function useBroadcastProvider(): BroadcastContextValue {
       alreadyShownRef.current = false
       return
     }
-    setDismissedIds(getDismissedIds(user.guid as string))
-  }, [isLoggedIn, user])
+    const knownIds = configuredMessages.map((m) => m.id)
+    setDismissedIds(getDismissedIds(user.guid as string, knownIds))
+  }, [isLoggedIn, user, configuredMessages])
 
   // Reset index when the active list changes (e.g. on dismiss)
   const activeBroadcasts: BroadcastMessage[] = useMemo(() => {
@@ -137,7 +152,7 @@ function useBroadcastProvider(): BroadcastContextValue {
   const dismiss = useCallback(
     (id: BroadcastMessageId) => {
       if (!user) return
-      const updated = [...dismissedIds, id]
+      const updated = Array.from(new Set([...dismissedIds, id]))
       setDismissedIds(updated)
       saveDismissedIds(user.guid as string, updated)
     },
@@ -147,7 +162,7 @@ function useBroadcastProvider(): BroadcastContextValue {
   const dismissAll = useCallback(() => {
     if (!user) return
     const allIds = activeBroadcasts.map((m) => m.id)
-    const updated = [...dismissedIds, ...allIds]
+    const updated = Array.from(new Set([...dismissedIds, ...allIds]))
     setDismissedIds(updated)
     saveDismissedIds(user.guid as string, updated)
   }, [activeBroadcasts, dismissedIds, user])

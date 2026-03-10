@@ -17,7 +17,7 @@ Intended for operational notices such as:
 | Tutorial/spotlight | No | Yes |
 | Feature flag filtering | No | Yes |
 | Dismissal storage | localStorage (per user) | Backend API |
-| Display | Fixed top banner | Popup modal |
+| Display | Popup modal + optional fixed top banner | Popup modal |
 
 ---
 
@@ -27,7 +27,8 @@ Intended for operational notices such as:
 broadcast.types.ts        — Types: BroadcastMessage, BroadcastSeverity, …
 broadcast.config.tsx      — Operator-editable message definitions
 BroadcastContext.tsx      — React context + useBroadcast() hook
-BroadcastBanner.tsx       — Fixed-top dismissible UI banner
+BroadcastPopup.tsx        — Modal popup with animated gradient background (primary UI)
+BroadcastBanner.tsx       — Fixed-top dismissible banner (optional, not rendered by default)
 index.ts                  — Barrel exports
 ```
 
@@ -106,9 +107,11 @@ import { useBroadcast } from '@/common/providers/Broadcast'
 
 const {
   activeBroadcasts,   // BroadcastMessage[] — undismissed messages for current user
-  currentBroadcast,   // BroadcastMessage | null — message shown in banner
+  currentBroadcast,   // BroadcastMessage | null — message shown in popup/banner
   currentIndex,       // number — 0-based index within activeBroadcasts
   totalCount,         // number — length of activeBroadcasts
+  isPopupOpen,        // boolean — whether the popup is currently visible
+  closePopup,         // () => void — close the popup without dismissing
   dismiss,            // (id: string) => void
   dismissAll,         // () => void
   navigateNext,       // () => void — cycle forward
@@ -118,10 +121,21 @@ const {
 
 ### Components
 
+The popup is rendered by default in `AppClientProviders`:
+
+```tsx
+import { BroadcastPopup } from '@/common/providers/Broadcast'
+
+// Already rendered inside AppClientProviders — no need to add manually
+<BroadcastPopup />
+```
+
+The banner is available as an optional alternative (not rendered by default):
+
 ```tsx
 import { BroadcastBanner } from '@/common/providers/Broadcast'
 
-// Already rendered inside AppClientProviders — no need to add manually
+// Add to your layout if you prefer a fixed top banner instead of/alongside the popup
 <BroadcastBanner />
 ```
 

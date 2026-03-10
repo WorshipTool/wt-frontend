@@ -144,7 +144,7 @@ export function BroadcastBanner() {
               <IconButton
                 small
                 onClick={navigatePrev}
-                aria-label={t('previous')}
+                alt={t('previous')}
                 sx={{ color: style.textColor, p: 0.5 }}
               >
                 <ArrowBackIos sx={{ fontSize: 12 }} />
@@ -162,7 +162,7 @@ export function BroadcastBanner() {
               <IconButton
                 small
                 onClick={navigateNext}
-                aria-label={t('next')}
+                alt={t('next')}
                 sx={{ color: style.textColor, p: 0.5 }}
               >
                 <ArrowForwardIos sx={{ fontSize: 12 }} />
@@ -174,7 +174,7 @@ export function BroadcastBanner() {
           <IconButton
             small
             onClick={() => dismiss(currentBroadcast.id)}
-            aria-label={t('dismiss')}
+            alt={t('dismiss')}
             sx={{ color: style.textColor, flexShrink: 0, ml: 0.5 }}
           >
             <Close fontSize="small" />

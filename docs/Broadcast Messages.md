@@ -15,9 +15,14 @@ Allows operators to display a dismissible banner to every logged-in user without
 
 1. Operator edits `src/common/providers/Broadcast/broadcast.config.tsx`
 2. A new `BroadcastMessage` object is added to `getBroadcastMessages()`
-3. After deployment the banner appears at the top of the page for all logged-in users
-4. Each user can dismiss the banner; the dismissal is stored in their browser's `localStorage`
+3. After deployment the message appears in a modal popup (auto-opens once per session) for all logged-in users
+4. Each user can dismiss messages; dismissals are stored in their browser's `localStorage`
 5. If `expiresAt` is set, the message auto-hides after that time without any manual removal
+
+## Display modes
+
+- **Popup (default)** — Modal with animated gradient background, rendered in `AppClientProviders`
+- **Banner (optional)** — Fixed-position bar at the top of the viewport, available for custom layouts
 
 ## Severity levels
 
