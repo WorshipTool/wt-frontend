@@ -1004,6 +1004,14 @@ declare const messages: {
 		"merged": "Sloučeno",
 		"filterActive": "Aktivní & otevřené PR",
 		"noActiveOrOpenPr": "Žádné aktivní úlohy ani otevřené PR"
+	},
+	"broadcast": {
+		"dismiss": "Zavřít",
+		"next": "Další",
+		"previous": "Předchozí",
+		"pageIndicator": "{current} / {total}",
+		"popupLabel": "Systémové oznámení",
+		"dismissAll": "Zavřít vše"
 	}
 };
 export default messages;

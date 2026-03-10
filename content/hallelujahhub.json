@@ -1001,5 +1001,13 @@
 		"merged": "Merged",
 		"filterActive": "Active & open PRs",
 		"noActiveOrOpenPr": "No active tasks or open PRs"
+	},
+	"broadcast": {
+		"dismiss": "Dismiss",
+		"next": "Next",
+		"previous": "Previous",
+		"pageIndicator": "{current} / {total}",
+		"popupLabel": "System notice",
+		"dismissAll": "Dismiss all"
 	}
 }
