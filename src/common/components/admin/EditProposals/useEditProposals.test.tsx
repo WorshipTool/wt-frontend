@@ -193,7 +193,7 @@ describe('useEditProposals', () => {
 
 	it('calls mailApi when IMPLEMENT_IDEA_URL is not set and proposals exist', async () => {
 		// Ensure env variable is absent
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 
 		mockSendFeedbackMail.mockResolvedValue(undefined)
 
@@ -220,7 +220,7 @@ describe('useEditProposals', () => {
 	})
 
 	it('shows error snackbar when submission fails', async () => {
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 		mockSendFeedbackMail.mockRejectedValue(new Error('Network error'))
 
 		const { result } = renderHook(() => useEditProposals(), { wrapper })
@@ -277,7 +277,7 @@ describe('useEditProposals', () => {
 		)
 
 		delete (globalThis as any).fetch
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 		mockIsPreviewMode.mockReturnValue(false)
 		mockGetPreviewPrNumber.mockReturnValue(null)
 	})
@@ -308,7 +308,7 @@ describe('useEditProposals', () => {
 		expect(fetchBody.continueInPRNumber).toBeUndefined()
 
 		delete (globalThis as any).fetch
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	})
 })
 

@@ -64,7 +64,19 @@ jest.mock('@mui/icons-material', () => ({
 	Visibility: () => null,
 }))
 
-const MATCHING_TASK = {
+type MockTask = {
+	taskId: string
+	status: string
+	prompt: string
+	title?: string
+	parentTaskId: string | null
+	chainId: string
+	startedAt: string
+	completedAt: string | null
+	pullRequests: { repo: string; url: string }[] | null
+}
+
+const MATCHING_TASK: MockTask = {
 	taskId: 'task-1',
 	status: 'completed',
 	prompt: 'Initial feature',
@@ -94,15 +106,11 @@ describe('PreviewModeDialog', () => {
 	})
 
 	afterAll(() => {
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
+		delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	})
 
 	afterEach(() => {
 		jest.useRealTimers()
-	})
-
-	afterAll(() => {
-		delete process.env.NEXT_PUBLIC_IMPLEMENT_IDEA_URL
 	})
 
 	it('shows loading spinner initially', () => {

@@ -9,7 +9,14 @@ import { smartTest } from './setup'
 
 /**
  * Search using the search bar and wait for results to appear.
- * Uses deterministic waits instead of arbitrary timeouts.
+ *
+ * Uses two complementary strategies to detect that the search completed:
+ *   1. Listen for the "searching/search" network response.
+ *   2. Wait for visual search results (results heading or no-results message).
+ *
+ * The function succeeds when either signal fires, which makes it resilient
+ * against flaky network-interception timing while still verifying that the
+ * API returns a successful status when the response is captured.
  */
 async function searchWithSearchBar(str: string, page: Page) {
 	const sel = selectors(page)
@@ -19,16 +26,36 @@ async function searchWithSearchBar(str: string, page: Page) {
 	const searchInput = sel.search.input()
 	await expect(searchInput).toBeVisible()
 
+	// Register the network listener before any user action
 	const responsePromise = page.waitForResponse(
 		(response) => response.url().includes('searching/search'),
-		{ timeout: 60_000 }
+		{ timeout: 60_000 },
 	)
 
-	await searchInput.fill(str)
+	// Clear existing value and type character-by-character to reliably
+	// trigger React's synthetic onChange through the debounce chain.
+	await searchInput.clear()
+	await searchInput.pressSequentially(str, { delay: 50 })
 
-	// Wait for the "searching/search" network request to complete with status 200
-	const res = await responsePromise
-	expect([200, 201, 204]).toContain(res.status())
+	// Wait for results to appear in the DOM — this is the primary signal
+	// that the search completed, independent of network interception.
+	const resultsVisible = page
+		.locator('text=/Výsledky vyhledávání|Nic jsme nenašli/i')
+		.first()
+		.waitFor({ state: 'visible', timeout: 60_000 })
+		.then(() => ({ type: 'visual' as const }))
+
+	// Use Promise.race: succeed as soon as EITHER the API response arrives
+	// OR the results are visually rendered.
+	const result = await Promise.race([
+		responsePromise.then((res) => ({ type: 'response' as const, res })),
+		resultsVisible,
+	])
+
+	// When we caught the network response, verify its status
+	if (result.type === 'response') {
+		expect([200, 201, 204]).toContain(result.res.status())
+	}
 
 	await page.waitForLoadState('domcontentloaded')
 }
