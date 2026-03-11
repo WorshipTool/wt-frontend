@@ -129,8 +129,11 @@ export default (phase, { defaultConfig }) => {
 					'@statsig/react-bindings',
 					'@statsig/session-replay',
 					'@statsig/web-analytics',
-					'@stripe/react-stripe-js',
-					'@stripe/stripe-js',
+					'@react-oauth/google',
+					'mixpanel-browser',
+					'socket.io-client',
+					'jwt-decode',
+					'crypto-js',
 				],
 			},
 		})

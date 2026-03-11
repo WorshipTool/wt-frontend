@@ -1,5 +1,14 @@
 'use client'
-import { isMobile as im, isTablet as it } from 'react-device-detect'
 
-export const isMobile = im
-export const isTablet = it
+const getUserAgent = () =>
+	typeof navigator !== 'undefined' ? navigator.userAgent : ''
+
+export const isMobile =
+	typeof navigator !== 'undefined' &&
+	/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		getUserAgent()
+	)
+
+export const isTablet =
+	typeof navigator !== 'undefined' &&
+	/iPad|Android(?!.*Mobile)/i.test(getUserAgent())

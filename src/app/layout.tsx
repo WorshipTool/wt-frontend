@@ -10,8 +10,13 @@ import { NextIntlClientProvider } from 'next-intl'
 import { Roboto } from 'next/font/google'
 import { getMessages } from '../../i18n-config'
 
-import Analytics from '@/app/components/components/analytics/Analytics'
 import HeadersProviders from '@/app/providers/HeadersProviders'
+import dynamic from 'next/dynamic'
+
+const Analytics = dynamic(
+	() => import('@/app/components/components/analytics/Analytics'),
+	{ ssr: false }
+)
 import './globals.classes.css'
 import './globals.css'
 

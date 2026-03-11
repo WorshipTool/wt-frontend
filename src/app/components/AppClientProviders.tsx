@@ -8,8 +8,6 @@ import { EditProposalsProvider } from '@/common/components/admin/EditProposals'
 import { AuthProvider } from '@/hooks/auth/useAuth'
 import SongDragProvider from '@/hooks/dragsong/SongDragProvider'
 import { CurrentPlaylistProvider } from '@/hooks/playlist/useCurrentPlaylist'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { SnackbarProvider } from 'notistack'
 
 import { BottomPanelProvider } from '@/app/providers/BottomPanelProvider'
@@ -28,7 +26,6 @@ import { CommonDataProvider } from '@/hooks/common-data/useCommonData'
 import { FavouritesProvider } from '@/hooks/favourites/useFavourites'
 import { PermissionsProvider } from '@/hooks/permissions/usePermissions'
 import { SubdomainPathnameAliasProvider } from '@/routes/subdomains/SubdomainPathnameAliasProvider'
-import 'dayjs/locale/cs'
 type AppClientProvidersProps = {
 	initialCommonData: AllCommonData
 	test: string
@@ -41,53 +38,51 @@ export default function AppClientProviders({
 }: AppClientProvidersProps) {
 	return (
 		<ErrorBoundary>
-			<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="cs">
-				<SnackbarProvider
-					maxSnack={1}
-					anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-					autoHideDuration={3000}
-					preventDuplicate
-				>
-					{/* <BrowserRouter> */}
-					<CommonDataProvider initialData={initialCommonData}>
-						<SubdomainPathnameAliasProvider>
-							<AuthProvider>
-								<FeatureFlagsProvider>
-									<NewsProvider>
-										<PermissionsProvider>
-											<ErrorHandlerProvider>
-												<TranslationLikesProvider>
-													<BottomPanelProvider>
-														<FavouritesProvider>
-															<ToolbarProvider>
-																<FooterProvider>
-																	<OutsideLinkBlockerProvider>
-																		<AppSongSelectSpecifierProvider>
-																			<CurrentPlaylistProvider>
-																				<SongDragProvider>
-																					<EditProposalsProvider>
-																						{children}
-																						<NewsPopup />
-																					</EditProposalsProvider>
-																				</SongDragProvider>
-																			</CurrentPlaylistProvider>
-																		</AppSongSelectSpecifierProvider>
-																	</OutsideLinkBlockerProvider>
-																</FooterProvider>
-															</ToolbarProvider>
-														</FavouritesProvider>
-													</BottomPanelProvider>
-												</TranslationLikesProvider>
-											</ErrorHandlerProvider>
-										</PermissionsProvider>
-									</NewsProvider>
-								</FeatureFlagsProvider>
-							</AuthProvider>
-						</SubdomainPathnameAliasProvider>
-					</CommonDataProvider>
-					{/* </BrowserRouter> */}
-				</SnackbarProvider>
-			</LocalizationProvider>
+			<SnackbarProvider
+				maxSnack={1}
+				anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+				autoHideDuration={3000}
+				preventDuplicate
+			>
+				{/* <BrowserRouter> */}
+				<CommonDataProvider initialData={initialCommonData}>
+					<SubdomainPathnameAliasProvider>
+						<AuthProvider>
+							<FeatureFlagsProvider>
+								<NewsProvider>
+									<PermissionsProvider>
+										<ErrorHandlerProvider>
+											<TranslationLikesProvider>
+												<BottomPanelProvider>
+													<FavouritesProvider>
+														<ToolbarProvider>
+															<FooterProvider>
+																<OutsideLinkBlockerProvider>
+																	<AppSongSelectSpecifierProvider>
+																		<CurrentPlaylistProvider>
+																			<SongDragProvider>
+																				<EditProposalsProvider>
+																					{children}
+																					<NewsPopup />
+																				</EditProposalsProvider>
+																			</SongDragProvider>
+																		</CurrentPlaylistProvider>
+																	</AppSongSelectSpecifierProvider>
+																</OutsideLinkBlockerProvider>
+															</FooterProvider>
+														</ToolbarProvider>
+													</FavouritesProvider>
+												</BottomPanelProvider>
+											</TranslationLikesProvider>
+										</ErrorHandlerProvider>
+									</PermissionsProvider>
+								</NewsProvider>
+							</FeatureFlagsProvider>
+						</AuthProvider>
+					</SubdomainPathnameAliasProvider>
+				</CommonDataProvider>
+				{/* </BrowserRouter> */}
+			</SnackbarProvider>
 		</ErrorBoundary>
 	)
 }
