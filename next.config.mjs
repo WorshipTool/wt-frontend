@@ -1,5 +1,10 @@
+import bundleAnalyzer from '@next/bundle-analyzer'
 import createNextIntlPlugin from 'next-intl/plugin'
 import nextRoutes from 'nextjs-routes/config'
+
+const withBundleAnalyzer = bundleAnalyzer({
+	enabled: process.env.ANALYZE === 'true',
+})
 
 const BUILD_HASH = `${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`
 
@@ -108,10 +113,33 @@ export default (phase, { defaultConfig }) => {
 			})()),
 			reactStrictMode: false,
 			output: 'standalone',
+			// Re-transpile packages that ship pre-compiled legacy JavaScript
+			// (babel class transforms, Object.is polyfills, etc.) to modern targets
+			transpilePackages: ['react-transition-group'],
 			experimental: {
 				serverComponentsExternalPackages: ['@react-pdf/renderer'],
+				optimizePackageImports: [
+					'@mui/icons-material',
+					'@mui/material',
+					'@mui/lab',
+					'@mui/x-charts',
+					'@mui/x-date-pickers',
+					'framer-motion',
+					'notistack',
+					'dayjs',
+					'react-snowfall',
+					'@statsig/js-client',
+					'@statsig/react-bindings',
+					'@statsig/session-replay',
+					'@statsig/web-analytics',
+					'@react-oauth/google',
+					'mixpanel-browser',
+					'socket.io-client',
+					'jwt-decode',
+					'crypto-js',
+				],
 			},
 		})
 	)
-	return nextConfig
+	return withBundleAnalyzer(nextConfig)
 }
