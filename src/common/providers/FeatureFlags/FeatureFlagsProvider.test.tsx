@@ -1,16 +1,24 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, act, waitFor } from '@testing-library/react'
 
 // Mock dependencies
-const mockUpdateUserAsync = jest.fn()
-const mockClient = { updateUserAsync: mockUpdateUserAsync }
+const mockUpdateUserAsync = jest.fn().mockResolvedValue(undefined)
+const mockInitializeAsync = jest.fn().mockResolvedValue(undefined)
+const mockStatsigClient = {
+	updateUserAsync: mockUpdateUserAsync,
+	initializeAsync: mockInitializeAsync,
+	loadingStatus: 'Ready',
+}
+
+jest.mock('@statsig/js-client', () => ({
+	StatsigClient: jest.fn(() => mockStatsigClient),
+}))
 
 jest.mock('@statsig/react-bindings', () => ({
 	StatsigProvider: ({ children }: { children: React.ReactNode }) => (
 		<div data-testid="statsig-provider">{children}</div>
 	),
-	useClientAsyncInit: jest.fn(() => ({ client: mockClient })),
 }))
 
 jest.mock('@statsig/session-replay', () => ({
@@ -36,63 +44,82 @@ jest.mock('./flags.tech', () => ({
 }))
 
 import { FeatureFlagsProvider } from './FeatureFlagsProvider'
-import { useClientAsyncInit } from '@statsig/react-bindings'
-import { StatsigAutoCapturePlugin } from '@statsig/web-analytics'
-import { StatsigSessionReplayPlugin } from '@statsig/session-replay'
+import { StatsigClient } from '@statsig/js-client'
 
 describe('FeatureFlagsProvider', () => {
 	beforeEach(() => {
 		jest.clearAllMocks()
 	})
 
-	it('renders children inside StatsigProvider', () => {
+	it('renders children immediately (before Statsig loads)', () => {
 		const { getByText } = render(
 			<FeatureFlagsProvider>
 				<span>Test Child</span>
 			</FeatureFlagsProvider>
 		)
 
+		// Children should be visible immediately without waiting for Statsig
 		expect(getByText('Test Child')).toBeInTheDocument()
 	})
 
-	it('includes browser plugins when window is defined (client-side)', () => {
+	it('renders children inside StatsigProvider after initialization', async () => {
+		const { getByText, getByTestId } = render(
+			<FeatureFlagsProvider>
+				<span>Test Child</span>
+			</FeatureFlagsProvider>
+		)
+
+		// After async init, StatsigProvider should wrap the children
+		await waitFor(() => {
+			expect(getByTestId('statsig-provider')).toBeInTheDocument()
+		})
+		expect(getByText('Test Child')).toBeInTheDocument()
+	})
+
+	it('dynamically imports and creates plugins', async () => {
 		render(
 			<FeatureFlagsProvider>
 				<span>Test</span>
 			</FeatureFlagsProvider>
 		)
 
-		// In jsdom test environment, typeof window !== 'undefined' is true
-		const call = (useClientAsyncInit as jest.Mock).mock.calls[0]
-		const options = call[2]
+		// Wait for dynamic imports and client initialization
+		await waitFor(() => {
+			expect(StatsigClient).toHaveBeenCalled()
+		})
 
+		const constructorCall = (StatsigClient as jest.Mock).mock.calls[0]
+		const options = constructorCall[2]
+
+		// Plugins should be created from dynamic imports
 		expect(options.plugins).toHaveLength(2)
-		expect(StatsigAutoCapturePlugin).toHaveBeenCalled()
-		expect(StatsigSessionReplayPlugin).toHaveBeenCalled()
-	})
-
-	it('passes NEXT_PUBLIC_STATSIG_API_KEY as the first argument', () => {
-		render(
-			<FeatureFlagsProvider>
-				<span>Test</span>
-			</FeatureFlagsProvider>
-		)
-
-		const call = (useClientAsyncInit as jest.Mock).mock.calls[0]
-		// First argument is the API key from env
-		expect(call[0]).toBe(process.env.NEXT_PUBLIC_STATSIG_API_KEY)
-	})
-
-	it('passes environment config to useClientAsyncInit', () => {
-		render(
-			<FeatureFlagsProvider>
-				<span>Test</span>
-			</FeatureFlagsProvider>
-		)
-
-		const call = (useClientAsyncInit as jest.Mock).mock.calls[0]
-		const options = call[2]
-
 		expect(options.environment).toEqual({ tier: 'development' })
+	})
+
+	it('passes NEXT_PUBLIC_STATSIG_API_KEY as the first argument', async () => {
+		render(
+			<FeatureFlagsProvider>
+				<span>Test</span>
+			</FeatureFlagsProvider>
+		)
+
+		await waitFor(() => {
+			expect(StatsigClient).toHaveBeenCalled()
+		})
+
+		const constructorCall = (StatsigClient as jest.Mock).mock.calls[0]
+		expect(constructorCall[0]).toBe(process.env.NEXT_PUBLIC_STATSIG_API_KEY)
+	})
+
+	it('calls initializeAsync after creating the client', async () => {
+		render(
+			<FeatureFlagsProvider>
+				<span>Test</span>
+			</FeatureFlagsProvider>
+		)
+
+		await waitFor(() => {
+			expect(mockInitializeAsync).toHaveBeenCalled()
+		})
 	})
 })

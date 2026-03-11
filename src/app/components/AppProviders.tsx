@@ -1,8 +1,6 @@
 'use server'
-import { GoogleOAuthProvider } from '@react-oauth/google'
-// import { BrowserRouter } from "react-router-dom";
-
 import AppClientProviders from '@/app/components/AppClientProviders'
+import LazyGoogleOAuthProvider from '@/app/components/LazyGoogleOAuthProvider'
 import ThemeProvider from '@/app/providers/ThemeProvider'
 import { fetchAllCommonDataServer } from '@/hooks/common-data/fetchCommonDataServer'
 import { CookiesProvider } from 'next-client-cookies/server'
@@ -19,11 +17,11 @@ export default async function AppProviders(props: AppProvidersProps) {
 		<>
 			<ThemeProvider>
 				<CookiesProvider>
-					<GoogleOAuthProvider clientId="736869166999-nckrpcdmab26hkp7s1cjbgdfu51igac9.apps.googleusercontent.com">
+					<LazyGoogleOAuthProvider>
 						<AppClientProviders test={'ahoj'} initialCommonData={commonData}>
 							{props.children}
 						</AppClientProviders>
-					</GoogleOAuthProvider>
+					</LazyGoogleOAuthProvider>
 				</CookiesProvider>
 			</ThemeProvider>
 		</>

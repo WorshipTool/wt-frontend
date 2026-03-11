@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "next dev -p 5500 -H test-chvalotce.cz",
 		"build": "next build",
+		"build:analyze": "ANALYZE=true next build",
 		"start": "next start -p 5500 -H test-chvalotce.cz",
 		"lint": "next lint",
 		"generate-api": "bash ./src/api/generate_api.sh",
@@ -40,8 +41,6 @@
 		"@statsig/react-bindings": "^3.32.0",
 		"@statsig/session-replay": "^3.32.0",
 		"@statsig/web-analytics": "^3.32.0",
-		"@stripe/react-stripe-js": "^5.2.0",
-		"@stripe/stripe-js": "^8.0.0",
 		"axios": "^1.8.2",
 		"cookie-store": "^4.0.0-next.4",
 		"crypto-js": "^4.2.0",
@@ -61,13 +60,10 @@
 		"notistack": "^3.0.1",
 		"npm": "^11.2.0",
 		"react": "^18",
-		"react-device-detect": "^2.2.3",
 		"react-dom": "^18",
 		"react-hotjar": "^6.3.1",
-		"react-markdown": "^9.0.1",
 		"react-masonry": "^1.0.7",
 		"react-snowfall": "^2.1.0",
-		"react-spotify-embed": "^2.0.4",
 		"sharp": "^0.33.3",
 		"sheet-api": "^0.0.3",
 		"socket.io-client": "^4.8.1",
@@ -77,10 +73,27 @@
 		"typed-env": "^1.0.1",
 		"uuid": "^11.1.0"
 	},
+	"browserslist": {
+		"production": [
+			"chrome >= 93",
+			"edge >= 93",
+			"firefox >= 92",
+			"safari >= 15.4",
+			"ios_saf >= 15.4",
+			"opera >= 79",
+			"samsung >= 17"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
 	"devDependencies": {
 		"@babel/core": "^7.25.2",
 		"@babel/preset-env": "^7.25.3",
 		"@babel/preset-typescript": "^7.24.7",
+		"@next/bundle-analyzer": "^16.1.6",
 		"@playwright/test": "^1.51.1",
 		"@svgr/webpack": "^8.1.0",
 		"@testing-library/jest-dom": "^6.4.8",

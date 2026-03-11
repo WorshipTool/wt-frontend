@@ -1,15 +1,8 @@
 import AppProviders from '@/app/components/AppProviders'
+import LazyAdminComponents from '@/app/components/LazyAdminComponents'
 import UnavailableMessage from '@/app/components/UnavailableMessage'
 import { DragTemplatesContainer } from '@/common/components/DragTemplate/DragTemplateContainer'
-import ImplementIdeaProvider from '@/common/components/ImplementAndPreview/ImplementIdeaProvider'
 import PopupProvider from '@/common/components/Popup/PopupProvider'
-import AdminOptionsProvider from '@/common/components/admin/AdminOptions'
-import GlobalAdminNavOptions from '@/common/components/admin/GlobalAdminNavOptions'
-import {
-	AdminEditOverlay,
-	ProposalCornerButton,
-	ProposalDialog,
-} from '@/common/components/admin/EditProposals'
 import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
@@ -17,8 +10,13 @@ import { NextIntlClientProvider } from 'next-intl'
 import { Roboto } from 'next/font/google'
 import { getMessages } from '../../i18n-config'
 
-import Analytics from '@/app/components/components/analytics/Analytics'
 import HeadersProviders from '@/app/providers/HeadersProviders'
+import dynamic from 'next/dynamic'
+
+const Analytics = dynamic(
+	() => import('@/app/components/components/analytics/Analytics'),
+	{ ssr: false }
+)
 import './globals.classes.css'
 import './globals.css'
 
@@ -71,12 +69,7 @@ export default async function RootLayout({
 							<PopupProvider />
 							<CornerStackProvider />
 							<DragTemplatesContainer />
-							<AdminOptionsProvider />
-							<GlobalAdminNavOptions />
-							<ImplementIdeaProvider />
-							<AdminEditOverlay />
-							<ProposalDialog />
-							<ProposalCornerButton />
+							<LazyAdminComponents />
 							<UnavailableMessage />
 						</AppProviders>
 					</NextIntlClientProvider>
