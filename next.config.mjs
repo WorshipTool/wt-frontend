@@ -113,6 +113,9 @@ export default (phase, { defaultConfig }) => {
 			})()),
 			reactStrictMode: false,
 			output: 'standalone',
+			// Re-transpile packages that ship pre-compiled legacy JavaScript
+			// (babel class transforms, Object.is polyfills, etc.) to modern targets
+			transpilePackages: ['react-transition-group'],
 			experimental: {
 				serverComponentsExternalPackages: ['@react-pdf/renderer'],
 				optimizePackageImports: [
