@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "next dev -p 5500 -H test-chvalotce.cz",
 		"build": "next build",
+		"build:analyze": "ANALYZE=true next build",
 		"start": "next start -p 5500 -H test-chvalotce.cz",
 		"lint": "next lint",
 		"generate-api": "bash ./src/api/generate_api.sh",
@@ -81,6 +82,7 @@
 		"@babel/core": "^7.25.2",
 		"@babel/preset-env": "^7.25.3",
 		"@babel/preset-typescript": "^7.24.7",
+		"@next/bundle-analyzer": "^16.1.6",
 		"@playwright/test": "^1.51.1",
 		"@svgr/webpack": "^8.1.0",
 		"@testing-library/jest-dom": "^6.4.8",

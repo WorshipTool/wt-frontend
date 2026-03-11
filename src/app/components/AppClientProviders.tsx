@@ -14,7 +14,13 @@ import { SnackbarProvider } from 'notistack'
 
 import { BottomPanelProvider } from '@/app/providers/BottomPanelProvider'
 import { FeatureFlagsProvider } from '@/common/providers/FeatureFlags/FeatureFlagsProvider'
-import { NewsProvider, NewsPopup } from '@/common/providers/News'
+import { NewsProvider } from '@/common/providers/News'
+import dynamic from 'next/dynamic'
+
+const NewsPopup = dynamic(
+	() => import('@/common/providers/News/NewsPopup').then((mod) => mod.NewsPopup),
+	{ ssr: false }
+)
 import { OutsideLinkBlockerProvider } from '@/common/ui/Link/useOutsideBlocker'
 import { TranslationLikesProvider } from '@/common/ui/SongCard/hooks/useTranslationsLikes'
 import { AllCommonData } from '@/hooks/common-data/common-data.types'
