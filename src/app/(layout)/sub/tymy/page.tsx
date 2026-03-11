@@ -110,7 +110,7 @@ async function Page() {
 							position={'relative'}
 						>
 							<Image
-								src={getAssetUrl('team-preview.webp')}
+								src={getAssetUrl('team-preview.png')}
 								alt={t('teamScreenPreview')}
 								fill
 								priority
