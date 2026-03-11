@@ -1,6 +1,13 @@
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import bundleAnalyzer from '@next/bundle-analyzer'
 import createNextIntlPlugin from 'next-intl/plugin'
 import nextRoutes from 'nextjs-routes/config'
+
+const require = createRequire(import.meta.url)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const withBundleAnalyzer = bundleAnalyzer({
 	enabled: process.env.ANALYZE === 'true',
@@ -21,11 +28,27 @@ export default (phase, { defaultConfig }) => {
 	/** @type {import('next').NextConfig} */
 	const nextConfig = withNextIntl(
 		withRoutes({
-			webpack(config) {
+			webpack(config, { isServer }) {
 				config.module.rules.push({
 					test: /\.svg$/,
 					use: ['@svgr/webpack'],
 				})
+
+				// Remove Next.js built-in polyfill-module.js for client bundles.
+				// All polyfilled features (Array.prototype.{at,flat,flatMap},
+				// Object.{fromEntries,hasOwn}, String.prototype.{trimStart,trimEnd},
+				// Symbol.prototype.description, Promise.prototype.finally) are
+				// natively supported by our browserslist targets (Chrome 93+,
+				// Edge 93+, Firefox 92+, Safari 15.4+).
+				// Saves ~11 KiB from the shared JS bundle.
+				if (!isServer) {
+					config.resolve.alias[
+						require.resolve(
+							'next/dist/build/polyfills/polyfill-module'
+						)
+					] = path.resolve(__dirname, 'src/polyfills/empty.js')
+				}
+
 				return config
 			},
 			env: {
@@ -114,8 +137,10 @@ export default (phase, { defaultConfig }) => {
 			reactStrictMode: false,
 			output: 'standalone',
 			// Re-transpile packages that ship pre-compiled legacy JavaScript
-			// (babel class transforms, Object.is polyfills, etc.) to modern targets
-			transpilePackages: ['react-transition-group'],
+			// (babel class transforms, Object.is polyfills, etc.) to modern targets.
+			// SWC re-compiles these using the project's browserslist, converting
+			// Babel class helpers to native classes and stripping dead polyfills.
+			transpilePackages: ['react-transition-group', 'notistack'],
 			experimental: {
 				serverComponentsExternalPackages: ['@react-pdf/renderer'],
 				optimizePackageImports: [

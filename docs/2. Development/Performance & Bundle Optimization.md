@@ -71,7 +71,27 @@ The following packages were removed because they had no imports in the codebase:
 - `@stripe/stripe-js`
 - `react-device-detect` (replaced with lightweight UA detection in `src/tech/device.tech.ts`)
 
-### 8. Bundle Analyzer
+### 8. Legacy JavaScript Elimination
+
+Lighthouse flagged ~29 KiB of unnecessary polyfills shipped to modern browsers. Two changes address this:
+
+**a) Removed Next.js built-in `polyfill-module.js` (~11 KiB saved)**
+
+Next.js 14 unconditionally bundles `next/dist/build/polyfills/polyfill-module.js` into every client page. This file polyfills `Array.prototype.{at,flat,flatMap}`, `Object.{fromEntries,hasOwn}`, `String.prototype.{trimStart,trimEnd}`, `Symbol.prototype.description`, and `Promise.prototype.finally`.
+
+Since our browserslist targets (Chrome 93+, Edge 93+, Firefox 92+, Safari 15.4+) natively support all of these, the polyfill is dead weight. The webpack config aliases this file to an empty module (`src/polyfills/empty.js`) for client builds only.
+
+**b) Added `notistack` to `transpilePackages`**
+
+notistack ships pre-compiled ESM with inline Babel class helpers (`_createClass`, `_defineProperties`, `_inheritsLoose`, `_extends`). Adding it to `transpilePackages` lets SWC re-compile the package using our browserslist targets, converting these to native class syntax.
+
+**Guard rails:**
+- `src/tech/__tests__/browserslist.tech.test.ts` validates that:
+  - Browserslist targets are modern enough for all polyfilled features
+  - The empty polyfill replacement file exists and contains no executable code
+  - `next.config.mjs` correctly aliases the polyfill and includes packages in `transpilePackages`
+
+### 9. Bundle Analyzer
 
 `@next/bundle-analyzer` is installed for ongoing monitoring. Use:
 
