@@ -17,10 +17,13 @@ export function FeatureFlagsProvider(props: Props) {
 		process.env.NEXT_PUBLIC_STATSIG_API_KEY,
 		{},
 		{
-			plugins: [
-				new StatsigAutoCapturePlugin(),
-				new StatsigSessionReplayPlugin(),
-			],
+			plugins:
+				typeof window !== 'undefined'
+					? [
+							new StatsigAutoCapturePlugin(),
+							new StatsigSessionReplayPlugin(),
+						]
+					: [],
 			...getEnvironmentStatsigConfig(),
 		}
 	)
