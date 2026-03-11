@@ -38,36 +38,13 @@ const THRESHOLDS = {
  * Remove entries as images are optimized - the test will then enforce the limit.
  * DO NOT add new entries here - optimize new images instead.
  */
-const KNOWN_OVERSIZED_FILES = new Set([
-	'flakes/i.png',
-	'flakes/y.png',
-	'icons/favourites-songs.png',
-	'icons/favourites-songs2.png',
-	'icons/favourites-songs3.png',
-	'icons/presentation-favicon2.png',
-	'icons/users_song_list.png',
-	'icons/users_song_list4.png',
-	'team-preview.png',
-	'team-preview2.png',
-	'logo.svg',
-])
+const KNOWN_OVERSIZED_FILES = new Set<string>([])
 
 /**
  * Known images missing WebP alternatives.
  * Remove entries as WebP versions are created.
  */
-const KNOWN_MISSING_WEBP = new Set([
-	'flakes/i.png',
-	'flakes/y.png',
-	'group-preview-old.png',
-	'icons/favourites-songs.png',
-	'icons/favourites-songs2.png',
-	'icons/favourites-songs3.png',
-	'icons/presentation-favicon2.png',
-	'icons/users_song_list.png',
-	'icons/users_song_list4.png',
-	'logo_large.png',
-])
+const KNOWN_MISSING_WEBP = new Set<string>([])
 
 const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']
 const RASTER_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif']

@@ -70,12 +70,12 @@ export default function useToolsMenuItems() {
 			},
 			{
 				title: tNavigation('toolsMenu.mySongs'),
-				image: getIconUrl('users_song_list.png'),
+				image: getIconUrl('users_song_list.webp'),
 				to: 'usersSongs',
 			},
 			{
 				title: tNavigation('toolsMenu.favourites'),
-				image: getIconUrl('favourites-songs.png'),
+				image: getIconUrl('favourites-songs.webp'),
 				to: 'usersFavourites',
 			},
 
