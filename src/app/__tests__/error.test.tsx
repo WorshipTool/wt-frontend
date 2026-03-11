@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import React from 'react'
 
 // Mock next-intl
@@ -61,7 +61,21 @@ describe('error.tsx (Next.js error page)', () => {
 		expect(screen.queryByText('Někde nastala chyba!')).not.toBeInTheDocument()
 	})
 
-	it('shows error page on second render (after auto-retry failed)', () => {
+	it('does not show error page during re-render before retry result is known', () => {
+		const reset = jest.fn()
+		const error = new Error('Transient error')
+
+		const { rerender } = render(<ErrorPage error={error} reset={reset} />)
+		expect(reset).toHaveBeenCalledTimes(1)
+
+		// Re-render with the SAME error (simulates React re-render during reset transition)
+		rerender(<ErrorPage error={error} reset={reset} />)
+
+		// Error page must NOT be visible — this was the flash bug
+		expect(screen.queryByText('Někde nastala chyba!')).not.toBeInTheDocument()
+	})
+
+	it('shows error page after auto-retry fails with a new error', () => {
 		const reset = jest.fn()
 		const error1 = new Error('Persistent error')
 
@@ -72,7 +86,9 @@ describe('error.tsx (Next.js error page)', () => {
 		// Simulate what Next.js does when the retry fails: call the error
 		// component again with a NEW error object (triggers useEffect re-run).
 		const error2 = new Error('Persistent error again')
-		rerender(<ErrorPage error={error2} reset={reset} />)
+		act(() => {
+			rerender(<ErrorPage error={error2} reset={reset} />)
+		})
 		expect(screen.getByText('Někde nastala chyba!')).toBeInTheDocument()
 	})
 
@@ -96,7 +112,9 @@ describe('error.tsx (Next.js error page)', () => {
 
 		// Second render with new error — shows error UI with button
 		const error2 = new Error('Server error again')
-		rerender(<ErrorPage error={error2} reset={reset} />)
+		act(() => {
+			rerender(<ErrorPage error={error2} reset={reset} />)
+		})
 		expect(screen.getByText('Zkusit znovu')).toBeInTheDocument()
 	})
 })

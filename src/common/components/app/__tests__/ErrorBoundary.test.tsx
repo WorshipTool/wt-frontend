@@ -51,12 +51,15 @@ describe('ErrorBoundary', () => {
 		expect(screen.queryByTestId('error-page')).not.toBeInTheDocument()
 	})
 
-	it('shows error page when a child throws', () => {
+	it('auto-retries once before showing error page for persistent errors', () => {
+		// With auto-retry, the ErrorBoundary will catch the error, retry once,
+		// and only show the error page after the retry also fails.
 		render(
 			<ErrorBoundary>
 				<ThrowingComponent shouldThrow={true} />
 			</ErrorBoundary>,
 		)
+		// After auto-retry exhausted, error page should be shown
 		expect(screen.getByTestId('error-page')).toBeInTheDocument()
 		expect(screen.getByTestId('error-message')).toHaveTextContent(
 			'Test render error',
@@ -74,6 +77,27 @@ describe('ErrorBoundary', () => {
 		)
 	})
 
+	it('recovers when a transient error resolves on retry', () => {
+		let throwCount = 0
+
+		function TransientThrowingComponent() {
+			throwCount++
+			// Throw only on the first render, succeed on retry
+			if (throwCount <= 1) throw new Error('Transient error')
+			return <div>Recovered content</div>
+		}
+
+		render(
+			<ErrorBoundary>
+				<TransientThrowingComponent />
+			</ErrorBoundary>,
+		)
+
+		// The auto-retry should succeed — children render normally
+		expect(screen.getByText('Recovered content')).toBeInTheDocument()
+		expect(screen.queryByTestId('error-page')).not.toBeInTheDocument()
+	})
+
 	it('resets the error state when reset is called', () => {
 		// Use a mutable flag so we can stop throwing before the boundary re-renders after reset
 		let shouldThrow = true
@@ -89,6 +113,7 @@ describe('ErrorBoundary', () => {
 			</ErrorBoundary>,
 		)
 
+		// After auto-retry fails, error page should be shown
 		expect(screen.getByTestId('error-page')).toBeInTheDocument()
 
 		// Stop throwing, then click reset — boundary will re-render the child without an error
