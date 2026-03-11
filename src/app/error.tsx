@@ -4,13 +4,15 @@ import { ErrorPageProps } from '@/common/types'
 import { Box, Button, Typography } from '@/common/ui'
 import { LockPerson } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 type ErrorType = 'forbidden' | 'default'
 
 export default function Error({ error, reset }: ErrorPageProps) {
 	const t = useTranslations('errors')
 	const tCommon = useTranslations('common')
+	const hasRetriedRef = useRef(false)
+
 	const errorType: ErrorType = useMemo(() => {
 		return error.message.includes('Forbidden') ? 'forbidden' : 'default'
 	}, [error])
@@ -18,7 +20,17 @@ export default function Error({ error, reset }: ErrorPageProps) {
 	useEffect(() => {
 		console.error('Error page error:', error)
 		//TODO: send report to admin
-	}, [error])
+
+		if (errorType !== 'forbidden' && !hasRetriedRef.current) {
+			hasRetriedRef.current = true
+			reset()
+		}
+	}, [error, errorType, reset])
+
+	// Auto-retry once for non-forbidden errors — render nothing during retry
+	if (errorType !== 'forbidden' && !hasRetriedRef.current) {
+		return null
+	}
 
 	return (
 		<Box
