@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import { Box, InputBase, SxProps, styled } from '@mui/material'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
-import { isMobile } from 'react-device-detect'
+import { isMobile } from '@/tech/device.tech'
 import OnChangeDelayer from '../../providers/ChangeDelayer/ChangeDelayer'
 
 const SearchContainer = styled(Box)(({ theme }) => ({

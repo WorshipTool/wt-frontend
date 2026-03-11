@@ -32,8 +32,10 @@ import {
 	QueueMusic,
 	Warning,
 } from '@mui/icons-material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import 'dayjs/locale/cs'
 import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
 import { useUserProfileImage } from '../../../../../../../../../hooks/useUserProfileImage'
@@ -248,7 +250,7 @@ export default function TeamEventPopup({
 	const leaderImage = useUserProfileImage(leader?.userGuid)
 
 	return (
-		<>
+		<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="cs">
 			<Popup
 				open={props.open}
 				onClose={onClose}
@@ -631,6 +633,6 @@ export default function TeamEventPopup({
 				</Box>
 				{!props.hideOpenPlaylistButton && <Gap />}
 			</Popup>
-		</>
+		</LocalizationProvider>
 	)
 }

@@ -1,45 +1,81 @@
 'use client'
 import { userDtoToStatsigUser } from '@/common/providers/FeatureFlags/flags.tech'
 import useAuth from '@/hooks/auth/useAuth'
-import { StatsigProvider, useClientAsyncInit } from '@statsig/react-bindings'
-import { StatsigSessionReplayPlugin } from '@statsig/session-replay'
-import { StatsigAutoCapturePlugin } from '@statsig/web-analytics'
-import { useEffect } from 'react'
+import { StatsigProvider } from '@statsig/react-bindings'
+import { StatsigClient } from '@statsig/js-client'
+import { useEffect, useRef, useState } from 'react'
 import { getEnvironmentStatsigConfig } from './flags.tech'
+
 type Props = {
 	children: React.ReactNode
 }
 
 export function FeatureFlagsProvider(props: Props) {
 	const { user } = useAuth()
+	const [isReady, setIsReady] = useState(false)
+	const clientRef = useRef<StatsigClient | null>(null)
 
-	const { client } = useClientAsyncInit(
-		process.env.NEXT_PUBLIC_STATSIG_API_KEY,
-		{},
-		{
-			plugins:
-				typeof window !== 'undefined'
-					? [
-							new StatsigAutoCapturePlugin(),
-							new StatsigSessionReplayPlugin(),
-						]
-					: [],
-			...getEnvironmentStatsigConfig(),
-		}
-	)
-
+	// Initialize Statsig client with dynamically loaded plugins
 	useEffect(() => {
+		let cancelled = false
+
+		const initClient = async () => {
+			// Dynamically import heavy plugins to keep them out of the main bundle
+			const [webAnalytics, sessionReplay] = await Promise.all([
+				import('@statsig/web-analytics'),
+				import('@statsig/session-replay'),
+			])
+
+			if (cancelled) return
+
+			const client = new StatsigClient(
+				process.env.NEXT_PUBLIC_STATSIG_API_KEY!,
+				{},
+				{
+					plugins: [
+						new webAnalytics.StatsigAutoCapturePlugin(),
+						new sessionReplay.StatsigSessionReplayPlugin(),
+					],
+					...getEnvironmentStatsigConfig(),
+				}
+			)
+
+			await client.initializeAsync()
+
+			if (cancelled) return
+
+			clientRef.current = client
+			setIsReady(true)
+		}
+
+		initClient()
+
+		return () => {
+			cancelled = true
+		}
+	}, [])
+
+	// Update user when auth changes
+	useEffect(() => {
+		if (!clientRef.current) return
+
 		if (user) {
 			const data = userDtoToStatsigUser(user)
-			client.updateUserAsync(data)
+			clientRef.current.updateUserAsync(data)
 		} else {
-			client.updateUserAsync({})
+			clientRef.current.updateUserAsync({})
 		}
-	}, [user])
+	}, [user, isReady])
+
+	if (!isReady || !clientRef.current) {
+		// Render children immediately without waiting for Statsig
+		// Feature flags will use default values until Statsig is ready
+		return <>{props.children}</>
+	}
 
 	return (
-		<>
-			<StatsigProvider client={client}>{props.children}</StatsigProvider>
-		</>
+		<StatsigProvider client={clientRef.current}>
+			{props.children}
+		</StatsigProvider>
 	)
 }

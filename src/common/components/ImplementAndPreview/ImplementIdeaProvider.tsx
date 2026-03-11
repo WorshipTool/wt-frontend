@@ -9,10 +9,16 @@ import { isPreviewMode } from '@/tech/preview/previewMode'
 import { Lightbulb } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
+import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
-import ImplementIdeaDialog from './ImplementIdeaDialog'
 import PreviewModeBanner from './PreviewModeBanner'
-import PreviewModeDialog from './PreviewModeDialog'
+
+const ImplementIdeaDialog = dynamic(() => import('./ImplementIdeaDialog'), {
+	ssr: false,
+})
+const PreviewModeDialog = dynamic(() => import('./PreviewModeDialog'), {
+	ssr: false,
+})
 
 const POLL_INTERVAL_MS = 60_000
 const INITIAL_HASH = process.env.NEXT_PUBLIC_BUILD_HASH
