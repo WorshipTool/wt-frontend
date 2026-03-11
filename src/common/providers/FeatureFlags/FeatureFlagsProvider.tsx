@@ -17,12 +17,14 @@ export function FeatureFlagsProvider(props: Props) {
 		process.env.NEXT_PUBLIC_STATSIG_API_KEY,
 		{},
 		{
+			// Type assertion needed: Statsig plugin types expect PrecomputedEvaluationsInterface
+			// but useClientAsyncInit uses StatsigClient. Plugins work correctly at runtime.
 			plugins:
 				typeof window !== 'undefined'
-					? [
+					? ([
 							new StatsigAutoCapturePlugin(),
 							new StatsigSessionReplayPlugin(),
-						]
+						] as any)
 					: [],
 			...getEnvironmentStatsigConfig(),
 		}

@@ -256,6 +256,7 @@ export function SheetPage({
 		<Page size="A4" style={styles.page}>
 			{/* Watermark */}
 			<View fixed style={styles.watermark}>
+				{/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf/renderer Image does not support alt prop */}
 				<Image src="public/assets/logo_large.png" />
 			</View>
 			{/* Title */}
