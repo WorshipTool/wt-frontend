@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 import browserslist from 'browserslist'
 
 /**
@@ -61,5 +64,71 @@ describe('browserslist configuration', () => {
 
 		const hasOpMini = browsers.some((b) => b.startsWith('op_mini'))
 		expect(hasOpMini).toBe(false)
+	})
+})
+
+describe('polyfill-module replacement', () => {
+	const emptyPolyfillPath = path.resolve(
+		process.cwd(),
+		'src/polyfills/empty.js'
+	)
+
+	it('should have an empty polyfill replacement file', () => {
+		expect(fs.existsSync(emptyPolyfillPath)).toBe(true)
+	})
+
+	it('empty polyfill file should not contain executable code', () => {
+		const content = fs.readFileSync(emptyPolyfillPath, 'utf-8')
+		// Strip comments and whitespace
+		const code = content
+			.replace(/\/\/.*$/gm, '')
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			.trim()
+		expect(code).toBe('')
+	})
+
+	it('Next.js polyfill-module.js should still exist (to be aliased away)', () => {
+		const nextPolyfill = require.resolve(
+			'next/dist/build/polyfills/polyfill-module'
+		)
+		expect(fs.existsSync(nextPolyfill)).toBe(true)
+	})
+})
+
+describe('next.config.mjs legacy JS mitigation', () => {
+	const configPath = path.resolve(process.cwd(), 'next.config.mjs')
+	let configContent: string
+
+	beforeAll(() => {
+		configContent = fs.readFileSync(configPath, 'utf-8')
+	})
+
+	it('should alias polyfill-module to empty file for client bundles', () => {
+		expect(configContent).toContain(
+			'next/dist/build/polyfills/polyfill-module'
+		)
+		expect(configContent).toContain('src/polyfills/empty.js')
+	})
+
+	it('should only apply polyfill alias on client builds (!isServer)', () => {
+		expect(configContent).toContain('if (!isServer)')
+	})
+
+	it('should include notistack in transpilePackages', () => {
+		expect(configContent).toContain("'notistack'")
+		// Verify it's in the transpilePackages array specifically
+		const transpileMatch = configContent.match(
+			/transpilePackages:\s*\[([^\]]+)\]/
+		)
+		expect(transpileMatch).not.toBeNull()
+		expect(transpileMatch![1]).toContain('notistack')
+	})
+
+	it('should include react-transition-group in transpilePackages', () => {
+		const transpileMatch = configContent.match(
+			/transpilePackages:\s*\[([^\]]+)\]/
+		)
+		expect(transpileMatch).not.toBeNull()
+		expect(transpileMatch![1]).toContain('react-transition-group')
 	})
 })
