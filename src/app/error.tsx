@@ -4,14 +4,30 @@ import { ErrorPageProps } from '@/common/types'
 import { Box, Button, Typography } from '@/common/ui'
 import { LockPerson } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type ErrorType = 'forbidden' | 'default'
+
+/**
+ * Module-level Set tracking errors that have already been auto-retried.
+ * Unlike useRef, this persists across component remounts (which happen when
+ * Next.js error boundary catches a recurring error after reset()), preventing
+ * infinite auto-retry loops.
+ */
+const retriedErrors = new Set<string>()
+
+function getErrorKey(error: Error & { digest?: number }): string {
+	return String(error.digest ?? '') || error.message || 'unknown'
+}
+
+/** Visible for testing – allows tests to clear module-level retry state. */
+export function clearRetriedErrors() {
+	retriedErrors.clear()
+}
 
 export default function Error({ error, reset }: ErrorPageProps) {
 	const t = useTranslations('errors')
 	const tCommon = useTranslations('common')
-	const hasRetriedRef = useRef(false)
 	const [showError, setShowError] = useState(false)
 
 	const errorType: ErrorType = useMemo(() => {
@@ -22,17 +38,33 @@ export default function Error({ error, reset }: ErrorPageProps) {
 		console.error('Error page error:', error)
 		//TODO: send report to admin
 
-		if (errorType !== 'forbidden' && !hasRetriedRef.current) {
-			hasRetriedRef.current = true
+		if (errorType === 'forbidden') return
+
+		const errorKey = getErrorKey(error)
+
+		// First encounter with this error — attempt automatic recovery
+		if (!retriedErrors.has(errorKey)) {
+			retriedErrors.add(errorKey)
 			reset()
-			return
 		}
 
-		// Retry already happened but error persists — show the error page
-		if (errorType !== 'forbidden' && hasRetriedRef.current) {
+		// Delay showing the error UI to give reset() time to resolve.
+		// If reset() succeeds the component unmounts and the timer is cleaned up.
+		// This also prevents React strict mode's double effect invocation from
+		// causing a brief flash of the error page during successful recovery.
+		const timer = setTimeout(() => {
 			setShowError(true)
-		}
+		}, 500)
+
+		return () => clearTimeout(timer)
 	}, [error, errorType, reset])
+
+	const handleReset = useCallback(() => {
+		// Allow this error to be auto-retried again
+		retriedErrors.delete(getErrorKey(error))
+		setShowError(false)
+		reset()
+	}, [error, reset])
 
 	// Forbidden errors show immediately
 	if (errorType === 'forbidden') {
@@ -62,8 +94,8 @@ export default function Error({ error, reset }: ErrorPageProps) {
 	}
 
 	// Non-forbidden errors: render nothing until retry is confirmed failed.
-	// Using state (not just ref) prevents the brief flash of error content
-	// that occurs when React re-renders the component during the reset() transition.
+	// The setTimeout in useEffect prevents flash during successful recovery
+	// and handles React strict mode's double effect invocation.
 	if (!showError) {
 		return null
 	}
@@ -84,7 +116,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
 			<Typography align="center" variant="h3">
 				{t('serverError')}
 			</Typography>
-			<Button onClick={reset}>{tCommon('tryAgain')}</Button>
+			<Button onClick={handleReset}>{tCommon('tryAgain')}</Button>
 		</Box>
 	)
 }
