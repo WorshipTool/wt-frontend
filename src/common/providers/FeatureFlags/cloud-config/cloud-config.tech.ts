@@ -1,6 +1,9 @@
 import { CloudConfigs } from '@/common/providers/FeatureFlags/cloud-config/cloud-config.types'
 import { userDtoToStatsigUser } from '@/common/providers/FeatureFlags/flags.tech'
-import { ensureStatsigInitialized } from '@/common/providers/FeatureFlags/statsig/statsig.config'
+import {
+	ensureStatsigInitialized,
+	isStatsigInitialized,
+} from '@/common/providers/FeatureFlags/statsig/statsig.config'
 import { UserDto } from '@/interfaces/user'
 import Statsig from 'statsig-node'
 
@@ -15,9 +18,20 @@ export const getCloudConfig = async <
 ): Promise<CloudConfigs[T][R]> => {
 	await ensureStatsigInitialized()
 
-	const config = Statsig.getConfig(userDtoToStatsigUser(user), configName)
+	if (!isStatsigInitialized()) {
+		return defaultValue
+	}
 
-	const value =
-		(config.value[key as string] as CloudConfigs[T][R]) ?? defaultValue
-	return value
+	try {
+		const config = Statsig.getConfig(
+			userDtoToStatsigUser(user),
+			configName
+		)
+
+		const value =
+			(config.value[key as string] as CloudConfigs[T][R]) ?? defaultValue
+		return value
+	} catch {
+		return defaultValue
+	}
 }
