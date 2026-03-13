@@ -34,6 +34,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build PR image (with Next.js build-time env)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           PR=${{ github.event.pull_request.number }}
           docker build \
@@ -41,10 +43,9 @@ jobs:
             --build-arg NEXT_PUBLIC_FRONTEND_HOSTNAME="preview.chvalotce.cz" \
             --build-arg NEXT_PUBLIC_PREVIEW_MODE="true" \
             --build-arg NEXT_PUBLIC_PREVIEW_PR_NUMBER="${PR}" \
-            --build-arg NEXT_PUBLIC_PREVIEW_PR_TITLE="${{ github.event.pull_request.title }}" \
+            --build-arg NEXT_PUBLIC_PREVIEW_PR_TITLE="${PR_TITLE}" \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:pr-${PR} \
             .
-
       - name: Push PR image
         run: |
           PR=${{ github.event.pull_request.number }}
