@@ -1,4 +1,7 @@
-import { CloudConfigs } from '@/common/providers/FeatureFlags/cloud-config/cloud-config.types'
+import {
+	CloudConfigs,
+	cloudConfigsNames,
+} from '@/common/providers/FeatureFlags/cloud-config/cloud-config.types'
 import { userDtoToStatsigUser } from '@/common/providers/FeatureFlags/flags.tech'
 import {
 	ensureStatsigInitialized,
@@ -25,7 +28,7 @@ export const getCloudConfig = async <
 	try {
 		const config = Statsig.getConfig(
 			userDtoToStatsigUser(user),
-			configName
+			cloudConfigsNames[configName]
 		)
 
 		const value =

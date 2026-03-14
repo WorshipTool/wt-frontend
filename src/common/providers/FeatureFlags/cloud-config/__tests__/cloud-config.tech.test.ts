@@ -52,6 +52,31 @@ describe('getCloudConfig', () => {
 		expect(result).toBe(false)
 	})
 
+	it('passes mapped Statsig config name instead of TypeScript key', async () => {
+		mockEnsureInitialized.mockResolvedValue(undefined)
+		mockIsInitialized.mockReturnValue(true)
+		mockGetConfig.mockReturnValue({
+			value: { SHOW_LOADING_SCREEN: false },
+		})
+
+		await getCloudConfig('basic', 'SHOW_LOADING_SCREEN', true)
+		expect(mockGetConfig).toHaveBeenCalledWith(
+			{ userID: 'anonymous' },
+			'basic_config'
+		)
+
+		mockGetConfig.mockClear()
+		mockGetConfig.mockReturnValue({
+			value: { SHOW_FINANCIAL_SUPPORT_CARD: true },
+		})
+
+		await getCloudConfig('songPage', 'SHOW_FINANCIAL_SUPPORT_CARD', false)
+		expect(mockGetConfig).toHaveBeenCalledWith(
+			{ userID: 'anonymous' },
+			'songpage_config'
+		)
+	})
+
 	it('returns defaultValue when Statsig is not initialized', async () => {
 		mockEnsureInitialized.mockResolvedValue(undefined)
 		mockIsInitialized.mockReturnValue(false)
