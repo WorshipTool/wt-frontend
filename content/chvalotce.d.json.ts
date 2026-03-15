@@ -943,7 +943,7 @@ declare const messages: {
 		"notFound": "Stránka nenalezena",
 		"notFoundDescription": "Zdá se, že jste se dostali do neprozkouraných oblastí aplikace. Můžete zkusit jít zpět na hlavní stránku.",
 		"goHome": "DOMŮ",
-		"serverError": "Někde nastala chyba!",
+		"serverError": "Někde nastala neznámá chyba!",
 		"unauthorized": "Neautorizovaný přístup",
 		"tokenExpired": "Token vypršel"
 	},
