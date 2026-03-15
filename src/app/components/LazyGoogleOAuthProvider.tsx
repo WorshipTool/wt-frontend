@@ -1,6 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const GoogleOAuthProviderLazy = dynamic(
 	() =>
@@ -18,7 +18,10 @@ const GoogleOAuthProviderLazy = dynamic(
 				)
 			}
 		}),
-	{ ssr: false }
+	{
+		ssr: false,
+		loading: () => null,
+	}
 )
 
 export default function LazyGoogleOAuthProvider({
@@ -26,5 +29,9 @@ export default function LazyGoogleOAuthProvider({
 }: {
 	children: React.ReactNode
 }) {
-	return <GoogleOAuthProviderLazy>{children}</GoogleOAuthProviderLazy>
+	return (
+		<Suspense fallback={null}>
+			<GoogleOAuthProviderLazy>{children}</GoogleOAuthProviderLazy>
+		</Suspense>
+	)
 }
