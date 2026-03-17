@@ -1,26 +1,36 @@
 'use client'
 import { userDtoToStatsigUser } from '@/common/providers/FeatureFlags/flags.tech'
 import useAuth from '@/hooks/auth/useAuth'
-import { StatsigProvider } from '@statsig/react-bindings'
 import { StatsigClient } from '@statsig/js-client'
-import { useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { getEnvironmentStatsigConfig } from './flags.tech'
 
 type Props = {
 	children: React.ReactNode
 }
 
+// Custom context instead of @statsig/react-bindings StatsigProvider.
+// A plain React context never changes the tree structure, preventing
+// hydration mismatches and child remounts that StatsigProvider caused.
+const FeatureFlagsContext = createContext<StatsigClient | null>(null)
+
+export function useStatsigClient(): StatsigClient | null {
+	return useContext(FeatureFlagsContext)
+}
+
 export function FeatureFlagsProvider(props: Props) {
 	const { user } = useAuth()
-	const [isReady, setIsReady] = useState(false)
-	const clientRef = useRef<StatsigClient | null>(null)
+	const [client, setClient] = useState<StatsigClient | null>(null)
+
+	// Force re-render when Statsig values update (e.g. after user change)
+	// so that consumer hooks re-evaluate against the new data.
+	const [, forceUpdate] = useState(0)
 
 	// Initialize Statsig client with dynamically loaded plugins
 	useEffect(() => {
 		let cancelled = false
 
 		const initClient = async () => {
-			// Dynamically import heavy plugins to keep them out of the main bundle
 			const [webAnalytics, sessionReplay] = await Promise.all([
 				import('@statsig/web-analytics'),
 				import('@statsig/session-replay'),
@@ -28,7 +38,7 @@ export function FeatureFlagsProvider(props: Props) {
 
 			if (cancelled) return
 
-			const client = new StatsigClient(
+			const instance = new StatsigClient(
 				process.env.NEXT_PUBLIC_STATSIG_API_KEY!,
 				{},
 				{
@@ -37,15 +47,14 @@ export function FeatureFlagsProvider(props: Props) {
 						new sessionReplay.StatsigSessionReplayPlugin(),
 					],
 					...getEnvironmentStatsigConfig(),
-				}
+				},
 			)
 
-			await client.initializeAsync()
+			await instance.initializeAsync()
 
 			if (cancelled) return
 
-			clientRef.current = client
-			setIsReady(true)
+			setClient(instance)
 		}
 
 		initClient()
@@ -55,27 +64,37 @@ export function FeatureFlagsProvider(props: Props) {
 		}
 	}, [])
 
-	// Update user when auth changes
+	// Subscribe to value updates and clean up on unmount
 	useEffect(() => {
-		if (!clientRef.current) return
+		if (!client) return
+
+		const onValuesUpdated = () => forceUpdate((v) => v + 1)
+		client.$on('values_updated', onValuesUpdated)
+
+		return () => {
+			client.off('values_updated', onValuesUpdated)
+			client.flush().catch(() => {})
+		}
+	}, [client])
+
+	// Update Statsig user when auth changes
+	const updateUser = useCallback(() => {
+		if (!client) return
 
 		if (user) {
-			const data = userDtoToStatsigUser(user)
-			clientRef.current.updateUserAsync(data)
+			client.updateUserAsync(userDtoToStatsigUser(user))
 		} else {
-			clientRef.current.updateUserAsync({})
+			client.updateUserAsync({})
 		}
-	}, [user, isReady])
+	}, [client, user])
 
-	if (!isReady || !clientRef.current) {
-		// Render children immediately without waiting for Statsig
-		// Feature flags will use default values until Statsig is ready
-		return <>{props.children}</>
-	}
+	useEffect(updateUser, [updateUser])
 
+	// Tree structure is always: FeatureFlagsContext.Provider > children
+	// Never changes — no remounts, no hydration issues.
 	return (
-		<StatsigProvider client={clientRef.current}>
+		<FeatureFlagsContext.Provider value={client}>
 			{props.children}
-		</StatsigProvider>
+		</FeatureFlagsContext.Provider>
 	)
 }
