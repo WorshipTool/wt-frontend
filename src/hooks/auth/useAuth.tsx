@@ -2,6 +2,10 @@
 
 import { CredentialResponse, useGoogleOneTapLogin } from '@react-oauth/google'
 // import Cookies from 'js-cookie'
+import {
+	GoogleOAuthScope,
+	useGoogleOAuthReady,
+} from '@/app/components/LazyGoogleOAuthProvider'
 import { getApiClass } from '@/api/tech-and-hooks/api-classes'
 import { AUTH_COOKIE_NAME } from '@/hooks/auth/auth.constants'
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
@@ -43,12 +47,48 @@ export const authContext = createContext<ReturnType<typeof useProvideAuth>>({
 	changePassword: async (oldPassword: string, newPassword: string) => {},
 	resetPassword: async (resetToken: string, newPassword: string) => {},
 	sendResetLink: async (email: string) => {},
+	googleOAuthReady: false,
 })
+
+/**
+ * Separate component that conditionally uses useGoogleOneTapLogin.
+ * Only mounted when GoogleOAuthProvider is ready, preventing the
+ * "must be used within GoogleOAuthProvider" error during SSR/lazy loading.
+ */
+function GoogleOneTapLoginHandler() {
+	const { loginWithGoogle, isLoggedIn } = useAuth()
+	const pathname = useClientPathname()
+	const navigate = useSmartNavigate()
+
+	const goToHomeIfNeeded = () => {
+		const loginPage = urlMatchPatterns(pathname, routesPaths.login)
+		const signupPage = urlMatchPatterns(pathname, routesPaths.signup)
+		if (loginPage || signupPage) navigate('home', { hledat: undefined })
+	}
+
+	useGoogleOneTapLogin({
+		disabled: isLoggedIn(),
+		onSuccess: (credentialResponse: CredentialResponse) => {
+			loginWithGoogle(credentialResponse, goToHomeIfNeeded)
+		},
+	})
+
+	return null
+}
 
 export const AuthProvider = ({ children }: { children: any }) => {
 	const auth = useProvideAuth()
 
-	return <authContext.Provider value={auth}>{children}</authContext.Provider>
+	return (
+		<authContext.Provider value={auth}>
+			{auth.googleOAuthReady && !isDevelopment && (
+				<GoogleOAuthScope>
+					<GoogleOneTapLoginHandler />
+				</GoogleOAuthScope>
+			)}
+			{children}
+		</authContext.Provider>
+	)
 }
 
 export default function useAuth() {
@@ -65,11 +105,16 @@ export function useProvideAuth() {
 		})
 	}
 	const _getCookie = (): UserDto | undefined => {
-		const value = cookies.get(AUTH_COOKIE_NAME)
-		if (value) {
-			return JSON.parse(value)
+		try {
+			const value = cookies.get(AUTH_COOKIE_NAME)
+			if (value) {
+				return JSON.parse(value)
+			}
+			return undefined
+		} catch (e) {
+			console.error('[AuthProvider] Failed to parse auth cookie:', e)
+			return undefined
 		}
-		return undefined
 	}
 	const _emptyCookie = () => {
 		const hostname = process.env.NEXT_PUBLIC_FRONTEND_HOSTNAME || ''
@@ -102,29 +147,7 @@ export function useProvideAuth() {
 		[token],
 	)
 
-	const pathname = useClientPathname()
-	const navigate = useSmartNavigate()
-	const goToHomeIfNeededGoogle = () => {
-		// If its on login, or signup page, redirect to home
-		const loginPage = urlMatchPatterns(pathname, routesPaths.login)
-		const signupPage = urlMatchPatterns(pathname, routesPaths.signup)
-		if (loginPage || signupPage) navigate('home', { hledat: undefined })
-	}
-
-	// If not logged in, enable Google login
-	const [googleShouldLogin, setGoogleShouldLogin] = useState<boolean>(false)
-	useGoogleOneTapLogin({
-		disabled: !googleShouldLogin,
-		onSuccess: (credentialResponse: CredentialResponse) => {
-			loginWithGoogle(credentialResponse, goToHomeIfNeededGoogle)
-		},
-	})
-	useEffect(() => {
-		if (isDevelopment) return
-		if (!_getCookie()) {
-			setGoogleShouldLogin(true)
-		}
-	}, [])
+	const googleOAuthReady = useGoogleOAuthReady()
 
 	// Snackbar
 	const { enqueueSnackbar } = useSnackbar()
@@ -287,5 +310,6 @@ export function useProvideAuth() {
 		changePassword,
 		resetPassword,
 		sendResetLink,
+		googleOAuthReady,
 	}
 }
