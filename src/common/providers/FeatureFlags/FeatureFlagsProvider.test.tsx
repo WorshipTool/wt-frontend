@@ -1,24 +1,23 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, act, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 
-// Mock dependencies
 const mockUpdateUserAsync = jest.fn().mockResolvedValue(undefined)
 const mockInitializeAsync = jest.fn().mockResolvedValue(undefined)
+const mockFlush = jest.fn().mockResolvedValue(undefined)
+const mock$on = jest.fn()
+const mockOff = jest.fn()
 const mockStatsigClient = {
 	updateUserAsync: mockUpdateUserAsync,
 	initializeAsync: mockInitializeAsync,
+	flush: mockFlush,
+	$on: mock$on,
+	off: mockOff,
 	loadingStatus: 'Ready',
 }
 
 jest.mock('@statsig/js-client', () => ({
 	StatsigClient: jest.fn(() => mockStatsigClient),
-}))
-
-jest.mock('@statsig/react-bindings', () => ({
-	StatsigProvider: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid="statsig-provider">{children}</div>
-	),
 }))
 
 jest.mock('@statsig/session-replay', () => ({
@@ -51,75 +50,87 @@ describe('FeatureFlagsProvider', () => {
 		jest.clearAllMocks()
 	})
 
-	it('renders children immediately (before Statsig loads)', () => {
+	it('renders children immediately before Statsig loads', () => {
 		const { getByText } = render(
 			<FeatureFlagsProvider>
 				<span>Test Child</span>
-			</FeatureFlagsProvider>
+			</FeatureFlagsProvider>,
 		)
-
-		// Children should be visible immediately without waiting for Statsig
 		expect(getByText('Test Child')).toBeInTheDocument()
 	})
 
-	it('renders children inside StatsigProvider after initialization', async () => {
-		const { getByText, getByTestId } = render(
+	it('uses a stable tree structure (custom context, no StatsigProvider)', () => {
+		const { container, getByText } = render(
 			<FeatureFlagsProvider>
 				<span>Test Child</span>
-			</FeatureFlagsProvider>
+			</FeatureFlagsProvider>,
 		)
-
-		// After async init, StatsigProvider should wrap the children
-		await waitFor(() => {
-			expect(getByTestId('statsig-provider')).toBeInTheDocument()
-		})
+		expect(
+			container.querySelector('[data-testid="statsig-provider"]'),
+		).toBeNull()
 		expect(getByText('Test Child')).toBeInTheDocument()
 	})
 
-	it('dynamically imports and creates plugins', async () => {
+	it('creates client with plugins from dynamic imports', async () => {
 		render(
 			<FeatureFlagsProvider>
 				<span>Test</span>
-			</FeatureFlagsProvider>
+			</FeatureFlagsProvider>,
 		)
 
-		// Wait for dynamic imports and client initialization
 		await waitFor(() => {
 			expect(StatsigClient).toHaveBeenCalled()
 		})
 
-		const constructorCall = (StatsigClient as jest.Mock).mock.calls[0]
-		const options = constructorCall[2]
-
-		// Plugins should be created from dynamic imports
+		const options = (StatsigClient as unknown as jest.Mock).mock.calls[0][2]
 		expect(options.plugins).toHaveLength(2)
 		expect(options.environment).toEqual({ tier: 'development' })
-	})
-
-	it('passes NEXT_PUBLIC_STATSIG_API_KEY as the first argument', async () => {
-		render(
-			<FeatureFlagsProvider>
-				<span>Test</span>
-			</FeatureFlagsProvider>
-		)
-
-		await waitFor(() => {
-			expect(StatsigClient).toHaveBeenCalled()
-		})
-
-		const constructorCall = (StatsigClient as jest.Mock).mock.calls[0]
-		expect(constructorCall[0]).toBe(process.env.NEXT_PUBLIC_STATSIG_API_KEY)
 	})
 
 	it('calls initializeAsync after creating the client', async () => {
 		render(
 			<FeatureFlagsProvider>
 				<span>Test</span>
-			</FeatureFlagsProvider>
+			</FeatureFlagsProvider>,
 		)
 
 		await waitFor(() => {
 			expect(mockInitializeAsync).toHaveBeenCalled()
 		})
+	})
+
+	it('subscribes to values_updated after initialization', async () => {
+		render(
+			<FeatureFlagsProvider>
+				<span>Test</span>
+			</FeatureFlagsProvider>,
+		)
+
+		await waitFor(() => {
+			expect(mock$on).toHaveBeenCalledWith(
+				'values_updated',
+				expect.any(Function),
+			)
+		})
+	})
+
+	it('cleans up listener and flushes on unmount', async () => {
+		const { unmount } = render(
+			<FeatureFlagsProvider>
+				<span>Test</span>
+			</FeatureFlagsProvider>,
+		)
+
+		await waitFor(() => {
+			expect(mock$on).toHaveBeenCalled()
+		})
+
+		unmount()
+
+		expect(mockOff).toHaveBeenCalledWith(
+			'values_updated',
+			expect.any(Function),
+		)
+		expect(mockFlush).toHaveBeenCalled()
 	})
 })

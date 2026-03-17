@@ -13,11 +13,16 @@ export const getCloudConfig = async <
 	defaultValue: CloudConfigs[T][R],
 	user?: UserDto
 ): Promise<CloudConfigs[T][R]> => {
-	await ensureStatsigInitialized()
+	try {
+		await ensureStatsigInitialized()
 
-	const config = Statsig.getConfig(userDtoToStatsigUser(user), configName)
+		const config = Statsig.getConfig(userDtoToStatsigUser(user), configName)
 
-	const value =
-		(config.value[key as string] as CloudConfigs[T][R]) ?? defaultValue
-	return value
+		const value =
+			(config.value[key as string] as CloudConfigs[T][R]) ?? defaultValue
+		return value
+	} catch (error) {
+		console.error('[getCloudConfig] Failed to fetch cloud config, using default value:', error)
+		return defaultValue
+	}
 }

@@ -52,7 +52,7 @@ const getFlagWithCache = (key: FeatureFlag, user?: UserDto): boolean | null => {
 const saveFlagToCache = (
 	key: FeatureFlag,
 	value: boolean,
-	user?: UserDto
+	user?: UserDto,
 ): void => {
 	const cacheKey = `${key}-${user?.guid || 'global'}`
 	cache[cacheKey] = {
@@ -70,7 +70,7 @@ type CheckFlagOptions = {
  */
 export const checkFlag = async (
 	key: FeatureFlag,
-	user?: UserDto
+	user?: UserDto,
 ): Promise<boolean> => {
 	await ensureStatsigInitialized()
 
