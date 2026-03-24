@@ -87,6 +87,18 @@ jest.mock('../components/FloatingAddButton', () => {
 	}
 })
 
+jest.mock('../components/LandingFeaturesSection/LandingFeaturesSection', () => {
+	return function MockLandingFeaturesSection() {
+		return <div data-testid="landing-features-section" />
+	}
+})
+
+jest.mock('../components/LandingAboutTeaser/LandingAboutTeaser', () => {
+	return function MockLandingAboutTeaser() {
+		return <div data-testid="landing-about-teaser" />
+	}
+})
+
 jest.mock('../components/SearchedSongsList', () => {
 	return function MockSearchedSongsList() {
 		return <div data-testid="searched-songs" />

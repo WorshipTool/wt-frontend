@@ -19,6 +19,8 @@ import ContainerGrid, {
 	containerMaxWidth,
 } from '../../common/components/ContainerGrid'
 import FloatingAddButton from './components/FloatingAddButton'
+import LandingAboutTeaser from './components/LandingAboutTeaser/LandingAboutTeaser'
+import LandingFeaturesSection from './components/LandingFeaturesSection/LandingFeaturesSection'
 import SearchedSongsList from './components/SearchedSongsList'
 
 export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
@@ -565,6 +567,8 @@ export default function HomeDesktop() {
 						/>
 					)}
 					<RecommendedSongsList />
+					<LandingFeaturesSection />
+					<LandingAboutTeaser />
 					{isMobile && (
 						<Box
 							sx={{
