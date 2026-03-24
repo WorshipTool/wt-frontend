@@ -105,6 +105,12 @@ jest.mock('../components/SearchedSongsList', () => {
 	}
 })
 
+jest.mock('../components/GlitchText', () => {
+	return function MockGlitchText({ children }: any) {
+		return <span data-testid="glitch-text">{children}</span>
+	}
+})
+
 jest.mock('../../(layout)/vytvorit/components/ParseAdminOption', () => {
 	return function MockParseAdminOption() {
 		return <div data-testid="parse-admin-option" />

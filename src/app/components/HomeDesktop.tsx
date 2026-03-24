@@ -19,6 +19,7 @@ import ContainerGrid, {
 	containerMaxWidth,
 } from '../../common/components/ContainerGrid'
 import FloatingAddButton from './components/FloatingAddButton'
+import GlitchText from './components/GlitchText'
 import LandingAboutTeaser from './components/LandingAboutTeaser/LandingAboutTeaser'
 import LandingFeaturesSection from './components/LandingFeaturesSection/LandingFeaturesSection'
 import SearchedSongsList from './components/SearchedSongsList'
@@ -27,46 +28,48 @@ export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 
 const ANIMATION_DURATION = 0.25
 
-// Staggered entrance variants for hero text - bolder with more movement
+// Staggered entrance variants - cyberpunk style with dramatic entrance
 const heroContainerVariants = {
 	hidden: {},
 	visible: {
 		transition: {
-			staggerChildren: 0.12,
-			delayChildren: 0.15,
+			staggerChildren: 0.15,
+			delayChildren: 0.2,
 		},
 	},
 }
 
 const heroItemVariants = {
-	hidden: { opacity: 0, y: 24, scale: 0.96 },
+	hidden: { opacity: 0, y: 40, scale: 0.9, filter: 'blur(8px)' },
 	visible: {
 		opacity: 1,
 		y: 0,
 		scale: 1,
+		filter: 'blur(0px)',
 		transition: {
-			duration: 0.6,
+			duration: 0.8,
 			ease: [0.16, 1, 0.3, 1],
 		},
 	},
 }
 
 const searchInputVariants = {
-	hidden: { opacity: 0, y: 28, scale: 0.95 },
+	hidden: { opacity: 0, y: 40, scale: 0.9, filter: 'blur(8px)' },
 	visible: {
 		opacity: 1,
 		y: 0,
 		scale: 1,
+		filter: 'blur(0px)',
 		transition: {
-			duration: 0.7,
+			duration: 0.9,
 			ease: [0.16, 1, 0.3, 1],
-			delay: 0.45,
+			delay: 0.6,
 		},
 	},
 }
 
-// Animated background orb component
-function HeroBackgroundOrbs({ visible }: { visible: boolean }) {
+// Animated neon orbs for cyberpunk background
+function CyberOrbs({ visible }: { visible: boolean }) {
 	return (
 		<Box
 			sx={{
@@ -79,62 +82,81 @@ function HeroBackgroundOrbs({ visible }: { visible: boolean }) {
 				pointerEvents: 'none',
 			}}
 		>
-			{/* Large blue orb - top left */}
+			{/* Cyan orb - top left */}
 			<Box
 				sx={{
 					position: 'absolute',
-					top: '5%',
-					left: '-5%',
+					top: '0%',
+					left: '-10%',
 					width: 'min(600px, 55vw)',
 					height: 'min(600px, 55vw)',
 					borderRadius: '50%',
-					background: 'radial-gradient(circle, rgba(0, 133, 255, 0.35) 0%, rgba(0, 133, 255, 0) 70%)',
-					animation: 'landing-float-slow 18s ease-in-out infinite',
-					animationDelay: '0s',
+					background: 'radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, rgba(0, 229, 255, 0) 70%)',
+					animation: 'landing-float-slow 18s ease-in-out infinite, landing-pulse-glow 4s ease-in-out infinite',
 				}}
 			/>
 			{/* Purple orb - center right */}
 			<Box
 				sx={{
 					position: 'absolute',
-					top: '15%',
+					top: '10%',
 					right: '-8%',
 					width: 'min(550px, 50vw)',
 					height: 'min(550px, 50vw)',
 					borderRadius: '50%',
-					background: 'radial-gradient(circle, rgba(124, 58, 237, 0.30) 0%, rgba(124, 58, 237, 0) 70%)',
+					background: 'radial-gradient(circle, rgba(123, 47, 255, 0.30) 0%, rgba(123, 47, 255, 0) 70%)',
 					animation: 'landing-float-medium 22s ease-in-out infinite',
 					animationDelay: '-4s',
 				}}
 			/>
-			{/* Pink accent orb - bottom center */}
+			{/* Magenta orb - bottom */}
 			<Box
 				sx={{
 					position: 'absolute',
-					bottom: '10%',
-					left: '30%',
-					width: 'min(400px, 40vw)',
-					height: 'min(400px, 40vw)',
+					bottom: '5%',
+					left: '25%',
+					width: 'min(450px, 45vw)',
+					height: 'min(450px, 45vw)',
 					borderRadius: '50%',
-					background: 'radial-gradient(circle, rgba(236, 72, 153, 0.20) 0%, rgba(236, 72, 153, 0) 70%)',
-					animation: 'landing-float-slow 25s ease-in-out infinite',
+					background: 'radial-gradient(circle, rgba(255, 0, 229, 0.18) 0%, rgba(255, 0, 229, 0) 70%)',
+					animation: 'landing-float-slow 25s ease-in-out infinite, wave-warp 12s ease-in-out infinite',
 					animationDelay: '-8s',
 				}}
 			/>
-			{/* Small bright accent - golden */}
+			{/* Green accent - small */}
 			<Box
 				sx={{
 					position: 'absolute',
-					top: '40%',
-					left: '55%',
-					width: 'min(300px, 30vw)',
-					height: 'min(300px, 30vw)',
+					top: '45%',
+					left: '60%',
+					width: 'min(200px, 20vw)',
+					height: 'min(200px, 20vw)',
 					borderRadius: '50%',
-					background: 'radial-gradient(circle, rgba(235, 188, 30, 0.15) 0%, rgba(235, 188, 30, 0) 70%)',
-					animation: 'landing-float-medium 20s ease-in-out infinite',
-					animationDelay: '-12s',
+					background: 'radial-gradient(circle, rgba(57, 255, 20, 0.12) 0%, rgba(57, 255, 20, 0) 70%)',
+					animation: 'landing-float-medium 15s ease-in-out infinite',
+					animationDelay: '-6s',
 				}}
 			/>
+			{/* Floating particles */}
+			{[...Array(6)].map((_, i) => (
+				<Box
+					key={i}
+					sx={{
+						position: 'absolute',
+						bottom: '-5%',
+						left: `${15 + i * 14}%`,
+						width: '2px',
+						height: '2px',
+						borderRadius: '50%',
+						background: i % 2 === 0 ? '#00e5ff' : '#ff00e5',
+						boxShadow: i % 2 === 0
+							? '0 0 6px #00e5ff, 0 0 12px #00e5ff'
+							: '0 0 6px #ff00e5, 0 0 12px #ff00e5',
+						animation: `particle-drift ${8 + i * 2}s linear infinite`,
+						animationDelay: `${i * -1.5}s`,
+					}}
+				/>
+			))}
 		</Box>
 	)
 }
@@ -147,7 +169,6 @@ export default function HomeDesktop() {
 
 	const scrollPointRef = useRef(null)
 
-	// Manage search input, and url state with delay
 	const [searchString, setSearchString] = useUrlState('hledat')
 	const [searchInputValue, setSearchInputValue] = useState(searchString || '')
 
@@ -173,14 +194,12 @@ export default function HomeDesktop() {
 		const handler = () => {
 			setSearchInputValue('')
 		}
-
 		window.addEventListener(RESET_HOME_SCREEN_EVENT_NAME, handler)
 		return () => {
 			window.removeEventListener(RESET_HOME_SCREEN_EVENT_NAME, handler)
 		}
 	}, [])
 
-	// Manage scrolling to search results
 	const scrollLevel = 20
 	const scrollToTop = useCallback(() => {
 		window.scroll({
@@ -194,7 +213,6 @@ export default function HomeDesktop() {
 		scrollToTop()
 	}, [searchString])
 
-	// Manage toolbar and footer
 	const { isTop } = useScrollHandler({
 		topThreshold: scrollLevel,
 	})
@@ -212,7 +230,6 @@ export default function HomeDesktop() {
 		footer.setShow(false)
 	}, [footer])
 
-	// Calculate inner height of the window
 	const [innerHeight, setInnerHeight] = useState(
 		typeof window !== 'undefined' ? window.innerHeight : 500
 	)
@@ -238,10 +255,11 @@ export default function HomeDesktop() {
 	const heroTitle = tHome('hero.title')
 	const heroSubtitle = tHome('hero.subtitle')
 	const heroSubtitleLower = tHome('hero.subtitleLower')
+
 	return (
 		<>
-			{/* Animated gradient orb background */}
-			<HeroBackgroundOrbs visible={!isMobile} />
+			{/* Cyberpunk animated background */}
+			<CyberOrbs visible={!isMobile} />
 
 			<Box
 				sx={{
@@ -270,7 +288,6 @@ export default function HomeDesktop() {
 							: isTop
 							? '64px'
 							: 'calc( 64px - 64px)',
-
 						left: !phoneVersion ? paddingX : theme.spacing(1),
 						right: !phoneVersion ? paddingX : theme.spacing(1),
 					}}
@@ -282,7 +299,6 @@ export default function HomeDesktop() {
 							: isTop
 							? '64px'
 							: 'calc( 64px - 64px)',
-
 						left: !phoneVersion
 							? isTop
 								? paddingX
@@ -358,31 +374,32 @@ export default function HomeDesktop() {
 																	variant="h3"
 																	strong={300}
 																	sx={{
-																		color: theme.palette.grey[500],
-																		letterSpacing: '0.04em',
+																		color: '#4a4a6a',
+																		letterSpacing: '0.12em',
+																		textTransform: 'uppercase',
+																		fontFamily: 'var(--font-orbitron)',
 																	}}
 																>
 																	{heroLead}
 																</Typography>
 															</motion.div>
 															<motion.div variants={heroItemVariants}>
-																<Typography
-																	variant="h1"
-																	strong={900}
-																	noWrap
+																<GlitchText
 																	sx={{
-																		background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 40%, #a855f7 70%, #ec4899 100%)`,
-																		backgroundSize: '200% auto',
-																		WebkitBackgroundClip: 'text',
-																		WebkitTextFillColor: 'transparent',
-																		backgroundClip: 'text',
-																		animation: 'landing-title-shimmer 6s ease-in-out infinite',
+																		fontFamily: 'var(--font-orbitron)',
+																		fontWeight: 900,
 																		fontSize: 'clamp(3rem, 6vw, 5.5rem)',
 																		lineHeight: 1.1,
+																		letterSpacing: '0.06em',
+																		textTransform: 'uppercase',
+																		animation: 'neon-pulse 3s ease-in-out infinite, glitch-skew 4s ease-in-out infinite',
 																	}}
+																	color="#00e5ff"
+																	glitchColor1="#ff00e5"
+																	glitchColor2="#39ff14"
 																>
 																	{heroTitle}
-																</Typography>
+																</GlitchText>
 															</motion.div>
 															<motion.div variants={heroItemVariants}>
 																<Typography
@@ -391,11 +408,14 @@ export default function HomeDesktop() {
 																	uppercase
 																	sx={{
 																		paddingLeft: 1,
-																		letterSpacing: '0.18em',
-																		background: `linear-gradient(90deg, ${theme.palette.grey[400]}, ${theme.palette.primary.main})`,
+																		letterSpacing: '0.25em',
+																		fontFamily: 'var(--font-jetbrains)',
+																		background: 'linear-gradient(90deg, #4a4a6a, #00e5ff, #ff00e5)',
+																		backgroundSize: '200% auto',
 																		WebkitBackgroundClip: 'text',
 																		WebkitTextFillColor: 'transparent',
 																		backgroundClip: 'text',
+																		animation: 'landing-title-shimmer 4s ease-in-out infinite',
 																	}}
 																>
 																	{heroSubtitle}
@@ -409,31 +429,32 @@ export default function HomeDesktop() {
 																	variant="h3"
 																	strong={300}
 																	sx={{
-																		color: theme.palette.grey[500],
-																		letterSpacing: '0.04em',
+																		color: '#4a4a6a',
+																		letterSpacing: '0.12em',
+																		textTransform: 'uppercase',
+																		fontFamily: 'var(--font-orbitron)',
 																	}}
 																>
 																	{heroLead}
 																</Typography>
 															</motion.div>
 															<motion.div variants={heroItemVariants}>
-																<Typography
-																	variant="h1"
-																	strong={900}
-																	noWrap
+																<GlitchText
 																	sx={{
-																		background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 40%, #a855f7 70%, #ec4899 100%)`,
-																		backgroundSize: '200% auto',
-																		WebkitBackgroundClip: 'text',
-																		WebkitTextFillColor: 'transparent',
-																		backgroundClip: 'text',
-																		animation: 'landing-title-shimmer 6s ease-in-out infinite',
+																		fontFamily: 'var(--font-orbitron)',
+																		fontWeight: 900,
 																		fontSize: 'clamp(3rem, 6vw, 5.5rem)',
 																		lineHeight: 1.1,
+																		letterSpacing: '0.06em',
+																		textTransform: 'uppercase',
+																		animation: 'neon-pulse 3s ease-in-out infinite, glitch-skew 4s ease-in-out infinite',
 																	}}
+																	color="#00e5ff"
+																	glitchColor1="#ff00e5"
+																	glitchColor2="#39ff14"
 																>
 																	{heroTitle}
-																</Typography>
+																</GlitchText>
 															</motion.div>
 														</>
 													)}
@@ -454,27 +475,32 @@ export default function HomeDesktop() {
 														variant="h4"
 														strong={300}
 														sx={{
-															color: theme.palette.grey[500],
-															letterSpacing: '0.04em',
+															color: '#4a4a6a',
+															letterSpacing: '0.12em',
+															textTransform: 'uppercase',
+															fontFamily: 'var(--font-orbitron)',
 														}}
 													>
 														{heroLead}
 													</Typography>
 												</motion.div>
 												<motion.div variants={heroItemVariants}>
-													<Typography
-														variant="h3"
-														strong={900}
-														noWrap
+													<GlitchText
 														sx={{
-															background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 50%, #a855f7 100%)`,
-															WebkitBackgroundClip: 'text',
-															WebkitTextFillColor: 'transparent',
-															backgroundClip: 'text',
+															fontFamily: 'var(--font-orbitron)',
+															fontWeight: 900,
+															fontSize: 'clamp(2rem, 5vw, 3rem)',
+															lineHeight: 1.1,
+															letterSpacing: '0.06em',
+															textTransform: 'uppercase',
+															animation: 'neon-pulse 3s ease-in-out infinite',
 														}}
+														color="#00e5ff"
+														glitchColor1="#ff00e5"
+														glitchColor2="#39ff14"
 													>
 														{heroTitle}
-													</Typography>
+													</GlitchText>
 												</motion.div>
 
 												{useWorshipVersion && (
@@ -484,7 +510,8 @@ export default function HomeDesktop() {
 															strong={300}
 															noWrap
 															sx={{
-																background: `linear-gradient(90deg, ${theme.palette.grey[400]}, ${theme.palette.primary.main})`,
+																fontFamily: 'var(--font-jetbrains)',
+																background: 'linear-gradient(90deg, #4a4a6a, #00e5ff)',
 																WebkitBackgroundClip: 'text',
 																WebkitTextFillColor: 'transparent',
 																backgroundClip: 'text',

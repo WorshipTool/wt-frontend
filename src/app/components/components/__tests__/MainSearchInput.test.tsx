@@ -117,7 +117,7 @@ describe('MainSearchInput', () => {
 		render(<MainSearchInput {...defaultProps} gradientBorder={true} />)
 		const container = screen.getByTestId('main-search-container')
 		// jsdom doesn't fully parse complex gradient values, so check padding is applied (gradient border indicator)
-		expect(container.style.padding).toBe('2.5px')
+		expect(container.style.padding).toBe('2px')
 	})
 
 	it('does not apply gradient border when gradientBorder is false', () => {
@@ -129,7 +129,7 @@ describe('MainSearchInput', () => {
 	it('applies vibrant box-shadow with gradient border', () => {
 		render(<MainSearchInput {...defaultProps} gradientBorder={true} />)
 		const container = screen.getByTestId('main-search-container')
-		expect(container.style.boxShadow).toContain('rgba(0, 133, 255')
+		expect(container.style.boxShadow).toContain('rgba(0, 229, 255')
 	})
 
 	it('displays the provided value', () => {

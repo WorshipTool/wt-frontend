@@ -1,20 +1,22 @@
 /*Classes*/
 
 .stylized-scrollbar::-webkit-scrollbar-track {
-	background: transparent;
+	background: rgba(10, 10, 15, 0.5);
 }
 
 .stylized-scrollbar::-webkit-scrollbar-thumb {
-	background: var(--color-grey-400);
-	border-radius: 4px;
+	background: linear-gradient(180deg, #00e5ff, #7b2fff);
+	border-radius: 2px;
+	box-shadow: 0 0 6px rgba(0, 229, 255, 0.3);
 }
 
 .stylized-scrollbar::-webkit-scrollbar-thumb:hover {
-	background: var(--color-grey-500);
+	background: linear-gradient(180deg, #00e5ff, #ff00e5);
+	box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 }
 
 .stylized-scrollbar::-webkit-scrollbar {
-	background: transparent;
-	height: 8px;
-	width: 8px;
+	background: rgba(10, 10, 15, 0.3);
+	height: 6px;
+	width: 6px;
 }

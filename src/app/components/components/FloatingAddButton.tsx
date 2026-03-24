@@ -41,12 +41,17 @@ export default function FloatingAddButton({
 								<Fab
 									sx={{
 										transition,
-										background: 'linear-gradient(135deg, #0085ff 0%, #532ee7 100%)',
-										boxShadow: '0 6px 24px rgba(0, 133, 255, 0.35), 0 2px 8px rgba(83, 46, 231, 0.2)',
+										background: 'linear-gradient(135deg, #00e5ff 0%, #7b2fff 50%, #ff00e5 100%)',
+										color: '#0a0a0f',
+										fontFamily: 'var(--font-orbitron)',
+										fontWeight: 700,
+										letterSpacing: '0.08em',
+										boxShadow: '0 0 20px rgba(0, 229, 255, 0.3), 0 0 40px rgba(123, 47, 255, 0.15)',
+										border: '1px solid rgba(0, 229, 255, 0.3)',
 										'&:hover': {
-											background: 'linear-gradient(135deg, #0099ff 0%, #6841f0 100%)',
-											boxShadow: '0 8px 32px rgba(0, 133, 255, 0.45), 0 4px 12px rgba(83, 46, 231, 0.25)',
-											transform: 'translateY(-3px)',
+											background: 'linear-gradient(135deg, #00e5ff 0%, #ff00e5 50%, #7b2fff 100%)',
+											boxShadow: '0 0 30px rgba(0, 229, 255, 0.5), 0 0 60px rgba(255, 0, 229, 0.2)',
+											transform: 'translateY(-3px) scale(1.05)',
 										},
 										...(extended
 											? { width: `calc( ${titleWidth} + 56px)` }
@@ -59,6 +64,7 @@ export default function FloatingAddButton({
 										sx={{
 											position: 'absolute',
 											transition,
+											filter: 'drop-shadow(0 0 4px rgba(0, 229, 255, 0.5))',
 											...(extended ? { mr: titleWidth } : { mr: 0 }),
 										}}
 									/>
