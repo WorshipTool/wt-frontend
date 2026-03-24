@@ -21,6 +21,7 @@ import ContainerGrid, {
 } from '../../common/components/ContainerGrid'
 import FloatingAddButton from './components/FloatingAddButton'
 import SearchedSongsList from './components/SearchedSongsList'
+import HomeMobile from './HomeMobile'
 
 export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 
@@ -30,6 +31,10 @@ export default function HomeDesktop() {
 	const theme = useTheme()
 	const phoneVersion = useMediaQuery(theme.breakpoints.down(700))
 	const isMobile = phoneVersion
+
+	if (isMobile) {
+		return <HomeMobile />
+	}
 	const tHome = useTranslations('home')
 
 	const scrollPointRef = useRef(null)

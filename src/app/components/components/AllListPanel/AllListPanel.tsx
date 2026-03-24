@@ -1,11 +1,63 @@
 'use client'
-import { Box, Button, Typography } from '@/common/ui'
+import { Box, Button, Typography, useTheme } from '@/common/ui'
 import { useTranslations } from 'next-intl'
 
-export default function AllListPanel() {
+type AllListPanelProps = {
+	isMobile?: boolean
+}
+
+export default function AllListPanel({ isMobile }: AllListPanelProps) {
 	const tHome = useTranslations('home')
+	const theme = useTheme()
+
+	if (isMobile) {
+		return (
+			<Box
+				data-testid="all-list-panel"
+				sx={{
+					borderRadius: 2,
+					overflow: 'hidden',
+					background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+				}}
+			>
+				<Button
+					variant="text"
+					sx={{
+						width: '100%',
+						display: 'flex',
+						flexDirection: 'column',
+						paddingY: 1.5,
+						color: 'white',
+						'&:hover': {
+							backgroundColor: 'rgba(255,255,255,0.1)',
+						},
+					}}
+					to="songsList"
+				>
+					<Typography
+						small
+						sx={{
+							color: 'rgba(255,255,255,0.7)',
+						}}
+					>
+						{tHome('allList.browse')}
+					</Typography>
+					<Typography
+						strong
+						sx={{
+							color: 'white',
+						}}
+					>
+						{tHome('allList.title')}
+					</Typography>
+				</Button>
+			</Box>
+		)
+	}
+
 	return (
 		<Box
+			data-testid="all-list-panel"
 			display={'flex'}
 			flexDirection={'row'}
 			alignItems={'center'}
@@ -13,7 +65,6 @@ export default function AllListPanel() {
 			sx={{
 				bgcolor: 'grey.100',
 				borderRadius: 2,
-				// padding: 2,
 				overflow: 'hidden',
 			}}
 		>
@@ -26,7 +77,6 @@ export default function AllListPanel() {
 				}}
 				color="black"
 				to="songsList"
-				// color="primarygradient"
 			>
 				<Typography small color="grey.500">
 					{tHome('allList.browse')}
