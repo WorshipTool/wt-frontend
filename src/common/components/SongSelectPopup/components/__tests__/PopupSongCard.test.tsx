@@ -89,6 +89,19 @@ describe('PopupSongCard chord badge', () => {
 		expect(screen.queryByLabelText(/chord key/i)).not.toBeInTheDocument()
 	})
 
+	it('wraps ChordKeyBadge with hover-hide class', () => {
+		render(
+			<PopupSongCard
+				song={songWithChords}
+				onSelect={jest.fn()}
+				onDeselect={jest.fn()}
+			/>
+		)
+		const badge = screen.getByLabelText(/chord key/i)
+		const wrapper = badge.closest('.global-song-list-chord-badge')
+		expect(wrapper).toBeInTheDocument()
+	})
+
 	it('renders the song title', () => {
 		render(
 			<PopupSongCard

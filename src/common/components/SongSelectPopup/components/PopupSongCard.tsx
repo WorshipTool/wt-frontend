@@ -136,11 +136,15 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 					</Typography>
 				</Box>
 				{keyChord && (
-					<ChordKeyBadge
-						chordKey={keyChord}
-						tooltip={tCommon('hasChords')}
+					<Box
+						className="global-song-list-chord-badge"
 						sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
-					/>
+					>
+						<ChordKeyBadge
+							chordKey={keyChord}
+							tooltip={tCommon('hasChords')}
+						/>
+					</Box>
 				)}
 			</DraggableSong>
 		</Box>
