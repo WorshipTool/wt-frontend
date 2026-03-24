@@ -50,8 +50,42 @@ body {
 	--landing-radius-md: 16px;
 	--landing-radius-lg: 24px;
 	--landing-shadow-soft: 0 2px 16px rgba(0, 0, 0, 0.06);
-	--landing-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
-	--landing-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12);
+	--landing-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+	--landing-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+	--landing-shadow-glow-blue: 0 0 40px rgba(0, 133, 255, 0.2), 0 0 80px rgba(0, 133, 255, 0.08);
+	--landing-shadow-glow-purple: 0 0 40px rgba(83, 46, 231, 0.15), 0 0 80px rgba(83, 46, 231, 0.06);
 	--landing-gradient-hero: linear-gradient(135deg, #0085ff 0%, #532ee7 50%, #7c3aed 100%);
+	--landing-gradient-hero-vivid: linear-gradient(135deg, #0099ff 0%, #6841f0 40%, #a855f7 70%, #ec4899 100%);
 	--landing-gradient-surface: linear-gradient(180deg, #faf9f7 0%, #f0efeb 100%);
+	--landing-gradient-card-accent: linear-gradient(135deg, #0085ff, #7c3aed);
+}
+
+/* Animated gradient background for hero */
+@keyframes landing-gradient-shift {
+	0% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+	100% { background-position: 0% 50%; }
+}
+
+@keyframes landing-float-slow {
+	0%, 100% { transform: translate(0, 0) scale(1); }
+	25% { transform: translate(30px, -20px) scale(1.05); }
+	50% { transform: translate(-10px, 15px) scale(0.97); }
+	75% { transform: translate(-25px, -10px) scale(1.03); }
+}
+
+@keyframes landing-float-medium {
+	0%, 100% { transform: translate(0, 0) scale(1); }
+	33% { transform: translate(-20px, 25px) scale(1.04); }
+	66% { transform: translate(25px, -15px) scale(0.96); }
+}
+
+@keyframes landing-pulse-glow {
+	0%, 100% { opacity: 0.6; filter: blur(60px); }
+	50% { opacity: 0.9; filter: blur(70px); }
+}
+
+@keyframes landing-title-shimmer {
+	0% { background-position: -200% center; }
+	100% { background-position: 200% center; }
 }

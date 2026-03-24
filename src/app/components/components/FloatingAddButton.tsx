@@ -41,10 +41,12 @@ export default function FloatingAddButton({
 								<Fab
 									sx={{
 										transition,
-										boxShadow: '0 4px 20px rgba(0, 133, 255, 0.3)',
+										background: 'linear-gradient(135deg, #0085ff 0%, #532ee7 100%)',
+										boxShadow: '0 6px 24px rgba(0, 133, 255, 0.35), 0 2px 8px rgba(83, 46, 231, 0.2)',
 										'&:hover': {
-											boxShadow: '0 6px 28px rgba(0, 133, 255, 0.4)',
-											transform: 'translateY(-2px)',
+											background: 'linear-gradient(135deg, #0099ff 0%, #6841f0 100%)',
+											boxShadow: '0 8px 32px rgba(0, 133, 255, 0.45), 0 4px 12px rgba(83, 46, 231, 0.25)',
+											transform: 'translateY(-3px)',
 										},
 										...(extended
 											? { width: `calc( ${titleWidth} + 56px)` }

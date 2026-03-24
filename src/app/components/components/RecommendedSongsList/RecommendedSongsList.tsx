@@ -25,20 +25,21 @@ const containerVariants = {
 	hidden: {},
 	visible: {
 		transition: {
-			staggerChildren: 0.06,
-			delayChildren: 0.1,
+			staggerChildren: 0.1,
+			delayChildren: 0.15,
 		},
 	},
 }
 
 const itemVariants = {
-	hidden: { opacity: 0, y: 16 },
+	hidden: { opacity: 0, y: 24, scale: 0.96 },
 	visible: {
 		opacity: 1,
 		y: 0,
+		scale: 1,
 		transition: {
-			duration: 0.4,
-			ease: [0.25, 0.46, 0.45, 0.94],
+			duration: 0.5,
+			ease: [0.16, 1, 0.3, 1],
 		},
 	},
 }
@@ -61,7 +62,17 @@ export default function RecommendedSongsList({
 				width: '100%',
 			}}
 		>
-			<Typography strong key={'idea'} color="grey.600">
+			<Typography
+				strong
+				key={'idea'}
+				sx={{
+					background: `linear-gradient(135deg, ${theme.palette.grey[700]}, ${theme.palette.primary.dark})`,
+					WebkitBackgroundClip: 'text',
+					WebkitTextFillColor: 'transparent',
+					backgroundClip: 'text',
+					letterSpacing: '0.02em',
+				}}
+			>
 				{tHome('recommended.idea')}
 			</Typography>
 

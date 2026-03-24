@@ -7,12 +7,11 @@ import RightSheepPanel from '@/app/components/components/RightSheepPanel/RightSh
 import { useFooter } from '@/common/components/Footer/hooks/useFooter'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { useScrollHandler } from '@/common/providers/OnScrollComponent/useScrollHandler'
-import { Box, Image, Typography, useTheme } from '@/common/ui'
+import { Box, Typography, useTheme } from '@/common/ui'
 import { useMediaQuery } from '@/common/ui/mui'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import useWorshipCzVersion from '@/hooks/worshipcz/useWorshipCzVersion'
-import { getAssetUrl } from '@/tech/paths.tech'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -26,41 +25,116 @@ export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 
 const ANIMATION_DURATION = 0.25
 
-// Staggered entrance variants for hero text
+// Staggered entrance variants for hero text - bolder with more movement
 const heroContainerVariants = {
 	hidden: {},
 	visible: {
 		transition: {
-			staggerChildren: 0.08,
-			delayChildren: 0.1,
+			staggerChildren: 0.12,
+			delayChildren: 0.15,
 		},
 	},
 }
 
 const heroItemVariants = {
-	hidden: { opacity: 0, y: 12 },
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: {
-			duration: 0.4,
-			ease: [0.25, 0.46, 0.45, 0.94],
-		},
-	},
-}
-
-const searchInputVariants = {
-	hidden: { opacity: 0, y: 16, scale: 0.98 },
+	hidden: { opacity: 0, y: 24, scale: 0.96 },
 	visible: {
 		opacity: 1,
 		y: 0,
 		scale: 1,
 		transition: {
-			duration: 0.5,
-			ease: [0.25, 0.46, 0.45, 0.94],
-			delay: 0.35,
+			duration: 0.6,
+			ease: [0.16, 1, 0.3, 1],
 		},
 	},
+}
+
+const searchInputVariants = {
+	hidden: { opacity: 0, y: 28, scale: 0.95 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		scale: 1,
+		transition: {
+			duration: 0.7,
+			ease: [0.16, 1, 0.3, 1],
+			delay: 0.45,
+		},
+	},
+}
+
+// Animated background orb component
+function HeroBackgroundOrbs({ visible }: { visible: boolean }) {
+	return (
+		<Box
+			sx={{
+				position: 'fixed',
+				inset: 0,
+				zIndex: -1,
+				overflow: 'hidden',
+				opacity: visible ? 1 : 0,
+				transition: 'opacity 0.5s ease',
+				pointerEvents: 'none',
+			}}
+		>
+			{/* Large blue orb - top left */}
+			<Box
+				sx={{
+					position: 'absolute',
+					top: '5%',
+					left: '-5%',
+					width: 'min(600px, 55vw)',
+					height: 'min(600px, 55vw)',
+					borderRadius: '50%',
+					background: 'radial-gradient(circle, rgba(0, 133, 255, 0.35) 0%, rgba(0, 133, 255, 0) 70%)',
+					animation: 'landing-float-slow 18s ease-in-out infinite',
+					animationDelay: '0s',
+				}}
+			/>
+			{/* Purple orb - center right */}
+			<Box
+				sx={{
+					position: 'absolute',
+					top: '15%',
+					right: '-8%',
+					width: 'min(550px, 50vw)',
+					height: 'min(550px, 50vw)',
+					borderRadius: '50%',
+					background: 'radial-gradient(circle, rgba(124, 58, 237, 0.30) 0%, rgba(124, 58, 237, 0) 70%)',
+					animation: 'landing-float-medium 22s ease-in-out infinite',
+					animationDelay: '-4s',
+				}}
+			/>
+			{/* Pink accent orb - bottom center */}
+			<Box
+				sx={{
+					position: 'absolute',
+					bottom: '10%',
+					left: '30%',
+					width: 'min(400px, 40vw)',
+					height: 'min(400px, 40vw)',
+					borderRadius: '50%',
+					background: 'radial-gradient(circle, rgba(236, 72, 153, 0.20) 0%, rgba(236, 72, 153, 0) 70%)',
+					animation: 'landing-float-slow 25s ease-in-out infinite',
+					animationDelay: '-8s',
+				}}
+			/>
+			{/* Small bright accent - golden */}
+			<Box
+				sx={{
+					position: 'absolute',
+					top: '40%',
+					left: '55%',
+					width: 'min(300px, 30vw)',
+					height: 'min(300px, 30vw)',
+					borderRadius: '50%',
+					background: 'radial-gradient(circle, rgba(235, 188, 30, 0.15) 0%, rgba(235, 188, 30, 0) 70%)',
+					animation: 'landing-float-medium 20s ease-in-out infinite',
+					animationDelay: '-12s',
+				}}
+			/>
+		</Box>
+	)
 }
 
 export default function HomeDesktop() {
@@ -158,50 +232,14 @@ export default function HomeDesktop() {
 	const paddingX = 32
 	const gapString = `calc(max(${paddingX}px, (100vw - ${containerMaxWidth}px) / 2) )`
 
-	const shapeSizeString = `calc(max(50vw, 50vh) * 1.35)`
 	const heroLead = tHome('hero.lead')
 	const heroTitle = tHome('hero.title')
 	const heroSubtitle = tHome('hero.subtitle')
 	const heroSubtitleLower = tHome('hero.subtitleLower')
 	return (
 		<>
-			{/* Background gradient shapes - softened with blur */}
-			<Box
-				sx={{
-					position: 'fixed',
-					top: isTop ? '35vh' : '-100%',
-					right: isTop ? '-5%' : '-100%',
-					transform: 'translateX(50%) translateY(-50%) rotate(175deg)',
-					zIndex: -1,
-					opacity: isMobile ? 0 : 0.7,
-					transition:
-						'top 0.4s cubic-bezier(0.4, 0, 0.2, 1), right 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
-					width: shapeSizeString,
-					height: shapeSizeString,
-					filter: 'blur(2px)',
-				}}
-			>
-				<Image
-					src={getAssetUrl('/gradient-shapes/shape1.svg')}
-					alt={tHome('backgroundShape')}
-					fill
-					priority
-					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
-					style={{
-						filter: 'brightness(1.05) saturate(0.85)',
-					}}
-				/>
-				<Image
-					src={getAssetUrl('/gradient-shapes/shape2.svg')}
-					alt={tHome('backgroundShape')}
-					fill
-					priority
-					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
-					style={{
-						filter: 'brightness(1.15) saturate(0.85)',
-					}}
-				/>
-			</Box>
+			{/* Animated gradient orb background */}
+			<HeroBackgroundOrbs visible={!isMobile} />
 
 			<Box
 				sx={{
@@ -316,8 +354,11 @@ export default function HomeDesktop() {
 															<motion.div variants={heroItemVariants}>
 																<Typography
 																	variant="h3"
-																	strong={200}
-																	color="grey.600"
+																	strong={300}
+																	sx={{
+																		color: theme.palette.grey[500],
+																		letterSpacing: '0.04em',
+																	}}
 																>
 																	{heroLead}
 																</Typography>
@@ -328,10 +369,14 @@ export default function HomeDesktop() {
 																	strong={900}
 																	noWrap
 																	sx={{
-																		background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[700]} 100%)`,
+																		background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 40%, #a855f7 70%, #ec4899 100%)`,
+																		backgroundSize: '200% auto',
 																		WebkitBackgroundClip: 'text',
 																		WebkitTextFillColor: 'transparent',
 																		backgroundClip: 'text',
+																		animation: 'landing-title-shimmer 6s ease-in-out infinite',
+																		fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+																		lineHeight: 1.1,
 																	}}
 																>
 																	{heroTitle}
@@ -339,13 +384,16 @@ export default function HomeDesktop() {
 															</motion.div>
 															<motion.div variants={heroItemVariants}>
 																<Typography
-																	strong={400}
+																	strong={500}
 																	noWrap
 																	uppercase
-																	color="grey.400"
 																	sx={{
 																		paddingLeft: 1,
-																		letterSpacing: '0.1em',
+																		letterSpacing: '0.18em',
+																		background: `linear-gradient(90deg, ${theme.palette.grey[400]}, ${theme.palette.primary.main})`,
+																		WebkitBackgroundClip: 'text',
+																		WebkitTextFillColor: 'transparent',
+																		backgroundClip: 'text',
 																	}}
 																>
 																	{heroSubtitle}
@@ -357,8 +405,11 @@ export default function HomeDesktop() {
 															<motion.div variants={heroItemVariants}>
 																<Typography
 																	variant="h3"
-																	strong={200}
-																	color="grey.600"
+																	strong={300}
+																	sx={{
+																		color: theme.palette.grey[500],
+																		letterSpacing: '0.04em',
+																	}}
 																>
 																	{heroLead}
 																</Typography>
@@ -369,10 +420,14 @@ export default function HomeDesktop() {
 																	strong={900}
 																	noWrap
 																	sx={{
-																		background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[700]} 100%)`,
+																		background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 40%, #a855f7 70%, #ec4899 100%)`,
+																		backgroundSize: '200% auto',
 																		WebkitBackgroundClip: 'text',
 																		WebkitTextFillColor: 'transparent',
 																		backgroundClip: 'text',
+																		animation: 'landing-title-shimmer 6s ease-in-out infinite',
+																		fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+																		lineHeight: 1.1,
 																	}}
 																>
 																	{heroTitle}
@@ -395,14 +450,27 @@ export default function HomeDesktop() {
 												<motion.div variants={heroItemVariants}>
 													<Typography
 														variant="h4"
-														strong={200}
-														color="grey.600"
+														strong={300}
+														sx={{
+															color: theme.palette.grey[500],
+															letterSpacing: '0.04em',
+														}}
 													>
 														{heroLead}
 													</Typography>
 												</motion.div>
 												<motion.div variants={heroItemVariants}>
-													<Typography variant="h3" strong={900} noWrap>
+													<Typography
+														variant="h3"
+														strong={900}
+														noWrap
+														sx={{
+															background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 50%, #a855f7 100%)`,
+															WebkitBackgroundClip: 'text',
+															WebkitTextFillColor: 'transparent',
+															backgroundClip: 'text',
+														}}
+													>
 														{heroTitle}
 													</Typography>
 												</motion.div>
@@ -411,9 +479,14 @@ export default function HomeDesktop() {
 													<motion.div variants={heroItemVariants}>
 														<Typography
 															variant="h4"
-															strong={200}
+															strong={300}
 															noWrap
-															color="grey.400"
+															sx={{
+																background: `linear-gradient(90deg, ${theme.palette.grey[400]}, ${theme.palette.primary.main})`,
+																WebkitBackgroundClip: 'text',
+																WebkitTextFillColor: 'transparent',
+																backgroundClip: 'text',
+															}}
 														>
 															{heroSubtitleLower}
 														</Typography>

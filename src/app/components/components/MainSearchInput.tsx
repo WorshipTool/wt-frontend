@@ -11,17 +11,17 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: 'rgba(255, 255, 255, 0.95)',
-	backdropFilter: 'blur(12px)',
-	padding: '0.65rem 1rem',
-	borderRadius: '16px',
+	backgroundColor: 'rgba(255, 255, 255, 0.97)',
+	backdropFilter: 'blur(16px)',
+	padding: '0.8rem 1.2rem',
+	borderRadius: '18px',
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
-	transition: 'box-shadow 0.3s ease, background-color 0.3s ease',
+	transition: 'box-shadow 0.35s ease, background-color 0.3s ease, transform 0.3s ease',
 	'&:focus-within': {
 		backgroundColor: 'rgba(255, 255, 255, 1)',
-		boxShadow: '0 4px 24px rgba(0, 133, 255, 0.12)',
+		boxShadow: '0 8px 32px rgba(0, 133, 255, 0.18), 0 0 0 1px rgba(0, 133, 255, 0.08)',
 	},
 }))
 
@@ -29,7 +29,9 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
 	flex: 1,
 	marginLeft: '0.6em',
 	zIndex: 100,
-	fontSize: '1.05rem',
+	fontSize: '1.1rem',
+	fontWeight: 400,
+	letterSpacing: '0.01em',
 }))
 
 type MainSearchInputProps = {
@@ -82,16 +84,16 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 			data-testid="main-search-container"
 			style={{
 				background: props.gradientBorder
-					? `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`
+					? `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark}, #a855f7, #ec4899)`
 					: 'transparent',
 				boxShadow: props.gradientBorder
-					? '0 4px 24px rgba(0, 133, 255, 0.15)'
-					: '0 2px 16px rgba(0, 0, 0, 0.08)',
+					? '0 8px 40px rgba(0, 133, 255, 0.22), 0 4px 16px rgba(83, 46, 231, 0.12)'
+					: '0 4px 20px rgba(0, 0, 0, 0.08)',
 				width: '100%',
-				borderRadius: '18px',
+				borderRadius: '20px',
 				padding: props.gradientBorder ? 2.5 : 0,
 				transform: earlyFocused ? 'scale(1.03)' : '',
-				transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+				transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
 				pointerEvents: 'auto',
 			}}
 		>
