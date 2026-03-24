@@ -5,7 +5,7 @@ import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
 
 const Bg = styled(Box)(({ theme }) => ({
-	background: `linear-gradient(160deg, ${theme.palette.grey[200]}, ${theme.palette.grey[300]})`,
+	background: `linear-gradient(170deg, ${theme.palette.grey[100]} 0%, ${theme.palette.grey[200]} 50%, ${theme.palette.grey[300]} 100%)`,
 	position: 'fixed',
 	width: '100%',
 	top: 0,
@@ -15,7 +15,7 @@ const Bg = styled(Box)(({ theme }) => ({
 
 export const Background = () => {
 	const t = useTranslations('common')
-	
+
 	return (
 		<Bg>
 			<Image
@@ -24,8 +24,8 @@ export const Background = () => {
 				fill
 				sizes="100vw"
 				style={{
-					filter: 'brightness(0.7) contrast(1.5)',
-					opacity: 0.05,
+					filter: 'brightness(0.8) contrast(1.3)',
+					opacity: 0.04,
 				}}
 			/>
 		</Bg>

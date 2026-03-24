@@ -17,7 +17,6 @@ export default function LastAddedPanel(props: Props) {
 	const { data, isLoading, isError, isSuccess } = useLastAddedSongs()
 	const tHome = useTranslations('home')
 
-	// const navigate = useSmartNavigate()
 	const [init, setInit] = useState(false)
 	useEffect(() => {
 		setInit(true)
@@ -42,13 +41,21 @@ export default function LastAddedPanel(props: Props) {
 		<Box position={'relative'}>
 			<Box
 				sx={{
-					bgcolor: 'grey.100',
-					borderRadius: 2,
-					padding: 2,
-					boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.2)',
+					bgcolor: 'rgba(255, 255, 255, 0.85)',
+					backdropFilter: 'blur(12px)',
+					borderRadius: '16px',
+					padding: 2.5,
+					boxShadow: '0 2px 16px rgba(0, 0, 0, 0.06)',
+					border: '1px solid',
+					borderColor: 'grey.200',
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 1,
+					gap: 1.5,
+					transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+					'&:hover': {
+						boxShadow: '0 4px 24px rgba(0, 0, 0, 0.1)',
+						transform: 'translateY(-1px)',
+					},
 				}}
 			>
 				<Typography variant="h5" strong>
@@ -72,8 +79,8 @@ export default function LastAddedPanel(props: Props) {
 									sx={{
 										width: '100%',
 										height: 42,
-										borderRadius: 2,
-										bgcolor: theme.palette.grey[300],
+										borderRadius: '12px',
+										bgcolor: theme.palette.grey[200],
 									}}
 								/>
 							))}

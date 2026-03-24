@@ -24,7 +24,44 @@ import SearchedSongsList from './components/SearchedSongsList'
 
 export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 
-const ANIMATION_DURATION = 0.2
+const ANIMATION_DURATION = 0.25
+
+// Staggered entrance variants for hero text
+const heroContainerVariants = {
+	hidden: {},
+	visible: {
+		transition: {
+			staggerChildren: 0.08,
+			delayChildren: 0.1,
+		},
+	},
+}
+
+const heroItemVariants = {
+	hidden: { opacity: 0, y: 12 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		transition: {
+			duration: 0.4,
+			ease: [0.25, 0.46, 0.45, 0.94],
+		},
+	},
+}
+
+const searchInputVariants = {
+	hidden: { opacity: 0, y: 16, scale: 0.98 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		scale: 1,
+		transition: {
+			duration: 0.5,
+			ease: [0.25, 0.46, 0.45, 0.94],
+			delay: 0.35,
+		},
+	},
+}
 
 export default function HomeDesktop() {
 	const theme = useTheme()
@@ -36,7 +73,6 @@ export default function HomeDesktop() {
 
 	// Manage search input, and url state with delay
 	const [searchString, setSearchString] = useUrlState('hledat')
-	// const [searchStringRaw, setSearchStringRaw] = useState(searchString || '')
 	const [searchInputValue, setSearchInputValue] = useState(searchString || '')
 
 	const onSearchValueChange = useCallback(
@@ -129,17 +165,20 @@ export default function HomeDesktop() {
 	const heroSubtitleLower = tHome('hero.subtitleLower')
 	return (
 		<>
+			{/* Background gradient shapes - softened with blur */}
 			<Box
 				sx={{
 					position: 'fixed',
-					top: isTop ? '38vh' : '-100%',
-					right: isTop ? 0 : '-100%',
+					top: isTop ? '35vh' : '-100%',
+					right: isTop ? '-5%' : '-100%',
 					transform: 'translateX(50%) translateY(-50%) rotate(175deg)',
 					zIndex: -1,
-					opacity: isMobile ? 0 : 1,
-					transition: 'top 0.2s ease, right 0.2s ease, opacity 0.2s ease',
+					opacity: isMobile ? 0 : 0.7,
+					transition:
+						'top 0.4s cubic-bezier(0.4, 0, 0.2, 1), right 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
 					width: shapeSizeString,
 					height: shapeSizeString,
+					filter: 'blur(2px)',
 				}}
 			>
 				<Image
@@ -149,7 +188,7 @@ export default function HomeDesktop() {
 					priority
 					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
 					style={{
-						filter: 'brightness(1)',
+						filter: 'brightness(1.05) saturate(0.85)',
 					}}
 				/>
 				<Image
@@ -159,7 +198,7 @@ export default function HomeDesktop() {
 					priority
 					sizes="(max-width: 700px) 0px, calc(max(50vw, 50vh) * 1.35)"
 					style={{
-						filter: 'brightness(1.1)',
+						filter: 'brightness(1.15) saturate(0.85)',
 					}}
 				/>
 			</Box>
@@ -196,7 +235,6 @@ export default function HomeDesktop() {
 						right: !phoneVersion ? paddingX : theme.spacing(1),
 					}}
 					animate={{
-						// position: phoneVersion ? 'sticky' : 'fixed',
 						top: !phoneVersion
 							? isTop
 								? `32%`
@@ -262,80 +300,142 @@ export default function HomeDesktop() {
 												style={{
 													display: 'flex',
 													justifyContent: 'center',
-													marginBottom: theme.spacing(1),
+													marginBottom: theme.spacing(1.5),
 													flexDirection: 'column',
 													userSelect: 'none',
 													pointerEvents: 'none',
 												}}
 											>
-												{useWorshipVersion ? (
-													<Box>
-														<Typography variant="h3" strong={200}>
-															{heroLead}
-														</Typography>
-														<Typography variant="h1" strong={900} noWrap>
-															{heroTitle}
-														</Typography>
-
+												<motion.div
+													variants={heroContainerVariants}
+													initial="hidden"
+													animate="visible"
+												>
+													{useWorshipVersion ? (
+														<Box>
+															<motion.div variants={heroItemVariants}>
+																<Typography
+																	variant="h3"
+																	strong={200}
+																	color="grey.600"
+																>
+																	{heroLead}
+																</Typography>
+															</motion.div>
+															<motion.div variants={heroItemVariants}>
+																<Typography
+																	variant="h1"
+																	strong={900}
+																	noWrap
+																	sx={{
+																		background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[700]} 100%)`,
+																		WebkitBackgroundClip: 'text',
+																		WebkitTextFillColor: 'transparent',
+																		backgroundClip: 'text',
+																	}}
+																>
+																	{heroTitle}
+																</Typography>
+															</motion.div>
+															<motion.div variants={heroItemVariants}>
+																<Typography
+																	strong={400}
+																	noWrap
+																	uppercase
+																	color="grey.400"
+																	sx={{
+																		paddingLeft: 1,
+																		letterSpacing: '0.1em',
+																	}}
+																>
+																	{heroSubtitle}
+																</Typography>
+															</motion.div>
+														</Box>
+													) : (
 														<>
-															<Typography
-																// variant="h5"
-																strong={400}
-																noWrap
-																uppercase
-																// small
-																color="grey.500"
-																sx={{
-																	paddingLeft: 1,
-																}}
-															>
-																{heroSubtitle}
-															</Typography>
+															<motion.div variants={heroItemVariants}>
+																<Typography
+																	variant="h3"
+																	strong={200}
+																	color="grey.600"
+																>
+																	{heroLead}
+																</Typography>
+															</motion.div>
+															<motion.div variants={heroItemVariants}>
+																<Typography
+																	variant="h1"
+																	strong={900}
+																	noWrap
+																	sx={{
+																		background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[700]} 100%)`,
+																		WebkitBackgroundClip: 'text',
+																		WebkitTextFillColor: 'transparent',
+																		backgroundClip: 'text',
+																	}}
+																>
+																	{heroTitle}
+																</Typography>
+															</motion.div>
 														</>
-													</Box>
-												) : (
-													<>
-														<Typography variant="h3" strong={200}>
-															{heroLead}
-														</Typography>
-														<Typography variant="h1" strong={900} noWrap>
-															{heroTitle}
-														</Typography>
-													</>
-												)}
+													)}
+												</motion.div>
 											</motion.div>
 										) : (
-											<Box
-												sx={{
+											<motion.div
+												variants={heroContainerVariants}
+												initial="hidden"
+												animate="visible"
+												style={{
 													display: 'flex',
 													flexDirection: 'column',
 												}}
 											>
-												<Typography variant="h4" strong={200}>
-													{heroLead}
-												</Typography>
-												<Typography variant="h3" strong={900} noWrap>
-													{heroTitle}
-												</Typography>
+												<motion.div variants={heroItemVariants}>
+													<Typography
+														variant="h4"
+														strong={200}
+														color="grey.600"
+													>
+														{heroLead}
+													</Typography>
+												</motion.div>
+												<motion.div variants={heroItemVariants}>
+													<Typography variant="h3" strong={900} noWrap>
+														{heroTitle}
+													</Typography>
+												</motion.div>
 
 												{useWorshipVersion && (
-													<>
-														<Typography variant="h4" strong={200} noWrap>
+													<motion.div variants={heroItemVariants}>
+														<Typography
+															variant="h4"
+															strong={200}
+															noWrap
+															color="grey.400"
+														>
 															{heroSubtitleLower}
 														</Typography>
-													</>
+													</motion.div>
 												)}
-											</Box>
+											</motion.div>
 										)}
 									</AnimatePresence>
 
-									<MainSearchInput
-										gradientBorder={isTop && !phoneVersion}
-										value={searchInputValue}
-										onChange={onSearchValueChange}
-										smartSearch={smartSearch ?? false}
-										onSmartSearchChange={setSmartSearch}
-									/>
+									<motion.div
+										variants={searchInputVariants}
+										initial="hidden"
+										animate="visible"
+									>
+										<MainSearchInput
+											gradientBorder={isTop && !phoneVersion}
+											value={searchInputValue}
+											onChange={onSearchValueChange}
+											smartSearch={smartSearch ?? false}
+											onSmartSearchChange={setSmartSearch}
+										/>
+									</motion.div>
 								</Box>
 							</Box>
 
@@ -343,18 +443,23 @@ export default function HomeDesktop() {
 								<Box
 									sx={{
 										maxWidth: isTop ? 500 : 0,
-										// maxHeight: isTop ? 500 : 0,
-										// transform: 'translateY(-50px)',
 										opacity: isTop ? 1 : 0,
 										transition:
-											'max-width 0.2s ease, opacity 0.2s ease, max-height 0.2s ease',
-										// display: 'flex',
-										// flexDirection: 'column',
-										// gap: 2,
+											'max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
 										pointerEvents: 'auto',
 									}}
 								>
-									<RightSheepPanel mobileVersion={isMobile} />
+									<motion.div
+										initial={{ opacity: 0, x: 20 }}
+										animate={{ opacity: 1, x: 0 }}
+										transition={{
+											duration: 0.5,
+											delay: 0.4,
+											ease: [0.25, 0.46, 0.45, 0.94],
+										}}
+									>
+										<RightSheepPanel mobileVersion={isMobile} />
+									</motion.div>
 								</Box>
 							)}
 						</Box>
@@ -373,12 +478,11 @@ export default function HomeDesktop() {
 						alignItems: 'center',
 						padding: 0,
 						top: !phoneVersion ? 'calc(100% - 275px)' : '155px',
-						// TODO: fix height jumping on one column preview
 						transform:
 							isTop || phoneVersion
 								? 'translateY(0)'
 								: `translateY(calc(-${innerHeight}*0.8px + 170px))`,
-						transition: `all ${ANIMATION_DURATION}s ease`,
+						transition: `all ${ANIMATION_DURATION}s cubic-bezier(0.4, 0, 0.2, 1)`,
 					}}
 				>
 					{searchString && (

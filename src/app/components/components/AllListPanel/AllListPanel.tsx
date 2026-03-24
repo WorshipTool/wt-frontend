@@ -11,10 +11,17 @@ export default function AllListPanel() {
 			alignItems={'center'}
 			flexWrap={'wrap'}
 			sx={{
-				bgcolor: 'grey.100',
-				borderRadius: 2,
-				// padding: 2,
+				bgcolor: 'rgba(255, 255, 255, 0.85)',
+				backdropFilter: 'blur(12px)',
+				borderRadius: '16px',
 				overflow: 'hidden',
+				border: '1px solid',
+				borderColor: 'grey.200',
+				transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+				'&:hover': {
+					boxShadow: '0 4px 24px rgba(0, 0, 0, 0.1)',
+					transform: 'translateY(-1px)',
+				},
 			}}
 		>
 			<Button
@@ -23,12 +30,13 @@ export default function AllListPanel() {
 					flex: 1,
 					display: 'flex',
 					flexDirection: 'column',
+					padding: 1.5,
+					borderRadius: '16px',
 				}}
 				color="black"
 				to="songsList"
-				// color="primarygradient"
 			>
-				<Typography small color="grey.500">
+				<Typography small color="grey.400">
 					{tHome('allList.browse')}
 				</Typography>
 				{tHome('allList.title')}

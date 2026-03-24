@@ -18,7 +18,7 @@ export default function FloatingAddButton({
 	const tNavigation = useTranslations('navigation')
 	const tHome = useTranslations('home')
 
-	const transition = 'all 0.2s ease'
+	const transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
 	const titleWidth = '90px'
 	return (
 		<CornerStack corner="bottom-right" order={0}>
@@ -26,9 +26,13 @@ export default function FloatingAddButton({
 				<AnimatePresence>
 					{isLoggedIn() && (
 						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
+							initial={{ opacity: 0, scale: 0.8 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0.8 }}
+							transition={{
+								duration: 0.3,
+								ease: [0.25, 0.46, 0.45, 0.94],
+							}}
 						>
 							<Tooltip
 								title={tNavigation('tooltips.addSong')}
@@ -37,6 +41,11 @@ export default function FloatingAddButton({
 								<Fab
 									sx={{
 										transition,
+										boxShadow: '0 4px 20px rgba(0, 133, 255, 0.3)',
+										'&:hover': {
+											boxShadow: '0 6px 28px rgba(0, 133, 255, 0.4)',
+											transform: 'translateY(-2px)',
+										},
 										...(extended
 											? { width: `calc( ${titleWidth} + 56px)` }
 											: { width: 56 }),

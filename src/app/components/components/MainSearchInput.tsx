@@ -11,20 +11,25 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[100],
-	padding: '0.5rem',
-	paddingLeft: '0.8rem',
-	paddingRight: '0.8rem',
-	borderRadius: '0.5rem',
+	backgroundColor: 'rgba(255, 255, 255, 0.95)',
+	backdropFilter: 'blur(12px)',
+	padding: '0.65rem 1rem',
+	borderRadius: '16px',
 	display: 'flex',
-
 	justifyContent: 'center',
 	alignItems: 'center',
+	transition: 'box-shadow 0.3s ease, background-color 0.3s ease',
+	'&:focus-within': {
+		backgroundColor: 'rgba(255, 255, 255, 1)',
+		boxShadow: '0 4px 24px rgba(0, 133, 255, 0.12)',
+	},
 }))
+
 const SearchInput = styled(InputBase)(({ theme }) => ({
 	flex: 1,
-	marginLeft: '0.5em',
+	marginLeft: '0.6em',
 	zIndex: 100,
+	fontSize: '1.05rem',
 }))
 
 type MainSearchInputProps = {
@@ -76,18 +81,27 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 		<div
 			data-testid="main-search-container"
 			style={{
-				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-				boxShadow: `0px 3px 4px ${theme.palette.grey[500]}`,
+				background: props.gradientBorder
+					? `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`
+					: 'transparent',
+				boxShadow: props.gradientBorder
+					? '0 4px 24px rgba(0, 133, 255, 0.15)'
+					: '0 2px 16px rgba(0, 0, 0, 0.08)',
 				width: '100%',
-				borderRadius: '0.6rem',
-				padding: props.gradientBorder ? 2 : 0,
-				transform: earlyFocused ? 'scale(107%)' : '',
-				transition: 'all 0.3s ease',
+				borderRadius: '18px',
+				padding: props.gradientBorder ? 2.5 : 0,
+				transform: earlyFocused ? 'scale(1.03)' : '',
+				transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 				pointerEvents: 'auto',
 			}}
 		>
 			<SearchContainer>
-				<SearchIcon />
+				<SearchIcon
+					sx={{
+						color: theme.palette.grey[400],
+						fontSize: '1.4rem',
+					}}
+				/>
 				<SearchInput
 					placeholder={t('searchByTitleOrText')}
 					onChange={(e) => props.onChange(e.target.value)}
@@ -111,6 +125,12 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 								Analytics.track('SMART_SEARCH_TOGGLE', {
 									enabled: newValue,
 								})
+							}}
+							sx={{
+								transition: 'all 0.2s ease',
+								'&:hover': {
+									backgroundColor: 'rgba(0, 133, 255, 0.08)',
+								},
 							}}
 						>
 							<AutoAwesome fontSize="small" />
