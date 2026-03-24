@@ -148,4 +148,12 @@ describe('HomeMobile', () => {
 		render(<HomeMobile />)
 		expect(screen.queryByTestId('searched-songs')).not.toBeInTheDocument()
 	})
+
+	it('header zone is a direct child of the root container', () => {
+		render(<HomeMobile />)
+		const headerZone = screen.getByTestId('mobile-header-zone')
+		// Header zone should be rendered as a direct child of the root wrapper
+		expect(headerZone.parentElement).toBeInTheDocument()
+		expect(headerZone.parentElement?.children.length).toBeGreaterThanOrEqual(3)
+	})
 })

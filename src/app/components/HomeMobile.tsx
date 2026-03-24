@@ -93,6 +93,7 @@ export default function HomeMobile() {
 				display: 'flex',
 				flexDirection: 'column',
 				minHeight: '100vh',
+				width: '100%',
 			}}
 		>
 			{/* Dark Header Zone - Hero + Search */}
@@ -100,9 +101,9 @@ export default function HomeMobile() {
 				data-testid="mobile-header-zone"
 				sx={{
 					background: `linear-gradient(165deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-					paddingTop: `${TOOLBAR_HEIGHT + 16}px`,
-					paddingBottom: 2,
-					borderRadius: '0 0 24px 24px',
+					marginTop: `-${TOOLBAR_HEIGHT}px`,
+					paddingTop: `${TOOLBAR_HEIGHT * 2 + 16}px`,
+					paddingBottom: 2.5,
 					position: 'relative',
 					'&::after': {
 						content: '""',
@@ -112,9 +113,18 @@ export default function HomeMobile() {
 						right: 0,
 						bottom: 0,
 						background:
-							'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 60%)',
+							'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)',
 						pointerEvents: 'none',
-						borderRadius: 'inherit',
+					},
+					'&::before': {
+						content: '""',
+						position: 'absolute',
+						left: 0,
+						right: 0,
+						bottom: -20,
+						height: 20,
+						background: `linear-gradient(to bottom, ${theme.palette.primary.dark}22, transparent)`,
+						pointerEvents: 'none',
 					},
 				}}
 			>
