@@ -32,14 +32,16 @@ export default function MobileLastAddedSection() {
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
-				gap: 1,
-				paddingLeft: 2,
+				gap: 1.5,
+				paddingLeft: 2.5,
 			}}
 		>
 			<Typography
 				strong
 				sx={{
 					color: 'grey.700',
+					fontSize: '0.9rem',
+					letterSpacing: '0.02em',
 				}}
 			>
 				{tHome('lastAdded.title')}
@@ -51,7 +53,7 @@ export default function MobileLastAddedSection() {
 					gap: 1.5,
 					overflowX: 'auto',
 					paddingBottom: 1,
-					paddingRight: 2,
+					paddingRight: 2.5,
 					scrollSnapType: 'x mandatory',
 					WebkitOverflowScrolling: 'touch',
 					'&::-webkit-scrollbar': {
@@ -92,18 +94,21 @@ function MobileLastAddedCard({ data: s }: { data: BasicVariantPack }) {
 						maxWidth: 240,
 						padding: 1.5,
 						paddingX: 2,
-						backgroundColor: 'grey.100',
-						borderRadius: 2,
-						border: `1.5px solid`,
-						borderColor: 'grey.300',
+						backgroundColor: 'white',
+						borderRadius: 2.5,
+						border: '1px solid',
+						borderColor: 'grey.200',
+						boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
 						flexShrink: 0,
 						scrollSnapAlign: 'start',
 						display: 'flex',
 						flexDirection: 'column',
 						gap: 0.5,
-						transition: 'border-color 0.15s ease',
+						transition:
+							'border-color 0.15s ease, box-shadow 0.15s ease',
 						'&:hover': {
 							borderColor: 'primary.main',
+							boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
 						},
 					}}
 				>
@@ -113,6 +118,7 @@ function MobileLastAddedCard({ data: s }: { data: BasicVariantPack }) {
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
 							whiteSpace: 'nowrap',
+							fontSize: '0.875rem',
 						}}
 					>
 						{s.title}

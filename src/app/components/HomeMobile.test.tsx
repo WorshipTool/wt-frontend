@@ -12,7 +12,7 @@ jest.mock('../../common/ui', () => ({
 	useTheme: () => ({
 		palette: {
 			primary: { main: '#0085ff', dark: '#532ee7' },
-			grey: { 200: '#eee', 300: '#ddd', 500: '#999', 600: '#777', 700: '#666' },
+			grey: { 50: '#fafafa', 200: '#eee', 300: '#ddd', 500: '#999', 600: '#777', 700: '#666' },
 		},
 		spacing: (n: number) => `${n * 8}px`,
 		breakpoints: { down: () => '(max-width:700px)' },

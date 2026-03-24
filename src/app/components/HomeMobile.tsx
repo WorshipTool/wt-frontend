@@ -18,6 +18,7 @@ import AllListPanel from './components/AllListPanel/AllListPanel'
 import { RESET_HOME_SCREEN_EVENT_NAME } from './HomeDesktop'
 
 const TOOLBAR_HEIGHT = 56
+const CONTENT_PADDING_X = 2.5
 
 export default function HomeMobile() {
 	const theme = useTheme()
@@ -94,17 +95,19 @@ export default function HomeMobile() {
 				flexDirection: 'column',
 				minHeight: '100vh',
 				width: '100%',
+				backgroundColor: theme.palette.grey[50],
 			}}
 		>
-			{/* Dark Header Zone - Hero + Search */}
+			{/* Dark Header Zone - Hero + Search with smooth bottom curve */}
 			<Box
 				data-testid="mobile-header-zone"
 				sx={{
 					background: `linear-gradient(165deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
 					marginTop: `-${TOOLBAR_HEIGHT}px`,
 					paddingTop: `${TOOLBAR_HEIGHT * 2 + 16}px`,
-					paddingBottom: 2.5,
+					paddingBottom: 4,
 					position: 'relative',
+					borderRadius: '0 0 24px 24px',
 					'&::after': {
 						content: '""',
 						position: 'absolute',
@@ -115,24 +118,15 @@ export default function HomeMobile() {
 						background:
 							'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)',
 						pointerEvents: 'none',
-					},
-					'&::before': {
-						content: '""',
-						position: 'absolute',
-						left: 0,
-						right: 0,
-						bottom: -20,
-						height: 20,
-						background: `linear-gradient(to bottom, ${theme.palette.primary.dark}22, transparent)`,
-						pointerEvents: 'none',
+						borderRadius: 'inherit',
 					},
 				}}
 			>
 				{/* Hero Content */}
 				<Box
 					sx={{
-						paddingX: 2.5,
-						paddingBottom: 1,
+						paddingX: CONTENT_PADDING_X,
+						paddingBottom: 2,
 					}}
 				>
 					<Box
@@ -140,7 +134,7 @@ export default function HomeMobile() {
 							display: 'flex',
 							flexDirection: 'column',
 							gap: 0.5,
-							marginBottom: 1.5,
+							marginBottom: 2,
 						}}
 					>
 						<Typography
@@ -182,7 +176,7 @@ export default function HomeMobile() {
 				<Box
 					ref={searchBarRef}
 					sx={{
-						paddingX: 2,
+						paddingX: CONTENT_PADDING_X,
 					}}
 				>
 					<MainSearchInput
@@ -201,13 +195,14 @@ export default function HomeMobile() {
 					position: 'sticky',
 					top: `${TOOLBAR_HEIGHT}px`,
 					zIndex: 100,
-					paddingX: 2,
+					paddingX: CONTENT_PADDING_X,
 					paddingY: 1,
 					background: isTop
 						? 'transparent'
-						: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-					backdropFilter: isTop ? 'none' : 'blur(12px)',
-					transition: 'background 0.2s ease, backdrop-filter 0.2s ease',
+						: `linear-gradient(135deg, ${theme.palette.primary.main}F0, ${theme.palette.primary.dark}F0)`,
+					backdropFilter: isTop ? 'none' : 'blur(16px)',
+					transition:
+						'background 0.25s ease, backdrop-filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease',
 					opacity: isTop ? 0 : 1,
 					pointerEvents: isTop ? 'none' : 'auto',
 					transform: isTop ? 'translateY(-8px)' : 'translateY(0)',
@@ -222,36 +217,43 @@ export default function HomeMobile() {
 				/>
 			</Box>
 
-			{/* Content */}
+			{/* Content sections with unified spacing */}
 			<Box
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
 					gap: 3,
-					paddingTop: 2,
+					paddingTop: 3,
+					paddingBottom: 4,
 				}}
 			>
 				{/* Search Results */}
 				{searchString && (
-					<SearchedSongsList
-						searchString={searchString}
-						useSmartSearch={smartSearch ?? false}
-					/>
+					<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+						<SearchedSongsList
+							searchString={searchString}
+							useSmartSearch={smartSearch ?? false}
+						/>
+					</Box>
 				)}
 
 				{/* Last Added Songs - horizontal scroll */}
 				<MobileLastAddedSection />
 
-				{/* All Songs Button */}
-				<Box sx={{ paddingX: 2 }}>
+				{/* All Songs CTA */}
+				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
 					<AllListPanel isMobile />
 				</Box>
 
 				{/* Recommended Songs */}
-				<RecommendedSongsList />
+				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+					<RecommendedSongsList />
+				</Box>
 
 				{/* Admin option (for admins) */}
-				<ParseAdminOption />
+				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+					<ParseAdminOption />
+				</Box>
 			</Box>
 		</Box>
 	)

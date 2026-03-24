@@ -15,9 +15,12 @@ export default function AllListPanel({ isMobile }: AllListPanelProps) {
 			<Box
 				data-testid="all-list-panel"
 				sx={{
-					borderRadius: 2,
+					borderRadius: 2.5,
 					overflow: 'hidden',
-					background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+					backgroundColor: 'white',
+					border: '1px solid',
+					borderColor: 'grey.200',
+					boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
 				}}
 			>
 				<Button
@@ -25,31 +28,58 @@ export default function AllListPanel({ isMobile }: AllListPanelProps) {
 					sx={{
 						width: '100%',
 						display: 'flex',
-						flexDirection: 'column',
-						paddingY: 1.5,
-						color: 'white',
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						paddingY: 2,
+						paddingX: 2.5,
+						color: theme.palette.primary.main,
 						'&:hover': {
-							backgroundColor: 'rgba(255,255,255,0.1)',
+							backgroundColor: theme.palette.grey[50],
 						},
 					}}
 					to="songsList"
 				>
-					<Typography
-						small
+					<Box
 						sx={{
-							color: 'rgba(255,255,255,0.7)',
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'flex-start',
 						}}
 					>
-						{tHome('allList.browse')}
-					</Typography>
-					<Typography
-						strong
+						<Typography
+							small
+							sx={{
+								color: 'grey.500',
+							}}
+						>
+							{tHome('allList.browse')}
+						</Typography>
+						<Typography
+							strong
+							sx={{
+								color: 'grey.900',
+							}}
+						>
+							{tHome('allList.title')}
+						</Typography>
+					</Box>
+					<Box
 						sx={{
+							width: 36,
+							height: 36,
+							borderRadius: '50%',
+							background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
 							color: 'white',
+							fontSize: '1.2rem',
+							flexShrink: 0,
 						}}
 					>
-						{tHome('allList.title')}
-					</Typography>
+						→
+					</Box>
 				</Button>
 			</Box>
 		)

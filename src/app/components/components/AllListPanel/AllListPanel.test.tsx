@@ -17,6 +17,7 @@ jest.mock('../../../../common/ui', () => ({
 	useTheme: () => ({
 		palette: {
 			primary: { main: '#0085ff', dark: '#532ee7' },
+			grey: { 50: '#fafafa' },
 		},
 	}),
 }))
@@ -31,13 +32,10 @@ describe('AllListPanel', () => {
 		expect(screen.getByText('allList.browse')).toBeInTheDocument()
 	})
 
-	it('renders mobile variant with gradient when isMobile is true', () => {
+	it('renders mobile variant with card style when isMobile is true', () => {
 		render(<AllListPanel isMobile />)
 		const panel = screen.getByTestId('all-list-panel')
 		expect(panel).toBeInTheDocument()
-		expect(panel).toHaveStyle({
-			background: 'linear-gradient(135deg, #0085ff, #532ee7)',
-		})
 	})
 
 	it('renders both browse and title text in mobile variant', () => {
