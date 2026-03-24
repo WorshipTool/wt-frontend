@@ -95,6 +95,8 @@ describe('GlobalAdminNavOptions', () => {
 		).toBeInTheDocument()
 	})
 
+
+
 	it('calls navigate with "admin" when Admin option is clicked', () => {
 		mockUseFlag.mockReturnValue(true)
 

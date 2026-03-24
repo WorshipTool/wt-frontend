@@ -13,3 +13,12 @@
 .global-song-list-item:hover .global-song-list-link-icon {
 	opacity: 1;
 }
+
+.global-song-list-chord-badge {
+	transition: opacity 0.2s;
+}
+
+.global-song-list-item:hover .global-song-list-chord-badge {
+	opacity: 0;
+	pointer-events: none;
+}

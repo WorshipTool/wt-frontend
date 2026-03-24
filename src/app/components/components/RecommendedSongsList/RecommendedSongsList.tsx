@@ -70,7 +70,7 @@ export default function RecommendedSongsList({
 				<SongListCards
 					data={data.slice(0, 4)}
 					variant={listType}
-					// properties={['SHOW_ADDED_BY_LOADER']}
+					properties={['HIDE_CHORD_KEY']}
 				/>
 			</GridContainer>
 		</ContainerGrid>
