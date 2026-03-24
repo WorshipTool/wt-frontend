@@ -17,9 +17,19 @@ jest.mock('../../../../common/ui', () => ({
 	useTheme: () => ({
 		palette: {
 			primary: { main: '#0085ff', dark: '#532ee7' },
-			grey: { 50: '#fafafa' },
+			grey: { 50: '#fafafa', 400: '#bbb' },
 		},
 	}),
+}))
+
+jest.mock('@mui/icons-material/KeyboardArrowRightRounded', () => ({
+	__esModule: true,
+	default: () => <span data-testid="arrow-icon">arrow</span>,
+}))
+
+jest.mock('@mui/icons-material/QueueMusicRounded', () => ({
+	__esModule: true,
+	default: () => <span data-testid="music-icon">music</span>,
 }))
 
 import AllListPanel from './AllListPanel'
@@ -42,5 +52,15 @@ describe('AllListPanel', () => {
 		render(<AllListPanel isMobile />)
 		expect(screen.getByText('allList.browse')).toBeInTheDocument()
 		expect(screen.getByText('allList.title')).toBeInTheDocument()
+	})
+
+	it('renders music icon in mobile variant', () => {
+		render(<AllListPanel isMobile />)
+		expect(screen.getByTestId('music-icon')).toBeInTheDocument()
+	})
+
+	it('renders arrow icon in mobile variant', () => {
+		render(<AllListPanel isMobile />)
+		expect(screen.getByTestId('arrow-icon')).toBeInTheDocument()
 	})
 })

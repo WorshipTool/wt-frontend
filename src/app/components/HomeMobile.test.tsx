@@ -12,7 +12,7 @@ jest.mock('../../common/ui', () => ({
 	useTheme: () => ({
 		palette: {
 			primary: { main: '#0085ff', dark: '#532ee7' },
-			grey: { 50: '#fafafa', 200: '#eee', 300: '#ddd', 500: '#999', 600: '#777', 700: '#666' },
+			grey: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eee', 300: '#ddd', 400: '#bbb', 500: '#999', 600: '#777', 700: '#666', 900: '#212121' },
 		},
 		spacing: (n: number) => `${n * 8}px`,
 		breakpoints: { down: () => '(max-width:700px)' },
@@ -98,6 +98,11 @@ jest.mock('./HomeDesktop', () => ({
 	RESET_HOME_SCREEN_EVENT_NAME: 'reset_home_screen_jh1a94',
 }))
 
+jest.mock('@mui/icons-material/MusicNoteRounded', () => ({
+	__esModule: true,
+	default: () => <span data-testid="music-note-icon">note</span>,
+}))
+
 import HomeMobile from './HomeMobile'
 
 describe('HomeMobile', () => {
@@ -112,18 +117,27 @@ describe('HomeMobile', () => {
 		expect(screen.getByText('hero.subtitleLower')).toBeInTheDocument()
 	})
 
-	it('renders dark header zone', () => {
+	it('renders hero section container', () => {
 		render(<HomeMobile />)
-		expect(screen.getByTestId('mobile-header-zone')).toBeInTheDocument()
+		expect(screen.getByTestId('mobile-hero-section')).toBeInTheDocument()
 	})
 
-	it('renders main search input inside header zone', () => {
+	it('renders brand badge with music note icon', () => {
 		render(<HomeMobile />)
-		const headerZone = screen.getByTestId('mobile-header-zone')
+		expect(screen.getByTestId('music-note-icon')).toBeInTheDocument()
+	})
+
+	it('renders search section with search input', () => {
+		render(<HomeMobile />)
+		expect(screen.getByTestId('mobile-search-section')).toBeInTheDocument()
 		const searchInputs = screen.getAllByTestId('main-search-input')
-		// Search input exists inside the header zone
-		expect(headerZone).toContainElement(searchInputs[0])
-		// Also a sticky duplicate for scrolled state
+		expect(searchInputs.length).toBeGreaterThanOrEqual(1)
+	})
+
+	it('renders sticky search bar for scrolled state', () => {
+		render(<HomeMobile />)
+		expect(screen.getByTestId('mobile-sticky-search')).toBeInTheDocument()
+		const searchInputs = screen.getAllByTestId('main-search-input')
 		expect(searchInputs).toHaveLength(2)
 	})
 
@@ -149,11 +163,21 @@ describe('HomeMobile', () => {
 		expect(screen.queryByTestId('searched-songs')).not.toBeInTheDocument()
 	})
 
-	it('header zone is a direct child of the root container', () => {
+	it('renders root container with correct test id', () => {
 		render(<HomeMobile />)
-		const headerZone = screen.getByTestId('mobile-header-zone')
-		// Header zone should be rendered as a direct child of the root wrapper
-		expect(headerZone.parentElement).toBeInTheDocument()
-		expect(headerZone.parentElement?.children.length).toBeGreaterThanOrEqual(3)
+		const root = screen.getByTestId('mobile-root')
+		expect(root).toBeInTheDocument()
+	})
+
+	it('renders parse admin option', () => {
+		render(<HomeMobile />)
+		expect(screen.getByTestId('parse-admin')).toBeInTheDocument()
+	})
+
+	it('hero section is inside the root container', () => {
+		render(<HomeMobile />)
+		const root = screen.getByTestId('mobile-root')
+		const hero = screen.getByTestId('mobile-hero-section')
+		expect(root).toContainElement(hero)
 	})
 })

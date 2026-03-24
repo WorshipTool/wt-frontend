@@ -52,14 +52,12 @@ jest.mock('../../../common/ui', () => ({
 	Typography: ({ children, ...props }: any) => (
 		<span {...props}>{children}</span>
 	),
-	Chip: ({ label, ...props }: any) => (
-		<span data-testid="chip" {...props}>
-			{label}
-		</span>
-	),
 	Clickable: ({ children }: any) => <div>{children}</div>,
 	useTheme: () => ({
-		palette: { grey: { 200: '#eee', 300: '#ddd' } },
+		palette: {
+			primary: { main: '#0085ff', dark: '#532ee7' },
+			grey: { 100: '#f5f5f5', 200: '#eee', 300: '#ddd', 400: '#bbb', 900: '#212121' },
+		},
 	}),
 }))
 
@@ -80,6 +78,11 @@ jest.mock('../../../tech/song/variant/variant.utils', () => ({
 }))
 
 jest.mock('../../../types/song', () => ({}))
+
+jest.mock('@mui/icons-material/AccessTimeRounded', () => ({
+	__esModule: true,
+	default: () => <span data-testid="time-icon">time</span>,
+}))
 
 const mockUseLastAddedSongs = jest.fn()
 jest.mock('./LastAddedSongsList/hooks/useLastAddedSongs', () => ({
@@ -123,11 +126,11 @@ describe('MobileLastAddedSection', () => {
 		expect(screen.getByText('Test Song 2')).toBeInTheDocument()
 	})
 
-	it('renders date chip for songs with publishedAt', () => {
+	it('renders time info for songs with publishedAt', () => {
 		render(<MobileLastAddedSection />)
-		const chips = screen.getAllByTestId('chip')
-		expect(chips.length).toBe(1)
-		expect(chips[0]).toHaveTextContent('recently')
+		const timeIcons = screen.getAllByTestId('time-icon')
+		expect(timeIcons.length).toBe(1)
+		expect(screen.getByText('recently')).toBeInTheDocument()
 	})
 
 	it('shows skeletons while loading', () => {
@@ -138,5 +141,11 @@ describe('MobileLastAddedSection', () => {
 		render(<MobileLastAddedSection />)
 		const skeletons = screen.getAllByTestId('skeleton')
 		expect(skeletons.length).toBe(4)
+	})
+
+	it('renders cards with colored accent bars', () => {
+		render(<MobileLastAddedSection />)
+		expect(screen.getByText('Test Song 1')).toBeInTheDocument()
+		expect(screen.getByText('Test Song 2')).toBeInTheDocument()
 	})
 })

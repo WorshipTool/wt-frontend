@@ -1,5 +1,7 @@
 'use client'
 import { Box, Button, Typography, useTheme } from '@/common/ui'
+import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded'
+import QueueMusicRounded from '@mui/icons-material/QueueMusicRounded'
 import { useTranslations } from 'next-intl'
 
 type AllListPanelProps = {
@@ -15,12 +17,11 @@ export default function AllListPanel({ isMobile }: AllListPanelProps) {
 			<Box
 				data-testid="all-list-panel"
 				sx={{
-					borderRadius: 2.5,
+					borderRadius: 3,
 					overflow: 'hidden',
-					backgroundColor: 'white',
+					background: `linear-gradient(135deg, ${theme.palette.primary.main}08 0%, ${theme.palette.primary.dark}10 100%)`,
 					border: '1px solid',
-					borderColor: 'grey.200',
-					boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+					borderColor: `${theme.palette.primary.main}20`,
 				}}
 			>
 				<Button
@@ -33,53 +34,68 @@ export default function AllListPanel({ isMobile }: AllListPanelProps) {
 						justifyContent: 'space-between',
 						paddingY: 2,
 						paddingX: 2.5,
-						color: theme.palette.primary.main,
+						gap: 1.5,
 						'&:hover': {
-							backgroundColor: theme.palette.grey[50],
+							backgroundColor: `${theme.palette.primary.main}08`,
+						},
+						'&:active': {
+							backgroundColor: `${theme.palette.primary.main}12`,
 						},
 					}}
 					to="songsList"
 				>
 					<Box
 						sx={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'flex-start',
-						}}
-					>
-						<Typography
-							small
-							sx={{
-								color: 'grey.500',
-							}}
-						>
-							{tHome('allList.browse')}
-						</Typography>
-						<Typography
-							strong
-							sx={{
-								color: 'grey.900',
-							}}
-						>
-							{tHome('allList.title')}
-						</Typography>
-					</Box>
-					<Box
-						sx={{
-							width: 36,
-							height: 36,
-							borderRadius: '50%',
+							width: 40,
+							height: 40,
+							borderRadius: 2,
 							background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',
-							color: 'white',
-							fontSize: '1.2rem',
 							flexShrink: 0,
 						}}
 					>
-						→
+						<QueueMusicRounded
+							sx={{ color: 'white', fontSize: '1.25rem' }}
+						/>
 					</Box>
+
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'flex-start',
+							flex: 1,
+							minWidth: 0,
+						}}
+					>
+						<Typography
+							strong
+							sx={{
+								color: 'grey.900',
+								fontSize: '0.9rem',
+							}}
+						>
+							{tHome('allList.title')}
+						</Typography>
+						<Typography
+							sx={{
+								color: 'grey.500',
+								fontSize: '0.75rem',
+							}}
+						>
+							{tHome('allList.browse')}
+						</Typography>
+					</Box>
+
+					<KeyboardArrowRightRounded
+						sx={{
+							color: theme.palette.grey[400],
+							fontSize: '1.5rem',
+							flexShrink: 0,
+						}}
+					/>
 				</Button>
 			</Box>
 		)

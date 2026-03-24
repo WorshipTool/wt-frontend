@@ -10,6 +10,7 @@ import { Box, Typography, useTheme } from '@/common/ui'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import useWorshipCzVersion from '@/hooks/worshipcz/useWorshipCzVersion'
+import MusicNoteRounded from '@mui/icons-material/MusicNoteRounded'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import SearchedSongsList from './components/SearchedSongsList'
@@ -18,12 +19,13 @@ import AllListPanel from './components/AllListPanel/AllListPanel'
 import { RESET_HOME_SCREEN_EVENT_NAME } from './HomeDesktop'
 
 const TOOLBAR_HEIGHT = 56
-const CONTENT_PADDING_X = 2.5
+const PAGE_PX = 2.5
 
 export default function HomeMobile() {
 	const theme = useTheme()
 	const tHome = useTranslations('home')
 
+	// --- Search state ---
 	const [searchString, setSearchString] = useUrlState('hledat')
 	const [searchInputValue, setSearchInputValue] = useState(searchString || '')
 
@@ -60,8 +62,8 @@ export default function HomeMobile() {
 		stringify: (value) => (value ? 'true' : 'false'),
 	})
 
+	// --- Scroll & toolbar ---
 	const { isTop } = useScrollHandler({ topThreshold: 20 })
-
 	const toolbar = useToolbar()
 	const footer = useFooter()
 
@@ -80,132 +82,100 @@ export default function HomeMobile() {
 		window.scroll({ top: 90, behavior: 'smooth' })
 	}, [searchString])
 
+	// --- Data ---
 	const useWorshipVersion = useWorshipCzVersion()
-
 	const heroLead = tHome('hero.lead')
 	const heroTitle = tHome('hero.title')
 	const heroSubtitleLower = tHome('hero.subtitleLower')
-
 	const searchBarRef = useRef<HTMLDivElement>(null)
 
 	return (
 		<Box
+			data-testid="mobile-root"
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
 				minHeight: '100vh',
 				width: '100%',
-				backgroundColor: theme.palette.grey[50],
+				background: `linear-gradient(180deg, ${theme.palette.grey[50]} 0%, #fff 100%)`,
 			}}
 		>
-			{/* Dark Header Zone - Hero + Search with smooth bottom curve */}
+			{/* ===== HERO SECTION ===== */}
 			<Box
-				data-testid="mobile-header-zone"
+				data-testid="mobile-hero-section"
 				sx={{
-					background: `linear-gradient(165deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
 					marginTop: `-${TOOLBAR_HEIGHT}px`,
-					paddingTop: `${TOOLBAR_HEIGHT * 2 + 16}px`,
-					paddingBottom: 4,
-					position: 'relative',
-					borderRadius: '0 0 24px 24px',
-					'&::after': {
-						content: '""',
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						background:
-							'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)',
-						pointerEvents: 'none',
-						borderRadius: 'inherit',
-					},
+					paddingTop: `${TOOLBAR_HEIGHT + 24}px`,
+					paddingX: PAGE_PX,
+					paddingBottom: 2.5,
 				}}
 			>
-				{/* Hero Content */}
+				{/* Brand badge */}
 				<Box
 					sx={{
-						paddingX: CONTENT_PADDING_X,
-						paddingBottom: 2,
+						display: 'inline-flex',
+						alignItems: 'center',
+						gap: 0.75,
+						marginBottom: 1.5,
+						padding: '4px 10px 4px 6px',
+						borderRadius: '20px',
+						background: `${theme.palette.primary.main}12`,
 					}}
 				>
-					<Box
+					<MusicNoteRounded
 						sx={{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: 0.5,
-							marginBottom: 2,
+							fontSize: '0.95rem',
+							color: theme.palette.primary.main,
+						}}
+					/>
+					<Typography
+						sx={{
+							fontSize: '0.75rem',
+							fontWeight: 600,
+							color: theme.palette.primary.main,
+							letterSpacing: '0.04em',
+							textTransform: 'uppercase',
 						}}
 					>
-						<Typography
-							variant="h5"
-							strong={200}
-							sx={{
-								color: 'rgba(255,255,255,0.65)',
-								lineHeight: 1.2,
-							}}
-						>
-							{heroLead}
-						</Typography>
-						<Typography
-							variant="h3"
-							strong={900}
-							noWrap
-							sx={{
-								color: 'white',
-								lineHeight: 1.1,
-							}}
-						>
-							{heroTitle}
-						</Typography>
-						{useWorshipVersion && (
-							<Typography
-								strong={300}
-								sx={{
-									color: 'rgba(255,255,255,0.5)',
-									lineHeight: 1.3,
-								}}
-							>
-								{heroSubtitleLower}
-							</Typography>
-						)}
-					</Box>
+						{heroLead}
+					</Typography>
 				</Box>
 
-				{/* Search Bar inside dark zone */}
-				<Box
-					ref={searchBarRef}
+				{/* Main heading */}
+				<Typography
+					variant="h4"
+					strong={800}
+					noWrap
 					sx={{
-						paddingX: CONTENT_PADDING_X,
+						color: theme.palette.grey[900],
+						lineHeight: 1.15,
+						marginBottom: 0.5,
 					}}
 				>
-					<MainSearchInput
-						gradientBorder={false}
-						value={searchInputValue}
-						onChange={onSearchValueChange}
-						smartSearch={smartSearch ?? false}
-						onSmartSearchChange={setSmartSearch}
-					/>
-				</Box>
+					{heroTitle}
+				</Typography>
+
+				{useWorshipVersion && (
+					<Typography
+						sx={{
+							color: theme.palette.grey[500],
+							fontSize: '0.85rem',
+							fontWeight: 400,
+							lineHeight: 1.4,
+						}}
+					>
+						{heroSubtitleLower}
+					</Typography>
+				)}
 			</Box>
 
-			{/* Sticky Search Bar - appears when scrolled past header */}
+			{/* ===== SEARCH BAR ===== */}
 			<Box
+				ref={searchBarRef}
+				data-testid="mobile-search-section"
 				sx={{
-					position: 'sticky',
-					top: `${TOOLBAR_HEIGHT}px`,
-					zIndex: 100,
-					paddingX: CONTENT_PADDING_X,
-					paddingY: 1,
-					background: isTop
-						? 'transparent'
-						: `linear-gradient(135deg, ${theme.palette.primary.main}F0, ${theme.palette.primary.dark}F0)`,
-					backdropFilter: isTop ? 'none' : 'blur(16px)',
-					transition:
-						'background 0.25s ease, backdrop-filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease',
-					opacity: isTop ? 0 : 1,
-					pointerEvents: isTop ? 'none' : 'auto',
-					transform: isTop ? 'translateY(-8px)' : 'translateY(0)',
+					paddingX: PAGE_PX,
+					paddingBottom: 2,
 				}}
 			>
 				<MainSearchInput
@@ -217,19 +187,51 @@ export default function HomeMobile() {
 				/>
 			</Box>
 
-			{/* Content sections with unified spacing */}
+			{/* ===== STICKY SEARCH (on scroll) ===== */}
+			<Box
+				data-testid="mobile-sticky-search"
+				sx={{
+					position: 'sticky',
+					top: `${TOOLBAR_HEIGHT}px`,
+					zIndex: 100,
+					paddingX: PAGE_PX,
+					paddingY: 1,
+					background: isTop
+						? 'transparent'
+						: 'rgba(255, 255, 255, 0.85)',
+					backdropFilter: isTop ? 'none' : 'blur(20px) saturate(180%)',
+					borderBottom: isTop
+						? 'none'
+						: `1px solid ${theme.palette.grey[200]}`,
+					transition:
+						'background 0.2s ease, backdrop-filter 0.2s ease, opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
+					opacity: isTop ? 0 : 1,
+					pointerEvents: isTop ? 'none' : 'auto',
+					transform: isTop ? 'translateY(-4px)' : 'translateY(0)',
+				}}
+			>
+				<MainSearchInput
+					gradientBorder={false}
+					value={searchInputValue}
+					onChange={onSearchValueChange}
+					smartSearch={smartSearch ?? false}
+					onSmartSearchChange={setSmartSearch}
+				/>
+			</Box>
+
+			{/* ===== CONTENT ===== */}
 			<Box
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
 					gap: 3,
-					paddingTop: 3,
-					paddingBottom: 4,
+					paddingTop: 1,
+					paddingBottom: 5,
 				}}
 			>
-				{/* Search Results */}
+				{/* Search results */}
 				{searchString && (
-					<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+					<Box sx={{ paddingX: PAGE_PX }}>
 						<SearchedSongsList
 							searchString={searchString}
 							useSmartSearch={smartSearch ?? false}
@@ -237,21 +239,21 @@ export default function HomeMobile() {
 					</Box>
 				)}
 
-				{/* Last Added Songs - horizontal scroll */}
+				{/* Last added songs */}
 				<MobileLastAddedSection />
 
-				{/* All Songs CTA */}
-				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+				{/* Browse all songs CTA */}
+				<Box sx={{ paddingX: PAGE_PX }}>
 					<AllListPanel isMobile />
 				</Box>
 
-				{/* Recommended Songs */}
-				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+				{/* Recommended songs */}
+				<Box sx={{ paddingX: PAGE_PX }}>
 					<RecommendedSongsList />
 				</Box>
 
-				{/* Admin option (for admins) */}
-				<Box sx={{ paddingX: CONTENT_PADDING_X }}>
+				{/* Admin option */}
+				<Box sx={{ paddingX: PAGE_PX }}>
 					<ParseAdminOption />
 				</Box>
 			</Box>
