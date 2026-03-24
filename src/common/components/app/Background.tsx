@@ -22,6 +22,7 @@ export const Background = () => {
 				src={getAssetUrl('wool-bg.webp')}
 				alt={t('backgroundAlt')}
 				fill
+				loading="eager"
 				sizes="100vw"
 				style={{
 					filter: 'brightness(0.7) contrast(1.5)',
