@@ -7,11 +7,13 @@ jest.mock('../../../../common/ui', () => ({
 
 jest.mock('../../../../common/ui/mui', () => ({
 	styled: (Component: any) => (styles: any) => {
-		return ({ children, ...props }: any) => (
+		const StyledComponent = ({ children, ...props }: any) => (
 			<div data-testid="styled-component" {...props}>
 				{children}
 			</div>
 		)
+		StyledComponent.displayName = 'StyledComponent'
+		return StyledComponent
 	},
 }))
 
