@@ -84,9 +84,9 @@ export default function Footer() {
 		<footer className={footer.show ? 'footer footer-open ' : 'footer'}>
 			<Box
 				sx={{
-					bgcolor: 'grey.200',
-					borderTop: '2px solid',
-					borderColor: 'grey.300',
+					background: 'linear-gradient(180deg, rgba(10, 10, 15, 0.95), rgba(14, 14, 26, 0.98))',
+					borderTop: '1px solid rgba(0, 229, 255, 0.15)',
+					boxShadow: '0 -2px 20px rgba(0, 229, 255, 0.06)',
 					marginTop: 1,
 					padding: 1,
 					display: 'flex',
@@ -102,16 +102,19 @@ export default function Footer() {
 						flexDirection={'row'}
 						gap={1}
 						alignItems={'center'}
-						// bgcolor={'grey.300'}
 						sx={{
-							borderRadius: 5,
+							borderRadius: '4px',
 							paddingX: 2,
-							// border: '1px solid',
-							borderColor: 'grey.400',
+							border: '1px solid rgba(0, 229, 255, 0.1)',
 							paddingY: 0.5,
+							transition: 'all 0.3s ease',
+							'&:hover': {
+								borderColor: 'rgba(0, 229, 255, 0.3)',
+								boxShadow: '0 0 15px rgba(0, 229, 255, 0.1)',
+							},
 						}}
 					>
-						<Typography small color="grey.500">
+						<Typography small color="#8888aa">
 							{tFooter('cooperation')}
 						</Typography>
 						<Image
@@ -121,6 +124,7 @@ export default function Footer() {
 							height={30}
 							style={{
 								objectFit: 'contain',
+								filter: 'brightness(0.8) hue-rotate(180deg)',
 							}}
 							priority
 						/>
@@ -142,10 +146,17 @@ export default function Footer() {
 							<Button
 								size={'small'}
 								key={link.children as string}
-								color="grey.500"
+								color="grey.600"
 								variant="text"
 								sx={{
 									fontWeight: 400,
+									fontFamily: 'var(--font-jetbrains), monospace',
+									letterSpacing: '0.03em',
+									transition: 'all 0.2s ease',
+									'&:hover': {
+										color: '#00e5ff',
+										textShadow: '0 0 8px rgba(0, 229, 255, 0.5)',
+									},
 								}}
 								{...link}
 							/>
@@ -155,18 +166,19 @@ export default function Footer() {
 				<Gap value={0.5} />
 
 				<Box display={'flex'} flexDirection={'row'} gap={1}>
-					<Typography strong size={'small'}>
+					<Typography strong size={'small'} sx={{ color: '#8888aa' }}>
 						{tFooter('createdWith')}{' '}
 						<Favorite
-							color={'error'}
 							sx={{
 								fontSize: '0.9rem',
 								transform: 'translateY(0.15rem)',
+								color: '#ff00e5',
+								filter: 'drop-shadow(0 0 4px rgba(255, 0, 229, 0.5))',
 							}}
 						/>
 					</Typography>
-					<Typography size={'small'}>{year}</Typography>
-					<Typography size={'small'}>{tFooter('rightsReserved')}</Typography>
+					<Typography size={'small'} sx={{ color: '#4a4a6a' }}>{year}</Typography>
+					<Typography size={'small'} sx={{ color: '#4a4a6a' }}>{tFooter('rightsReserved')}</Typography>
 				</Box>
 				<Gap value={2} />
 			</Box>

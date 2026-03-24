@@ -6,12 +6,11 @@ import NavigationMobilePanel from '@/common/components/Toolbar/components/Middle
 import RightAccountPanel from '@/common/components/Toolbar/components/RightAccountPanel/RightAccountPanel'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, useTheme } from '@/common/ui'
-import { grey } from '@/common/ui/mui/colors'
 import { styled, useMediaQuery } from '@mui/system'
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 
-const TopBar = styled(Box)(({ theme }) => ({
+const TopBar = styled(Box)(() => ({
 	right: 0,
 	left: 0,
 	top: 0,
@@ -57,17 +56,21 @@ export function Toolbar() {
 					transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
 				}}
 			>
+				{/* Neon background layer */}
 				<motion.div
 					style={{
 						background:
 							variant === 'dark'
-								? grey[900]
-								: `linear-gradient(70deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+								? 'linear-gradient(90deg, #0a0a0f, #0e0e1a)'
+								: 'linear-gradient(90deg, rgba(10, 10, 15, 0.95), rgba(14, 14, 26, 0.95))',
+						backdropFilter: 'blur(20px)',
 						position: 'absolute',
 						left: 0,
 						right: 0,
 						top: 0,
 						bottom: 0,
+						borderBottom: variant === 'transparent' ? 'none' : '1px solid rgba(0, 229, 255, 0.15)',
+						boxShadow: variant === 'transparent' ? 'none' : '0 2px 20px rgba(0, 229, 255, 0.08), 0 1px 0 rgba(123, 47, 255, 0.1)',
 					}}
 					initial={{ opacity: variant === 'transparent' ? 0 : 1 }}
 					animate={{ opacity: variant === 'transparent' ? 0 : 1 }}
@@ -82,7 +85,7 @@ export function Toolbar() {
 					display={'flex'}
 					flex={1}
 					height={'100%'}
-					color={!white ? 'black' : 'white'}
+					color={!white ? '#e8e8ff' : '#e8e8ff'}
 				>
 					<LeftWebTitle />
 					{navigationInMiddle && <MiddleNavigationPanel />}

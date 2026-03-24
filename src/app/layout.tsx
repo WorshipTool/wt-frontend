@@ -7,7 +7,7 @@ import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
-import { Roboto } from 'next/font/google'
+import { Orbitron, JetBrains_Mono } from 'next/font/google'
 import { getMessages } from '../../i18n-config'
 
 import HeadersProviders from '@/app/providers/HeadersProviders'
@@ -20,11 +20,19 @@ const Analytics = dynamic(
 import './globals.classes.css'
 import './globals.css'
 
-const roboto = Roboto({
+const orbitron = Orbitron({
+	weight: ['400', '500', '600', '700', '800', '900'],
+	subsets: ['latin'],
+	display: 'swap',
+	variable: '--font-orbitron',
+	preload: true,
+})
+
+const jetbrainsMono = JetBrains_Mono({
 	weight: ['300', '400', '500', '700'],
 	subsets: ['latin'],
 	display: 'swap',
-	variable: '--font-roboto',
+	variable: '--font-jetbrains',
 	preload: true,
 })
 
@@ -58,7 +66,7 @@ export default async function RootLayout({
 	const messages = await getMessages()
 
 	return (
-		<html lang="en" className={`${roboto.variable} ${roboto.className}`}>
+		<html lang="en" className={`${orbitron.variable} ${jetbrainsMono.variable} ${jetbrainsMono.className}`}>
 			<HeadersProviders />
 			<Analytics />
 			<body>

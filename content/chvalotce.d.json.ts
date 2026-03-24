@@ -126,6 +126,14 @@ declare const messages: {
 			"resultsTitle": "Výsledky vyhledávání:",
 			"loadMore": "Načíst další",
 			"noResults": "Nic jsme nenašli..."
+		},
+		"features": {
+			"title": "Co nabízíme"
+		},
+		"aboutTeaser": {
+			"title": "Kdo za tím stojí?",
+			"learnMore": "Více o nás",
+			"contact": "Kontaktujte nás"
 		}
 	},
 	"about": {

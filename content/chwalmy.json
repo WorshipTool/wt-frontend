@@ -123,6 +123,14 @@
 			"resultsTitle": "Wyniki wyszukiwania:",
 			"loadMore": "Załaduj więcej",
 			"noResults": "Niczego nie znaleźliśmy..."
+		},
+		"features": {
+			"title": "Co oferujemy"
+		},
+		"aboutTeaser": {
+			"title": "Kim jesteśmy?",
+			"learnMore": "Dowiedz się więcej",
+			"contact": "Skontaktuj się z nami"
 		}
 	},
 	"about": {

@@ -18,7 +18,7 @@ export default function FloatingAddButton({
 	const tNavigation = useTranslations('navigation')
 	const tHome = useTranslations('home')
 
-	const transition = 'all 0.2s ease'
+	const transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
 	const titleWidth = '90px'
 	return (
 		<CornerStack corner="bottom-right" order={0}>
@@ -26,9 +26,13 @@ export default function FloatingAddButton({
 				<AnimatePresence>
 					{isLoggedIn() && (
 						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
+							initial={{ opacity: 0, scale: 0.8 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0.8 }}
+							transition={{
+								duration: 0.3,
+								ease: [0.25, 0.46, 0.45, 0.94],
+							}}
 						>
 							<Tooltip
 								title={tNavigation('tooltips.addSong')}
@@ -37,6 +41,18 @@ export default function FloatingAddButton({
 								<Fab
 									sx={{
 										transition,
+										background: 'linear-gradient(135deg, #00e5ff 0%, #7b2fff 50%, #ff00e5 100%)',
+										color: '#0a0a0f',
+										fontFamily: 'var(--font-orbitron)',
+										fontWeight: 700,
+										letterSpacing: '0.08em',
+										boxShadow: '0 0 20px rgba(0, 229, 255, 0.3), 0 0 40px rgba(123, 47, 255, 0.15)',
+										border: '1px solid rgba(0, 229, 255, 0.3)',
+										'&:hover': {
+											background: 'linear-gradient(135deg, #00e5ff 0%, #ff00e5 50%, #7b2fff 100%)',
+											boxShadow: '0 0 30px rgba(0, 229, 255, 0.5), 0 0 60px rgba(255, 0, 229, 0.2)',
+											transform: 'translateY(-3px) scale(1.05)',
+										},
 										...(extended
 											? { width: `calc( ${titleWidth} + 56px)` }
 											: { width: 56 }),
@@ -48,6 +64,7 @@ export default function FloatingAddButton({
 										sx={{
 											position: 'absolute',
 											transition,
+											filter: 'drop-shadow(0 0 4px rgba(0, 229, 255, 0.5))',
 											...(extended ? { mr: titleWidth } : { mr: 0 }),
 										}}
 									/>
