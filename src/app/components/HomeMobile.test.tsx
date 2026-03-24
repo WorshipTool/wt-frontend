@@ -112,9 +112,19 @@ describe('HomeMobile', () => {
 		expect(screen.getByText('hero.subtitleLower')).toBeInTheDocument()
 	})
 
-	it('renders main search input', () => {
+	it('renders dark header zone', () => {
 		render(<HomeMobile />)
-		expect(screen.getByTestId('main-search-input')).toBeInTheDocument()
+		expect(screen.getByTestId('mobile-header-zone')).toBeInTheDocument()
+	})
+
+	it('renders main search input inside header zone', () => {
+		render(<HomeMobile />)
+		const headerZone = screen.getByTestId('mobile-header-zone')
+		const searchInputs = screen.getAllByTestId('main-search-input')
+		// Search input exists inside the header zone
+		expect(headerZone).toContainElement(searchInputs[0])
+		// Also a sticky duplicate for scrolled state
+		expect(searchInputs).toHaveLength(2)
 	})
 
 	it('renders mobile last added section', () => {

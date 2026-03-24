@@ -95,75 +95,112 @@ export default function HomeMobile() {
 				minHeight: '100vh',
 			}}
 		>
-			{/* Hero Section */}
+			{/* Dark Header Zone - Hero + Search */}
 			<Box
+				data-testid="mobile-header-zone"
 				sx={{
+					background: `linear-gradient(165deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
 					paddingTop: `${TOOLBAR_HEIGHT + 16}px`,
-					paddingX: 2,
-					paddingBottom: 1.5,
-					background: isTop
-						? `linear-gradient(165deg, rgba(0,133,255,0.06) 0%, rgba(83,46,231,0.04) 50%, transparent 100%)`
-						: 'transparent',
-					transition: 'background 0.3s ease',
+					paddingBottom: 2,
+					borderRadius: '0 0 24px 24px',
+					position: 'relative',
+					'&::after': {
+						content: '""',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						background:
+							'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 60%)',
+						pointerEvents: 'none',
+						borderRadius: 'inherit',
+					},
 				}}
 			>
+				{/* Hero Content */}
 				<Box
 					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 0.5,
-						marginBottom: 1.5,
+						paddingX: 2.5,
+						paddingBottom: 1,
 					}}
 				>
-					<Typography
-						variant="h5"
-						strong={200}
+					<Box
 						sx={{
-							color: 'grey.600',
-							lineHeight: 1.2,
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 0.5,
+							marginBottom: 1.5,
 						}}
 					>
-						{heroLead}
-					</Typography>
-					<Typography
-						variant="h3"
-						strong={900}
-						noWrap
-						sx={{
-							background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-							WebkitBackgroundClip: 'text',
-							WebkitTextFillColor: 'transparent',
-							lineHeight: 1.1,
-						}}
-					>
-						{heroTitle}
-					</Typography>
-					{useWorshipVersion && (
 						<Typography
-							strong={300}
+							variant="h5"
+							strong={200}
 							sx={{
-								color: 'grey.500',
-								lineHeight: 1.3,
+								color: 'rgba(255,255,255,0.65)',
+								lineHeight: 1.2,
 							}}
 						>
-							{heroSubtitleLower}
+							{heroLead}
 						</Typography>
-					)}
+						<Typography
+							variant="h3"
+							strong={900}
+							noWrap
+							sx={{
+								color: 'white',
+								lineHeight: 1.1,
+							}}
+						>
+							{heroTitle}
+						</Typography>
+						{useWorshipVersion && (
+							<Typography
+								strong={300}
+								sx={{
+									color: 'rgba(255,255,255,0.5)',
+									lineHeight: 1.3,
+								}}
+							>
+								{heroSubtitleLower}
+							</Typography>
+						)}
+					</Box>
+				</Box>
+
+				{/* Search Bar inside dark zone */}
+				<Box
+					ref={searchBarRef}
+					sx={{
+						paddingX: 2,
+					}}
+				>
+					<MainSearchInput
+						gradientBorder={false}
+						value={searchInputValue}
+						onChange={onSearchValueChange}
+						smartSearch={smartSearch ?? false}
+						onSmartSearchChange={setSmartSearch}
+					/>
 				</Box>
 			</Box>
 
-			{/* Sticky Search Bar */}
+			{/* Sticky Search Bar - appears when scrolled past header */}
 			<Box
-				ref={searchBarRef}
 				sx={{
 					position: 'sticky',
 					top: `${TOOLBAR_HEIGHT}px`,
 					zIndex: 100,
 					paddingX: 2,
 					paddingY: 1,
-					backgroundColor: isTop ? 'transparent' : 'rgba(255,255,255,0.95)',
+					background: isTop
+						? 'transparent'
+						: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
 					backdropFilter: isTop ? 'none' : 'blur(12px)',
-					transition: 'background-color 0.2s ease, backdrop-filter 0.2s ease',
+					transition: 'background 0.2s ease, backdrop-filter 0.2s ease',
+					opacity: isTop ? 0 : 1,
+					pointerEvents: isTop ? 'none' : 'auto',
+					transform: isTop ? 'translateY(-8px)' : 'translateY(0)',
 				}}
 			>
 				<MainSearchInput
@@ -181,7 +218,7 @@ export default function HomeMobile() {
 					display: 'flex',
 					flexDirection: 'column',
 					gap: 3,
-					paddingTop: 1,
+					paddingTop: 2,
 				}}
 			>
 				{/* Search Results */}
