@@ -123,6 +123,26 @@
 			"resultsTitle": "Search results:",
 			"loadMore": "Load more",
 			"noResults": "We didn't find anything..."
+		},
+		"quickTags": {
+			"worship": "Worship",
+			"praise": "Praise",
+			"psalms": "Psalms",
+			"christmas": "Christmas",
+			"easter": "Easter",
+			"wedding": "Wedding"
+		},
+		"songIdeas": {
+			"title": "Song ideas",
+			"verified": "Verified"
+		},
+		"recentlyAdded": {
+			"title": "Recently added"
+		},
+		"browseBanner": {
+			"title": "Browse the entire songbook",
+			"subtitle": "Hundreds of songs with chords, lyrics, and translations in one place",
+			"button": "Browse all"
 		}
 	},
 	"about": {

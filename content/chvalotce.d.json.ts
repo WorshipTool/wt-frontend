@@ -105,7 +105,7 @@ declare const messages: {
 		"hero": {
 			"lead": "Jsi-li ovce, tak...",
 			"title": "Chval Otce",
-			"subtitle": "Na worship.cz",
+			"subtitle": "Najdi svou oblíbenou píseň",
 			"subtitleLower": "na worship.cz"
 		},
 		"recommended": {
@@ -126,6 +126,26 @@ declare const messages: {
 			"resultsTitle": "Výsledky vyhledávání:",
 			"loadMore": "Načíst další",
 			"noResults": "Nic jsme nenašli..."
+		},
+		"quickTags": {
+			"worship": "Uctívání",
+			"praise": "Chvály",
+			"psalms": "Žalmy",
+			"christmas": "Vánoce",
+			"easter": "Velikonoce",
+			"wedding": "Svatba"
+		},
+		"songIdeas": {
+			"title": "Nápady na písně",
+			"verified": "Ověřená"
+		},
+		"recentlyAdded": {
+			"title": "Nedávno přidané"
+		},
+		"browseBanner": {
+			"title": "Prohlédněte si celý zpěvník",
+			"subtitle": "Stovky písní s akordy, texty a překlady na jednom místě",
+			"button": "Procházet vše"
 		}
 	},
 	"about": {
