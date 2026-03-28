@@ -2,6 +2,16 @@
    Home Page — Editorial / Warm Aesthetic
    ============================================ */
 
+/* Page wrapper — covers the global grey background fully */
+.pageWrapper {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	align-self: stretch;
+}
+
 /* Hero Section */
 .hero {
 	position: relative;
@@ -10,7 +20,8 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 3rem 1.5rem 2.5rem;
+	padding: 5rem 1.5rem 2.5rem;
+	margin-top: -56px;
 	overflow: hidden;
 	background: linear-gradient(155deg, #0f0f1a 0%, #1a1a2e 35%, #2d1b4e 70%, #1a1a2e 100%);
 }
@@ -177,10 +188,16 @@
 	border-color: rgba(255, 255, 255, 0.2);
 }
 
+/* Smooth transition from hero to content */
+.heroToContentTransition {
+	height: 4rem;
+	background: linear-gradient(to bottom, #1a1a2e 0%, #fbf8f4 100%);
+}
+
 /* Content area below hero */
 .content {
 	background: #fbf8f4;
-	min-height: 50vh;
+	flex: 1;
 	padding: 0 1.5rem;
 }
 
@@ -430,13 +447,18 @@
 
 /* Search results area */
 .searchResults {
-	padding: 2rem 1.5rem 0;
+	padding: 2.5rem 1.5rem 1rem;
 	background: #fbf8f4;
 }
 
 .searchResultsInner {
 	max-width: 1120px;
 	margin: 0 auto;
+}
+
+/* Override MUI card styling within search results for warm aesthetic */
+.searchResultsInner :global(.MuiGrid-container) {
+	max-width: 100%;
 }
 
 /* Skeleton loaders */
@@ -494,7 +516,7 @@
 @media (max-width: 700px) {
 	.hero {
 		min-height: clamp(340px, 50vh, 480px);
-		padding: 5rem 1rem 2rem;
+		padding: 5.5rem 1rem 2rem;
 	}
 
 	.heroTitle {

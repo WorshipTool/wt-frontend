@@ -72,6 +72,7 @@ jest.mock('../../../../common/components/Footer/hooks/useFooter', () => ({
 jest.mock('../../../../common/components/Toolbar/hooks/useToolbar', () => ({
 	useToolbar: () => ({
 		setTransparent: jest.fn(),
+		setWhiteVersion: jest.fn(),
 		setHideMiddleNavigation: jest.fn(),
 		setShowTitle: jest.fn(),
 	}),
@@ -225,5 +226,26 @@ describe('HomeDesktopNew', () => {
 		expect(
 			screen.queryByTestId('searched-songs-list')
 		).not.toBeInTheDocument()
+	})
+
+	it('sets toolbar to white version for dark hero visibility', () => {
+		const setWhiteVersion = jest.fn()
+		const mockUseToolbar = jest.requireMock(
+			'../../../../common/components/Toolbar/hooks/useToolbar'
+		)
+		mockUseToolbar.useToolbar = () => ({
+			setTransparent: jest.fn(),
+			setWhiteVersion,
+			setHideMiddleNavigation: jest.fn(),
+			setShowTitle: jest.fn(),
+		})
+		render(<HomeDesktopNew />)
+		expect(setWhiteVersion).toHaveBeenCalledWith(true)
+	})
+
+	it('renders hero-to-content gradient transition', () => {
+		const { container } = render(<HomeDesktopNew />)
+		const transition = container.querySelector('[class*="heroToContentTransition"]')
+		expect(transition).toBeInTheDocument()
 	})
 })

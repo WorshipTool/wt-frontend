@@ -71,6 +71,7 @@ export default function HomeDesktopNew() {
 
 	useEffect(() => {
 		toolbar.setTransparent(true)
+		toolbar.setWhiteVersion(true)
 		toolbar.setHideMiddleNavigation(false)
 		toolbar.setShowTitle(true)
 	}, [toolbar])
@@ -91,7 +92,7 @@ export default function HomeDesktopNew() {
 	const isSearching = !!searchString && searchString.length > 0
 
 	return (
-		<>
+		<div className={styles.pageWrapper}>
 			{/* Hero Section */}
 			<motion.div
 				className={styles.hero}
@@ -145,6 +146,9 @@ export default function HomeDesktopNew() {
 				</div>
 			</motion.div>
 
+			{/* Smooth gradient transition from dark hero to cream content */}
+			<div className={styles.heroToContentTransition} />
+
 			{/* Search Results (shown when searching) */}
 			{isSearching && (
 				<div className={styles.searchResults}>
@@ -172,6 +176,6 @@ export default function HomeDesktopNew() {
 			) : (
 				<ParseAdminOption />
 			)}
-		</>
+		</div>
 	)
 }

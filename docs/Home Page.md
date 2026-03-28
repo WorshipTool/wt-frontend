@@ -21,6 +21,15 @@ src/app/components/home/
     └── QuickSearchTags.test.tsx
 ```
 
+## Layout integrace
+
+- Stránka používá `SmartPage` s `fullWidth: true` a `hidePadding: true` pro plnou šířku
+- Celý obsah je obalen v `.pageWrapper` s `min-height: 100vh` — zakrývá globální šedé pozadí
+- Hero sekce používá `margin-top: -56px` aby gradient šel až za transparentní toolbar
+- Toolbar je nastaven na `transparent: true` a `whiteVersion: true` pro bílý text nad tmavým hero
+- Mezi hero a obsahem je `.heroToContentTransition` — plynulý gradient přechod z tmavé do krémové
+- Obsahová oblast (`#fbf8f4`) roste přes `flex: 1` aby vyplnila zbývající výšku viewportu
+
 ## Sekce stránky
 
 ### 1. Hero sekce

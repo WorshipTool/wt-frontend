@@ -44,7 +44,8 @@ The home page was redesigned from scratch with an editorial/warm aesthetic:
 - **Entry**: `HomeDesktopNew.tsx` (re-exported from `HomeDesktop.tsx`)
 - **Components**: HomeSearchBar, QuickSearchTags, SongIdeasSection, RecentlyAddedSection, BrowseAllBanner
 - **Styling**: `HomeDesktop.module.css` (CSS Modules with warm dark hero + cream content area)
-- **Tests**: `__tests__/` directory with 15 unit tests
+- **Layout**: Full-width via `SmartPage(fullWidth, hidePadding)`, `.pageWrapper` covers global background, hero uses negative margin to extend behind transparent toolbar, gradient transition between hero and content
+- **Tests**: `__tests__/` directory with 17 unit tests
 
 ## Conventions
 
