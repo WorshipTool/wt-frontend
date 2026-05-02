@@ -141,7 +141,7 @@ describe('Internationalization Tests', () => {
 			expect(chvalotceContent.home.hero.title).toBe('Chval Otce')
 			expect(hallelujahhubContent.home.hero.title).toBe('HallelujahHub')
 
-			expect(chvalotceContent.home.hero.subtitle).toBe('Na worship.cz')
+			expect(chvalotceContent.home.hero.subtitle).toBe('Najdi svou oblíbenou píseň')
 			expect(hallelujahhubContent.home.hero.subtitle).toBe('Your worship companion')
 
 			// Test other differences
@@ -154,7 +154,7 @@ describe('Internationalization Tests', () => {
 			
 			// Should default to chvalotce content
 			expect(defaultContent.home.hero.title).toBe('Chval Otce')
-			expect(defaultContent.home.hero.subtitle).toBe('Na worship.cz')
+			expect(defaultContent.home.hero.subtitle).toBe('Najdi svou oblíbenou píseň')
 		})
 
 		it('should handle invalid content version gracefully', () => {

@@ -7,6 +7,8 @@ export default SmartPage(Home, {
 	hideTitle: true,
 	transparentToolbar: null,
 	hideFooter: null,
+	fullWidth: true,
+	hidePadding: true,
 })
 
 function Home() {

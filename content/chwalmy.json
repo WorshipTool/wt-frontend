@@ -123,6 +123,26 @@
 			"resultsTitle": "Wyniki wyszukiwania:",
 			"loadMore": "Załaduj więcej",
 			"noResults": "Niczego nie znaleźliśmy..."
+		},
+		"quickTags": {
+			"worship": "Uwielbienie",
+			"praise": "Chwały",
+			"psalms": "Psalmy",
+			"christmas": "Boże Narodzenie",
+			"easter": "Wielkanoc",
+			"wedding": "Ślub"
+		},
+		"songIdeas": {
+			"title": "Propozycje pieśni",
+			"verified": "Zweryfikowana"
+		},
+		"recentlyAdded": {
+			"title": "Ostatnio dodane"
+		},
+		"browseBanner": {
+			"title": "Przeglądaj cały śpiewnik",
+			"subtitle": "Setki pieśni z akordami, tekstami i tłumaczeniami w jednym miejscu",
+			"button": "Przeglądaj wszystko"
 		}
 	},
 	"about": {
