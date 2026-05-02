@@ -1,6 +1,7 @@
 'use client'
 import { Box, CircularProgress, Gap, Typography } from '@/common/ui'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
+import { splitSection } from '@/common/components/PresentationLayout/sectionSplit'
 import { sectionNameToText } from '@/tech/sectionNameToText'
 import { BasicVariantPack } from '@/types/song'
 import { Sheet } from '@pepavlin/sheet-api'
@@ -10,6 +11,7 @@ import {
 	useCallback,
 	useEffect,
 	useLayoutEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react'
@@ -122,6 +124,11 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 	}, [])
 
 	useChangeDelayer(item, onItemChange, [onItemChange], 1000)
+
+	const displaySections = useMemo<Section[]>(() => {
+		if (!sheet) return []
+		return sheet.getSections().flatMap(splitSection)
+	}, [sheet])
 
 	// Managing window size
 	const [windowWidth, setWindowWidth] = useState<number>(
@@ -239,7 +246,7 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 					{order ? order + 1 + '. ' : ''}
 					{item?.title.toUpperCase()}
 				</Typography>
-				{sheet?.getSections()?.map((section, index) => {
+				{displaySections.map((section, index) => {
 					return (
 						<Box
 							key={index}
@@ -249,7 +256,7 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 								marginRight: 3,
 							}}
 							ref={
-								index === sheet.getSections().length - 1
+								index === displaySections.length - 1
 									? lastSectionRef
 									: undefined
 							}
