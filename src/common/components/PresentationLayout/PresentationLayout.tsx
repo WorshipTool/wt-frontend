@@ -44,7 +44,7 @@ export default function PresentationLayout({
 		if (items.length === 0) return
 
 		// Swipe events
-		const { swipeArea, updateOptions } = SwipeEventListener({
+		const { swipeArea } = SwipeEventListener({
 			swipeArea: document.querySelector('body') as HTMLElement,
 		})
 
@@ -58,11 +58,8 @@ export default function PresentationLayout({
 		remove()
 
 		swipeArea.addEventListener('swipeRight', right)
-
 		swipeArea.addEventListener('swipeLeft', left)
-
 		swipeArea.addEventListener('swipeUp', up)
-
 		swipeArea.addEventListener('swipeDown', down)
 
 		return remove
@@ -113,10 +110,6 @@ export default function PresentationLayout({
 			document.removeEventListener('keydown', onKeyDown)
 		}
 	}, [items])
-
-	const onCardChange = (index: number) => {
-		setCurrentIndex(index)
-	}
 
 	return (
 		<Box overflow={'hidden'}>
