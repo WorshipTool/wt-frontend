@@ -1,0 +1,29 @@
+.git
+node_modules
+.next
+.DS_Store
+**/.DS_Store
+._*
+**/._*
+*.log
+npm-debug.log*
+
+# Test artifacts
+coverage
+playwright-report
+test-output.log
+tests/e2e
+
+# Dev files
+tmp
+temp
+.env.test
+.env.local
+.env.development
+
+# IDE
+.vscode
+.idea
+
+# Docs
+docs
