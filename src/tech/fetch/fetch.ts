@@ -7,6 +7,7 @@ const SAFE_API_HOSTS = [
 	'worship.cz',
 	'fly.dev',
 	'hallelujahhub.com',
+	'pavlin.dev',
 ]
 
 export const isSafeUrl = (url: string): boolean => {
