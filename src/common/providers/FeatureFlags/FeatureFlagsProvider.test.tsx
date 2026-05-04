@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
 const mockUpdateUserAsync = jest.fn().mockResolvedValue(undefined)
 const mockInitializeAsync = jest.fn().mockResolvedValue(undefined)
@@ -42,7 +42,7 @@ jest.mock('./flags.tech', () => ({
 	})),
 }))
 
-import { FeatureFlagsProvider } from './FeatureFlagsProvider'
+import { FeatureFlagsProvider, useStatsigClient } from './FeatureFlagsProvider'
 import { StatsigClient } from '@statsig/js-client'
 
 describe('FeatureFlagsProvider', () => {
@@ -132,5 +132,44 @@ describe('FeatureFlagsProvider', () => {
 			expect.any(Function),
 		)
 		expect(mockFlush).toHaveBeenCalled()
+	})
+
+	it('re-renders consumers when values_updated fires', async () => {
+		// Capture the values_updated handler so we can trigger it manually
+		let valuesUpdatedHandler: (() => void) | null = null
+		mock$on.mockImplementation((event: string, handler: () => void) => {
+			if (event === 'values_updated') valuesUpdatedHandler = handler
+		})
+
+		const mockCheckGate = jest.fn()
+			.mockReturnValueOnce(false) // first render: flag off (anonymous user)
+			.mockReturnValue(true)      // after values_updated: flag on (logged-in user)
+		;(mockStatsigClient as any).checkGate = mockCheckGate
+
+		function Consumer() {
+			const client = useStatsigClient()
+			const value = client ? client.checkGate('enable_smart_search') : false
+			return <span data-testid="flag">{value ? 'on' : 'off'}</span>
+		}
+
+		render(
+			<FeatureFlagsProvider>
+				<Consumer />
+			</FeatureFlagsProvider>,
+		)
+
+		// Wait until client is initialized and consumer first renders with flag=false
+		await waitFor(() => {
+			expect(screen.getByTestId('flag').textContent).toBe('off')
+		})
+
+		// Simulate Statsig resolving flag values for the logged-in user
+		await waitFor(() => expect(valuesUpdatedHandler).not.toBeNull())
+		valuesUpdatedHandler!()
+
+		// Consumer must re-render and pick up the new flag value without any other trigger
+		await waitFor(() => {
+			expect(screen.getByTestId('flag').textContent).toBe('on')
+		})
 	})
 })

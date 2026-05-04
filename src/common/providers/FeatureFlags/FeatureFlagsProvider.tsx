@@ -9,22 +9,26 @@ type Props = {
 	children: React.ReactNode
 }
 
+// v increments each time Statsig signals new flag values, forcing consumers to re-evaluate.
+// Without v, the client reference never changes, so React skips re-rendering consumers
+// even after updateUserAsync() resolves with a different flag set (e.g. logged-in user).
+type FeatureFlagsContextValue = { client: StatsigClient | null; v: number }
+
 // Custom context instead of @statsig/react-bindings StatsigProvider.
 // A plain React context never changes the tree structure, preventing
 // hydration mismatches and child remounts that StatsigProvider caused.
-const FeatureFlagsContext = createContext<StatsigClient | null>(null)
+const FeatureFlagsContext = createContext<FeatureFlagsContextValue>({
+	client: null,
+	v: 0,
+})
 
 export function useStatsigClient(): StatsigClient | null {
-	return useContext(FeatureFlagsContext)
+	return useContext(FeatureFlagsContext).client
 }
 
 export function FeatureFlagsProvider(props: Props) {
 	const { user } = useAuth()
-	const [client, setClient] = useState<StatsigClient | null>(null)
-
-	// Force re-render when Statsig values update (e.g. after user change)
-	// so that consumer hooks re-evaluate against the new data.
-	const [, forceUpdate] = useState(0)
+	const [ctx, setCtx] = useState<FeatureFlagsContextValue>({ client: null, v: 0 })
 
 	// Initialize Statsig client with dynamically loaded plugins
 	useEffect(() => {
@@ -54,7 +58,7 @@ export function FeatureFlagsProvider(props: Props) {
 
 			if (cancelled) return
 
-			setClient(instance)
+			setCtx({ client: instance, v: 0 })
 		}
 
 		initClient()
@@ -64,36 +68,37 @@ export function FeatureFlagsProvider(props: Props) {
 		}
 	}, [])
 
-	// Subscribe to value updates and clean up on unmount
+	// Subscribe to value updates and clean up on unmount.
+	// Bumping v propagates new flag values to all consumers via context reference change.
 	useEffect(() => {
-		if (!client) return
+		if (!ctx.client) return
 
-		const onValuesUpdated = () => forceUpdate((v) => v + 1)
-		client.$on('values_updated', onValuesUpdated)
+		const onValuesUpdated = () => setCtx((prev) => ({ ...prev, v: prev.v + 1 }))
+		ctx.client.$on('values_updated', onValuesUpdated)
 
 		return () => {
-			client.off('values_updated', onValuesUpdated)
-			client.flush().catch(() => {})
+			ctx.client!.off('values_updated', onValuesUpdated)
+			ctx.client!.flush().catch(() => {})
 		}
-	}, [client])
+	}, [ctx.client])
 
 	// Update Statsig user when auth changes
 	const updateUser = useCallback(() => {
-		if (!client) return
+		if (!ctx.client) return
 
 		if (user) {
-			client.updateUserAsync(userDtoToStatsigUser(user))
+			ctx.client.updateUserAsync(userDtoToStatsigUser(user))
 		} else {
-			client.updateUserAsync({})
+			ctx.client.updateUserAsync({})
 		}
-	}, [client, user])
+	}, [ctx.client, user])
 
 	useEffect(updateUser, [updateUser])
 
 	// Tree structure is always: FeatureFlagsContext.Provider > children
 	// Never changes — no remounts, no hydration issues.
 	return (
-		<FeatureFlagsContext.Provider value={client}>
+		<FeatureFlagsContext.Provider value={ctx}>
 			{props.children}
 		</FeatureFlagsContext.Provider>
 	)
