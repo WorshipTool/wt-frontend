@@ -231,7 +231,7 @@ function Upload() {
 							maxHeight={500}
 							overflow={'auto'}
 						>
-							{result?.sheets.map((a, index) => {
+							{Array.isArray(result?.sheets) && result.sheets.map((a, index) => {
 								return (
 									<Box
 										key={index}
