@@ -2,6 +2,7 @@
 import { PackGuid } from '@/api/dtos'
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import { buildComplexEditItems } from './buildComplexEditItems'
+import useCanEditPlaylist from './useCanEditPlaylist'
 import useCurrentPlaylist from '@/hooks/playlist/useCurrentPlaylist'
 import usePlaylist from '@/hooks/playlist/usePlaylist'
 import { dispatchPlaylistChange } from '@/hooks/playlist/usePlaylistChangeSubscription'
@@ -110,7 +111,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		guid,
 	])
 
-	const canUserEdit = useMemo(() => playlist.isOwner, [playlist.isOwner])
+	const canUserEdit = useCanEditPlaylist(playlist.playlist)
 
 	const title = useMemo(() => state.title, [state.title])
 	const items = useMemo(() => state.items || [], [state.items])
