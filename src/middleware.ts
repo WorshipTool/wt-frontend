@@ -139,7 +139,7 @@ const checkSubdomain = async (
 		)
 		url.pathname = NEXT_BASE_PATH + newAppPathname
 
-		return setResponse(NextResponse.rewrite(url), pathname)
+		return setResponse(NextResponse.rewrite(url), newAppPathname)
 	}
 	return true
 }

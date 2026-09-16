@@ -1,10 +1,9 @@
 'use server'
 import { useServerApi } from '@/api/tech-and-hooks/useServerApi'
 import { InnerPlaylistProvider } from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlaylist'
-import { useServerPathname } from '@/hooks/pathname/useServerPathname'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
-import { smartRedirect } from '@/routes/routes.tech.server'
 import { generateSmartMetadata } from '@/tech/metadata/metadata'
+import { notFound } from 'next/navigation'
 import { LayoutProps, MetadataProps } from '../../../../common/types'
 
 export const generateMetadata = generateSmartMetadata(
@@ -30,9 +29,12 @@ export const generateMetadata = generateSmartMetadata(
 
 export default async function Layout(props: LayoutProps<'playlist'>) {
 	const { playlistGettingApi } = await useServerApi()
-	const playlist = await playlistGettingApi.getPlaylistDataByGuid(
-		props.params.guid
-	)
+
+	try {
+		await playlistGettingApi.getPlaylistDataByGuid(props.params.guid)
+	} catch (e) {
+		notFound()
+	}
 
 	try {
 		// Send tick to backend
@@ -42,16 +44,6 @@ export default async function Layout(props: LayoutProps<'playlist'>) {
 		// console.error(e)
 	}
 
-	const pathname = await useServerPathname()
-	const afterPlaylist = pathname.split('playlist')[1]
-	const isSomethingAfter = afterPlaylist.split('/').length > 2
-
-	if (playlist.teamAlias && !isSomethingAfter) {
-		smartRedirect('teamPlaylist', {
-			alias: playlist.teamAlias,
-			guid: props.params.guid,
-		})
-	}
 	return (
 		<InnerPlaylistProvider guid={props.params.guid as PlaylistGuid}>
 			{props.children}

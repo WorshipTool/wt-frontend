@@ -44,7 +44,7 @@ Heavy dialog components are loaded via `next/dynamic` only when they need to be 
 
 ### 4. Lazy-Loaded Snow Animation
 
-The `Snow` component (which imports `framer-motion` + `react-snowfall`) is lazy-loaded via `next/dynamic` in `SnowWrapper.tsx`. It also skips rendering on mobile devices.
+The `Snow` component (which imports `framer-motion` + `react-snowfall`) is lazy-loaded via `next/dynamic` in `SnowWrapper.tsx`. It also skips rendering on mobile devices. The effect is seasonal and currently turned off via the `SNOW_ENABLED` flag in `SnowWrapper.tsx`; while off, the lazy chunk is never requested.
 
 ### 5. Dynamically Imported Heavy Libraries
 

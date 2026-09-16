@@ -12,6 +12,8 @@ Chyby se hlásí do [Sentry](https://sentry.io). Bez nastaveného
 | `NEXT_PUBLIC_SENTRY_DSN` | ne | DSN projektu ze Sentry. Bez ní se nic neposílá. |
 | `NEXT_PUBLIC_SENTRY_ENVIRONMENT` | ne | Název prostředí. Default je `NODE_ENV`. |
 | `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | ne | Jen pro upload source maps při buildu. Bez tokenu se upload přeskočí. |
+| `NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE` | ne | Podíl běžných sessions se Session Replay nahrávkou (0–1). Default `0.1`. |
+| `NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE` | ne | Podíl sessions s chybou, které se nahrají (0–1). Default `1`. |
 
 Inicializace: `sentry.client.config.ts`, `sentry.server.config.ts`,
 `sentry.edge.config.ts` (root) + `src/instrumentation.ts`. Build obaluje
@@ -48,7 +50,24 @@ Browserové eventy jdou přes first-party tunel `/monitoring`
 (`tunnelRoute` v `next.config.mjs`), takže je neblokují ad-blockery.
 Cesta je vyjmutá z middleware matcheru v `src/middleware.ts`.
 
-Session replay v Sentry je vypnutý — nahrávání session řeší Statsig/Hotjar.
+### Session Replay
+
+Session Replay je zapnutý v `sentry.client.config.ts`. Defaultně se nahrává
+10 % běžných sessions a 100 % sessions, ve kterých nastala chyba; sample
+raty jdou přepsat env proměnnými (viz tabulka výše) — stejně jako DSN se
+ale zapékají při buildu. Replay eventy jdou přes tunel `/monitoring` jako
+ostatní eventy.
+
+Nahrávky používají privacy defaulty SDK: veškerý text je maskovaný
+(`maskAllText`) a média blokovaná (`blockAllMedia`). Pokud bude potřeba
+v nahrávkách vidět obsah (např. texty písní), lze to povolit v opcích
+`Sentry.replayIntegration()`.
+
+Replay integrace zvětšuje klientský bundle (řádově desítky kB gzip) —
+je součástí `sentry.client.config.ts`, ne dynamického importu.
+
+Vedle Sentry běží nezávisle i session replay přes Statsig
+(`FeatureFlagsProvider.tsx`).
 
 ## Analytika (Mixpanel)
 

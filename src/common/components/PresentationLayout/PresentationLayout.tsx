@@ -95,13 +95,23 @@ export default function PresentationLayout({
 	}
 
 	const turnOnFullscreen = () => {
-		document.body.requestFullscreen()
-		setFullscreen(true)
+		if (!document.body.requestFullscreen || document.fullscreenElement) {
+			return
+		}
+		document.body.requestFullscreen().catch(() => {
+			// Fullscreen can be rejected by the browser (unsupported, no user
+			// activation, permissions policy, ...) - ignore, state stays in sync
+			// via the fullscreenchange listener below.
+		})
 	}
 
 	const turnOffFullscreen = () => {
-		document.exitFullscreen()
-		setFullscreen(false)
+		if (!document.exitFullscreen || !document.fullscreenElement) {
+			return
+		}
+		document.exitFullscreen().catch(() => {
+			// See turnOnFullscreen - ignore rejections, fullscreenchange syncs state.
+		})
 	}
 
 	useEffect(() => {
@@ -110,6 +120,16 @@ export default function PresentationLayout({
 			document.removeEventListener('keydown', onKeyDown)
 		}
 	}, [items])
+
+	useEffect(() => {
+		const onFullscreenChange = () => {
+			setFullscreen(!!document.fullscreenElement)
+		}
+		document.addEventListener('fullscreenchange', onFullscreenChange)
+		return () => {
+			document.removeEventListener('fullscreenchange', onFullscreenChange)
+		}
+	}, [])
 
 	return (
 		<Box overflow={'hidden'}>
