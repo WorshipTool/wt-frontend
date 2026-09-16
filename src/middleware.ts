@@ -139,7 +139,9 @@ const checkSubdomain = async (
 		)
 		url.pathname = NEXT_BASE_PATH + newAppPathname
 
-		return setResponse(NextResponse.rewrite(url), pathname)
+		// Header must carry the logical path the app is routed to, not just the
+		// subdomain prefix - layouts read it to decide redirects.
+		return setResponse(NextResponse.rewrite(url), newAppPathname)
 	}
 	return true
 }

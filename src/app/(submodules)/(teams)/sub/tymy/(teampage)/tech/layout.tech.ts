@@ -12,6 +12,7 @@ import { AUTH_COOKIE_NAME } from '@/hooks/auth/auth.constants'
 import { UserDto } from '@/interfaces/user'
 import { handleApiCall } from '@/tech/fetch/handleApiCall'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 
 //TODO: dont create api instance, use useApi() hook instead
 export const getLayoutTeamInfo = async (teamAlias: string) => {
@@ -48,7 +49,12 @@ export const getLayoutTeamPayload = async (
 	}
 }
 
-export const checkLayoutUserMembership = async (
+/**
+ * Returns true for a member, false for a signed-in non-member and null for a
+ * signed-out visitor. Memoized per request - several layouts of the same team
+ * page ask for it.
+ */
+export const checkLayoutUserMembership = cache(async (
 	teamAlias: string
 ): Promise<boolean | null> => {
 	const cookie = cookies()
@@ -79,4 +85,4 @@ export const checkLayoutUserMembership = async (
 	} catch (e) {}
 
 	return false
-}
+})

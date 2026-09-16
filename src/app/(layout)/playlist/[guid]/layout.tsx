@@ -1,10 +1,12 @@
 'use server'
 import { useServerApi } from '@/api/tech-and-hooks/useServerApi'
 import { InnerPlaylistProvider } from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlaylist'
+import { checkLayoutUserMembership } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/tech/layout.tech'
 import { useServerPathname } from '@/hooks/pathname/useServerPathname'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import { smartRedirect } from '@/routes/routes.tech.server'
 import { generateSmartMetadata } from '@/tech/metadata/metadata'
+import { notFound } from 'next/navigation'
 import { LayoutProps, MetadataProps } from '../../../../common/types'
 
 export const generateMetadata = generateSmartMetadata(
@@ -30,9 +32,13 @@ export const generateMetadata = generateSmartMetadata(
 
 export default async function Layout(props: LayoutProps<'playlist'>) {
 	const { playlistGettingApi } = await useServerApi()
-	const playlist = await playlistGettingApi.getPlaylistDataByGuid(
-		props.params.guid
-	)
+
+	let playlist
+	try {
+		playlist = await playlistGettingApi.getPlaylistDataByGuid(props.params.guid)
+	} catch (e) {
+		notFound()
+	}
 
 	try {
 		// Send tick to backend
@@ -43,14 +49,20 @@ export default async function Layout(props: LayoutProps<'playlist'>) {
 	}
 
 	const pathname = await useServerPathname()
-	const afterPlaylist = pathname.split('playlist')[1]
-	const isSomethingAfter = afterPlaylist.split('/').length > 2
+	const afterGuid = pathname.split(`/${props.params.guid}`)[1] ?? ''
+	const isSomethingAfter = afterGuid !== '' && afterGuid !== '/'
 
+	// Members get the playlist inside the team page, everyone else reads it
+	// here. Only members may be redirected, otherwise the team layout would
+	// send them straight back and the two routes would loop.
 	if (playlist.teamAlias && !isSomethingAfter) {
-		smartRedirect('teamPlaylist', {
-			alias: playlist.teamAlias,
-			guid: props.params.guid,
-		})
+		const isMember = await checkLayoutUserMembership(playlist.teamAlias)
+		if (isMember) {
+			smartRedirect('teamPlaylist', {
+				alias: playlist.teamAlias,
+				guid: props.params.guid,
+			})
+		}
 	}
 	return (
 		<InnerPlaylistProvider guid={props.params.guid as PlaylistGuid}>
