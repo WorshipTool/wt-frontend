@@ -30,9 +30,6 @@ export const generateMetadata = generateSmartMetadata(
 )
 
 export default async function Layout(props: LayoutProps<'teamPlaylist'>) {
-	// A playlist stays readable outside of the team, so anyone without access to
-	// it - signed out or not a member - continues on the public playlist url
-	// instead of being stopped by the team page.
 	const membershipCheck = await checkLayoutUserMembership(props.params.alias)
 	if (!membershipCheck) {
 		smartRedirect('playlist', { guid: props.params.guid })
@@ -43,9 +40,7 @@ export default async function Layout(props: LayoutProps<'teamPlaylist'>) {
 	try {
 		// Send tick to backend
 		await playlistGettingApi.updatePlaylistOpenDate(props.params.guid)
-	} catch (e) {
-		// Only members can tick, never block rendering because of it
-	}
+	} catch (e) {}
 
 	return (
 		<TeamPlaylistClientProviders>{props.children}</TeamPlaylistClientProviders>

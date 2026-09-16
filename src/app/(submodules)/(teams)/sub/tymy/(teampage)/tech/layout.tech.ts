@@ -49,11 +49,7 @@ export const getLayoutTeamPayload = async (
 	}
 }
 
-/**
- * Returns true for a member, false for a signed-in non-member and null for a
- * signed-out visitor. Memoized per request - several layouts of the same team
- * page ask for it.
- */
+// true = member, false = signed-in non-member, null = signed out
 export const checkLayoutUserMembership = cache(async (
 	teamAlias: string
 ): Promise<boolean | null> => {

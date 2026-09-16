@@ -49,8 +49,7 @@ export default async function TeamLayout(layout: LayoutProps<'team'>) {
 
 	const membershipCheck = await checkLayoutUserMembership(info.alias)
 
-	// Playlists are readable outside the team - the playlist layout has the
-	// typed guid and sends non-members to the public playlist url itself.
+	// The playlist layout gates itself, it has the guid to redirect with.
 	const isPlaylistPath = pathname.includes('/playlist/')
 
 	if (!membershipCheck && !isPlaylistPath) {
