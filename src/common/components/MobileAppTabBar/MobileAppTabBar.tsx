@@ -43,7 +43,7 @@ export const TAB_ICON_SIZE = 25
  * pages. Phone-only (CSS-hidden on desktop). Like the top bar, it renders an
  * in-flow spacer so page content clears the fixed bar.
  */
-export default function MobileAppTabBar() {
+export default function MobileAppTabBar({ force = false }: { force?: boolean } = {}) {
 	const theme = useTheme()
 	const tNav = useTranslations('navigation')
 	const { isLoggedIn } = useAuth()
@@ -52,7 +52,10 @@ export default function MobileAppTabBar() {
 
 	const [toolsOpen, setToolsOpen] = useState(false)
 
-	if (!isMobileTabBarRoute(pathname)) return null
+	// `force` is for the screens the router cannot classify — the 404, which has
+	// no route key to put in nav.constants but is very much somewhere you want a
+	// way out of.
+	if (!force && !isMobileTabBarRoute(pathname)) return null
 
 	const active = mobileTabForPath(pathname)
 	const loggedIn = isLoggedIn()
@@ -160,7 +163,7 @@ export default function MobileAppTabBar() {
 								icon={<AppsOutlined />}
 								activeIcon={<Apps />}
 								label={tNav('tools')}
-								active={toolsOpen}
+								active={toolsOpen || active === 'tools'}
 							/>
 						</Box>
 					)}

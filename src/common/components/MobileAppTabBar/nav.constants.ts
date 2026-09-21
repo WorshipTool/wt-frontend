@@ -21,7 +21,7 @@ export const ABOVE_TABBAR_SLOT_ID = 'mobile-above-tabbar-slot'
  * overshooting is invisible, undershooting hides content. */
 export const MOBILE_NAV_CLEARANCE = 'calc(env(safe-area-inset-bottom) + 80px)'
 
-export type MobileTab = 'home' | 'songs' | 'account' | null
+export type MobileTab = 'home' | 'songs' | 'account' | 'tools' | null
 
 /**
  * Which bottom tab each app route maps to.
@@ -56,7 +56,34 @@ const TAB_BY_ROUTE: Partial<Record<RoutesKeys, Exclude<MobileTab, null>>> = {
 	// all — and an installed app has no browser Back either.
 	login: 'account',
 	signup: 'account',
+	// reached from the sign-in screen, so it stays in the same tab rather than
+	// swapping the whole chrome half-way through one flow
+	resetPassword: 'account',
+	resetPasswordToken: 'account',
+	// The team module, opened from the Nástroje sheet — so Nástroje is the tab
+	// that stays lit. Its own presentation route is left out on purpose, below.
+	teams: 'tools',
+	team: 'tools',
+	teamSongbook: 'tools',
+	teamPlaylists: 'tools',
+	teamPlaylist: 'tools',
+	teamPeople: 'tools',
+	teamSettings: 'tools',
+	teamStatistics: 'tools',
+	teamSong: 'tools',
+	teamJoin: 'tools',
+	teamPublic: 'tools',
+	teamPublicSong: 'tools',
+	teamNoAccess: 'tools',
 }
+
+/**
+ * Routes that are in the shell but belong to no single tab: the bar shows with
+ * nothing lit, so you can always leave, but it doesn't claim you are somewhere
+ * you aren't. Marketing pages are here rather than in TAB_BY_ROUTE because the
+ * app reaches them (footer, About) without them being part of any tab.
+ */
+const SHELL_ONLY: RoutesKeys[] = ['about', 'contact']
 
 /**
  * App-shell routes whose surface already pads for the bar/dock itself. The tab
@@ -96,7 +123,10 @@ export function mobileTabForPath(pathname: string | null): MobileTab {
 
 /** True on the app-shell routes that show the bottom tab bar (top bar hidden on phones). */
 export function isMobileTabBarRoute(pathname: string | null): boolean {
-	return mobileTabForPath(pathname) !== null
+	if (!pathname) return false
+	if (mobileTabForPath(pathname) !== null) return true
+	const path = normalise(pathname)
+	return SHELL_ONLY.some((key) => matches(path, key))
 }
 
 /** See `OWNS_BOTTOM_CLEARANCE`. */

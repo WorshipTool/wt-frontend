@@ -91,6 +91,37 @@ keyed by **`routesPaths` keys**, not path strings, so renaming a route is a
 compile error rather than a silently broken shell. Add a route to `TAB_BY_ROUTE`
 to bring it into the shell. It has tests — keep them passing.
 
+**Every screen a user can reach is in the shell.** Being reachable and having
+nothing on screen that leads anywhere is the bug the shell exists to prevent —
+and an installed app has no browser Back to fall back on. So sign-in, sign-up,
+password reset, the team module, the marketing pages and the 404 all show the
+bar. Two lists express the difference between *being in the shell* and *being
+in a tab*:
+
+- `TAB_BY_ROUTE` — the route belongs to a tab, and that tab lights up. Auth and
+  the password reset sit under **account** (that is the tab that leads there
+  while signed out); the whole team module sits under **tools**, the sheet it
+  is opened from.
+- `SHELL_ONLY` — the bar shows with nothing lit, for screens that belong to no
+  tab. Marketing pages live here; the 404 has no route key at all and asks for
+  the bar directly with `<MobileAppTabBar force />`.
+
+**The exception is projection.** Song and playlist presentation modes own the
+whole display on purpose and stay out, as does anything that returns a file
+rather than a screen (the PDF routes).
+
+**Mounting.** The bar renders next to the top bar in `AppLayoutInner`, which
+only the `(layout)` group uses. The chromeless `(nolayout)` group and the
+`(submodules)` group mount it in their own layouts, so the routes living there
+can show it at all. Only one group's layout is ever mounted for a given route,
+so there is never a second bar.
+
+**A page that sizes itself to the viewport must say so.** The bar renders an
+in-flow spacer so content can scroll clear of it; a page that already claims
+`100vh`/`100dvh` would then scroll by the spacer's height and push its own
+footer under the bar. Such pages go in `OWNS_BOTTOM_CLEARANCE` and pad their own
+bottom with `MOBILE_NAV_CLEARANCE` instead (the auth sheets do this).
+
 Feed it `useClientPathname()`, not `usePathname()`: only the former re-applies
 subdomain prefixes, and the raw one misclassifies every route on a subdomain.
 

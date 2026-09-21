@@ -50,7 +50,29 @@ describe('mobileTabForPath', () => {
 		expect(mobileTabForPath('/registrace')).toBe('account')
 	})
 
-	it('returns null for marketing pages', () => {
+	it('keeps the password reset in the same tab as the sign-in it comes from', () => {
+		expect(mobileTabForPath('/reset-hesla')).toBe('account')
+		expect(mobileTabForPath('/reset-hesla/abc123')).toBe('account')
+	})
+
+	it('maps the team module to the tools tab it is opened from', () => {
+		expect(mobileTabForPath('/sub/tymy')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/nas-tym')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/nas-tym/zpevnik')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/nas-tym/playlisty')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/nas-tym/lide')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/nas-tym/nastaveni')).toBe('tools')
+		expect(mobileTabForPath('/sub/tymy/v/nas-tym')).toBe('tools')
+	})
+
+	it('leaves presentation modes out of the shell', () => {
+		// projection screens own the whole display on purpose
+		expect(mobileTabForPath('/pisen/a1b2/x/prezentace')).toBeNull()
+		expect(mobileTabForPath('/playlist/abc/prezentace')).toBeNull()
+		expect(mobileTabForPath('/sub/tymy/nas-tym/playlist/abc/prezentace')).toBeNull()
+	})
+
+	it('returns null for marketing pages, which belong to no tab', () => {
 		expect(mobileTabForPath('/o-nas')).toBeNull()
 		expect(mobileTabForPath('/kontakt')).toBeNull()
 	})
@@ -65,10 +87,23 @@ describe('mobileTabForPath', () => {
 })
 
 describe('isMobileTabBarRoute', () => {
-	it('agrees with mobileTabForPath', () => {
-		for (const path of ['/', '/seznam', '/ucet', '/o-nas', '/prihlaseni']) {
+	it('agrees with mobileTabForPath wherever a tab is lit', () => {
+		for (const path of ['/', '/seznam', '/ucet', '/prihlaseni', '/sub/tymy']) {
 			expect(isMobileTabBarRoute(path)).toBe(mobileTabForPath(path) !== null)
 		}
+	})
+
+	it('also covers the shell pages that light no tab', () => {
+		// the bar is there so you can leave; nothing is lit because they belong to
+		// no tab
+		expect(mobileTabForPath('/o-nas')).toBeNull()
+		expect(isMobileTabBarRoute('/o-nas')).toBe(true)
+		expect(isMobileTabBarRoute('/kontakt')).toBe(true)
+	})
+
+	it('stays out of presentation modes', () => {
+		expect(isMobileTabBarRoute('/pisen/a1b2/x/prezentace')).toBe(false)
+		expect(isMobileTabBarRoute('/playlist/abc/prezentace')).toBe(false)
 	})
 
 	it('is false for a null pathname', () => {
