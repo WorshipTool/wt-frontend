@@ -138,6 +138,33 @@ useBlockAppReload(sheetData !== '', 'writing a song')
 silently throw that work away. The update is applied as soon as the last blocker
 clears.
 
+## Where a button is declared
+
+**Global navigation belongs to the tab bar, and nowhere else.** Account, tools,
+search and create are always one tap away at the bottom, so a page must not
+render them again in a top row — that is the same destinations twice, in two
+visual languages. `RightAccountPanel` is the desktop toolbar's right side; it is
+hidden below `MOBILE_NAV_BREAKPOINT` wherever a module reuses it.
+
+**A page's own action is written once, where it belongs in the page**, wrapped
+in `common/components/PageAction`:
+
+```tsx
+<PageAction>
+  <Button endIcon={<PersonAdd />} onClick={openInvite}>{t('invite')}</Button>
+</PageAction>
+```
+
+Declaration and usage are the same place on purpose: the page states what it can
+do and does not also have to know where that lands. `PageAction` owns the
+placement — inline on desktop, so existing layouts are untouched, and docked in
+the strip above the tab bar on phones, within reach of the thumb. That strip is
+the tab bar's `ABOVE_TABBAR_SLOT_ID`, the same slot the song dock and paginators
+portal into, so it stacks by layout and follows the bar's height.
+
+This is what replaces a FAB: the rule against a bottom-right button competing
+with the tab bar still holds, and the docked strip is where that pressure goes.
+
 ## Attention & layout rules
 
 1. **Thumb zone = navigation + at most one primary.** The bottom tab bar owns
