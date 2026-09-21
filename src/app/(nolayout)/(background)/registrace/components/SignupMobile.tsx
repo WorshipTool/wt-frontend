@@ -3,6 +3,7 @@
 import EmailSignInButton from '@/app/(nolayout)/(background)/prihlaseni/components/EmailSignInButton'
 import GoogleLoginButton from '@/app/(nolayout)/(background)/prihlaseni/components/GoogleLoginButton'
 import SvgIcon from '@/assets/icon.svg'
+import { MOBILE_NAV_CLEARANCE } from '@/common/components/MobileAppTabBar/nav.constants'
 import { Box, Typography } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { TextInput } from '@/common/ui/TextInput'
@@ -48,7 +49,8 @@ export default function SignupMobile(props: SignupMobileProps) {
 				flexDirection: 'column',
 				paddingX: 3,
 				paddingTop: 'calc(env(safe-area-inset-top) + 24px)',
-				paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)',
+				// room for the tab bar — see the login sheet
+				paddingBottom: MOBILE_NAV_CLEARANCE,
 			}}
 		>
 			{/* brand + sign-up options, centred in the space above the footer */}

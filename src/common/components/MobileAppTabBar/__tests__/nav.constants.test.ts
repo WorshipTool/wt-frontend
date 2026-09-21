@@ -43,11 +43,16 @@ describe('mobileTabForPath', () => {
 		expect(mobileTabForPath('/pisen/a1b2/moje-pisen/')).toBe('songs')
 	})
 
-	it('returns null for marketing and auth pages', () => {
+	it('maps signing in and up to the account tab', () => {
+		// the Account tab leads here while signed out, and both screens hide every
+		// other way back into the app
+		expect(mobileTabForPath('/prihlaseni')).toBe('account')
+		expect(mobileTabForPath('/registrace')).toBe('account')
+	})
+
+	it('returns null for marketing pages', () => {
 		expect(mobileTabForPath('/o-nas')).toBeNull()
 		expect(mobileTabForPath('/kontakt')).toBeNull()
-		expect(mobileTabForPath('/prihlaseni')).toBeNull()
-		expect(mobileTabForPath('/registrace')).toBeNull()
 	})
 
 	it('returns null for unknown account sub-routes rather than assuming the shell', () => {
@@ -75,6 +80,9 @@ describe('pageOwnsBottomClearance', () => {
 	it('is true only for the overlay app-shell screens', () => {
 		expect(pageOwnsBottomClearance('/pisen/a1b2/moje-pisen')).toBe(true)
 		expect(pageOwnsBottomClearance('/playlist/abc-123')).toBe(true)
+		// full-screen sheets sized to the viewport, padding for the bar themselves
+		expect(pageOwnsBottomClearance('/prihlaseni')).toBe(true)
+		expect(pageOwnsBottomClearance('/registrace')).toBe(true)
 	})
 
 	it('is false for ordinary shell pages', () => {

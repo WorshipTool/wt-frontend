@@ -50,6 +50,12 @@ const TAB_BY_ROUTE: Partial<Record<RoutesKeys, Exclude<MobileTab, null>>> = {
 	upload: 'account',
 	// playlist detail, not its sub-routes (prezentace / pdf)
 	playlist: 'account',
+	// Signing in and up are where the Account tab leads while signed out, so they
+	// belong to it. They hide the top bar and the footer and their phone layouts
+	// are full-screen sheets, which left them with no way back into the app at
+	// all — and an installed app has no browser Back either.
+	login: 'account',
+	signup: 'account',
 }
 
 /**
@@ -57,7 +63,14 @@ const TAB_BY_ROUTE: Partial<Record<RoutesKeys, Exclude<MobileTab, null>>> = {
  * bar skips its in-flow spacer there, so short content doesn't become needlessly
  * scrollable (no grey strip under the page).
  */
-const OWNS_BOTTOM_CLEARANCE: RoutesKeys[] = ['variant', 'playlist']
+const OWNS_BOTTOM_CLEARANCE: RoutesKeys[] = [
+	'variant',
+	'playlist',
+	// full-screen sheets that size themselves to the viewport and pad their own
+	// bottom, so the spacer would only make them scrollable by its own height
+	'login',
+	'signup',
+]
 
 /** Strip a trailing slash so `/seznam/` classifies the same as `/seznam`. */
 function normalise(pathname: string): string {
