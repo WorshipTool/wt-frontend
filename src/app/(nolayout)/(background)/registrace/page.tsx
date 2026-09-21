@@ -1,8 +1,12 @@
 'use client'
 import GoogleLoginButton from '@/app/(nolayout)/(background)/prihlaseni/components/GoogleLoginButton'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
+import {
+	MOBILE_NAV_BREAKPOINT,
+	MOBILE_NAV_CLEARANCE,
+} from '@/common/components/MobileAppTabBar/MobileAppTabBar'
 import LogoTitle from '@/common/components/Toolbar/components/LogoTitle'
-import { Box } from '@/common/ui'
+import { Box, useTheme } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Gap } from '@/common/ui/Gap'
 import { StandaloneCard } from '@/common/ui/StandaloneCard'
@@ -18,6 +22,8 @@ export default SmartPage(SignUp, {
 	hideFooter: true,
 	hideToolbar: true,
 	fullWidth: true,
+	// Same dead end as the login screen it is reached from — see that page.
+	mobileTabBar: true,
 })
 
 function SignUp() {
@@ -37,6 +43,7 @@ function SignUp() {
 
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
+	const theme = useTheme()
 
 	const onSignupClick = () => {
 		setInProgress(true)
@@ -56,12 +63,18 @@ function SignUp() {
 
 	return (
 		<Box
-			display={'flex'}
-			flexDirection={'column'}
-			justifyContent={'center'}
-			alignItems={'center'}
-			height={'100vh'}
-			gap={3}
+			sx={{
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+				gap: 3,
+				// Same reservation as the login screen — see that page.
+				minHeight: '100vh',
+				[theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: {
+					minHeight: `calc(100vh - ${MOBILE_NAV_CLEARANCE})`,
+				},
+			}}
 		>
 			<LogoTitle />
 			<StandaloneCard

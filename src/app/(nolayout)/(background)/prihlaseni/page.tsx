@@ -2,8 +2,12 @@
 
 import GoogleLoginButton from '@/app/(nolayout)/(background)/prihlaseni/components/GoogleLoginButton'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
+import {
+	MOBILE_NAV_BREAKPOINT,
+	MOBILE_NAV_CLEARANCE,
+} from '@/common/components/MobileAppTabBar/MobileAppTabBar'
 import LogoTitle from '@/common/components/Toolbar/components/LogoTitle'
-import { Box } from '@/common/ui'
+import { Box, useTheme } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Gap } from '@/common/ui/Gap'
 import { StandaloneCard } from '@/common/ui/StandaloneCard'
@@ -20,11 +24,17 @@ export default SmartPage(Login, {
 	hideFooter: true,
 	hideToolbar: true,
 	fullWidth: true,
+	// Without the top bar or the footer this screen had exactly one way out — the
+	// logo, which reads as a header rather than as navigation, and there is no
+	// browser Back at all once the app is added to the home screen. The tab bar
+	// keeps the rest of the app one tap away.
+	mobileTabBar: true,
 })
 
 function Login() {
 	const t = useTranslations('auth.login')
 	const tCommon = useTranslations('common')
+	const theme = useTheme()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -114,12 +124,21 @@ function Login() {
 
 	return (
 		<Box
-			display={'flex'}
-			flexDirection={'column'}
-			justifyContent={'center'}
-			alignItems={'center'}
-			height={'100vh'}
-			gap={3}
+			sx={{
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+				gap: 3,
+				// Fill the viewport so the card sits centred — less the tab bar on
+				// phones, for which SmartPage already reserves room below this box.
+				// Claiming the whole 100vh here reserves it twice: the page gains a
+				// bar's worth of scroll and the card slides under the bar.
+				minHeight: '100vh',
+				[theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: {
+					minHeight: `calc(100vh - ${MOBILE_NAV_CLEARANCE})`,
+				},
+			}}
 		>
 			<LogoTitle />
 			<StandaloneCard

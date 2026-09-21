@@ -27,7 +27,15 @@ function activeTabFor(pathname: string | null): ActiveTab {
 	if (!pathname) return null
 	if (pathname === '/') return 'home'
 	if (pathname.startsWith('/seznam') || pathname.startsWith('/pisen')) return 'songs'
-	if (pathname.startsWith('/ucet')) return 'account'
+	// Signing in and up are reached from the Account tab (it points at login while
+	// logged out), so they belong to it — otherwise the bar goes blank exactly
+	// where the user most needs to know where they are.
+	if (
+		pathname.startsWith('/ucet') ||
+		pathname.startsWith('/prihlaseni') ||
+		pathname.startsWith('/registrace')
+	)
+		return 'account'
 	return null
 }
 
