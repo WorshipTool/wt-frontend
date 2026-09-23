@@ -66,17 +66,36 @@ type CheckFlagOptions = {
 }
 
 /**
- * Check flag on serverside
+ * Check flag on serverside.
+ *
+ * Never throws. Statsig being unreachable — or misconfigured, which is what a
+ * missing server key looks like — used to take the whole page down with it:
+ * this runs inside server components, so the error escapes into the Suspense
+ * boundary and the route renders its error state instead of the page. The song
+ * page went dark over a gate that only decides whether a media section is
+ * shown. `getCloudConfig` right next to it already degrades this way.
+ *
+ * The fallback is `false`, i.e. the gate is closed: every flag here guards
+ * something extra (admin pages, a media section, gated content), so "we don't
+ * know" and "not enabled" mean the same thing to the caller.
  */
 export const checkFlag = async (
 	key: FeatureFlag,
 	user?: UserDto,
 ): Promise<boolean> => {
-	await ensureStatsigInitialized()
+	try {
+		await ensureStatsigInitialized()
 
-	const userData = userDtoToStatsigUser(user)
+		const userData = userDtoToStatsigUser(user)
 
-	const value = Statsig.checkGate(userData, key as string)
+		const value = Statsig.checkGate(userData, key as string)
 
-	return value
+		return value
+	} catch (error) {
+		console.error(
+			`[checkFlag] Failed to check flag "${key}", treating it as off:`,
+			error,
+		)
+		return false
+	}
 }
