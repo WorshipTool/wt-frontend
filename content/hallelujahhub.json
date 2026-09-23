@@ -570,9 +570,6 @@
 		"addTitle": "Create a song",
 		"uploadFile": "Upload file",
 		"uploadFileSubtitle": "Automatically convert song from image",
-		"photoTitle": "Add a song from a photo",
-		"photoSubtitle": "Take a photo of the songbook or pick an image and we'll turn it into a song.",
-		"photoAction": "Take photo or choose",
 		"writeManually": "Write Manually",
 		"writeManuallySubtitle": "Write the lyrics and chords in the editor",
 		"createTooltip": "Add",
@@ -948,7 +945,6 @@
 		"markBridge": "Mark bridge",
 		"insertChord": "Insert chord",
 		"chord": "Chord",
-		"chordMajor": "major",
 		"done": "Done",
 		"titlePlaceholder": "Song title",
 		"contentPlaceholder": "Song content"

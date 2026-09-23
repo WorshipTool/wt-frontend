@@ -834,9 +834,6 @@ declare const messages: {
 		"addTitle": "Vytvořit píseň",
 		"uploadFile": "Nahrát soubor",
 		"uploadFileSubtitle": "Automaticky převeďte píseň z obrázku",
-		"photoTitle": "Přidejte píseň z fotky",
-		"photoSubtitle": "Vyfoťte zpěvník nebo vyberte obrázek a my z něj vytvoříme píseň.",
-		"photoAction": "Vyfotit nebo vybrat",
 		"writeManually": "Sepsat ručně",
 		"writeManuallySubtitle": "Napište text a akordy v editoru",
 		"createTooltip": "Přidat",
@@ -961,7 +958,6 @@ declare const messages: {
 		"markBridge": "Označit bridge",
 		"insertChord": "Vložit akord",
 		"chord": "Akord",
-		"chordMajor": "dur",
 		"done": "Hotovo",
 		"titlePlaceholder": "Zadejte název písně",
 		"contentPlaceholder": "Zde je místo pro obsah písně"

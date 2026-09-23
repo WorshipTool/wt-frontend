@@ -2,9 +2,9 @@ import { Box, Button, Typography } from '@/common/ui'
 import { Paper } from '@/common/ui/mui'
 import { CloudUpload } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import React from 'react'
+import React, { useRef } from 'react'
 import { Gap } from '../../../../../common/ui/Gap'
-import { useFilePicker } from '../useFilePicker'
+import UploadFileInput from '../UploadFileInput'
 import DragAndDrop from './components/DragAndDrop'
 
 interface UploadPanelProps {
@@ -12,6 +12,8 @@ interface UploadPanelProps {
 }
 
 export default function UploadPanel(props: UploadPanelProps) {
+	const inputRef = useRef<HTMLInputElement>(null)
+
 	const [draggingOver, setDraggingOver] = React.useState(false)
 
 	const t = useTranslations('upload')
@@ -20,7 +22,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 		if (props.onUpload) props.onUpload(files)
 	}
 
-	const picker = useFilePicker(uploadFiles)
+	const openFilePicker = () => inputRef.current?.click()
 
 	return (
 		<DragAndDrop
@@ -109,7 +111,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 					<Gap value={4} />
 					<Button
 						variant="contained"
-						onClick={picker.open}
+						onClick={openFilePicker}
 						sx={{
 							display: draggingOver ? 'none' : 'block',
 						}}
@@ -135,7 +137,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 					</Typography>
 				</Box>
 			</Paper>
-			{picker.input}
+			<UploadFileInput inputRef={inputRef} onUpload={uploadFiles} />
 		</DragAndDrop>
 	)
 }

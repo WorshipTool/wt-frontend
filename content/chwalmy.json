@@ -831,9 +831,6 @@
 		"addTitle": "Utwórz pieśń",
 		"uploadFile": "Prześlij plik",
 		"uploadFileSubtitle": "Automatycznie konwertuj pieśń z obrazu",
-		"photoTitle": "Dodaj pieśń ze zdjęcia",
-		"photoSubtitle": "Zrób zdjęcie śpiewnika lub wybierz obraz, a my utworzymy z niego pieśń.",
-		"photoAction": "Zrób zdjęcie lub wybierz",
 		"writeManually": "Napisz ręcznie",
 		"writeManuallySubtitle": "Wpisz tekst i akordy w edytorze",
 		"createTooltip": "Dodaj",
@@ -958,7 +955,6 @@
 		"markBridge": "Oznacz bridge",
 		"insertChord": "Wstaw akord",
 		"chord": "Akord",
-		"chordMajor": "dur",
 		"done": "Gotowe",
 		"titlePlaceholder": "Wpisz tytuł pieśni",
 		"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"

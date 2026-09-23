@@ -9,6 +9,7 @@ import { useApi } from '@/api/tech-and-hooks/useApi'
 import { getUrl } from '@/api/urls'
 import { fixParserJsonString } from '@/app/(layout)/vytvorit/components/tech'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
+import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import Popup from '@/common/components/Popup/Popup'
 import { Box, Button, Chip, LinearProgress, Typography } from '@/common/ui'
@@ -21,7 +22,6 @@ import axios from 'axios'
 import { useTranslations } from 'next-intl'
 import { useSnackbar } from 'notistack'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import UploadMobile from './components/UploadMobile'
 import UploadPanel from './components/UploadPanel/UploadPanel'
 
 enum ParserStatus {
@@ -199,33 +199,41 @@ function Upload() {
 		enqueueSnackbar(t('songDataCopied'))
 	}
 
+	const panel = (
+		<Box
+			sx={{
+				width: '100%',
+				height: 500,
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				paddingTop: 5,
+			}}
+		>
+			<Box
+				sx={{
+					width: '100%',
+					height: '100%',
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<UploadPanel onUpload={parseFiles} />
+			</Box>
+		</Box>
+	)
+
 	return (
 		<>
+			{/* Same panel on both. A phone has no top bar of its own in the app
+			    shell, so it gets the mobile header around it. */}
 			{phoneVersion ? (
-				<UploadMobile onUpload={parseFiles} />
+				<MobileAppHeader title={t('uploadFile')} backTo="addMenu">
+					{panel}
+				</MobileAppHeader>
 			) : (
-				<Box
-					sx={{
-						width: '100%',
-						height: 500,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-						paddingTop: 5,
-					}}
-				>
-					<Box
-						sx={{
-							width: '100%',
-							height: '100%',
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
-						<UploadPanel onUpload={parseFiles} />
-					</Box>
-				</Box>
+				panel
 			)}
 
 			<Popup
