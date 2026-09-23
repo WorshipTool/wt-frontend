@@ -64,6 +64,37 @@ describe('getPopupPosition', () => {
 		})
 	})
 
+	describe('above the bottom dock', () => {
+		// 71px tab bar + 8px safe-area inset, as the phone shell measures it
+		const DOCKED = { ...PHONE, bottomInset: 79 }
+
+		it('rises from the dock, not from the bottom of the screen', () => {
+			const p = getPopupPosition(rect(195, 195, 664, 664), DOCKED, true)
+
+			// the anchor sits at the very bottom, under the bar; the popup does not
+			expect(p.bottom).toBe(79 + OFFSET)
+		})
+
+		it('keeps an anchored popup where it is when it already clears the dock', () => {
+			const p = getPopupPosition(rect(195, 195, 300, 300), DOCKED, true)
+
+			expect(p.bottom).toBe(DOCKED.height - 300 + OFFSET)
+		})
+
+		it('caps a downward popup at the dock', () => {
+			const p = getPopupPosition(rect(195, 195, 120, 160), DOCKED)
+
+			expect(p.top).toBe(128)
+			expect(p.top! + p.maxHeight).toBe(DOCKED.height - 79 - OFFSET)
+		})
+
+		it('reserves nothing where there is no dock', () => {
+			const p = getPopupPosition(rect(195, 195, 664, 664), PHONE, true)
+
+			expect(p.bottom).toBe(OFFSET)
+		})
+	})
+
 	describe('vertically', () => {
 		it('hangs below the anchor top by default', () => {
 			const p = getPopupPosition(rect(200, 260, 300, 340), DESKTOP)

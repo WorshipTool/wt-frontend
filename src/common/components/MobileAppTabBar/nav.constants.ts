@@ -28,6 +28,31 @@ export const MOBILE_NAV_CLEARANCE = 'calc(env(safe-area-inset-bottom) + 80px)'
  */
 export const MOBILE_NAV_BAR_HEIGHT = 71
 
+/**
+ * How much of the bottom of the screen the dock takes up right now, in px.
+ *
+ * Measured rather than assumed: the height depends on which bar holds the dock
+ * and on whether the page has docked an action above it, and it is 0 wherever
+ * the dock isn't there — desktop, or a route outside the shell.
+ *
+ * Anything that floats over the page asks this and stays above it. The bar is
+ * navigation, and a popup that buries navigation leaves no way out of itself.
+ *
+ * Reads the DOM, so it is client-only; returns 0 during SSR.
+ */
+export function measureBottomDock(): number {
+	if (typeof document === 'undefined') return 0
+
+	const dock = document.getElementById(ABOVE_TABBAR_SLOT_ID)?.parentElement
+	if (!dock) return 0
+
+	const rect = dock.getBoundingClientRect()
+	// CSS-hidden on desktop: no height, so nothing to stay clear of
+	if (rect.height === 0) return 0
+
+	return Math.max(0, window.innerHeight - rect.top)
+}
+
 export type MobileTab = 'home' | 'songs' | 'account' | 'tools' | null
 
 /**

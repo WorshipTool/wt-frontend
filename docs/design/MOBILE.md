@@ -140,6 +140,22 @@ its own label.
 `CONTEXTUAL_BAR_ROUTES` must list exactly the routes the module's layout covers.
 One route short and that screen has no bar at all.
 
+**Nothing that floats over the page may sit on top of the bar.** An anchored
+popup, a docked panel, a toast, a floating control — all of them stop a gutter
+short of the dock and grow upwards (or scroll) instead of running underneath it.
+The bar is the way out of wherever you are; a layer that buries it leaves the
+screen with no exit, on the one device that has no browser Back either.
+
+Ask `measureBottomDock()` rather than hard-coding a height: it reads the dock
+that is actually on screen, so it follows the bar that has it, counts a page's
+`PageAction` strip when one is docked, and returns `0` on desktop and off-shell
+routes, where there is nothing to clear. `getPopupPosition` in the song picker
+is the worked example — it takes the inset and both anchors respect it.
+
+A full-screen modal that dims the whole page (the house `Popup`) is the
+exception: it covers everything on purpose, bar included, and its own buttons
+are the way out.
+
 **A page that sizes itself to the viewport must say so.** The bar renders an
 in-flow spacer so content can scroll clear of it; a page that already claims
 `100vh`/`100dvh` would then scroll by the spacer's height and push its own

@@ -8,10 +8,21 @@ export type PopupPosition = {
 	bottom?: number
 	left?: number
 	right?: number
+	/** Cap so the popup grows upwards rather than down into the bottom bar. */
+	maxHeight: number
 }
 
 type Rect = { top: number; bottom: number; left: number; right: number }
-type Viewport = { width: number; height: number }
+type Viewport = {
+	width: number
+	height: number
+	/**
+	 * Height of whatever is docked at the bottom of the screen — the phone's tab
+	 * bar. The popup stays clear of it: it is navigation, and navigation is not
+	 * something a popup may bury. 0 when there is no dock (desktop).
+	 */
+	bottomInset?: number
+}
 
 /**
  * Where the song picker goes, given its anchor.
@@ -27,33 +38,43 @@ type Viewport = { width: number; height: number }
  * without shoving the other one off, and it is centred instead.
  *
  * Vertically `upDirection` says whether the popup hangs below the anchor's top
- * or rises from its bottom.
+ * or rises from its bottom. Either way it stops a gutter short of the bottom
+ * dock and of the top of the screen, growing upwards or scrolling rather than
+ * running underneath either.
  */
 export function getPopupPosition(
 	anchor: Rect,
 	viewport: Viewport,
 	upDirection?: boolean
 ): PopupPosition {
+	const inset = viewport.bottomInset ?? 0
+	const floor = inset + OFFSET
+
 	const top = upDirection ? undefined : anchor.top + OFFSET
 	const bottom = upDirection
-		? viewport.height - anchor.bottom + OFFSET
+		? Math.max(viewport.height - anchor.bottom + OFFSET, floor)
 		: undefined
 
+	const maxHeight =
+		bottom === undefined
+			? viewport.height - (top ?? 0) - floor
+			: viewport.height - bottom - OFFSET
+
+	const vertical = { top, bottom, maxHeight }
+
 	if (viewport.width < MAX_WIDTH + OFFSET * 2) {
-		return { top, bottom, left: OFFSET }
+		return { ...vertical, left: OFFSET }
 	}
 
 	if (anchor.left < viewport.width / 2) {
 		return {
-			top,
-			bottom,
+			...vertical,
 			left: Math.min(anchor.left + OFFSET, viewport.width - MAX_WIDTH - OFFSET),
 		}
 	}
 
 	return {
-		top,
-		bottom,
+		...vertical,
 		right: Math.max(viewport.width - anchor.right + OFFSET, OFFSET),
 	}
 }

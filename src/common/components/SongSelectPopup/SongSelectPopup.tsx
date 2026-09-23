@@ -5,6 +5,7 @@ import PopupSongList from '@/common/components/SongSelectPopup/components/PopupS
 import SelectedPanel from '@/common/components/SongSelectPopup/components/SelectedPanel'
 import SelectFromOptions from '@/common/components/SongSelectPopup/components/SelectFromOptions'
 import { SelectSearch } from '@/common/components/SongSelectPopup/components/SelectSearch'
+import { measureBottomDock } from '@/common/components/MobileAppTabBar/nav.constants'
 import { useSongSelectSpecifier } from '@/common/components/SongSelectPopup/hooks/useSongSelectSpecifier'
 import {
 	getPopupPosition,
@@ -109,14 +110,22 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 
 	// Positioning
 	const popupRef = useRef(null)
-	const [position, setPosition] = useState<PopupPosition>({ top: 0, left: 0 })
+	const [position, setPosition] = useState<PopupPosition>({
+		top: 0,
+		left: 0,
+		maxHeight: 0,
+	})
 
 	const updatePopupPosition = useCallback(() => {
 		if (props.anchorRef?.current) {
 			setPosition(
 				getPopupPosition(
 					props.anchorRef.current.getBoundingClientRect(),
-					{ width: window.innerWidth, height: window.innerHeight },
+					{
+						width: window.innerWidth,
+						height: window.innerHeight,
+						bottomInset: measureBottomDock(),
+					},
 					props.upDirection
 				)
 			)
@@ -194,6 +203,11 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							bgcolor: 'grey.200',
 							maxWidth: `min(${MAX_WIDTH}px, calc(100% - ${OFFSET * 2}px))`,
 							width: MAX_WIDTH,
+							// never taller than the room between the top of the screen and
+							// the bottom dock — a long list scrolls inside the popup rather
+							// than disappearing under the tab bar
+							maxHeight: position.maxHeight,
+							overflowY: 'auto',
 							borderRadius: 3,
 							boxShadow: '0px 0px 15px rgba(0,0,0,0.25)',
 							position: 'fixed',
