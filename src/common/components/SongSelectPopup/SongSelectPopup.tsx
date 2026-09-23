@@ -32,6 +32,10 @@ type PopupProps = {
 	anchorRef: React.RefObject<HTMLElement>
 	anchorName?: string
 
+	/** Place it as a bottom sheet rather than a menu on the anchor — see
+	 * `PopupPlacement`. The narrow layouts want this. */
+	asSheet?: boolean
+
 	// Filter function, for example to filter out previously selected songs
 	filterFunc?: (pack: BasicVariantPack) => boolean
 
@@ -126,11 +130,11 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 						height: window.innerHeight,
 						bottomInset: measureBottomDock(),
 					},
-					props.upDirection
+					{ upDirection: props.upDirection, asSheet: props.asSheet }
 				)
 			)
 		}
-	}, [props.anchorRef, props.anchorName, props.upDirection])
+	}, [props.anchorRef, props.anchorName, props.upDirection, props.asSheet])
 
 	useEffect(() => {
 		updatePopupPosition() // Initial position

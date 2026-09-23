@@ -12,6 +12,23 @@ export type PopupPosition = {
 	maxHeight: number
 }
 
+export type PopupPlacement = {
+	/** Rise from the anchor's bottom instead of hanging from its top. */
+	upDirection?: boolean
+	/**
+	 * Place the popup as a sheet: centred at the bottom of the screen, above the
+	 * dock, ignoring the anchor.
+	 *
+	 * The narrow layouts ask for this. There the popup is nearly as wide and as
+	 * tall as the screen, so it is not a menu belonging to a button — hanging it
+	 * off one squeezed it into whatever room happened to be above, and on a short
+	 * list the picker had to scroll with its buttons cut off while half the
+	 * screen sat empty. A sheet is the same size and in the same place however
+	 * long the list is.
+	 */
+	asSheet?: boolean
+}
+
 type Rect = { top: number; bottom: number; left: number; right: number }
 type Viewport = {
 	width: number
@@ -41,14 +58,27 @@ type Viewport = {
  * or rises from its bottom. Either way it stops a gutter short of the bottom
  * dock and of the top of the screen, growing upwards or scrolling rather than
  * running underneath either.
+ *
+ * `asSheet` opts out of anchoring altogether — see `PopupPlacement`.
  */
 export function getPopupPosition(
 	anchor: Rect,
 	viewport: Viewport,
-	upDirection?: boolean
+	{ upDirection, asSheet }: PopupPlacement = {}
 ): PopupPosition {
 	const inset = viewport.bottomInset ?? 0
 	const floor = inset + OFFSET
+	const width = Math.min(MAX_WIDTH, viewport.width - OFFSET * 2)
+
+	// A sheet ignores the anchor: it is the bottom of the screen, centred, as
+	// tall as the room above the dock allows. See PopupPlacement.
+	if (asSheet) {
+		return {
+			bottom: floor,
+			left: Math.round((viewport.width - width) / 2),
+			maxHeight: viewport.height - floor - OFFSET,
+		}
+	}
 
 	const top = upDirection ? undefined : anchor.top + OFFSET
 	const bottom = upDirection
@@ -64,21 +94,6 @@ export function getPopupPosition(
 
 	if (viewport.width < MAX_WIDTH + OFFSET * 2) {
 		return { ...vertical, left: OFFSET }
-	}
-
-	// A zero-width anchor is a point, not a thing with sides — there is no edge
-	// of it to line up with, so the popup centres on it. Screens that show the
-	// narrow layout without being phone-sized use exactly such a marker, and
-	// treating it as an edge put the popup half off the screen.
-	const width = Math.min(MAX_WIDTH, viewport.width - OFFSET * 2)
-	if (anchor.right === anchor.left) {
-		const centred = anchor.left - width / 2
-		return {
-			...vertical,
-			left: Math.round(
-				Math.max(OFFSET, Math.min(centred, viewport.width - width - OFFSET))
-			),
-		}
 	}
 
 	if (anchor.left < viewport.width / 2) {

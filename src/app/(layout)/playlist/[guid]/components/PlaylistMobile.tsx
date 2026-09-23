@@ -288,7 +288,7 @@ export default function PlaylistMobile({
 				<MusicNoteRounded sx={{ fontSize: 48, color: 'grey.400' }} />
 				<Typography color="grey.600">{tSongs('empty')}</Typography>
 				{canUserEdit && (
-					<Box onClick={() => setAddOpen(true)} sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}>
+					<Box ref={addAnchorRef} onClick={() => setAddOpen(true)} sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}>
 						<AddRounded sx={{ color: 'primary.main' }} />
 						<Typography strong color="primary.main">{t('addSongToPlaylist')}</Typography>
 					</Box>
@@ -321,7 +321,7 @@ export default function PlaylistMobile({
 						})}
 					</Reorder.Group>
 				</Box>
-				<Box onClick={() => setAddOpen(true)} sx={{ ...ROW, ...CARD, marginTop: 1.5, cursor: 'pointer', justifyContent: 'center' }}>
+				<Box ref={addAnchorRef} onClick={() => setAddOpen(true)} sx={{ ...ROW, ...CARD, marginTop: 1.5, cursor: 'pointer', justifyContent: 'center' }}>
 					<AddRounded sx={{ color: 'primary.main' }} />
 					<Typography strong color="primary.main">{t('addSongToPlaylist')}</Typography>
 				</Box>
@@ -483,9 +483,10 @@ export default function PlaylistMobile({
 				/>
 			</Popup>
 
-			{/* off-screen anchor + shared song picker (reused from desktop) */}
-			<Box ref={addAnchorRef} sx={{ position: 'fixed', bottom: 0, left: '50%' }} />
-			<SongSelectPopup open={addOpen} onClose={() => setAddOpen(false)} anchorRef={addAnchorRef} onSubmit={onAddSubmit} filterFunc={addFilter} anchorName="mobilePlaylistAdd" upDirection />
+			{/* the shared picker, reused from desktop — but as a sheet: at this width
+			    it is nearly the whole screen, so it belongs at the bottom rather than
+			    hanging off the add control */}
+			<SongSelectPopup open={addOpen} onClose={() => setAddOpen(false)} anchorRef={addAnchorRef} onSubmit={onAddSubmit} filterFunc={addFilter} anchorName="mobilePlaylistAdd" upDirection asSheet />
 		</Box>
 	)
 }
