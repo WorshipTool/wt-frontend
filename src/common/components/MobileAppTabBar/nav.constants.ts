@@ -21,6 +21,13 @@ export const ABOVE_TABBAR_SLOT_ID = 'mobile-above-tabbar-slot'
  * overshooting is invisible, undershooting hides content. */
 export const MOBILE_NAV_CLEARANCE = 'calc(env(safe-area-inset-bottom) + 80px)'
 
+/**
+ * Height of the dock's bar itself, without the safe-area inset — for the few
+ * places that need the number in JS (floating corner buttons sitting above it)
+ * rather than as CSS clearance.
+ */
+export const MOBILE_NAV_BAR_HEIGHT = 71
+
 export type MobileTab = 'home' | 'songs' | 'account' | 'tools' | null
 
 /**
@@ -86,6 +93,30 @@ const TAB_BY_ROUTE: Partial<Record<RoutesKeys, Exclude<MobileTab, null>>> = {
 const SHELL_ONLY: RoutesKeys[] = ['about', 'contact']
 
 /**
+ * Routes where a module brings its own bottom bar, so the app's tab bar stands
+ * down and lets it have the dock.
+ *
+ * Inside a team that is the team's four sections: stacking them on top of the
+ * app's tabs cost 131px of a 664px screen, and the section bar has to carry the
+ * way out itself — its first item is the app's home tab, sheep and all.
+ *
+ * This is every route under the team page's own layout, the one that renders
+ * TeamBottomPanel — the two lists have to stay in step, or a team screen ends
+ * up with no bar at all.
+ */
+const CONTEXTUAL_BAR_ROUTES: RoutesKeys[] = [
+	'team',
+	'teamSongbook',
+	'teamPlaylists',
+	'teamPlaylist',
+	'teamPlaylistCards',
+	'teamPeople',
+	'teamSettings',
+	'teamStatistics',
+	'teamSong',
+]
+
+/**
  * App-shell routes whose surface already pads for the bar/dock itself. The tab
  * bar skips its in-flow spacer there, so short content doesn't become needlessly
  * scrollable (no grey strip under the page).
@@ -127,6 +158,13 @@ export function isMobileTabBarRoute(pathname: string | null): boolean {
 	if (mobileTabForPath(pathname) !== null) return true
 	const path = normalise(pathname)
 	return SHELL_ONLY.some((key) => matches(path, key))
+}
+
+/** See `CONTEXTUAL_BAR_ROUTES`. */
+export function hasContextualBottomBar(pathname: string | null): boolean {
+	if (!pathname) return false
+	const path = normalise(pathname)
+	return CONTEXTUAL_BAR_ROUTES.some((key) => matches(path, key))
 }
 
 /** See `OWNS_BOTTOM_CLEARANCE`. */

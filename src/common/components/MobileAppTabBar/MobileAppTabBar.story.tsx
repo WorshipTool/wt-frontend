@@ -5,7 +5,7 @@ import { createStory } from '@/app/(layout)/storybook/createStory'
 import {
 	TAB_ICON_SIZE,
 	TabItem,
-} from '@/common/components/MobileAppTabBar/MobileAppTabBar'
+} from '@/common/components/MobileAppTabBar/TabItem'
 import { Box, Typography } from '@/common/ui'
 import {
 	AppsOutlined,

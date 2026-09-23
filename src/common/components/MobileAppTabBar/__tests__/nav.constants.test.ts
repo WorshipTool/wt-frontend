@@ -1,4 +1,5 @@
 import {
+	hasContextualBottomBar,
 	isMobileTabBarRoute,
 	mobileTabForPath,
 	pageOwnsBottomClearance,
@@ -108,6 +109,47 @@ describe('isMobileTabBarRoute', () => {
 
 	it('is false for a null pathname', () => {
 		expect(isMobileTabBarRoute(null)).toBe(false)
+	})
+})
+
+describe('hasContextualBottomBar', () => {
+	it('covers every screen inside a team', () => {
+		const paths = [
+			'/sub/tymy/nas-tym',
+			'/sub/tymy/nas-tym/zpevnik',
+			'/sub/tymy/nas-tym/playlisty',
+			'/sub/tymy/nas-tym/playlist/abc-123',
+			'/sub/tymy/nas-tym/lide',
+			'/sub/tymy/nas-tym/nastaveni',
+			'/sub/tymy/nas-tym/statistiky',
+			'/sub/tymy/nas-tym/pisen/a1b2/moje-pisen',
+		]
+		for (const p of paths) {
+			expect(hasContextualBottomBar(p)).toBe(true)
+		}
+	})
+
+	it('leaves the app bar alone everywhere else, teams included', () => {
+		// the list of teams is an app screen, and the public / join / no-access
+		// screens are outside the team layout — none of them has a team bar, so
+		// taking the app bar away there would leave no bar at all
+		const paths = [
+			'/sub/tymy',
+			'/sub/tymy/v/nas-tym',
+			'/sub/tymy/pripojitse/abc123',
+			'/sub/tymy/bez-pristupu/nas-tym',
+			'/',
+			'/seznam',
+			'/ucet',
+		]
+		for (const p of paths) {
+			expect(hasContextualBottomBar(p)).toBe(false)
+			expect(isMobileTabBarRoute(p)).toBe(true)
+		}
+	})
+
+	it('is false for a null pathname', () => {
+		expect(hasContextualBottomBar(null)).toBe(false)
 	})
 })
 

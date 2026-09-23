@@ -116,6 +116,30 @@ only the `(layout)` group uses. The chromeless `(nolayout)` group and the
 can show it at all. Only one group's layout is ever mounted for a given route,
 so there is never a second bar.
 
+## One dock, one bar
+
+There is exactly **one strip at the bottom of a phone screen**, and it is always
+`MobileBottomDock`: the fixed container, the `ABOVE_TABBAR_SLOT_ID` slot above
+it, the strip's own chrome (white, 1px `grey.200` top border, 71px tall), the
+z-index and the desktop cut-off are stated there once. A bar supplies items, not
+a container.
+
+**A module may take the dock over, but never stack a second bar in it.** Inside
+a team the team's four sections *are* the bar: they are listed in
+`CONTEXTUAL_BAR_ROUTES`, the app's tab bar renders nothing there, and
+`TeamBottomPanel` puts the team's items in the dock instead. Two bars stacked
+cost 131px of a 664px screen and read as two competing navigations.
+
+Whoever takes the dock over **inherits the duty to lead somewhere out.** The
+team bar's first item is the app's home tab — same sheep, same destination, the
+wording the Nástroje menu already uses (`navigation.toolsMenu.outsideTeam`) —
+followed by a 1px `grey.200` hairline; the sections then share the rest of the
+width evenly. It is a leading item, not a fifth section: it is only as wide as
+its own label.
+
+`CONTEXTUAL_BAR_ROUTES` must list exactly the routes the module's layout covers.
+One route short and that screen has no bar at all.
+
 **A page that sizes itself to the viewport must say so.** The bar renders an
 in-flow spacer so content can scroll clear of it; a page that already claims
 `100vh`/`100dvh` would then scroll by the spacer's height and push its own
@@ -159,8 +183,9 @@ Declaration and usage are the same place on purpose: the page states what it can
 do and does not also have to know where that lands. `PageAction` owns the
 placement — inline on desktop, so existing layouts are untouched, and docked in
 the strip above the tab bar on phones, within reach of the thumb. That strip is
-the tab bar's `ABOVE_TABBAR_SLOT_ID`, the same slot the song dock and paginators
-portal into, so it stacks by layout and follows the bar's height.
+the dock's `ABOVE_TABBAR_SLOT_ID`, the same slot the song dock and paginators
+portal into, so it stacks by layout and follows the bar's height — and it is
+there whichever bar has the dock, so a page's action works inside a team too.
 
 This is what replaces a FAB: the rule against a bottom-right button competing
 with the tab bar still holds, and the docked strip is where that pressure goes.
