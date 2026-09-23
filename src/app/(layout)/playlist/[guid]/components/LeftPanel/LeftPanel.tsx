@@ -2,6 +2,7 @@ import AddSongToPlaylistButton from '@/app/(layout)/playlist/[guid]/components/L
 import PlaylistMenuList from '@/app/(layout)/playlist/[guid]/components/LeftPanel/PlaylistMenuList'
 import Panel from '@/app/(layout)/playlist/[guid]/components/Panel'
 import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlaylist'
+import { PLAYLIST_WIDE_BREAKPOINT } from '@/app/(layout)/playlist/[guid]/playlist.constants'
 import { Box, useTheme } from '@/common/ui'
 import { SxProps } from '@/common/ui/mui'
 import { Typography } from '@/common/ui/Typography'
@@ -19,7 +20,9 @@ export default function LeftPanel(props: LeftPanelProps) {
 	return (
 		<Box
 			sx={{
-				[theme.breakpoints.down('md')]: {
+				// see PLAYLIST_WIDE_BREAKPOINT: below this the narrow layout takes
+				// over, and it carries these controls itself
+				[theme.breakpoints.down(PLAYLIST_WIDE_BREAKPOINT)]: {
 					display: 'none',
 				},
 			}}

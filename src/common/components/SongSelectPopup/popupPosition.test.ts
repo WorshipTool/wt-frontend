@@ -64,6 +64,32 @@ describe('getPopupPosition', () => {
 		})
 	})
 
+	describe('with a point anchor', () => {
+		// The narrow playlist layout anchors the picker to a zero-width marker at
+		// left: 50%. Read as an edge it counted as "right half", which pinned the
+		// popup's right edge to the middle of the screen and hung the rest off it —
+		// on any screen wide enough to skip the centring rule above.
+		const TABLET = { width: 800, height: 700 }
+
+		it('centres on the point rather than taking a side', () => {
+			const p = getPopupPosition(rect(400, 400), TABLET)
+
+			expect(p.left).toBe((800 - MAX_WIDTH) / 2)
+			expect(p.right).toBeUndefined()
+		})
+
+		it('stays on screen when the point is near an edge', () => {
+			expect(getPopupPosition(rect(20, 20), TABLET).left).toBe(OFFSET)
+			expect(getPopupPosition(rect(780, 780), TABLET).left).toBe(
+				800 - MAX_WIDTH - OFFSET
+			)
+		})
+
+		it('still takes a side when the anchor has real width', () => {
+			expect(getPopupPosition(rect(600, 700), TABLET).right).toBe(108)
+		})
+	})
+
 	describe('above the bottom dock', () => {
 		// 71px tab bar + 8px safe-area inset, as the phone shell measures it
 		const DOCKED = { ...PHONE, bottomInset: 79 }

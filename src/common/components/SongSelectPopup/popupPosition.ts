@@ -66,6 +66,21 @@ export function getPopupPosition(
 		return { ...vertical, left: OFFSET }
 	}
 
+	// A zero-width anchor is a point, not a thing with sides — there is no edge
+	// of it to line up with, so the popup centres on it. Screens that show the
+	// narrow layout without being phone-sized use exactly such a marker, and
+	// treating it as an edge put the popup half off the screen.
+	const width = Math.min(MAX_WIDTH, viewport.width - OFFSET * 2)
+	if (anchor.right === anchor.left) {
+		const centred = anchor.left - width / 2
+		return {
+			...vertical,
+			left: Math.round(
+				Math.max(OFFSET, Math.min(centred, viewport.width - width - OFFSET))
+			),
+		}
+	}
+
 	if (anchor.left < viewport.width / 2) {
 		return {
 			...vertical,
