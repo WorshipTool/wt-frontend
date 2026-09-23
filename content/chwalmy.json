@@ -955,6 +955,7 @@
 		"markBridge": "Oznacz bridge",
 		"insertChord": "Wstaw akord",
 		"chord": "Akord",
+		"chordMajor": "dur",
 		"done": "Gotowe",
 		"titlePlaceholder": "Wpisz tytuł pieśni",
 		"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"

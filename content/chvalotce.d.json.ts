@@ -958,6 +958,7 @@ declare const messages: {
 		"markBridge": "Označit bridge",
 		"insertChord": "Vložit akord",
 		"chord": "Akord",
+		"chordMajor": "dur",
 		"done": "Hotovo",
 		"titlePlaceholder": "Zadejte název písně",
 		"contentPlaceholder": "Zde je místo pro obsah písně"

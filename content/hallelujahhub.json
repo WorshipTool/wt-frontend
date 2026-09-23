@@ -945,6 +945,7 @@
 		"markBridge": "Mark bridge",
 		"insertChord": "Insert chord",
 		"chord": "Chord",
+		"chordMajor": "major",
 		"done": "Done",
 		"titlePlaceholder": "Song title",
 		"contentPlaceholder": "Song content"

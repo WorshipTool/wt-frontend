@@ -1,3 +1,4 @@
+import { SECTION_MARKS } from '@/common/components/SheetEditor/sections.constants'
 import { Box, Button, ButtonGroup, Typography } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { AutofpsSelect } from '@mui/icons-material'
@@ -11,8 +12,8 @@ const Container = styled(Box)(({ theme }) => ({
 	display: 'flex',
 	flexDirection: 'row',
 	alignItems: 'center',
-	// the editor is the same one phones get, so the insert controls have to be
-	// able to wrap — desktop has room and stays a single row either way
+	// wrap on narrow screens (phone editor) so the insert controls never
+	// overflow the viewport; desktop has room and stays a single row
 	flexWrap: 'wrap',
 	rowGap: theme.spacing(1),
 	gap: theme.spacing(1),
@@ -32,38 +33,20 @@ export default function ToolPanel({ onNewSection, onNewChord }: ToolPaneProps) {
 			<Typography strong>{t('mark')}</Typography>
 
 			<ButtonGroup>
-				<Button
-					onClick={() => {
-						onNewSection('S')
-					}}
-					variant="contained"
-					size="small"
-					tooltip={t('markVerse')}
-				>
-					{t('verse')}
-				</Button>
-				<Button
-					onClick={() => {
-						onNewSection('R')
-					}}
-					variant="contained"
-					size="small"
-					color="success"
-					tooltip={t('markChorus')}
-				>
-					{t('chorus')}
-				</Button>
-				<Button
-					onClick={() => {
-						onNewSection('B')
-					}}
-					variant="contained"
-					size="small"
-					color="secondary"
-					tooltip={t('markBridge')}
-				>
-					{t('bridge')}
-				</Button>
+				{SECTION_MARKS.map((s) => (
+					<Button
+						key={s.mark}
+						onClick={() => {
+							onNewSection(s.mark)
+						}}
+						variant="contained"
+						size="small"
+						color={s.color}
+						tooltip={t(s.tooltipKey)}
+					>
+						{t(s.labelKey)}
+					</Button>
+				))}
 			</ButtonGroup>
 			<Box flex={1} />
 			<Button
