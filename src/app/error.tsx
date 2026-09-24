@@ -18,10 +18,12 @@ export default function Error({ error, reset, skipReport }: ErrorPageProps) {
 
 	useEffect(() => {
 		console.error('Error page error:', error)
-		if (!skipReport) {
+		// "forbidden" is an expected access-denial outcome (e.g. a non-admin
+		// visiting an admin route), not a bug, so it shouldn't be reported.
+		if (!skipReport && errorType !== 'forbidden') {
 			Sentry.captureException(error, { tags: { errorBoundary: 'page' } })
 		}
-	}, [error, skipReport])
+	}, [error, skipReport, errorType])
 
 	return (
 		<Box
