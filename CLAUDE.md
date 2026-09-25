@@ -60,7 +60,7 @@ they run in CI / manually. Use Jest only.
 ```
 src/
   app/                  App Router pages
-    (layout)/           standard pages with Toolbar/Footer (home, pisen, playlist, seznam, ucet, storybook…)
+    (layout)/           standard pages with Toolbar/Footer (home, pisen, pisne, playlist, ucet, storybook…)
     (nolayout)/         chromeless pages on gradient bg (login, registration)
     (submodules)/(teams)/  team module (own providers, SmartTeamPage)
     (subdomains)/       subdomain routing internals

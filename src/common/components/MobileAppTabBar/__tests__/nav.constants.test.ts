@@ -8,7 +8,7 @@ import {
 describe('mobileTabForPath', () => {
 	it('maps the three tab roots', () => {
 		expect(mobileTabForPath('/')).toBe('home')
-		expect(mobileTabForPath('/seznam')).toBe('songs')
+		expect(mobileTabForPath('/pisne')).toBe('songs')
 		expect(mobileTabForPath('/ucet')).toBe('account')
 	})
 
@@ -38,8 +38,8 @@ describe('mobileTabForPath', () => {
 	})
 
 	it('ignores a trailing slash', () => {
-		// the shell used to vanish on `/seznam/` while working on `/seznam`
-		expect(mobileTabForPath('/seznam/')).toBe('songs')
+		// the shell used to vanish on `/pisne/` while working on `/pisne`
+		expect(mobileTabForPath('/pisne/')).toBe('songs')
 		expect(mobileTabForPath('/ucet/')).toBe('account')
 		expect(mobileTabForPath('/pisen/a1b2/moje-pisen/')).toBe('songs')
 	})
@@ -89,7 +89,7 @@ describe('mobileTabForPath', () => {
 
 describe('isMobileTabBarRoute', () => {
 	it('agrees with mobileTabForPath wherever a tab is lit', () => {
-		for (const path of ['/', '/seznam', '/ucet', '/prihlaseni', '/sub/tymy']) {
+		for (const path of ['/', '/pisne', '/ucet', '/prihlaseni', '/sub/tymy']) {
 			expect(isMobileTabBarRoute(path)).toBe(mobileTabForPath(path) !== null)
 		}
 	})
@@ -139,7 +139,7 @@ describe('hasContextualBottomBar', () => {
 			'/sub/tymy/pripojitse/abc123',
 			'/sub/tymy/bez-pristupu/nas-tym',
 			'/',
-			'/seznam',
+			'/pisne',
 			'/ucet',
 		]
 		for (const p of paths) {
@@ -164,7 +164,7 @@ describe('pageOwnsBottomClearance', () => {
 
 	it('is false for ordinary shell pages', () => {
 		expect(pageOwnsBottomClearance('/')).toBe(false)
-		expect(pageOwnsBottomClearance('/seznam')).toBe(false)
+		expect(pageOwnsBottomClearance('/pisne')).toBe(false)
 		expect(pageOwnsBottomClearance('/ucet')).toBe(false)
 	})
 

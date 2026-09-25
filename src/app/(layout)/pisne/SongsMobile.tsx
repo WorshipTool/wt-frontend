@@ -27,7 +27,7 @@ const LETTER_HEADER_SX = {
 const firstLetter = (title: string) =>
 	(title.trim().charAt(0) || '#').toLocaleUpperCase('cs')
 
-type SeznamMobileProps = {
+type SongsMobileProps = {
 	/** 1-indexed page, kept in the URL by the parent (shared with desktop) */
 	page: number
 	onPageChange: (page: number) => void
@@ -43,12 +43,12 @@ type SeznamMobileProps = {
  * page are grouped by first letter; there are thousands of songs, so paging
  * beats an endless scroll. The desktop grid stays in page.tsx.
  */
-export default function SeznamMobile({
+export default function SongsMobile({
 	page,
 	onPageChange,
 	count,
 	perPage,
-}: SeznamMobileProps) {
+}: SongsMobileProps) {
 	const t = useTranslations('songsList')
 	const tCommon = useTranslations('common')
 	const { songGettingApi } = useApi()

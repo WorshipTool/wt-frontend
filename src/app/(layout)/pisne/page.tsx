@@ -1,7 +1,7 @@
 'use client'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
-import AllSongItem from '@/app/(layout)/seznam/AllSongItem'
-import SeznamMobile from '@/app/(layout)/seznam/SeznamMobile'
+import AllSongItem from '@/app/(layout)/pisne/AllSongItem'
+import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
 import Pager from '@/common/components/Pager/Pager'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useDownSize } from '@/common/hooks/useDownSize'
@@ -43,7 +43,7 @@ function List() {
 
 	if (phoneVersion) {
 		return (
-			<SeznamMobile
+			<SongsMobile
 				page={page ?? 1}
 				onPageChange={setPage}
 				count={count ?? 0}

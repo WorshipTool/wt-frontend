@@ -25,7 +25,7 @@ export const routesPaths = {
 	usersPlaylists: '/ucet/playlisty',
 	usersSongs: '/ucet/pisne',
 	usersFavourites: '/ucet/oblibene',
-	songsList: '/seznam',
+	songsList: '/pisne',
 	test: '/test',
 	testComponents: '/storybook',
 	subdomain: '/sub/[subdomain]',
