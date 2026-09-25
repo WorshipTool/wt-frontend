@@ -46,6 +46,8 @@ const FIELD_Z = 11
 /** Where the list's first row comes to rest after a page is turned — clear of
  * the top bar, with a little air. */
 const LIST_TOP_MARGIN = 72
+/** The app's top bar, which the page sits under. */
+const TOOLBAR_HEIGHT = 56
 /** Air under the floating field, where the flow no longer provides any. The
  * heading line under it is tall (it is the field's own line at rest), so this
  * is less than it looks. */
@@ -305,6 +307,13 @@ function SongsPage() {
 						marginX: 'auto',
 						display: 'flex',
 						flexDirection: 'column',
+						// A screen tall at least, so the floating paginator — which is
+						// sticky, and so cannot leave the block it lives in — reaches the
+						// bottom of the window even on a page short enough not to scroll.
+						// Past the block is the footer, which is where the bar stops: it
+						// holds the bottom edge while there is page under it and comes to
+						// rest above the footer, without anything measuring the scroll.
+						minHeight: `calc(100dvh - ${TOOLBAR_HEIGHT}px)`,
 					}}
 				>
 					<Gap value={4} />
