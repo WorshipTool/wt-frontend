@@ -29,11 +29,14 @@ export default function CatalogPagination({
 	page,
 	pagesCount,
 	onChange,
+	touch = false,
 }: {
 	/** 1-indexed, as the paginator shows it. */
 	page: number
 	pagesCount: number
 	onChange: (page: number) => void
+	/** Finger-sized targets and fewer of them — for the phone. */
+	touch?: boolean
 }) {
 	const t = useTranslations('songsList')
 
@@ -42,50 +45,72 @@ export default function CatalogPagination({
 	const current = Math.min(page, pagesCount)
 
 	return (
-		<Box
-			sx={{
-				position: 'sticky',
-				bottom: BOTTOM_OFFSET,
-				zIndex: BAR_Z,
-				display: 'flex',
-				justifyContent: 'center',
-				// the strip itself is only as wide as the bar, so the rows it floats
-				// over stay clickable either side of it
-				pointerEvents: 'none',
-			}}
-		>
+		<>
 			<Box
 				sx={{
-					pointerEvents: 'auto',
+					position: 'sticky',
+					bottom: BOTTOM_OFFSET,
+					zIndex: BAR_Z,
 					display: 'flex',
-					alignItems: 'center',
-					gap: 1.5,
-					paddingLeft: 2,
-					paddingRight: 1,
-					paddingY: 0.5,
-					borderRadius: 2,
-					bgcolor: 'background.paper',
-					boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
+					justifyContent: 'center',
+					// the strip itself is only as wide as the bar, so the rows it floats
+					// over stay clickable either side of it
+					pointerEvents: 'none',
 				}}
 			>
-				<Typography small color="grey.600">
-					{t('pageOf', {
-						page: String(current),
-						total: String(pagesCount),
-					})}
-				</Typography>
+				<Box
+					sx={{
+						pointerEvents: 'auto',
+						display: 'flex',
+						alignItems: 'center',
+						gap: 1.5,
+						// the label is what the left padding is for; without it the bar is
+						// the numbers and nothing else
+						paddingLeft: touch ? 0.5 : 2,
+						paddingRight: touch ? 0.5 : 1,
+						paddingY: 0.5,
+						borderRadius: 2,
+						bgcolor: 'background.paper',
+						boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
+					}}
+				>
+					{/* on a phone the bar is only as wide as the screen, and the
+				    highlighted number says the same thing */}
+					{!touch && (
+						<Typography small color="grey.600">
+							{t('pageOf', {
+								page: String(current),
+								total: String(pagesCount),
+							})}
+						</Typography>
+					)}
 
-				<Pagination
-					count={pagesCount}
-					page={current}
-					onChange={(_, next) => onChange(next)}
-					siblingCount={1}
-					boundaryCount={1}
-					size="small"
-					color="primary"
-					sx={{ '& .MuiPagination-ul': { flexWrap: 'nowrap' } }}
-				/>
+					<Pagination
+						count={pagesCount}
+						page={current}
+						onChange={(_, next) => onChange(next)}
+						siblingCount={touch ? 0 : 1}
+						boundaryCount={1}
+						size={touch ? 'medium' : 'small'}
+						color="primary"
+						sx={{
+							'& .MuiPagination-ul': { flexWrap: 'nowrap' },
+							...(touch && {
+								'& .MuiPaginationItem-root': {
+									minWidth: 40,
+									height: 40,
+									margin: '0 1px',
+									fontSize: '0.95rem',
+								},
+							}),
+						}}
+					/>
+				</Box>
 			</Box>
-		</Box>
+
+			{/* the bar's own room at the end of the scroll: without it the last row
+			    stays under the bar, which never reaches its place in the flow */}
+			<Box sx={{ height: `${BOTTOM_OFFSET}px`, flexShrink: 0 }} />
+		</>
 	)
 }

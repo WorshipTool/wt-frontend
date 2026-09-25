@@ -3,6 +3,7 @@
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
 import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
+import CatalogPagination from '@/app/(layout)/pisne/components/CatalogPagination'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import {
@@ -11,7 +12,6 @@ import {
 	SongGroup,
 } from '@/common/ui/GroupList'
 import { Box, Button, Typography } from '@/common/ui'
-import { Pagination } from '@/common/ui/mui'
 import { CloudOffRounded, MusicNoteRounded, RefreshRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { ReactNode, useMemo } from 'react'
@@ -45,7 +45,7 @@ type SongsMobileProps = {
 /**
  * Native-feeling mobile song catalog, built on the shared MobileAppHeader
  * app-shell (collapsing title, search field pinned under it, only the content
- * scrolls, paginator in a quiet bottom panel — see docs/design/MOBILE.md).
+ * scrolls, the paginator floating over the end of it — see docs/design/MOBILE.md).
  *
  * Browsing groups the current page's songs by first letter; there are thousands
  * of songs, so paging beats an endless scroll. Searching replaces that body
@@ -76,32 +76,11 @@ export default function SongsMobile({
 	)
 	const letterGroups = useMemo(() => groupByFirstLetter(items), [items])
 
-	const paginator =
-		!searching && !error && pagesCount > 1 ? (
-			<Pagination
-				count={pagesCount}
-				page={Math.min(page, pagesCount)}
-				onChange={(_, p) => onPageChange(p)}
-				siblingCount={0}
-				boundaryCount={1}
-				sx={{
-					// finger-sized touch targets (44px) while staying compact
-					'& .MuiPaginationItem-root': {
-						minWidth: 44,
-						height: 44,
-						margin: '0 2px',
-						fontSize: '1rem',
-					},
-				}}
-			/>
-		) : undefined
-
 	return (
 		<MobileAppHeader
 			title={t('title')}
 			collapseTitle={collapseTitle}
 			controlPanel={field}
-			bottomPanel={paginator}
 			// a new query starts at the top of its own results, and so does a new
 			// page of the browse list
 			scrollResetKey={searching ? query : page}
@@ -153,6 +132,17 @@ export default function SongsMobile({
 						</Box>
 					))}
 				</Box>
+			)}
+
+			{/* floats over the last rows while you scroll and settles under them at
+			    the end of the page, the way it does on a desktop */}
+			{!searching && !error && (
+				<CatalogPagination
+					page={page}
+					pagesCount={pagesCount}
+					onChange={onPageChange}
+					touch
+				/>
 			)}
 		</MobileAppHeader>
 	)
