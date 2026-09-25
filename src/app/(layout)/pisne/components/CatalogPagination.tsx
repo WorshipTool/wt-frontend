@@ -7,9 +7,11 @@ import { useTranslations } from 'next-intl'
 /** Clear of the bottom of the scroll, in px — `bottom` in `sx` is a position,
  * not a spacing, so the theme scale does not apply to it. */
 const BOTTOM_OFFSET = 24
-/** On a phone the bar rides just above the tab bar, and the scroller's own
- * bottom padding is already that gap — so it needs none of its own. */
-const TOUCH_BOTTOM_OFFSET = 0
+/** On a phone the bar rides right above the tab bar. Negative because a sticky
+ * offset is measured inside the scroller's padding, and that padding (16px) is
+ * more air than the bar wants there — it still stops at the scroller's edge, so
+ * nothing is cut off. */
+const TOUCH_BOTTOM_OFFSET = -8
 /** Air under the bar where it comes to rest, so the last row clears it. */
 const RESTING_AIR = 8
 /** Above the page, below the top bar (10) and the search field (11) — it never
@@ -116,7 +118,9 @@ export default function CatalogPagination({
 
 			{/* the bar's own room at the end of the scroll: without it the last row
 			    stays under the bar, which never reaches its place in the flow */}
-			<Box sx={{ height: `${offset + RESTING_AIR}px`, flexShrink: 0 }} />
+			<Box
+				sx={{ height: `${Math.max(0, offset) + RESTING_AIR}px`, flexShrink: 0 }}
+			/>
 		</>
 	)
 }
