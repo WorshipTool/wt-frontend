@@ -38,6 +38,38 @@ describe('splitByMatch', () => {
 		expect(shape('Tęsknota', 'tesknota')).toBe('[Tęsknota]')
 	})
 
+	describe("under the app's own search normalization", () => {
+		// normalizeSearchText is what the search itself runs on, so anything it
+		// calls a match has to be underlinable — otherwise a result comes back
+		// with nothing lit up and looks like a mistake
+
+		it('sees y and i as one letter', () => {
+			expect(shape('Svatý', 'svati')).toBe('[Svatý]')
+			expect(shape('Chci Tě chválit', 'chci')).toBe('[Chci] Tě chválit')
+		})
+
+		it('reads straight through punctuation and spaces', () => {
+			expect(shape('Amen, Otče', 'amenotce')).toBe('[Amen, Otče]')
+		})
+
+		it('counts a doubled letter once', () => {
+			expect(shape('Haleluja', 'halleluja')).toBe('[Haleluja]')
+			expect(shape('Agnus Dei, Halleluja', 'haleluja')).toBe(
+				'Agnus Dei, [Halleluja]'
+			)
+		})
+
+		it('folds mne to me, as the search does', () => {
+			expect(shape('Ach, obnov mne', 'obnovme')).toBe('Ach, [obnov mne]')
+		})
+
+		it('still finds nothing when there is nothing', () => {
+			expect(splitByMatch('Adonai', 'betlem')).toEqual([
+				{ text: 'Adonai', match: false },
+			])
+		})
+	})
+
 	it('marks only the first occurrence', () => {
 		expect(shape('Amen, amen', 'amen')).toBe('[Amen], amen')
 	})
