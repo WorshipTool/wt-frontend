@@ -4,6 +4,7 @@ import ColumnHeading from '@/app/(layout)/pisne/components/ColumnHeading'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsBrowseDesktop from '@/app/(layout)/pisne/components/SongsBrowseDesktop'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
+import { consumeSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
@@ -121,10 +122,31 @@ function SongsPage() {
 	// An empty `?hledat=` is someone asking to search (Hledat, in the tab bar or
 	// the toolbar) — so the caret goes in the field, on arrival and on a tap from
 	// another tab alike. One that carries a query is a shared or reloaded link,
-	// which wants to show its results rather than cover them with a keyboard.
+	// which wants to show its results rather than cover them with a keyboard —
+	// unless home is handing the caret over mid-word (see searchHandoff), in
+	// which case the field takes it and the caret waits at the end of what was
+	// typed, so the next letter lands where the last one did.
+	// …in two steps, because the field this focuses may not exist yet. The phone
+	// layout is a different tree, and `useIsPhone` is false for the first client
+	// render — so on a phone the desktop field mounts, takes the caret, and is
+	// then thrown away with it. The intent is recorded here and acted on again
+	// when the layout settles.
+	const wantsFocusRef = useRef(false)
 	useEffect(() => {
-		if (urlQuery === '') fieldRef.current?.focus()
+		if (urlQuery === null) return
+		const handedOver = consumeSearchFocus()
+		if (urlQuery === '' || handedOver) wantsFocusRef.current = true
 	}, [urlQuery])
+
+	useEffect(() => {
+		if (!wantsFocusRef.current) return
+		const field = fieldRef.current
+		if (!field) return
+		wantsFocusRef.current = false
+		field.focus()
+		const end = field.value.length
+		field.setSelectionRange(end, end)
+	}, [urlQuery, phone])
 
 	useChangeDelayer(
 		value,

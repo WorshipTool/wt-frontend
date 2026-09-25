@@ -10,6 +10,7 @@ import { useFooter } from '@/common/components/Footer/hooks/useFooter'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { useScrollHandler } from '@/common/providers/OnScrollComponent/useScrollHandler'
 import { Box, Image, Typography, useTheme } from '@/common/ui'
+import { handOffSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import useWorshipCzVersion from '@/hooks/worshipcz/useWorshipCzVersion'
 import { getAssetUrl } from '@/tech/paths.tech'
@@ -47,6 +48,9 @@ export default function HomeDesktop() {
 		(value: string) => {
 			const query = value.trim()
 			if (query === '') return
+			// the caret goes with the query: the catalog's field takes it on arrival,
+			// so the word can be finished there instead of being typed at nothing
+			handOffSearchFocus()
 			navigate('songsList', { hledat: query, s: undefined })
 		},
 		[navigate]

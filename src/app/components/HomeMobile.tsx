@@ -18,10 +18,20 @@ import {
 	CloudOffRounded,
 	SearchRounded,
 } from '@mui/icons-material'
+import { handOffSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
+import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
+import { routesPaths } from '@/routes'
+import { useSmartNavigate } from '@/routes/useSmartNavigate'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Fragment, ReactNode } from 'react'
+import { ChangeEvent, Fragment, ReactNode, useState } from 'react'
 
 const PREVIEW_LINES = 2 // lyric preview lines shown on the song cards
+
+/** How long home's field waits after the last letter before it opens the
+ * catalog. Long enough that a word arrives whole — the screens swap around the
+ * caret, and a letter typed during the swap has no field to land in. */
+const LAUNCH_DELAY_MS = 400
 
 const TEXT_DIVIDER_INSET = 1.75
 /** Sheep size in the hero. Sized to the gap between the title and the search
@@ -323,35 +333,79 @@ function SectionError({ message }: { message: string }) {
 }
 
 /**
- * Home's search bar: a field to look at, a link to tap. It carries you to the
- * catalog, where the real field takes the caret — so there is one screen that
- * searches, and tapping here never leaves a keyboard over a screen that cannot
- * answer.
+ * Home's search bar: a real field, and a door.
+ *
+ * Tapping it does nothing but put the caret in it — home is where you are, and
+ * leaving it before a word has been typed costs a screen for nothing. The first
+ * letter is the answer to "am I searching?", and that is when the catalog
+ * opens, with the letter already in it and the caret handed over (see
+ * searchHandoff), so the word is finished there.
+ *
+ * The catalog is still the one screen that searches: this field never shows a
+ * result, it only carries what you typed to the screen that can.
  */
 function SearchLauncher({ label }: { label: string }) {
+	const navigate = useSmartNavigate()
+	const router = useRouter()
+	const [value, setValue] = useState('')
+
+	// …when you pause, not on the first letter: the two screens swap around the
+	// caret, and a letter typed mid-swap has no field to land in.
+	useChangeDelayer(
+		value,
+		(next) => {
+			if (next.trim() === '') return
+			handOffSearchFocus()
+			navigate('songsList', { hledat: next, s: undefined })
+		},
+		// no dependencies: `navigate` is a new function on every render, and a
+		// dependency that changes every render restarts the wait every render —
+		// the field would then only ever open the catalog when the page went quiet
+		[],
+		LAUNCH_DELAY_MS
+	)
+
 	return (
-		<Link to="songsList" params={{ hledat: '', s: undefined }}>
+		<Box
+			sx={{
+				display: 'flex',
+				alignItems: 'center',
+				gap: 1.5,
+				bgcolor: 'background.paper',
+				border: '1px solid',
+				borderColor: 'grey.300',
+				borderRadius: 2.5,
+				paddingX: 2,
+				paddingY: 1.5,
+				boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+				transition: 'background-color 0.15s ease',
+				'&:focus-within': { borderColor: 'grey.400' },
+			}}
+		>
+			<SearchRounded sx={{ color: 'grey.500' }} />
 			<Box
+				component="input"
+				type="search"
+				value={value}
+				onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
+				// the screen you are about to need, fetched while you type into this
+				// one, so the swap is as short as it can be
+				onFocus={() => router.prefetch(routesPaths.songsList)}
+				placeholder={label}
+				aria-label={label}
+				enterKeyHint="search"
 				sx={{
-					display: 'flex',
-					alignItems: 'center',
-					gap: 1.5,
-					bgcolor: 'background.paper',
-					border: '1px solid',
-					borderColor: 'grey.300',
-					borderRadius: 2.5,
-					paddingX: 2,
-					paddingY: 1.5,
-					boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-					transition: 'background-color 0.15s ease',
-					'&:active': { bgcolor: 'grey.100' },
+					flexGrow: 1,
+					minWidth: 0,
+					border: 0,
+					outline: 'none',
+					background: 'transparent',
+					font: 'inherit',
+					fontSize: '1rem',
+					color: 'grey.900',
+					'&::placeholder': { color: 'grey.600', opacity: 1 },
 				}}
-			>
-				<SearchRounded sx={{ color: 'grey.500' }} />
-				<Typography color="grey.600" noWrap>
-					{label}
-				</Typography>
-			</Box>
-		</Link>
+			/>
+		</Box>
 	)
 }

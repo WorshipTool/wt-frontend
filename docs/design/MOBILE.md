@@ -195,9 +195,20 @@ reloadable, without a history entry per keystroke.
 Every "Hledat" in the app is a link to that one place: the tab bar's Hledat, the
 desktop toolbar, the footer. **Písně and Hledat are two doors into the same
 screen**, which is why the lit tab comes from the parameter (present → Hledat)
-rather than from a flag someone has to remember to set. Home's bar is a door
-too: on a phone it is a link that looks like a field, on a desktop it opens the
-catalog once you stop typing (or press Enter).
+rather than from a flag someone has to remember to set.
+
+**Home's bar is a door you type through, not one you tap through.** It is a
+real field on both widths: tapping it only puts the caret in it — leaving home
+before a word exists costs a screen for nothing — and the catalog opens when
+you pause (400ms on a phone, 600ms on a desktop, or Enter), carrying what you
+typed. The caret goes with it: home records the hand-off in a module flag
+(`searchHandoff`) and the catalog's field takes the caret and puts it at the
+end of the word, so the next letter lands where the last one did. The flag
+lives only as long as the navigation, so a shared or reloaded `?hledat=` link
+still shows its results without opening a keyboard over them.
+
+Wait for the pause rather than jumping on the first letter: the two screens
+swap around the caret, and a letter typed mid-swap has no field to land in.
 
 This is the rule that was broken for a long time: search was a *mode of the home
 page*, so the songs list had no search at all, two tabs pointed at one route, and
