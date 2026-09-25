@@ -1,5 +1,5 @@
 'use client'
-import AllSongItem from '@/app/(layout)/pisne/AllSongItem'
+import SongsBrowseDesktop from '@/app/(layout)/pisne/components/SongsBrowseDesktop'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
@@ -13,7 +13,6 @@ import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, CircularProgress, Typography } from '@/common/ui'
 import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
 import { Container } from '@/common/ui/mui'
-import { Grid } from '@/common/ui/mui/Grid'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { useTranslations } from 'next-intl'
@@ -59,7 +58,7 @@ function mirrorQueryInUrl(query: string) {
 	window.history.replaceState(
 		{},
 		'',
-		`${window.location.pathname}${search ? `?${search}` : ''}`
+		`${window.location.pathname}${search ? `?${search}` : ''}`,
 	)
 }
 
@@ -121,7 +120,7 @@ function SongsPage() {
 			setQuery(next)
 			mirrorQueryInUrl(next)
 		},
-		[]
+		[],
 	)
 
 	const clear = useCallback(() => setValue(''), [])
@@ -134,7 +133,7 @@ function SongsPage() {
 	const { songGettingApi } = useApi()
 
 	const [{ data: count }] = useApiStateEffect(async () =>
-		songGettingApi.getListSongCount()
+		songGettingApi.getListSongCount(),
 	)
 
 	const isSmall = useDownSize('md')
@@ -284,7 +283,7 @@ function SongsPage() {
 										to: { transform: 'translateY(0)', opacity: 1 },
 									},
 									animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
-							  }
+								}
 							: { width: '100%', display: 'flex', justifyContent: 'center' }
 					}
 				>
@@ -302,59 +301,52 @@ function SongsPage() {
 				{searching ? (
 					<SongSearchResults query={query} smartSearch={smartSearch} />
 				) : (
-					<Pager
-						data={getPageData}
-						allCount={count || 0}
-						take={countPerPage}
-						startPage={page || 1}
-						onPageChange={setPage}
-					>
-						{(data, loading, startIndex) => {
-							return (
-								<Box
-									display={'flex'}
-									flexDirection={'column'}
-									gap={2}
-									position={'relative'}
-								>
+					// A definite width for the browse body: the Container centres its
+					// children, so an item that cannot shrink below its content (a
+					// multi-column list is as wide as all its columns) would size itself
+					// past the page and hang off both sides. Stretching this wrapper
+					// gives everything inside a real width to lay out in.
+					<Box sx={{ width: '100%', minWidth: 0 }}>
+						<Pager
+							data={getPageData}
+							allCount={count || 0}
+							take={countPerPage}
+							startPage={page || 1}
+							onPageChange={setPage}
+						>
+							{(data, loading, startIndex) => {
+								return (
 									<Box
-										sx={{
-											position: 'absolute',
-											top: 0,
-											left: 0,
-											right: 0,
-											bottom: 0,
-											bgcolor: loading ? 'grey.300' : 'transparent',
-											opacity: 0.5,
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											pointerEvents: loading ? undefined : 'none',
-											transition: 'all 0.3s',
-										}}
+										display={'flex'}
+										flexDirection={'column'}
+										gap={2}
+										position={'relative'}
 									>
-										{loading && <CircularProgress />}
-									</Box>
+										<Box
+											sx={{
+												position: 'absolute',
+												top: 0,
+												left: 0,
+												right: 0,
+												bottom: 0,
+												bgcolor: loading ? 'grey.300' : 'transparent',
+												opacity: 0.5,
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+												pointerEvents: loading ? undefined : 'none',
+												transition: 'all 0.3s',
+											}}
+										>
+											{loading && <CircularProgress />}
+										</Box>
 
-									<Grid container columns={3} spacing={1} paddingBottom={2}>
-										{data.map((s, index) => {
-											return (
-												<Grid
-													item
-													xs={3}
-													md={1.5}
-													lg={1}
-													key={s.main.songGuid as any}
-												>
-													<AllSongItem data={s} index={startIndex + index + 1} />
-												</Grid>
-											)
-										})}
-									</Grid>
-								</Box>
-							)
-						}}
-					</Pager>
+										<SongsBrowseDesktop items={data} />
+									</Box>
+								)
+							}}
+						</Pager>
+					</Box>
 				)}
 
 				<Gap value={2} />

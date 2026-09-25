@@ -29,12 +29,12 @@ type ListProps = CommmonProps & {
 
 type MasonryGridProps = CommmonProps & {
 	variant?: 'masonrygrid'
-	columns?: ResponsiveStyleValue<string | number>
+	columns?: ResponsiveStyleValue<number>
 }
 
 type RowProps = CommmonProps & {
 	variant: 'row'
-	columns?: ResponsiveStyleValue<string | number>
+	columns?: ResponsiveStyleValue<number>
 }
 
 type SmartSongListCardsProps = ListProps | MasonryGridProps | RowProps
@@ -52,21 +52,13 @@ export const SmartSongListCard = memo(function SongListCards({
 
 	const variant = props.variant
 
-	let columns: ResponsiveStyleValue<number> = useMemo(() => {
-		switch (variant) {
-			case 'list':
-				return 1
-			case undefined:
-			case 'masonrygrid':
-			case 'row':
-				return {
-					xs: 1,
-					md: 2,
-					lg: 4,
-					xl: 5,
-				}
-		}
-	}, [props])
+	// `columns` is the caller's when it passes one — it was declared and then
+	// dropped, so a list that asked for wider cards silently got these four.
+	const asked = 'columns' in props ? props.columns : undefined
+	const columns: ResponsiveStyleValue<number> = useMemo(() => {
+		if (variant === 'list') return 1
+		return asked ?? { xs: 1, md: 2, lg: 4, xl: 5 }
+	}, [variant, asked])
 
 	const PackGroupCommonCard = useCallback(
 		({
