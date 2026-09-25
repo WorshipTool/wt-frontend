@@ -4,8 +4,9 @@ import { VariantPackGuid } from '@/api/dtos'
 import { SearchSongDto } from '@/api/dtos/song/song.search.dto'
 import { SearchFilters } from '@/app/(layout)/pisne/catalog.types'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
+import SmartSongListCards from '@/common/components/songLists/SongListCards/SmartSongListCards'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
-import { Box } from '@/common/ui'
+import { Box, CircularProgress } from '@/common/ui'
 import {
 	GroupRowsSkeleton,
 	ListStateView,
@@ -24,7 +25,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 /** Lyric preview lines on a result row: the phone's row is taller and can
  * carry two, a desktop row stays one line so more results fit the screen. */
 const PREVIEW_LINES_PHONE = 2
-const PREVIEW_LINES_DESKTOP = 1
+/** Cards, two abreast, in the catalog's list column. */
+const CARD_COLUMNS = { xs: 1, md: 2 }
 
 type SongSearchResultsProps = {
 	/** The query actually being searched (already debounced and trimmed). */
@@ -34,8 +36,8 @@ type SongSearchResultsProps = {
 }
 
 /**
- * The app's song search results: one screen-wide list of rows, the match lit up
- * in each title.
+ * The app's song search results: the song cards on a desktop, the phone's own
+ * rows on a phone.
  *
  * One data flow — paging, analytics, infinite scroll — shared by both widths.
  * Home used to own one copy of this and the phone another, which is how phone
@@ -43,9 +45,10 @@ type SongSearchResultsProps = {
  * could page differently depending on which screen you ran it from.
  *
  * "With chords" is the backend's own search parameter, so it narrows the search
- * itself. "Mine" and "favourites" are properties of rows the search already
- * returned, so they narrow what came back — a page can therefore come back
- * thinner than it was fetched.
+ * itself. "Mine" and "favourites" are properties of packs the search already
+ * returned, so they narrow what came back — a song whose every pack is filtered
+ * out drops from the results, and a page can come back thinner than it was
+ * fetched.
  */
 export default function SongSearchResults({
 	query,
@@ -112,19 +115,35 @@ export default function SongSearchResults({
 		[favourites]
 	)
 
-	const packs = useMemo(() => {
-		const all = songs.flatMap((s) => s.found)
-		return all.filter((pack) => {
-			if (filters.mine && pack.createdByGuid !== user?.guid) return false
-			if (filters.favourite && !favouriteGuids.has(pack.packGuid)) return false
-			return true
-		})
+	/** The search's own results, narrowed song by song: a song stays as long as
+	 * one of its packs passes, and keeps only the packs that did — so a card
+	 * never offers a version the filter excluded. */
+	const results = useMemo(() => {
+		return songs
+			.map((song) => ({
+				...song,
+				found: song.found.filter((pack) => {
+					if (filters.mine && pack.createdByGuid !== user?.guid) return false
+					if (filters.favourite && !favouriteGuids.has(pack.packGuid))
+						return false
+					return true
+				}),
+			}))
+			.filter((song) => song.found.length > 0)
 	}, [songs, filters.mine, filters.favourite, favouriteGuids, user?.guid])
 
-	if (loading && packs.length === 0)
-		return <GroupRowsSkeleton rows={6} withIcon={phone} />
+	const empty = results.length === 0
 
-	if (packs.length === 0)
+	if (loading && empty)
+		return phone ? (
+			<GroupRowsSkeleton rows={6} withIcon />
+		) : (
+			<Box sx={{ display: 'flex', justifyContent: 'center', paddingY: 6 }}>
+				<CircularProgress />
+			</Box>
+		)
+
+	if (empty)
 		return (
 			<ListStateView
 				icon={<SearchRounded fontSize="inherit" />}
@@ -136,12 +155,21 @@ export default function SongSearchResults({
 		<Box
 			sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
 		>
-			<SongGroup
-				songs={packs}
-				previewLines={phone ? PREVIEW_LINES_PHONE : PREVIEW_LINES_DESKTOP}
-				withIcon={phone}
-				highlight={query}
-			/>
+			{phone ? (
+				<SongGroup
+					songs={results.flatMap((song) => song.found)}
+					previewLines={PREVIEW_LINES_PHONE}
+					withIcon
+					highlight={query}
+				/>
+			) : (
+				<SmartSongListCards
+					data={results}
+					columns={CARD_COLUMNS}
+					highlight={query}
+					properties={['SHOW_ADDED_BY_LOADER', 'SHOW_PRIVATE_LABEL']}
+				/>
+			)}
 			<Box ref={loadNextRef} sx={{ height: 1 }} />
 		</Box>
 	)

@@ -15,6 +15,8 @@ type SongGroupCardProps = {
 	flexibleHeight?: boolean
 	dense?: boolean
 	toLinkProps?: ToLinkProps
+	/** What a search matched, lit up in the title of the card on top. */
+	highlight?: string
 }
 
 export default function SongGroupCard({
@@ -98,6 +100,7 @@ export default function SongGroupCard({
 					data={first}
 					flexibleHeight={flexibleHeight}
 					dense={dense}
+					highlight={props.highlight}
 					sx={{
 						...(original
 							? {

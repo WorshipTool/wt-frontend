@@ -14,6 +14,8 @@ type CommmonProps = {
 	properties?: ComponentProps<typeof SongVariantCard>['properties']
 	cardToLinkProps?: ComponentProps<typeof SongVariantCard>['toLinkProps']
 	dense?: boolean
+	/** What a search matched, lit up in every card's title. */
+	highlight?: string
 	onCardClick?: (data: BasicVariantPack) => void
 
 	// Selecting
@@ -76,6 +78,7 @@ export const SmartSongListCard = memo(function SongListCards({
 					original={original}
 					flexibleHeight={flexibleHeight}
 					dense={props.dense}
+					highlight={props.highlight}
 				/>
 			)
 		},
@@ -99,6 +102,7 @@ export const SmartSongListCard = memo(function SongListCards({
 											data={v}
 											key={v.packGuid}
 											dense={props.dense}
+											highlight={props.highlight}
 											properties={['SHOW_PRIVATE_LABEL']}
 										/>
 									))
@@ -112,6 +116,7 @@ export const SmartSongListCard = memo(function SongListCards({
 											data={v}
 											key={v.packGuid}
 											dense={props.dense}
+											highlight={props.highlight}
 											properties={['SHOW_PRIVATE_LABEL']}
 										/>
 									)),
@@ -137,6 +142,7 @@ export const SmartSongListCard = memo(function SongListCards({
 								data={v}
 								key={v.packGuid}
 								dense={props.dense}
+								highlight={props.highlight}
 								properties={['SHOW_PRIVATE_LABEL']}
 							/>
 						))
@@ -150,6 +156,7 @@ export const SmartSongListCard = memo(function SongListCards({
 								data={v}
 								key={v.packGuid}
 								dense={props.dense}
+								highlight={props.highlight}
 								properties={['SHOW_PRIVATE_LABEL']}
 							/>
 						)),
