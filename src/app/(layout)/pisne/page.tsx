@@ -369,6 +369,10 @@ function SongsPage() {
 												display: 'flex',
 												justifyContent: 'center',
 												paddingX: 2,
+												// the strip is as wide as the window, the field is not, and
+												// the top bar is under the rest of it — its logo and account
+												// button have to stay clickable
+												pointerEvents: 'none',
 												'@keyframes fieldToTop': {
 													from: { transform: 'translateY(12px)', opacity: 0.4 },
 													to: { transform: 'translateY(0)', opacity: 1 },
@@ -382,6 +386,8 @@ function SongsPage() {
 									sx={{
 										width: '100%',
 										maxWidth: searchMode ? FIELD_WIDTH : undefined,
+										// …and the field takes them back
+										pointerEvents: 'auto',
 									}}
 								>
 									{field}
