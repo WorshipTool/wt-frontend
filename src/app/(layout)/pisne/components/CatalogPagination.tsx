@@ -116,13 +116,13 @@ export default function CatalogPagination({
 						pointerEvents: 'auto',
 						display: 'flex',
 						alignItems: 'center',
-						gap: 1.5,
+						gap: 2,
 						// the label is what the left padding is for; without it the bar is
 						// the numbers and nothing else
-						paddingLeft: touch ? 0.5 : 2,
-						paddingRight: touch ? 0.5 : 1,
-						paddingY: 0.5,
-						borderRadius: 2,
+						paddingLeft: touch ? 0.5 : 2.5,
+						paddingRight: touch ? 0.5 : 1.5,
+						paddingY: touch ? 0.5 : 1,
+						borderRadius: 2.5,
 						bgcolor: 'background.paper',
 						boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
 					}}
@@ -130,7 +130,7 @@ export default function CatalogPagination({
 					{/* on a phone the bar is only as wide as the screen, and the
 				    highlighted number says the same thing */}
 					{!touch && (
-						<Typography small color="grey.600">
+						<Typography color="grey.600">
 							{t('pageOf', {
 								page: String(current),
 								total: String(pagesCount),
@@ -144,7 +144,7 @@ export default function CatalogPagination({
 						onChange={(_, next) => onChange(next)}
 						siblingCount={touch ? 0 : 1}
 						boundaryCount={1}
-						size={touch ? 'medium' : 'small'}
+						size="medium"
 						color="primary"
 						sx={{
 							'& .MuiPagination-ul': { flexWrap: 'nowrap' },
