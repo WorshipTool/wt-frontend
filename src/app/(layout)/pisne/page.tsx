@@ -159,7 +159,6 @@ function SongsPage() {
 
 	const clear = useCallback(() => setValue(''), [])
 
-	const [fieldFocused, setFieldFocused] = useState(false)
 	const [sort, setSort] = useState<SongSort>('abc')
 	const [filters, setFilters] = useState<SearchFilters>(NO_FILTERS)
 
@@ -205,16 +204,15 @@ function SongsPage() {
 		[setPage]
 	)
 
-	// …while the *chrome* answers to the field itself, the way the home screen
-	// used to: touch the field and the field rides up to the top — on a phone it
-	// becomes the header, on a desktop it comes to rest half in the top bar.
+	// …while the *chrome* — the field riding up to the top, the phone's title
+	// folding away — answers to the URL rather than to the caret. `?hledat` is
+	// what says this screen is searching: the Hledat tab and the toolbar set it,
+	// and typing mirrors itself into it. Clicking the field and writing nothing
+	// is not searching, so the page stays where it is.
 	//
-	// The field, not the URL: arriving with `?hledat=` focuses the field (above),
-	// which raises the chrome by itself, and the parameter then stays for the
-	// whole visit so the Hledat tab keeps its highlight. Reading it here as well
-	// would mean an empty field you have clicked away from could never give the
-	// screen back.
-	const searchMode = searching || fieldFocused
+	// The typed query counts too, because typing mirrors itself in with
+	// replaceState, which `useSearchParams` deliberately does not see.
+	const searchMode = searching || urlQuery !== null
 
 	// The top bar's own links sit exactly where the field lands, so they stand
 	// down while it is there — as they did on home, which is where this field
@@ -230,13 +228,7 @@ function SongsPage() {
 		// carries the toggle, which is this screen's now that home has stopped
 		// searching (see news.config)
 		<NewsHighlightWrapper targetComponent="smart-search-toggle">
-			<Box
-				data-testid="main-search-container"
-				// focus bubbles (React's onFocus is focusin), so the field itself
-				// needs no handler of its own
-				onFocus={() => setFieldFocused(true)}
-				onBlur={() => setFieldFocused(false)}
-			>
+			<Box data-testid="main-search-container">
 				<SearchBar
 					value={value}
 					onChange={setValue}
