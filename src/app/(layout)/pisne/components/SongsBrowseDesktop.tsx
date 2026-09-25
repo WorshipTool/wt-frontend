@@ -9,6 +9,9 @@ import { useMemo } from 'react'
 
 /** Lyric preview lines on a browse row — one, since a page holds many. */
 const PREVIEW_LINES = 1
+/** The songbook reads down one column and up the next. Two, because a row
+ * carries a title and a line of lyrics and wants the width. */
+const COLUMNS = 2
 
 /**
  * A section's initial, with a rule running off it so the rows under it read as
@@ -35,8 +38,9 @@ function LetterHeader({ letter }: { letter: string }) {
 
 /**
  * The catalog's browse body on a desktop: the songbook in order, in the same
- * grouped rows the phone shows — one column, wide enough to read a title and
- * the line under it without either being cut.
+ * grouped rows the phone shows, read down one column and up the next — a row
+ * across the whole block would be a title and a line of lyrics in a field of
+ * nothing.
  *
  * Grouped under initials while it is alphabetical. Ordered by date it is not,
  * so the letters would be meaningless then and the rows come as one run.
@@ -48,10 +52,20 @@ export default function SongsBrowseDesktop({
 	items: GetListSongData[]
 	grouped?: boolean
 }) {
-	const groups = useMemo(
-		() => (grouped ? groupByFirstLetter(items) : []),
-		[items, grouped]
-	)
+	// the page's songs cut into equal runs, each read top to bottom — a column
+	// per run, its own letter headings inside it. Cutting by letter instead
+	// would leave a page whose songs nearly all start with one letter as a full
+	// column beside an empty one.
+	const columns = useMemo(() => {
+		if (!grouped) return []
+		const perColumn = Math.ceil(items.length / COLUMNS)
+		if (perColumn === 0) return []
+		const runs: GetListSongData[][] = []
+		for (let i = 0; i < items.length; i += perColumn)
+			runs.push(items.slice(i, i + perColumn))
+		// a letter split across the cut opens again at the top of the next column
+		return runs.map((run) => groupByFirstLetter(run))
+	}, [items, grouped])
 
 	if (!grouped)
 		return (
@@ -65,24 +79,31 @@ export default function SongsBrowseDesktop({
 		)
 
 	return (
-		<Box
-			sx={{
-				width: '100%',
-				minWidth: 0,
-				display: 'flex',
-				flexDirection: 'column',
-				gap: 2.5,
-			}}
-		>
-			{groups.map((group, index) => (
-				// a letter can open twice on one page (see groupByFirstLetter)
-				<Box key={`${group.letter}-${index}`}>
-					<LetterHeader letter={group.letter} />
-					<SongGroup
-						songs={group.items.map((s) => mapBasicVariantPackApiToDto(s.main))}
-						previewLines={PREVIEW_LINES}
-						withIcon={false}
-					/>
+		<Box sx={{ width: '100%', minWidth: 0, display: 'flex', gap: 3 }}>
+			{columns.map((groups, columnIndex) => (
+				<Box
+					key={columnIndex}
+					sx={{
+						flex: 1,
+						minWidth: 0,
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 2.5,
+					}}
+				>
+					{groups.map((group, index) => (
+						// a letter can open twice in one column (see groupByFirstLetter)
+						<Box key={`${group.letter}-${index}`}>
+							<LetterHeader letter={group.letter} />
+							<SongGroup
+								songs={group.items.map((s) =>
+									mapBasicVariantPackApiToDto(s.main)
+								)}
+								previewLines={PREVIEW_LINES}
+								withIcon={false}
+							/>
+						</Box>
+					))}
 				</Box>
 			))}
 		</Box>
