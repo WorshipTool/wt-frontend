@@ -7,11 +7,10 @@ import { useTranslations } from 'next-intl'
 /** Clear of the bottom of the scroll, in px — `bottom` in `sx` is a position,
  * not a spacing, so the theme scale does not apply to it. */
 const BOTTOM_OFFSET = 24
-/** On a phone the bar rides right above the tab bar. Negative because a sticky
- * offset is measured inside the scroller's padding, and that padding (16px) is
- * more air than the bar wants there — it still stops at the scroller's edge, so
- * nothing is cut off. */
-const TOUCH_BOTTOM_OFFSET = -8
+/** On a phone the bar rides right above the tab bar: the scroller pads itself
+ * for the bar, and a sticky offset is measured inside that padding, so this is
+ * the gap between the two. */
+const TOUCH_BOTTOM_OFFSET = 8
 /** Air under the bar where it comes to rest, so the last row clears it. */
 const RESTING_AIR = 8
 /** Above the page, below the top bar (10) and the search field (11) — it never

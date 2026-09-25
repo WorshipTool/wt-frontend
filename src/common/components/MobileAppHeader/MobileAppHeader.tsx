@@ -2,6 +2,7 @@
 
 import {
 	MOBILE_NAV_BREAKPOINT,
+	MOBILE_NAV_BAR_HEIGHT,
 	MOBILE_NAV_CLEARANCE,
 } from '@/common/components/MobileAppTabBar/nav.constants'
 import { Box, IconButton, Typography, useTheme } from '@/common/ui'
@@ -190,13 +191,13 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 				top: 0,
 				left: 0,
 				right: 0,
-				// Down to the very bottom, and the room for the tab bar taken as
-				// padding rather than by stopping short of it. The clearance
-				// overshoots the bar's own height on purpose (see the constant), and
-				// the shell used to end at the clearance — so the few px between the
-				// two showed the page's background as a grey strip under the surface.
+				// Down to the very bottom: the content region runs under the tab bar
+				// and pads itself for it, rather than the shell stopping above the
+				// bar. Stopping short left a strip of surface between the last row
+				// and the bar with nothing in it — and, while the shell ended at the
+				// clearance (which overshoots the bar on purpose), a strip of the
+				// page's own background under that.
 				bottom: 0,
-				paddingBottom: MOBILE_NAV_CLEARANCE,
 				zIndex: 2,
 				bgcolor: surface,
 				display: 'flex',
@@ -354,7 +355,13 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					// with no header row the screen owns its own top inset, so it can
 					// stick something (home's search bar) right under the status bar
 					paddingTop: hasHeaderRow ? 0.5 : 0,
-					paddingBottom: 2,
+					// room for the bar the content scrolls under — the bar's own
+					// height, not the clearance, which is deliberately more than that
+					// and would leave a gap at the end of the scroll. A panel of its
+					// own below takes that room instead.
+					paddingBottom: bottomPanel
+						? 2
+						: `calc(env(safe-area-inset-bottom) + ${MOBILE_NAV_BAR_HEIGHT}px)`,
 				}}
 			>
 				{children}
@@ -367,6 +374,9 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 				<Box
 					sx={{
 						flexShrink: 0,
+						// the shell reaches the bottom of the window now, so the panel
+						// keeps itself clear of the bar
+						marginBottom: MOBILE_NAV_CLEARANCE,
 						zIndex: 1,
 						bgcolor: 'background.paper',
 						borderTop: '1px solid',
