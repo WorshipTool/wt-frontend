@@ -25,6 +25,19 @@ describe('splitByMatch', () => {
 		expect(parts.find((p) => p.match)?.text).toBe('ámen')
 	})
 
+	it('reads a letter the way the rest of the app does', () => {
+		// normalizeCzechString's own table: ô, ľ, ä are in it
+		expect(shape('Aby ma rieka zmyla', 'ABY')).toBe('[Aby] ma rieka zmyla')
+		expect(shape('Svätý', 'svaty')).toBe('[Svätý]')
+	})
+
+	it('folds letters the Czech table does not list', () => {
+		// the Polish brand's own: ś, ę, ą are nowhere in that table, and the
+		// search box has to find them anyway
+		expect(shape('Pieśń o miłości', 'piesn')).toBe('[Pieśń] o miłości')
+		expect(shape('Tęsknota', 'tesknota')).toBe('[Tęsknota]')
+	})
+
 	it('marks only the first occurrence', () => {
 		expect(shape('Amen, amen', 'amen')).toBe('[Amen], amen')
 	})
