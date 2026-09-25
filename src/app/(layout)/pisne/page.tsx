@@ -4,7 +4,11 @@ import ColumnHeading from '@/app/(layout)/pisne/components/ColumnHeading'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsBrowseDesktop from '@/app/(layout)/pisne/components/SongsBrowseDesktop'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
-import { consumeSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
+import {
+	consumeSearchFieldRect,
+	consumeSearchFocus,
+	FieldRect,
+} from '@/app/(layout)/pisne/searchHandoff'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
@@ -22,7 +26,13 @@ import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react'
 import { useApi } from '../../../api/tech-and-hooks/useApi'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
@@ -54,6 +64,15 @@ const TOOLBAR_HEIGHT = 56
 const RESULTS_TOP_SPACE = 3
 /** How long the chrome takes to rearrange — the phone header's own timing. */
 const COLLAPSE_MS = 240
+/** How long the field takes to travel between its places, and the curve it
+ * travels on: away quickly, arriving slowly, which is what reads as the same
+ * field moving rather than two fields swapping. */
+const FIELD_MOVE_MS = 280
+const FIELD_MOVE_EASE = 'cubic-bezier(0.2, 0, 0, 1)'
+
+// useLayoutEffect warns during SSR; this is the standard isomorphic shim
+const useIsoLayoutEffect =
+	typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
  * Writes the query into the URL without touching history, so a search is
@@ -219,12 +238,96 @@ function SongsPage() {
 		return () => setHideMiddleNavigation(false)
 	}, [searchMode, setHideMiddleNavigation])
 
+	// The field's journey.
+	//
+	// It is one element with two places — the list's heading line while you
+	// browse, half in the top bar while you search — and it can arrive from home
+	// already searching, where it was the hero's field a moment ago.
+	//
+	// Both moves are the same trick: let the browser lay the new place out, then
+	// animate the element from the rect it had a moment ago to the one it has now
+	// (a FLIP). A CSS transition cannot do either — the first crosses between a
+	// box in the flow and one fixed to the window, and the second crosses a
+	// navigation, where the element you were looking at no longer exists. The
+	// width travels in the same animation, so the field grows as it rises instead
+	// of snapping wide at one end of the trip.
+	const fieldBoxRef = useRef<HTMLDivElement>(null)
+	const fieldRectRef = useRef<FieldRect | null>(null)
+	const fieldMoveRef = useRef<Animation | null>(null)
+	const fieldModeRef = useRef(searchMode)
+	const arrivedRef = useRef(false)
+
+	// Every render, because the field's place has to be known at the moment it
+	// changes and only the render before it knows where it was. A trip in flight is
+	// left strictly alone: this screen re-renders several times over the 280ms (the
+	// query lands, the results arrive), and a rect read mid-flight is where the
+	// field is in the air, not where the layout puts it.
+	useIsoLayoutEffect(() => {
+		const box = fieldBoxRef.current
+		if (!box || typeof box.animate !== 'function') return
+
+		let from = fieldRectRef.current
+		let moved = fieldModeRef.current !== searchMode
+		fieldModeRef.current = searchMode
+
+		// On the screen's very first layout, the field's previous place is the one
+		// home handed over — if home is where we came from. Nothing is handed over to
+		// a reloaded or shared link, which is right: its field has not been anywhere,
+		// so it has nowhere to travel from.
+		if (!arrivedRef.current) {
+			arrivedRef.current = true
+			from = consumeSearchFieldRect()
+			moved = from !== null
+		}
+
+		if (!moved) {
+			// not a move, just another render — keep the field's place current, since
+			// the layout around it shifts for its own reasons (a window resized, the
+			// results arriving), and the next move has to start from where it really is
+			if (!fieldMoveRef.current)
+				fieldRectRef.current = box.getBoundingClientRect()
+			return
+		}
+
+		fieldMoveRef.current?.cancel()
+		fieldMoveRef.current = null
+
+		const to = box.getBoundingClientRect()
+		fieldRectRef.current = to
+		if (!from) return
+
+		const dx = from.left - to.left
+		const dy = from.top - to.top
+		const grew = Math.abs(from.width - to.width)
+		// Nothing actually moved — the phone's field, for one, keeps its band when
+		// searching starts, and animating it from itself would only make it flicker.
+		if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && grew < 1) return
+
+		const move = box.animate(
+			[
+				{ transform: `translate(${dx}px, ${dy}px)`, width: `${from.width}px` },
+				{ transform: 'none', width: `${to.width}px` },
+			],
+			{ duration: FIELD_MOVE_MS, easing: FIELD_MOVE_EASE }
+		)
+		fieldMoveRef.current = move
+		move.finished
+			.then(() => {
+				if (fieldMoveRef.current === move) fieldMoveRef.current = null
+			})
+			.catch(() => {
+				// cancelled by the next move, which has already taken over
+			})
+	})
+
 	const field = (
 		// the news tutorial for smart search points here — at the field that
 		// carries the toggle, which is this screen's now that home has stopped
 		// searching (see news.config)
 		<NewsHighlightWrapper targetComponent="smart-search-toggle">
-			<Box data-testid="main-search-container">
+			{/* the element that travels — the field itself, wherever the layout
+			    around it has put it (see the journey above) */}
+			<Box ref={fieldBoxRef} data-testid="main-search-container">
 				<SearchBar
 					value={value}
 					onChange={setValue}
@@ -373,20 +476,17 @@ function SongsPage() {
 												// the top bar is under the rest of it — its logo and account
 												// button have to stay clickable
 												pointerEvents: 'none',
-												'@keyframes fieldToTop': {
-													from: { transform: 'translateY(12px)', opacity: 0.4 },
-													to: { transform: 'translateY(0)', opacity: 1 },
-												},
-												animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
 											}
 										: { width: FIELD_WIDTH_RESTING, flexShrink: 0 }
 								}
 							>
 								<Box
 									sx={{
-										width: '100%',
-										maxWidth: searchMode ? FIELD_WIDTH : undefined,
-										// …and the field takes them back
+										// an explicit width in either place, so the trip between them
+										// has a width to travel as well as a distance
+										width: searchMode ? FIELD_WIDTH : FIELD_WIDTH_RESTING,
+										maxWidth: '100%',
+										// …and the field takes the clicks back
 										pointerEvents: 'auto',
 									}}
 								>

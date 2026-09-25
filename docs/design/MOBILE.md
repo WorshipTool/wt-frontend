@@ -210,6 +210,24 @@ still shows its results without opening a keyboard over them.
 Wait for the pause rather than jumping on the first letter: the two screens
 swap around the caret, and a letter typed mid-swap has no field to land in.
 
+**The field travels; it is never two fields.** The place it stood goes with the
+caret — `handOffSearchFocus(el)` takes the element it is leaving — and the
+catalog's field starts life in that rect and flies to its own over 280ms. Same
+trick inside the catalog, where the field has two homes (the list's heading line
+while you browse, half in the top bar while you search): measure where it was,
+let the browser lay out where it is now, animate the difference away (a FLIP,
+`Element.animate`, width travelling with it). A CSS transition cannot do either
+of those moves — the first crosses a navigation, the second crosses between a
+box in the flow and one fixed to the window.
+
+Two rules that keep it honest: a trip in flight is never interrupted (the screen
+re-renders several times over those 280ms — the query lands, the results arrive
+— and each of those must leave the animation alone), and a rect is never read
+while one is running, because that reads where the field is in the air rather
+than where the layout puts it. A move of under a pixel is not animated at all:
+on a phone the field keeps its band when searching starts, and the title folding
+away above it already carries it down.
+
 This is the rule that was broken for a long time: search was a *mode of the home
 page*, so the songs list had no search at all, two tabs pointed at one route, and
 "Hledat" on any other screen meant leaving that screen for home.

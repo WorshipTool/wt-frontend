@@ -43,14 +43,18 @@ export default function HomeDesktop() {
 	// wait. See MainSearchInput.
 	const navigate = useSmartNavigate()
 	const [searchInputValue, setSearchInputValue] = useState('')
+	const searchBarRef = useRef<HTMLDivElement>(null)
 
 	const openCatalog = useCallback(
 		(value: string) => {
 			const query = value.trim()
 			if (query === '') return
-			// the caret goes with the query: the catalog's field takes it on arrival,
-			// so the word can be finished there instead of being typed at nothing
-			handOffSearchFocus()
+			// The caret goes with the query: the catalog's field takes it on arrival,
+			// so the word can be finished there instead of being typed at nothing. And
+			// so does the bar's own place, so the catalog's field rises from this one
+			// rather than appearing at the top of a screen that was not there a moment
+			// ago (see searchHandoff).
+			handOffSearchFocus(searchBarRef.current)
 			navigate('songsList', { hledat: query, s: undefined })
 		},
 		[navigate]
@@ -284,6 +288,7 @@ export default function HomeDesktop() {
 
 										<MainSearchInput
 											gradientBorder={isTop}
+											containerRef={searchBarRef}
 											value={searchInputValue}
 											onChange={setSearchInputValue}
 											onSubmit={() => openCatalog(searchInputValue)}

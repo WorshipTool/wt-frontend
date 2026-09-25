@@ -3,7 +3,7 @@ import { InputBase } from '@/common/ui/mui'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled } from '@mui/system'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef } from 'react'
+import { Ref, useEffect, useRef } from 'react'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -29,6 +29,9 @@ type MainSearchInputProps = {
 	/** Enter, i.e. "go now" — the field does not wait out its pause then. */
 	onSubmit?: () => void
 	autoFocus?: boolean
+	/** The bar itself, for the screen that has to say where it stood: the catalog
+	 * flies its own field in from here (see searchHandoff). */
+	containerRef?: Ref<HTMLDivElement>
 }
 
 /**
@@ -54,6 +57,7 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 
 	return (
 		<div
+			ref={props.containerRef}
 			data-testid="main-search-container"
 			style={{
 				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,

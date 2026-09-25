@@ -24,7 +24,7 @@ import { routesPaths } from '@/routes'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { ChangeEvent, Fragment, ReactNode, useState } from 'react'
+import { ChangeEvent, Fragment, ReactNode, useRef, useState } from 'react'
 
 const PREVIEW_LINES = 2 // lyric preview lines shown on the song cards
 
@@ -348,6 +348,7 @@ function SearchLauncher({ label }: { label: string }) {
 	const navigate = useSmartNavigate()
 	const router = useRouter()
 	const [value, setValue] = useState('')
+	const barRef = useRef<HTMLDivElement>(null)
 
 	// …when you pause, not on the first letter: the two screens swap around the
 	// caret, and a letter typed mid-swap has no field to land in.
@@ -355,7 +356,9 @@ function SearchLauncher({ label }: { label: string }) {
 		value,
 		(next) => {
 			if (next.trim() === '') return
-			handOffSearchFocus()
+			// the bar's own place goes with the caret: the catalog's field arrives
+			// where this one was rather than appearing (see searchHandoff)
+			handOffSearchFocus(barRef.current)
 			navigate('songsList', { hledat: next, s: undefined })
 		},
 		// no dependencies: `navigate` is a new function on every render, and a
@@ -367,6 +370,7 @@ function SearchLauncher({ label }: { label: string }) {
 
 	return (
 		<Box
+			ref={barRef}
 			sx={{
 				display: 'flex',
 				alignItems: 'center',
