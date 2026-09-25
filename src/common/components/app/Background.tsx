@@ -5,12 +5,12 @@ import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
 
 const Bg = styled(Box)(({ theme }) => ({
-	// The app's canvas, on every layout. Light, the way the phone shell's own
-	// surface is (grey.50) — the two used to disagree, so the same white card
-	// sat on a pale ground on a phone and a middling grey one on a desktop. The
-	// gradient stays, a whole two steps of it, so the page still has a top and a
-	// bottom without the corner going dark.
-	background: `linear-gradient(160deg, ${theme.palette.grey[50]}, ${theme.palette.grey[100]})`,
+	// The app's canvas, on every layout. It used to be grey.200 → grey.300,
+	// which read as a middling grey against the white cards; grey.50 → grey.100
+	// went the other way and left the page looking like bare paper. One step
+	// darker than that: light enough that a card still sits on a pale ground,
+	// dark enough that the card has an edge to sit on.
+	background: `linear-gradient(160deg, ${theme.palette.grey[100]}, ${theme.palette.grey[200]})`,
 	position: 'fixed',
 	width: '100%',
 	top: 0,
