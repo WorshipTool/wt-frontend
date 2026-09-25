@@ -10,12 +10,18 @@ import { FormControlLabel, Radio, RadioGroup } from '@/common/ui/mui'
 import { useTranslations } from 'next-intl'
 import { ReactNode } from 'react'
 
-/** Height of a column's heading row, so both columns start on the same line. */
-const HEADING_HEIGHT = 22
+/**
+ * Height of a column's heading row, so both columns start on the same line.
+ *
+ * Tall enough for the search field, because the list's own heading line is
+ * where the field rests — the panel's line is empty next to it and still has
+ * to be the same line.
+ */
+const HEADING_HEIGHT = 52
 
 /**
  * The line a column opens with — the small caps label, and whatever belongs on
- * the right of it (a count, a Clear button).
+ * the right of it (a count, the search field, a Clear button).
  *
  * Both columns of the catalog use it, which is the point: the panel used to
  * start straight into its controls and so sat visibly higher than the list
@@ -23,9 +29,12 @@ const HEADING_HEIGHT = 22
  */
 export function ColumnHeading({
 	label,
+	meta,
 	children,
 }: {
 	label: string
+	/** Belongs to the label and stays beside it — a count, a note. */
+	meta?: ReactNode
 	children?: ReactNode
 }) {
 	return (
@@ -33,7 +42,7 @@ export function ColumnHeading({
 			sx={{
 				height: HEADING_HEIGHT,
 				display: 'flex',
-				alignItems: 'baseline',
+				alignItems: 'center',
 				gap: 1,
 				flexShrink: 0,
 			}}
@@ -41,6 +50,7 @@ export function ColumnHeading({
 			<Typography small strong={800} uppercase color="grey.700">
 				{label}
 			</Typography>
+			{meta}
 			<Box sx={{ flexGrow: 1 }} />
 			{children}
 		</Box>

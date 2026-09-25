@@ -46,10 +46,12 @@ const BLOCK_WIDTH = 1000
 const PANEL_WIDTH = 260
 /** Between the list and the panel, in theme units. */
 const COLUMN_GAP = 4.5
-/** The search field once it floats: one control, not a banner. Close enough to
- * the width of the list column that moving there and back reads as a move
- * rather than a resize. */
+/** The search field once it floats: one control, not a banner. */
 const FIELD_WIDTH = 700
+/** …and at rest, where it closes the list's heading line: wide enough for a
+ * title and the start of a second word, narrow enough that the line still
+ * reads as a heading with a control on it. */
+const FIELD_WIDTH_RESTING = 340
 /**
  * Where the field sits once searching takes over the screen: half into the 56px
  * top bar, which is where the home hero's field used to land when the page
@@ -63,8 +65,10 @@ const PANEL_STICKY_TOP = 72
 /** Where the list's first row comes to rest after a page is turned — clear of
  * the top bar, with a little air. */
 const LIST_TOP_MARGIN = 72
-/** Air under the floating field, where the flow no longer provides any. */
-const RESULTS_TOP_SPACE = 5
+/** Air under the floating field, where the flow no longer provides any. The
+ * heading line under it is tall (it is the field's own line at rest), so this
+ * is less than it looks. */
+const RESULTS_TOP_SPACE = 3
 /** How long the chrome takes to rearrange — the phone header's own timing. */
 const COLLAPSE_MS = 240
 
@@ -236,6 +240,10 @@ function SongsPage() {
 				<SearchBar
 					value={value}
 					onChange={setValue}
+					// White on a desktop, where it sits on the grey canvas and the
+					// shadow is what lifts it. The phone keeps the bar's own grey: its
+					// header is white already, and a white field on it would vanish.
+					sx={phone ? undefined : { bgcolor: 'background.paper' }}
 					placeholder={tSearch('searchSongs')}
 					// the field takes focus when navigation asks for search, not on
 					// every visit to the catalog
@@ -325,56 +333,9 @@ function SongsPage() {
 						marginX: 'auto',
 						display: 'flex',
 						flexDirection: 'column',
-						gap: searchMode ? 0 : 3,
-						transition: `gap ${COLLAPSE_MS}ms ease`,
 					}}
 				>
-					<Gap value={3} />
-
-					{/* One wrapper that moves, never two that swap: a swap would rebuild
-					    the input and drop the caret the moment you touched it.
-					    At rest it belongs to the list — it opens the left column, over
-					    the rows it searches, not over the whole page. Searching lifts it
-					    out of the flow to rest half in the top bar, centred, whose own
-					    links have stood down for it. */}
-					<Box
-						sx={
-							searchMode
-								? {
-										position: 'fixed',
-										top: FIELD_TOP_SEARCHING,
-										left: 0,
-										right: 0,
-										zIndex: FIELD_Z,
-										display: 'flex',
-										justifyContent: 'center',
-										paddingX: 2,
-										'@keyframes fieldToTop': {
-											from: { transform: 'translateY(12px)', opacity: 0.4 },
-											to: { transform: 'translateY(0)', opacity: 1 },
-										},
-										animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
-								  }
-								: {
-										width: '100%',
-										display: 'flex',
-										// the padding is the panel's column, kept clear, so the
-										// field ends exactly where the list ends — and it has to
-										// come out of the width, not be added to it
-										boxSizing: 'border-box',
-										paddingRight: `${PANEL_WIDTH + COLUMN_GAP * 8}px`,
-								  }
-						}
-					>
-						<Box
-							sx={{
-								width: '100%',
-								maxWidth: searchMode ? FIELD_WIDTH : undefined,
-							}}
-						>
-							{field}
-						</Box>
-					</Box>
+					<Gap value={4} />
 
 					{/* air under the floating field, where the flow no longer provides any */}
 					<Box
@@ -397,18 +358,59 @@ function SongsPage() {
 								gap: 1.5,
 							}}
 						>
-							<ColumnHeading label={searching ? t('results') : t('allSongs')}>
-								{!searching && (
-									<Typography small color="grey.600">
-										{t('songCount', {
-											count: browseCount,
-											// the reader's own thousands separator: the app pins
-											// next-intl to one locale for all three brands, so ICU's
-											// own number format would write 2,057 to a Czech reader
-											formatted: browseCount.toLocaleString(),
-										})}
-									</Typography>
-								)}
+							<ColumnHeading
+								label={searching ? t('results') : t('allSongs')}
+								meta={
+									!searching && (
+										<Typography small color="grey.600">
+											{t('songCount', {
+												count: browseCount,
+												// the reader's own thousands separator: the app pins
+												// next-intl to one locale for all three brands, so ICU's
+												// own number format would write 2,057 to a Czech reader
+												formatted: browseCount.toLocaleString(),
+											})}
+										</Typography>
+									)
+								}
+							>
+
+								{/* One wrapper that moves, never two that swap, and never a
+								    different parent: rebuilding the input would drop the caret
+								    the moment you touched it. At rest the field closes the
+								    list's own heading line, over the rows it searches. Searching
+								    takes it out of the flow, to rest half in the top bar whose
+								    links have stood down for it. */}
+								<Box
+									sx={
+										searchMode
+											? {
+													position: 'fixed',
+													top: FIELD_TOP_SEARCHING,
+													left: 0,
+													right: 0,
+													zIndex: FIELD_Z,
+													display: 'flex',
+													justifyContent: 'center',
+													paddingX: 2,
+													'@keyframes fieldToTop': {
+														from: { transform: 'translateY(12px)', opacity: 0.4 },
+														to: { transform: 'translateY(0)', opacity: 1 },
+													},
+													animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
+											  }
+											: { width: FIELD_WIDTH_RESTING, flexShrink: 0 }
+									}
+								>
+									<Box
+										sx={{
+											width: '100%',
+											maxWidth: searchMode ? FIELD_WIDTH : undefined,
+										}}
+									>
+										{field}
+									</Box>
+								</Box>
 							</ColumnHeading>
 
 							{searching ? (
