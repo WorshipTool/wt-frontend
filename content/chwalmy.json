@@ -863,9 +863,20 @@
 		"title": "Pieśni",
 		"empty": "Nie ma jeszcze żadnych pieśni.",
 		"error": "Nie udało się załadować pieśni.",
-		"results": "Wyniki wyszukiwania",
+		"results": "Wyniki",
 		"noResults": "Niczego nie znaleźliśmy...",
-		"loadMore": "Załaduj więcej"
+		"loadMore": "Załaduj więcej",
+		"sort": "Sortuj",
+		"sortAlphabetical": "Alfabetycznie A–Z",
+		"sortNewest": "Ostatnio dodane",
+		"filters": "Filtry",
+		"filterMine": "Tylko moje pieśni",
+		"filterFavourite": "Tylko ulubione",
+		"filterChords": "Tylko z akordami",
+		"clearFilters": "Wyczyść",
+		"allSongs": "Wszystkie pieśni",
+		"songCount": "{formatted} {count, plural, one {pieśń} few {pieśni} other {pieśni}}",
+		"newestNote": "Pokazujemy ostatnio dodane pieśni."
 	},
 	"loadingScreen": {
 		"message": "Ładowanie aplikacji..."

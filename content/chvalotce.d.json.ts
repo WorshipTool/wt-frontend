@@ -866,9 +866,20 @@ declare const messages: {
 		"title": "Písně",
 		"empty": "Zatím tu nejsou žádné písně.",
 		"error": "Písně se nepodařilo načíst.",
-		"results": "Výsledky vyhledávání",
+		"results": "Výsledky",
 		"noResults": "Nic jsme nenašli...",
-		"loadMore": "Načíst další"
+		"loadMore": "Načíst další",
+		"sort": "Řadit",
+		"sortAlphabetical": "Abecedně A–Z",
+		"sortNewest": "Naposledy přidané",
+		"filters": "Filtry",
+		"filterMine": "Jen moje písně",
+		"filterFavourite": "Jen oblíbené",
+		"filterChords": "Jen s akordy",
+		"clearFilters": "Zrušit",
+		"allSongs": "Všechny písně",
+		"songCount": "{formatted} {count, plural, one {píseň} few {písně} other {písní}}",
+		"newestNote": "Zobrazeny naposledy přidané písně."
 	},
 	"loadingScreen": {
 		"message": "Načítání aplikace..."

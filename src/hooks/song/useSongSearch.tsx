@@ -8,6 +8,8 @@ type useSongSearchProps = {
 	page?: number
 	signal?: AbortSignal
 	useSmartSearch?: boolean
+	/** The backend's own narrowing: songs that carry chords. */
+	onlyWithChords?: boolean
 }
 
 type GetSongFunction = (
@@ -39,7 +41,7 @@ export default function useSongSearch() {
 				const result = await songSearchingApi.search(
 					searchKey,
 					additionalParams?.page || 0,
-					undefined,
+					additionalParams?.onlyWithChords || undefined,
 					{
 						signal: additionalParams?.signal,
 					}

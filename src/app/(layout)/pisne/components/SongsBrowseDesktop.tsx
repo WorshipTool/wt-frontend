@@ -1,30 +1,18 @@
 'use client'
 
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
-import { SearchSongDto } from '@/api/dtos/song/song.search.dto'
 import { GetListSongData } from '@/api/generated'
 import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
-import SmartSongListCards from '@/common/components/songLists/SongListCards/SmartSongListCards'
 import { Box, Typography } from '@/common/ui'
+import { SongGroup } from '@/common/ui/GroupList'
 import { useMemo } from 'react'
 
-/**
- * How many song cards stand side by side. Three, where search results take
- * four or five: browsing is reading, so a card is wide enough for its lyric
- * preview to be worth the space it takes.
- */
-const CARD_COLUMNS = { xs: 1, sm: 2, lg: 3 }
-
-/** A list entry in the shape the app's song cards read. */
-const toCard = (s: GetListSongData): SearchSongDto => ({
-	original: s.original ? mapBasicVariantPackApiToDto(s.original) : undefined,
-	found: [mapBasicVariantPackApiToDto(s.main)],
-})
+/** Lyric preview lines on a browse row — one, since a page holds many. */
+const PREVIEW_LINES = 1
 
 /**
- * A section's initial. Big enough to be the thing you scan for, with a rule
- * running off it so the cards under it read as one section rather than as a
- * grid that happens to have a letter above it.
+ * A section's initial, with a rule running off it so the rows under it read as
+ * one section rather than as a list that happens to have a letter above it.
  */
 function LetterHeader({ letter }: { letter: string }) {
 	return (
@@ -46,21 +34,35 @@ function LetterHeader({ letter }: { letter: string }) {
 }
 
 /**
- * The catalog's browse body on a desktop: the songbook in order, under its
- * initials.
+ * The catalog's browse body on a desktop: the songbook in order, in the same
+ * grouped rows the phone shows — one column, wide enough to read a title and
+ * the line under it without either being cut.
  *
- * The cards are the ones search results use, so the screen keeps one way of
- * showing a song whichever half of the catalog you are in — only wider, and
- * gathered under the letter they start with. It used to be a three-column grid
- * of numbered grey strips, which read as a table of contents rather than as
- * songs.
+ * Grouped under initials while it is alphabetical. Ordered by date it is not,
+ * so the letters would be meaningless then and the rows come as one run.
  */
 export default function SongsBrowseDesktop({
 	items,
+	grouped = true,
 }: {
 	items: GetListSongData[]
+	grouped?: boolean
 }) {
-	const groups = useMemo(() => groupByFirstLetter(items), [items])
+	const groups = useMemo(
+		() => (grouped ? groupByFirstLetter(items) : []),
+		[items, grouped]
+	)
+
+	if (!grouped)
+		return (
+			<Box sx={{ width: '100%', minWidth: 0 }}>
+				<SongGroup
+					songs={items.map((s) => mapBasicVariantPackApiToDto(s.main))}
+					previewLines={PREVIEW_LINES}
+					withIcon={false}
+				/>
+			</Box>
+		)
 
 	return (
 		<Box
@@ -69,16 +71,17 @@ export default function SongsBrowseDesktop({
 				minWidth: 0,
 				display: 'flex',
 				flexDirection: 'column',
-				gap: 3,
+				gap: 2.5,
 			}}
 		>
 			{groups.map((group, index) => (
 				// a letter can open twice on one page (see groupByFirstLetter)
 				<Box key={`${group.letter}-${index}`}>
 					<LetterHeader letter={group.letter} />
-					<SmartSongListCards
-						data={group.items.map(toCard)}
-						columns={CARD_COLUMNS}
+					<SongGroup
+						songs={group.items.map((s) => mapBasicVariantPackApiToDto(s.main))}
+						previewLines={PREVIEW_LINES}
+						withIcon={false}
 					/>
 				</Box>
 			))}

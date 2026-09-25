@@ -10,6 +10,7 @@ import { useTranslationLikesCount } from '@/common/ui/SongCard/hooks/useTranslat
 import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
+import { splitByMatch } from '@/tech/string/highlight.string.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
 import { alpha, styled, useTheme } from '@mui/material'
@@ -78,6 +79,8 @@ type SongCardProps = {
 	leadingIcon?: ReactNode
 	/** Optional icon rendered in a trailing slot, e.g. a disclosure chevron */
 	trailingIcon?: ReactNode
+	/** Marks this text inside the title — what a search matched. */
+	highlight?: string
 	sx?: SxProps
 }
 export const SongVariantCard = memo(function S({
@@ -344,7 +347,27 @@ export const SongVariantCard = memo(function S({
 									language={data.language}
 									translationType={data.translationType}
 								/>
-								{title}
+								{props.highlight
+									? splitByMatch(title, props.highlight).map((part, i) =>
+											part.match ? (
+												<Box
+													key={i}
+													component="mark"
+													sx={{
+														bgcolor: (theme) =>
+															alpha(theme.palette.primary.main, 0.18),
+														color: 'inherit',
+														borderRadius: 0.5,
+														paddingX: 0.25,
+													}}
+												>
+													{part.text}
+												</Box>
+											) : (
+												<span key={i}>{part.text}</span>
+											)
+									  )
+									: title}
 							</Typography>
 							<Box>
 								{showPrivate || showYourPublic ? (

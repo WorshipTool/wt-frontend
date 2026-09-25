@@ -1,8 +1,12 @@
 'use client'
 
+import { BasicVariantPack } from '@/api/dtos'
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
 import { GetListSongData } from '@/api/generated'
 import { useApi } from '@/api/tech-and-hooks/useApi'
+import { SearchFilters, SongSort } from '@/app/(layout)/pisne/catalog.types'
+import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
+import CatalogChips from '@/app/(layout)/pisne/components/CatalogChips'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import {
@@ -24,10 +28,6 @@ const LETTER_HEADER_SX = {
 	paddingBottom: 0.5,
 } as const
 
-// first letter of a song title, upper-cased for the section header
-const firstLetter = (title: string) =>
-	(title.trim().charAt(0) || '#').toLocaleUpperCase('cs')
-
 type SongsMobileProps = {
 	/** The search field, owned by the page so both widths share one. It lives in
 	 * the header's control strip, where it cannot be scrolled away. */
@@ -38,6 +38,16 @@ type SongsMobileProps = {
 	/** The query being searched (trimmed, debounced). Empty means browsing. */
 	query: string
 	smartSearch: boolean
+	/** Browsing: the order. Searching: what the results are narrowed to. The
+	 * phone shows whichever applies as a row of pills under the field. */
+	sort: SongSort
+	onSortChange: (sort: SongSort) => void
+	filters: SearchFilters
+	onFiltersChange: (filters: SearchFilters) => void
+	loggedIn: boolean
+	/** The recently-added batch, fetched by the page when that order is chosen. */
+	newestSongs: BasicVariantPack[]
+	newestLoading: boolean
 	/** 1-indexed page, kept in the URL by the parent (shared with desktop) */
 	page: number
 	onPageChange: (page: number) => void
@@ -61,6 +71,13 @@ export default function SongsMobile({
 	collapseTitle,
 	query,
 	smartSearch,
+	sort,
+	onSortChange,
+	filters,
+	onFiltersChange,
+	loggedIn,
+	newestSongs,
+	newestLoading,
 	page,
 	onPageChange,
 	count,
@@ -79,24 +96,15 @@ export default function SongsMobile({
 
 	const searching = query.length > 0
 
-	// split the current page's songs into consecutive first-letter sections so
-	// each new starting letter gets a header — kept entirely within the page
-	// (the backend returns the list alphabetically sorted)
-	const letterGroups = useMemo(() => {
-		const groups: { letter: string; items: GetListSongData[] }[] = []
-		for (const s of items) {
-			const letter = firstLetter(s.main.title)
-			const last = groups[groups.length - 1]
-			if (last && last.letter === letter) last.items.push(s)
-			else groups.push({ letter, items: [s] })
-		}
-		return groups
-	}, [items])
+	// the songbook read alphabetically is read by its initials; read by date it
+	// is one run, so the letters would be noise
+	const newest = !searching && sort === 'newest'
+	const letterGroups = useMemo(() => groupByFirstLetter(items), [items])
 
 	useEffect(() => {
-		// nothing to browse while results are on screen; clearing the query runs
-		// this again and brings the page back
-		if (searching) return
+		// nothing to page through while results — or the recently-added batch,
+		// which the page fetches — are on screen; going back to A–Z runs this again
+		if (searching || newest) return
 		let active = true
 		setLoading(true)
 		setError(false)
@@ -119,10 +127,10 @@ export default function SongsMobile({
 		return () => {
 			active = false
 		}
-	}, [page, perPage, songGettingApi, reloadKey, searching])
+	}, [page, perPage, songGettingApi, reloadKey, searching, newest])
 
 	const paginator =
-		!searching && !error && pagesCount > 1 ? (
+		!searching && !newest && !error && pagesCount > 1 ? (
 			<Pagination
 				count={pagesCount}
 				page={Math.min(page, pagesCount)}
@@ -145,14 +153,41 @@ export default function SongsMobile({
 		<MobileAppHeader
 			title={t('title')}
 			collapseTitle={collapseTitle}
-			controlPanel={field}
+			controlPanel={
+				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+					{field}
+					<CatalogChips
+						searching={searching}
+						sort={sort}
+						onSortChange={onSortChange}
+						filters={filters}
+						onFiltersChange={onFiltersChange}
+						loggedIn={loggedIn}
+					/>
+				</Box>
+			}
 			bottomPanel={paginator}
 			// a new query starts at the top of its own results, and so does a new
 			// page of the browse list
-			scrollResetKey={searching ? query : page}
+			scrollResetKey={searching ? query : newest ? 'newest' : page}
 		>
 			{searching ? (
-				<SongSearchResults query={query} smartSearch={smartSearch} />
+				<SongSearchResults
+					query={query}
+					smartSearch={smartSearch}
+					filters={filters}
+				/>
+			) : newest ? (
+				newestLoading ? (
+					<GroupRowsSkeleton rows={8} withIcon />
+				) : (
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+						<SongGroup songs={newestSongs} previewLines={PREVIEW_LINES} />
+						<Typography small color="grey.600" sx={{ paddingX: 0.5 }}>
+							{t('newestNote')}
+						</Typography>
+					</Box>
+				)
 			) : loading ? (
 				<GroupRowsSkeleton rows={perPage} withIcon />
 			) : error ? (

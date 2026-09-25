@@ -113,10 +113,17 @@ export function SongLeadingIcon() {
 export function SongGroup({
 	songs,
 	previewLines = 1,
+	withIcon = true,
+	highlight,
 	sx,
 }: {
 	songs: BasicVariantPack[]
 	previewLines?: number
+	/** The leading music icon. Off on a desktop, where rows are wider and the
+	 * icon is a column of decoration down the page. */
+	withIcon?: boolean
+	/** Marks this text in each title — what a search matched. */
+	highlight?: string
 	sx?: SxProps
 }) {
 	return (
@@ -127,11 +134,14 @@ export function SongGroup({
 						data={song}
 						dense
 						previewLines={previewLines}
-						leadingIcon={<SongLeadingIcon />}
+						highlight={highlight}
+						leadingIcon={withIcon ? <SongLeadingIcon /> : undefined}
 						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
 						sx={FLAT_ROW_SX}
 					/>
-					{i < songs.length - 1 && <GroupDivider inset="icon" />}
+					{i < songs.length - 1 && (
+						<GroupDivider inset={withIcon ? 'icon' : 'text'} />
+					)}
 				</Fragment>
 			))}
 		</GroupCard>

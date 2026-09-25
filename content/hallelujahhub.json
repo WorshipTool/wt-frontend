@@ -608,9 +608,20 @@
 		"title": "Songs",
 		"empty": "There are no songs yet.",
 		"error": "Couldn't load the songs.",
-		"results": "Search results",
+		"results": "Results",
 		"noResults": "We didn't find anything...",
-		"loadMore": "Load more"
+		"loadMore": "Load more",
+		"sort": "Sort",
+		"sortAlphabetical": "Alphabetically A–Z",
+		"sortNewest": "Recently added",
+		"filters": "Filters",
+		"filterMine": "My songs only",
+		"filterFavourite": "Favourites only",
+		"filterChords": "With chords only",
+		"clearFilters": "Clear",
+		"allSongs": "All songs",
+		"songCount": "{formatted} {count, plural, one {song} other {songs}}",
+		"newestNote": "Showing the most recently added songs."
 	},
 	"loadingScreen": {
 		"message": "Loading app..."
