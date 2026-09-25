@@ -4,9 +4,14 @@ import { Box, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { useTranslations } from 'next-intl'
 
-/** Clear of the window's bottom edge, in px — `bottom` in `sx` is a position,
+/** Clear of the bottom of the scroll, in px — `bottom` in `sx` is a position,
  * not a spacing, so the theme scale does not apply to it. */
 const BOTTOM_OFFSET = 24
+/** On a phone the bar rides just above the tab bar, and the scroller's own
+ * bottom padding is already that gap — so it needs none of its own. */
+const TOUCH_BOTTOM_OFFSET = 0
+/** Air under the bar where it comes to rest, so the last row clears it. */
+const RESTING_AIR = 8
 /** Above the page, below the top bar (10) and the search field (11) — it never
  * reaches either, and the scale in Z_INDEX starts above 100. */
 const BAR_Z = 9
@@ -43,13 +48,14 @@ export default function CatalogPagination({
 	if (pagesCount <= 1) return null
 
 	const current = Math.min(page, pagesCount)
+	const offset = touch ? TOUCH_BOTTOM_OFFSET : BOTTOM_OFFSET
 
 	return (
 		<>
 			<Box
 				sx={{
 					position: 'sticky',
-					bottom: BOTTOM_OFFSET,
+					bottom: offset,
 					zIndex: BAR_Z,
 					display: 'flex',
 					justifyContent: 'center',
@@ -110,7 +116,7 @@ export default function CatalogPagination({
 
 			{/* the bar's own room at the end of the scroll: without it the last row
 			    stays under the bar, which never reaches its place in the flow */}
-			<Box sx={{ height: `${BOTTOM_OFFSET}px`, flexShrink: 0 }} />
+			<Box sx={{ height: `${offset + RESTING_AIR}px`, flexShrink: 0 }} />
 		</>
 	)
 }
