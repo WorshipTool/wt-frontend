@@ -190,7 +190,13 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 				top: 0,
 				left: 0,
 				right: 0,
-				bottom: MOBILE_NAV_CLEARANCE,
+				// Down to the very bottom, and the room for the tab bar taken as
+				// padding rather than by stopping short of it. The clearance
+				// overshoots the bar's own height on purpose (see the constant), and
+				// the shell used to end at the clearance — so the few px between the
+				// two showed the page's background as a grey strip under the surface.
+				bottom: 0,
+				paddingBottom: MOBILE_NAV_CLEARANCE,
 				zIndex: 2,
 				bgcolor: surface,
 				display: 'flex',
