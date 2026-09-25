@@ -1,6 +1,6 @@
 'use client'
 
-import { ColumnHeading } from '@/app/(layout)/pisne/components/CatalogSidePanel'
+import ColumnHeading from '@/app/(layout)/pisne/components/ColumnHeading'
 import { Box, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { useTranslations } from 'next-intl'
@@ -9,9 +9,9 @@ import { useTranslations } from 'next-intl'
  * Where you are in the songbook, in the panel beside it.
  *
  * It used to sit under the list, which on a page of twenty-one songs meant
- * scrolling past all of them to reach it. Here it is in the column that already
- * carries the order, and the column travels with the page, so the next page is
- * one click away from anywhere in the current one.
+ * scrolling past all of them to reach it. Here it is in the column beside the
+ * list, which travels with the page, so the next page is one click away from
+ * anywhere in the current one.
  *
  * Compact on purpose — the column is 260px wide, so the ends and the current
  * page are shown and the rest is ellipsis.

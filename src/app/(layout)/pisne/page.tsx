@@ -1,18 +1,10 @@
 'use client'
-import {
-	NO_FILTERS,
-	SearchFilters,
-	SongSort,
-} from '@/app/(layout)/pisne/catalog.types'
 import CatalogPagination from '@/app/(layout)/pisne/components/CatalogPagination'
-import CatalogSidePanel, {
-	ColumnHeading,
-} from '@/app/(layout)/pisne/components/CatalogSidePanel'
+import ColumnHeading from '@/app/(layout)/pisne/components/ColumnHeading'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsBrowseDesktop from '@/app/(layout)/pisne/components/SongsBrowseDesktop'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
-import { useNewestSongs } from '@/app/(layout)/pisne/useNewestSongs'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
@@ -21,15 +13,10 @@ import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, Button, Typography } from '@/common/ui'
-import {
-	GroupRowsSkeleton,
-	ListStateView,
-	SongGroup,
-} from '@/common/ui/GroupList'
+import { GroupRowsSkeleton, ListStateView } from '@/common/ui/GroupList'
 import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
 import { Container } from '@/common/ui/mui'
 import { CloudOffRounded, RefreshRounded } from '@mui/icons-material'
-import useAuth from '@/hooks/auth/useAuth'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
 import { useTranslations } from 'next-intl'
@@ -39,12 +26,12 @@ import { useApi } from '../../../api/tech-and-hooks/useApi'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
 
-/** The centred block: the list and the panel beside it, and nothing at the
+/** The centred block: the list and the column beside it, and nothing at the
  * window's edges. */
 const BLOCK_WIDTH = 1000
-/** The side panel — wide enough for "Naposledy přidané" on one line. */
+/** The column beside the list, which holds where you are in the songbook. */
 const PANEL_WIDTH = 260
-/** Between the list and the panel, in theme units. */
+/** Between the list and that column, in theme units. */
 const COLUMN_GAP = 4.5
 /** The search field once it floats: one control, not a banner. */
 const FIELD_WIDTH = 700
@@ -110,7 +97,6 @@ function SongsPage() {
 	const tCommon = useTranslations('common')
 	const tSearch = useTranslations('search')
 	const phone = useIsPhone()
-	const { isLoggedIn } = useAuth()
 
 	const [page, setPage] = useSmartUrlState('songsList', 's', {
 		parse: (v) => parseInt(v),
@@ -159,9 +145,6 @@ function SongsPage() {
 
 	const clear = useCallback(() => setValue(''), [])
 
-	const [sort, setSort] = useState<SongSort>('abc')
-	const [filters, setFilters] = useState<SearchFilters>(NO_FILTERS)
-
 	const showSmartSearch = useFlag('enable_smart_search')
 	const [smartSearch, setSmartSearch] = useState(false)
 
@@ -182,17 +165,12 @@ function SongsPage() {
 	// opens the field with the browse list still under it, so you can type or
 	// keep browsing.
 	const searching = query.length > 0
-	const newest = !searching && sort === 'newest'
-	const newestSongs = useNewestSongs(newest)
 	// the desktop list; the phone runs the same hook inside its own shell
-	const browse = useBrowseSongs(
-		page ?? 1,
-		countPerPage,
-		!phone && !searching && !newest
-	)
+	const browse = useBrowseSongs(page ?? 1, countPerPage, !phone && !searching)
 	const pagesCount = Math.max(1, Math.ceil((count ?? 0) / countPerPage))
 
-	// A page turned from the panel is read from its first song, not from
+	// A page turned from the column beside the list is read from its first song,
+	// not from
 	// wherever in the last page you happened to be standing.
 	const listRef = useRef<HTMLDivElement>(null)
 	const goToPage = useCallback(
@@ -261,13 +239,6 @@ function SongsPage() {
 				collapseTitle={searchMode}
 				query={query}
 				smartSearch={smartSearch}
-				sort={sort}
-				onSortChange={setSort}
-				filters={filters}
-				onFiltersChange={setFilters}
-				loggedIn={isLoggedIn()}
-				newestSongs={newestSongs.songs}
-				newestLoading={newestSongs.loading}
 				page={page ?? 1}
 				onPageChange={setPage}
 				count={count ?? 0}
@@ -276,16 +247,9 @@ function SongsPage() {
 		)
 	}
 
-	const browseCount = newest ? newestSongs.songs.length : count ?? 0
+	const browseCount = count ?? 0
 
-	const browseBody = newest ? (
-		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-			<SongGroup songs={newestSongs.songs} previewLines={1} withIcon={false} />
-			<Typography small color="grey.600">
-				{t('newestNote')}
-			</Typography>
-		</Box>
-	) : browse.error ? (
+	const browseBody = browse.error ? (
 		<ListStateView
 			icon={<CloudOffRounded fontSize="inherit" />}
 			message={t('error')}
@@ -406,47 +370,32 @@ function SongsPage() {
 							</ColumnHeading>
 
 							{searching ? (
-								<SongSearchResults
-									query={query}
-									smartSearch={smartSearch}
-									filters={filters}
-								/>
+								<SongSearchResults query={query} smartSearch={smartSearch} />
 							) : (
 								browseBody
 							)}
 						</Box>
 
-						{/* The column travels with the page: the order, and under it where
-						    you are in the songbook, both stay reachable however far down
-						    the list you have read. */}
-						<Box
-							sx={{
-								width: PANEL_WIDTH,
-								flexShrink: 0,
-								position: 'sticky',
-								top: PANEL_STICKY_TOP,
-								display: 'flex',
-								flexDirection: 'column',
-								gap: 3,
-							}}
-						>
-							<CatalogSidePanel
-								searching={searching}
-								sort={sort}
-								onSortChange={setSort}
-								filters={filters}
-								onFiltersChange={setFilters}
-								loggedIn={isLoggedIn()}
-							/>
-
-							{!searching && !newest && (
+						{/* Where you are in the songbook, travelling with the page so the
+						    next one is a click away however far down you have read. Results
+						    scroll themselves, so there is nothing to put here then — and
+						    the column goes, rather than standing empty beside them. */}
+						{!searching && (
+							<Box
+								sx={{
+									width: PANEL_WIDTH,
+									flexShrink: 0,
+									position: 'sticky',
+									top: PANEL_STICKY_TOP,
+								}}
+							>
 								<CatalogPagination
 									page={page ?? 1}
 									pagesCount={pagesCount}
 									onChange={goToPage}
 								/>
-							)}
-						</Box>
+							</Box>
+						)}
 					</Box>
 
 					<Gap value={2} />

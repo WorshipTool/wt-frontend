@@ -1,11 +1,8 @@
 'use client'
 
-import { BasicVariantPack } from '@/api/dtos'
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
-import { SearchFilters, SongSort } from '@/app/(layout)/pisne/catalog.types'
 import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
-import CatalogChips from '@/app/(layout)/pisne/components/CatalogChips'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import {
@@ -37,16 +34,6 @@ type SongsMobileProps = {
 	/** The query being searched (trimmed, debounced). Empty means browsing. */
 	query: string
 	smartSearch: boolean
-	/** Browsing: the order. Searching: what the results are narrowed to. The
-	 * phone shows whichever applies as a row of pills under the field. */
-	sort: SongSort
-	onSortChange: (sort: SongSort) => void
-	filters: SearchFilters
-	onFiltersChange: (filters: SearchFilters) => void
-	loggedIn: boolean
-	/** The recently-added batch, fetched by the page when that order is chosen. */
-	newestSongs: BasicVariantPack[]
-	newestLoading: boolean
 	/** 1-indexed page, kept in the URL by the parent (shared with desktop) */
 	page: number
 	onPageChange: (page: number) => void
@@ -70,13 +57,6 @@ export default function SongsMobile({
 	collapseTitle,
 	query,
 	smartSearch,
-	sort,
-	onSortChange,
-	filters,
-	onFiltersChange,
-	loggedIn,
-	newestSongs,
-	newestLoading,
 	page,
 	onPageChange,
 	count,
@@ -86,23 +66,18 @@ export default function SongsMobile({
 	const tCommon = useTranslations('common')
 	const searching = query.length > 0
 
-	// the songbook read alphabetically is read by its initials; read by date it
-	// is one run, so the letters would be noise
-	const newest = !searching && sort === 'newest'
-
 	const pagesCount = Math.max(1, Math.ceil(count / perPage))
 
-	// nothing to page through while results — or the recently-added batch, which
-	// the page fetches — are on screen
+	// nothing to page through while results are on screen
 	const { items, loading, error, reload } = useBrowseSongs(
 		page,
 		perPage,
-		!searching && !newest
+		!searching
 	)
 	const letterGroups = useMemo(() => groupByFirstLetter(items), [items])
 
 	const paginator =
-		!searching && !newest && !error && pagesCount > 1 ? (
+		!searching && !error && pagesCount > 1 ? (
 			<Pagination
 				count={pagesCount}
 				page={Math.min(page, pagesCount)}
@@ -125,41 +100,14 @@ export default function SongsMobile({
 		<MobileAppHeader
 			title={t('title')}
 			collapseTitle={collapseTitle}
-			controlPanel={
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-					{field}
-					<CatalogChips
-						searching={searching}
-						sort={sort}
-						onSortChange={onSortChange}
-						filters={filters}
-						onFiltersChange={onFiltersChange}
-						loggedIn={loggedIn}
-					/>
-				</Box>
-			}
+			controlPanel={field}
 			bottomPanel={paginator}
 			// a new query starts at the top of its own results, and so does a new
 			// page of the browse list
-			scrollResetKey={searching ? query : newest ? 'newest' : page}
+			scrollResetKey={searching ? query : page}
 		>
 			{searching ? (
-				<SongSearchResults
-					query={query}
-					smartSearch={smartSearch}
-					filters={filters}
-				/>
-			) : newest ? (
-				newestLoading ? (
-					<GroupRowsSkeleton rows={8} withIcon />
-				) : (
-					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-						<SongGroup songs={newestSongs} previewLines={PREVIEW_LINES} />
-						<Typography small color="grey.600" sx={{ paddingX: 0.5 }}>
-							{t('newestNote')}
-						</Typography>
-					</Box>
-				)
+				<SongSearchResults query={query} smartSearch={smartSearch} />
 			) : loading ? (
 				<GroupRowsSkeleton rows={perPage} withIcon />
 			) : error ? (
