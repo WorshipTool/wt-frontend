@@ -1,12 +1,15 @@
+import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
+
 /**
  * Width at which the playlist switches between its two editors.
  *
- * Below it the narrow (phone) layout takes over; at or above it the classic
- * three-panel editor does. Both sides read this one value on purpose: the
- * three-panel editor's left panel — the only place you can add a song or
- * reorder one — hides itself below `md`, so any width where the narrow layout
- * did not yet apply was a width where the playlist could not be edited at all.
- * That gap was papered over with a "use a computer" notice; keeping the two in
- * step is what removes it.
+ * Below it the phone layout takes over; at or above it the three-panel editor
+ * does, left panel and all — a tablet is a small desktop, not a big phone.
+ *
+ * It is the app shell's own breakpoint on purpose. The two designs used to part
+ * at different widths: the phone layout stopped at 700 while the left panel —
+ * the only place to add a song or reorder one — hid itself below 900, so
+ * everything in between had neither, and got a notice telling you to use a
+ * computer while you were on one. One value for both sides is what closes that.
  */
-export const PLAYLIST_WIDE_BREAKPOINT = 'md'
+export const PLAYLIST_WIDE_BREAKPOINT = MOBILE_NAV_BREAKPOINT

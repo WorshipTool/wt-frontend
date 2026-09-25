@@ -3,18 +3,18 @@ import MiddlePanel from '@/app/(layout)/playlist/[guid]/components/MiddlePanel/M
 import PlaylistMobile from '@/app/(layout)/playlist/[guid]/components/PlaylistMobile'
 import SongDropPlaylistContainer from '@/app/(layout)/playlist/[guid]/components/SongDropPlaylistContainer'
 import TopPlaylistPanel from '@/app/(layout)/playlist/[guid]/components/TopPanel/TopPlaylistPanel'
-import { PLAYLIST_WIDE_BREAKPOINT } from '@/app/(layout)/playlist/[guid]/playlist.constants'
-import { useDownSize } from '@/common/hooks/useDownSize'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box } from '@/common/ui'
 
 export default function PlaylistPreview() {
-	// Narrow screens get the app-shell layout, which can do everything the
-	// three-panel editor can — add, reorder, rename, remove. It takes over
-	// exactly where the three-panel editor's left panel gives up, so there is no
-	// width left in between where the playlist is read-only.
-	const narrow = useDownSize(PLAYLIST_WIDE_BREAKPOINT)
+	// Phones get the app-shell layout, which can do everything the three-panel
+	// editor can — add, reorder, rename, remove. Everything wider keeps the
+	// three-panel editor, including its left panel, which now shows at the same
+	// width this switch happens (see PLAYLIST_WIDE_BREAKPOINT): a tablet gets the
+	// desktop design, and there is no width left in between with neither.
+	const phone = useIsPhone()
 
-	if (narrow) return <PlaylistMobile />
+	if (phone) return <PlaylistMobile />
 
 	return (
 		<SongDropPlaylistContainer>
