@@ -21,8 +21,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 /** Lyric preview lines on a result row: the phone's row is taller and can
  * carry two, a desktop row stays one line so more results fit the screen. */
 const PREVIEW_LINES_PHONE = 2
-/** Cards, two abreast, in the catalog's list column. */
-const CARD_COLUMNS = { xs: 1, md: 2 }
+/** How many cards stand abreast. The catalog's block is the width of the page
+ * now, not a column beside a panel, so the results wear the card list's own
+ * widths — the ones home's search has always used. */
+const CARD_COLUMNS = { xs: 1, md: 2, lg: 4, xl: 5 }
 
 type SongSearchResultsProps = {
 	/** The query actually being searched (already debounced and trimmed). */
