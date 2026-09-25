@@ -32,6 +32,9 @@ type SongsMobileProps = {
 	/** The search field, owned by the page so both widths share one. It lives in
 	 * the header's control strip, where it cannot be scrolled away. */
 	field: ReactNode
+	/** Folds the large title away so the field is the whole header — what the
+	 * screen looks like once you are searching with it. */
+	collapseTitle: boolean
 	/** The query being searched (trimmed, debounced). Empty means browsing. */
 	query: string
 	smartSearch: boolean
@@ -55,6 +58,7 @@ type SongsMobileProps = {
  */
 export default function SongsMobile({
 	field,
+	collapseTitle,
 	query,
 	smartSearch,
 	page,
@@ -140,6 +144,7 @@ export default function SongsMobile({
 	return (
 		<MobileAppHeader
 			title={t('title')}
+			collapseTitle={collapseTitle}
 			controlPanel={field}
 			bottomPanel={paginator}
 			// a new query starts at the top of its own results, and so does a new

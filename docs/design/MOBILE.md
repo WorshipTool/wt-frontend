@@ -172,6 +172,16 @@ screen's `controlPanel`, and what the field holds decides the body — empty, yo
 browse the songbook A–Z; typed, the same screen shows results. Nothing else in
 the app opens a search layer, and no other screen renders search results.
 
+**The field takes the header over while you use it.** Touch it and the large
+title folds away (`collapseTitle`), so the field rides up and becomes the whole
+header; leave it empty and click away and the title comes back. It answers to
+the field, not to the URL — a parameter that sticks around for the tab
+highlight must not be able to trap the screen in a state you cannot leave. On a
+desktop the same moment lifts the field out of the flow to sit half in the top
+bar, whose own links stand down while it is there. This is how the home screen
+behaved when it still owned search, and the catalog inherited it along with the
+job.
+
 `?hledat=` is that screen's parameter. Empty means *someone asked to search*:
 the field takes the caret and the browse list stays under it, so you can type or
 keep browsing. With a query it is a shared link, which shows results without

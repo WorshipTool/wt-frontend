@@ -7,6 +7,7 @@ import Pager from '@/common/components/Pager/Pager'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
+import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, CircularProgress, Typography } from '@/common/ui'
@@ -24,6 +25,20 @@ import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
 
 /** Widest the search field gets on a desktop, so it stays a field and not a banner. */
 const FIELD_MAX_WIDTH = 600
+/**
+ * Where the field sits once searching takes over the desktop screen: half into
+ * the 56px top bar, which is where the home hero's field used to land when the
+ * page scrolled. Above the bar's own z-index (10), since it overlaps it.
+ */
+const FIELD_TOP_SEARCHING = 22
+const FIELD_Z = 11
+/** Air under the floating field, so results don't start against it. */
+const RESULTS_TOP_SPACE = 5
+/** How long the title takes to fold away — the phone header's own timing. */
+const COLLAPSE_MS = 240
+/** An explicit length for the title block, which a transition needs to animate
+ * from; the h4 is shorter than this. */
+const TITLE_MAX_HEIGHT = 80
 
 /**
  * Writes the query into the URL without touching history, so a search is
@@ -111,6 +126,8 @@ function SongsPage() {
 
 	const clear = useCallback(() => setValue(''), [])
 
+	const [fieldFocused, setFieldFocused] = useState(false)
+
 	const showSmartSearch = useFlag('enable_smart_search')
 	const [smartSearch, setSmartSearch] = useState(false)
 
@@ -137,12 +154,39 @@ function SongsPage() {
 	// keep browsing.
 	const searching = query.length > 0
 
+	// …while the *chrome* answers to the field itself, the way the home screen
+	// used to: touch the field and the title folds away, carrying the field up to
+	// the top — on a phone it becomes the header, on a desktop it comes to rest
+	// half in the top bar.
+	//
+	// The field, not the URL: arriving with `?hledat=` focuses the field (below),
+	// which raises the chrome by itself, and the parameter then stays for the
+	// whole visit so the Hledat tab keeps its highlight. Reading it here as well
+	// would mean an empty field you have clicked away from could never give the
+	// title back.
+	const searchMode = searching || fieldFocused
+
+	// The top bar's own links sit exactly where the field lands, so they stand
+	// down while it is there — as they did on home, which is where this field
+	// used to live.
+	const { setHideMiddleNavigation } = useToolbar()
+	useEffect(() => {
+		setHideMiddleNavigation(searchMode)
+		return () => setHideMiddleNavigation(false)
+	}, [searchMode, setHideMiddleNavigation])
+
 	const field = (
 		// the news tutorial for smart search points here — at the field that
 		// carries the toggle, which is this screen's now that home has stopped
 		// searching (see news.config)
 		<NewsHighlightWrapper targetComponent="smart-search-toggle">
-			<Box data-testid="main-search-container">
+			<Box
+				data-testid="main-search-container"
+				// focus bubbles (React's onFocus is focusin), so the field itself
+				// needs no handler of its own
+				onFocus={() => setFieldFocused(true)}
+				onBlur={() => setFieldFocused(false)}
+			>
 				<SearchBar
 					value={value}
 					onChange={setValue}
@@ -168,6 +212,7 @@ function SongsPage() {
 		return (
 			<SongsMobile
 				field={field}
+				collapseTitle={searchMode}
 				query={query}
 				smartSearch={smartSearch}
 				page={page ?? 1}
@@ -186,17 +231,73 @@ function SongsPage() {
 					flexDirection: 'column',
 					justifyContent: 'center',
 					alignItems: 'center',
-					gap: 4,
+					// the gaps close with the title: a folded row still holds the air on
+					// both sides of itself, which would leave the results stranded far
+					// below the field that floated up
+					gap: searchMode ? 0 : 4,
+					transition: `gap ${COLLAPSE_MS}ms ease`,
 				}}
 			>
-				<Gap value={3} />
-				<Box display={'flex'}>
+				<Box
+					sx={{
+						height: searchMode ? 0 : 24,
+						transition: `height ${COLLAPSE_MS}ms ease`,
+					}}
+				/>
+
+				{/* The title folds away when the field takes over, the way the home
+				    hero did — and the field goes with it, up to the top bar. */}
+				<Box
+					sx={{
+						display: 'flex',
+						overflow: 'hidden',
+						maxHeight: searchMode ? 0 : TITLE_MAX_HEIGHT,
+						opacity: searchMode ? 0 : 1,
+						transition: `max-height ${COLLAPSE_MS}ms ease, opacity ${
+							COLLAPSE_MS / 2
+						}ms ease`,
+					}}
+				>
 					<Typography variant="h4" strong>
 						{t('title')}
 					</Typography>
 				</Box>
 
-				<Box sx={{ width: '100%', maxWidth: FIELD_MAX_WIDTH }}>{field}</Box>
+				{/* One wrapper that moves, never two that swap: a swap would rebuild
+				    the input and drop the caret the moment you touched it. Searching
+				    lifts it out of the flow to rest half in the top bar, whose own
+				    links have stood down for it. */}
+				<Box
+					sx={
+						searchMode
+							? {
+									position: 'fixed',
+									top: FIELD_TOP_SEARCHING,
+									left: 0,
+									right: 0,
+									zIndex: FIELD_Z,
+									display: 'flex',
+									justifyContent: 'center',
+									paddingX: 2,
+									'@keyframes fieldToTop': {
+										from: { transform: 'translateY(12px)', opacity: 0.4 },
+										to: { transform: 'translateY(0)', opacity: 1 },
+									},
+									animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
+							  }
+							: { width: '100%', display: 'flex', justifyContent: 'center' }
+					}
+				>
+					<Box sx={{ width: '100%', maxWidth: FIELD_MAX_WIDTH }}>{field}</Box>
+				</Box>
+
+				{/* air under the floating field, where the flow no longer provides any */}
+				<Box
+					sx={{
+						height: searchMode ? RESULTS_TOP_SPACE * 8 : 0,
+						transition: `height ${COLLAPSE_MS}ms ease`,
+					}}
+				/>
 
 				{searching ? (
 					<SongSearchResults query={query} smartSearch={smartSearch} />

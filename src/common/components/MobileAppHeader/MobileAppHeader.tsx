@@ -23,6 +23,11 @@ const TITLE_MIN = 1.2 // rem
 const HEADER_Z = 100
 /** Resting top padding of the header block, above the safe-area inset. */
 const HEADER_TOP_PAD = 12
+/** How long the title takes to fold away when a control takes the header over. */
+const COLLAPSE_MS = 240
+/** Enough for a title and a subtitle; the row is shorter than this in practice,
+ * and an explicit length is what a transition needs to animate from. */
+const TITLE_ROW_MAX_HEIGHT = 96
 /** The header block's bottom padding in px — mirrors its `paddingBottom: 1`. A
  * header that is only a control panel uses it on both sides, so the panel sits
  * evenly between the two edges instead of under a large title's roomier top. */
@@ -51,6 +56,11 @@ type MobileAppHeaderProps<T extends RoutesKeys> = {
 	 * block, under the title. Pass it without a title and the header is only the
 	 * strip — pinned above the scroller, so it cannot be scrolled away. */
 	controlPanel?: ReactNode
+	/** Folds the title row away, leaving the control strip as the whole header.
+	 * For a screen whose control takes over — the catalog's field, once you are
+	 * searching with it. It folds rather than vanishing, so the strip rides up to
+	 * the top instead of jumping there. */
+	collapseTitle?: boolean
 	/** Optional panel pinned above the bottom tab bar (e.g. pagination). */
 	bottomPanel?: ReactNode
 	/** When this value changes, the content scrolls back to the top (e.g. on page change). */
@@ -85,6 +95,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 	backParams,
 	actions,
 	controlPanel,
+	collapseTitle = false,
 	bottomPanel,
 	scrollResetKey,
 	surface = 'grey.50',
@@ -158,6 +169,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 	}
 
 	const hasTitleRow = Boolean(title || backTo || shownActions.length > 0)
+	const titleRowShown = hasTitleRow && !collapseTitle
 	// nothing to put in the header block — the screen draws its own top instead
 	const hasHeaderRow = Boolean(hasTitleRow || controlPanel)
 
@@ -199,9 +211,10 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					display: 'flex',
 					flexDirection: 'column',
 					paddingTop: `calc(${TOOLBAR_SPACER} + ${
-						hasTitleRow ? HEADER_TOP_PAD : HEADER_BOTTOM_PAD
+						titleRowShown ? HEADER_TOP_PAD : HEADER_BOTTOM_PAD
 					}px)`,
 					paddingBottom: 1,
+					transition: `padding-top ${COLLAPSE_MS}ms ease`,
 					bgcolor: surface,
 					borderBottom: '1px solid',
 					borderColor: divider ? 'grey.200' : 'transparent',
@@ -214,6 +227,14 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 						alignItems: 'center',
 						gap: 0.5,
 						paddingX: 1.5,
+						// folded away rather than unmounted, so the strip below rides up
+						// to the top instead of jumping there
+						overflow: 'hidden',
+						maxHeight: collapseTitle ? 0 : TITLE_ROW_MAX_HEIGHT,
+						opacity: collapseTitle ? 0 : 1,
+						transition: `max-height ${COLLAPSE_MS}ms ease, opacity ${
+							COLLAPSE_MS / 2
+						}ms ease`,
 					}}
 				>
 					{backTo && (
@@ -283,7 +304,13 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 				{/* control strip — inside the header block so it shares the header
 				    background (one solid white zone above the bottom divider) */}
 				{controlPanel && (
-					<Box sx={{ paddingX: 2, paddingTop: hasTitleRow ? 1 : 0 }}>
+					<Box
+						sx={{
+							paddingX: 2,
+							paddingTop: titleRowShown ? 1 : 0,
+							transition: `padding-top ${COLLAPSE_MS}ms ease`,
+						}}
+					>
 						{controlPanel}
 					</Box>
 				)}
