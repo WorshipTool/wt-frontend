@@ -172,15 +172,19 @@ screen's `controlPanel`, and what the field holds decides the body — empty, yo
 browse the songbook A–Z; typed, the same screen shows results. Nothing else in
 the app opens a search layer, and no other screen renders search results.
 
-**The field takes the header over while you use it.** Touch it and the large
-title folds away (`collapseTitle`), so the field rides up and becomes the whole
-header; leave it empty and click away and the title comes back. It answers to
-the field, not to the URL — a parameter that sticks around for the tab
-highlight must not be able to trap the screen in a state you cannot leave. On a
-desktop the same moment lifts the field out of the flow to sit half in the top
-bar, whose own links stand down while it is there. This is how the home screen
-behaved when it still owned search, and the catalog inherited it along with the
-job.
+**Only the field pins; the title is content.** On the catalog the large title
+scrolls away with the list and the field's band is `position: sticky` at
+`TOOLBAR_SPACER`, the way home's is — a phone screen is too short to spend a
+row on a bar repeating what the lit tab already says, and sticky keeps the band
+in step with the page without anything reading the scroll. The band's hairline
+appears only once it has arrived at the top and rows start passing under it.
+
+**The field takes the screen over while you search.** With `?hledat` the title
+folds away (`collapseTitle`), so the field is the whole top of the screen;
+leave search and it comes back. It answers to the URL, not to the caret:
+clicking the field and writing nothing is not searching, and the page stays
+where it is. On a desktop the same moment lifts the field out of the flow to
+sit half in the top bar, whose own links stand down while it is there.
 
 `?hledat=` is that screen's parameter. Empty means *someone asked to search*:
 the field takes the caret and the browse list stays under it, so you can type or
@@ -291,7 +295,7 @@ Per-page shape:
 | Oblíbené | → Účet | count | (in-list search) | sort | – |
 | Moje písně | → Účet | count | **+ Přidat** | sort/filter | pagination |
 | Playlisty | → Účet | count | **+ Nový** | sort | – |
-| Písně (katalog) | – | – | – | **search field** | pagination (browsing only) |
+| Písně (katalog) | – | – | – | **search field** (sticky band in the content, not a `controlPanel`) | – (floating paginator, browsing only) |
 | Playlist detail | → back | Playlist · count | Tisknout (+ prezentace/share/rename/edit → ⋮) | (mode switch) | – |
 
 **Collapsing hero condenses its actions — it doesn't hide them.** The
