@@ -36,10 +36,10 @@ hidden on tab-roots), `actions` (≤ 2 icons, right of the title), `controlPanel
 `divider`, `overlay`.
 
 **Same header height everywhere.** The header row keeps a fixed minimum height
-(matching the back-arrow / action buttons) so a title-only header (Seznam,
-Účet) collapses to exactly the same height as one with controls (Moje písně,
+(matching the back-arrow / action buttons) so a title-only header (Účet)
+collapses to exactly the same height as one with controls (Písně, Moje písně,
 Oblíbené). The back arrow appears only when `backTo` is set — tab-roots (Domů /
-Písně=Seznam / Účet) have none by design; you switch to them via the tab bar.
+Písně / Účet) have none by design; you switch to them via the tab bar.
 
 ## The shell is fixed — never in flow
 
@@ -165,6 +165,30 @@ bottom with `MOBILE_NAV_CLEARANCE` instead (the auth sheets do this).
 Feed it `useClientPathname()`, not `usePathname()`: only the former re-applies
 subdomain prefixes, and the raw one misclassifies every route on a subdomain.
 
+## Search is a control, not a place
+
+**One screen answers searches: the catalog (`/pisne`).** Its field is the
+screen's `controlPanel`, and what the field holds decides the body — empty, you
+browse the songbook A–Z; typed, the same screen shows results. Nothing else in
+the app opens a search layer, and no other screen renders search results.
+
+`?hledat=` is that screen's parameter. Empty means *someone asked to search*:
+the field takes the caret and the browse list stays under it, so you can type or
+keep browsing. With a query it is a shared link, which shows results without
+popping a keyboard. Typing mirrors itself in with `replaceState` — shareable and
+reloadable, without a history entry per keystroke.
+
+Every "Hledat" in the app is a link to that one place: the tab bar's Hledat, the
+desktop toolbar, the footer. **Písně and Hledat are two doors into the same
+screen**, which is why the lit tab comes from the parameter (present → Hledat)
+rather than from a flag someone has to remember to set. Home's bar is a door
+too: on a phone it is a link that looks like a field, on a desktop it opens the
+catalog once you stop typing (or press Enter).
+
+This is the rule that was broken for a long time: search was a *mode of the home
+page*, so the songs list had no search at all, two tabs pointed at one route, and
+"Hledat" on any other screen meant leaving that screen for home.
+
 ## Screens that hold unsaved work
 
 A screen keeping user work in local state (a song being written, a playlist
@@ -208,9 +232,9 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
 
 ## Attention & layout rules
 
-1. **Thumb zone = navigation + at most one primary.** The bottom tab bar owns
-   navigation. The app's single bottom-primary is the tab bar's raised
-   **search** action. **Pages never add a competing bottom FAB.**
+1. **Thumb zone = navigation only.** The bottom tab bar owns navigation, and
+   every tab reads the same — search included (it is a tab, not a raised
+   action). **Pages never add a competing bottom FAB.**
 2. **One hero blue per zone.** Primary blue is the attention colour — spend it
    on the current-tab indicator + one primary action per zone. Everything else
    (pagination, sort, secondary actions) is **neutral** (grey / tonal).
@@ -219,21 +243,21 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    Occasional / contextual (create, sort, filter, in-list search, pagination)
    → top (header / controlPanel), or a quiet bottom panel.
 4. **The bottom panel is quiet.** A `bottomPanel` (e.g. pagination) is
-   low-contrast and neutral so it never competes with the tab bar's primary,
-   and sits **below** the tab bar's raised action in z-order.
+   low-contrast and neutral so it never competes with the tab bar, and sits
+   **below** it in z-order.
 5. **Don't stack shouters.** If two attention elements want the same spot,
    promote one and relocate / soften the other. Never stack several loud
    elements on top of each other.
-6. **Consistent homes for actions.** Navigation → tab bar. Primary action →
-   exactly one place (the tab bar's search); a page's own create action → the
-   header (a "+ Add" pill), **not** a FAB. Contextual controls → `controlPanel`
-   at the top. Content navigation (pagination) → a quiet `bottomPanel`.
+6. **Consistent homes for actions.** Navigation → tab bar. A page's own create
+   action → the header (a "+ Add" pill), **not** a FAB. Contextual controls →
+   `controlPanel` at the top. Content navigation (pagination) → a quiet
+   `bottomPanel`.
 7. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that
    shows only its header while data is missing is a bug: the user can't tell
    loading from broken. Match the states shown by `MobileSongListView` /
-   `SeznamMobile`.
+   `SongsMobile`.
 
 ## Applied (the standard)
 
@@ -246,8 +270,8 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
   screen passes one, so the sort/filter columns in the table below describe the
   intended shape rather than what ships today. The desktop `*OrderSelect`
   components are already props-driven — pass them as `controlPanel` to close it.
-- **Global search** stays the tab bar's raised centre action — the one loud
-  element in the thumb zone.
+- **Global search** is the catalog's own field, in its `controlPanel`; the tab
+  bar's Hledat is a link to it (see "Search is a control, not a place").
 
 Per-page shape:
 
@@ -257,7 +281,7 @@ Per-page shape:
 | Oblíbené | → Účet | count | (in-list search) | sort | – |
 | Moje písně | → Účet | count | **+ Přidat** | sort/filter | pagination |
 | Playlisty | → Účet | count | **+ Nový** | sort | – |
-| Písně (Seznam) | – | – | – | – | pagination |
+| Písně (katalog) | – | – | – | **search field** | pagination (browsing only) |
 | Playlist detail | → back | Playlist · count | Tisknout (+ prezentace/share/rename/edit → ⋮) | (mode switch) | – |
 
 **Collapsing hero condenses its actions — it doesn't hide them.** The

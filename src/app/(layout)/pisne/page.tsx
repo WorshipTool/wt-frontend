@@ -2,11 +2,13 @@
 import AllSongItem from '@/app/(layout)/pisne/AllSongItem'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
+import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import Pager from '@/common/components/Pager/Pager'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
+import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, CircularProgress, Typography } from '@/common/ui'
 import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
 import { Container } from '@/common/ui/mui'
@@ -136,19 +138,30 @@ function SongsPage() {
 	const searching = query.length > 0
 
 	const field = (
-		<SearchBar
-			value={value}
-			onChange={setValue}
-			placeholder={tSearch('searchSongs')}
-			// the field takes focus when navigation asks for search, not on every
-			// visit to the catalog
-			autoFocus={false}
-			inputRef={fieldRef}
-			onClear={clear}
-			showSmartSearch={showSmartSearch}
-			useSmartSearch={smartSearch}
-			onSmartSearchChange={setSmartSearch}
-		/>
+		// the news tutorial for smart search points here — at the field that
+		// carries the toggle, which is this screen's now that home has stopped
+		// searching (see news.config)
+		<NewsHighlightWrapper targetComponent="smart-search-toggle">
+			<Box data-testid="main-search-container">
+				<SearchBar
+					value={value}
+					onChange={setValue}
+					placeholder={tSearch('searchSongs')}
+					// the field takes focus when navigation asks for search, not on
+					// every visit to the catalog
+					autoFocus={false}
+					inputRef={fieldRef}
+					inputTestId="main-search-input"
+					onClear={clear}
+					showSmartSearch={showSmartSearch}
+					useSmartSearch={smartSearch}
+					onSmartSearchChange={(next) => {
+						setSmartSearch(next)
+						Analytics.track('SMART_SEARCH_TOGGLE', { enabled: next })
+					}}
+				/>
+			</Box>
+		</NewsHighlightWrapper>
 	)
 
 	if (phone) {

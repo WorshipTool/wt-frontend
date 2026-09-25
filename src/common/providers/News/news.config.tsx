@@ -40,7 +40,7 @@ export function getNewsItems(t: NewsTranslations): NewsItem[] {
 			createdAt: '2024-01-15T00:00:00Z',
 			tutorial: {
 				targetComponent: 'smart-search-toggle',
-				navigateTo: '/',
+				navigateTo: '/pisne',
 				steps: [
 					{
 						text: t('smartSearchStep1'),

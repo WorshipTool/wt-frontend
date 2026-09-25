@@ -1,7 +1,6 @@
 'use client'
 
 import BrandSheepIcon from '@/assets/icon.svg'
-import { MAIN_SEARCH_EVENT_NAME } from '@/app/components/components/MainSearchInput'
 import MobileBottomDock from '@/common/components/MobileAppTabBar/MobileBottomDock'
 import MobileToolsMenu from '@/common/components/MobileAppTabBar/MobileToolsMenu'
 import { TAB_ICON_SIZE, TabItem } from '@/common/components/MobileAppTabBar/TabItem'
@@ -20,7 +19,7 @@ import {
 	SearchOutlined,
 } from '@mui/icons-material'
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
-import { useMobileSearchOpen } from './mobileSearchState'
+import { useSmartParams } from '@/routes/useSmartParams'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import {
@@ -44,7 +43,12 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 	const tNav = useTranslations('navigation')
 	const { isLoggedIn } = useAuth()
 	const pathname = useClientPathname()
-	const searchActive = useMobileSearchOpen()
+	// Písně and Hledat are two doors into the one catalog, so which of them is
+	// lit comes from the catalog's own parameter: present means this screen was
+	// opened to search. Typing writes it with replaceState, which this hook does
+	// not observe — the lit tab is the door you came through, and stays put while
+	// you type.
+	const { hledat } = useSmartParams('songsList')
 
 	const [toolsOpen, setToolsOpen] = useState(false)
 
@@ -58,6 +62,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 	if (!force && hasContextualBottomBar(pathname)) return null
 
 	const active = mobileTabForPath(pathname)
+	const searchActive = active === 'songs' && hledat !== undefined
 	const loggedIn = isLoggedIn()
 
 	return (
@@ -71,7 +76,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 					<TabItem
 						icon={<BrandSheepIcon width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />}
 						label={tNav('home')}
-						active={active === 'home' && !searchActive}
+						active={active === 'home'}
 					/>
 				</Link>
 				<Link
@@ -83,24 +88,25 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 						icon={<LibraryMusicOutlined />}
 						activeIcon={<LibraryMusicRounded />}
 						label={tNav('songs')}
-						active={active === 'songs'}
+						active={active === 'songs' && !searchActive}
 					/>
 				</Link>
 
-				{/* search is a tab like any other — grey at rest, brand blue only
-				    while the search layer is open (house Link doesn't forward onClick,
-				    so the focus event is dispatched from a wrapper) */}
-				<Link to="home" params={{ hledat: '' }} style={{ flex: 1, minWidth: 0 }}>
-					<Box
-						onClick={() => window.dispatchEvent(new Event(MAIN_SEARCH_EVENT_NAME))}
-					>
-						<TabItem
-							icon={<SearchOutlined />}
-							activeIcon={<Search />}
-							label={tNav('search')}
-							active={searchActive}
-						/>
-					</Box>
+				{/* Hledat is the catalog with its field asking for the caret — the
+				    same screen Písně opens, which is why the two share a tab's worth
+				    of highlighting between them. Searching used to be a layer over
+				    home, so this tab went to a different screen than Písně did. */}
+				<Link
+					to="songsList"
+					params={{ hledat: '', s: undefined }}
+					style={{ flex: 1, minWidth: 0 }}
+				>
+					<TabItem
+						icon={<SearchOutlined />}
+						activeIcon={<Search />}
+						label={tNav('search')}
+						active={searchActive}
+					/>
 				</Link>
 
 				{/* Nástroje opens the signed-in user's own stuff, so there is nothing

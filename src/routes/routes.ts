@@ -80,6 +80,10 @@ export const routesSearchParams = {
 		key: 'a' as note | undefined,
 	},
 	home: {
+		// Legacy. Searching lives on `songsList` now; home forwards anything that
+		// still arrives here (old links, bookmarks) and nothing in the app writes
+		// it any more — the remaining `hledat: undefined` params are links that
+		// clear it.
 		hledat: 'string' as string | undefined,
 	},
 	teamSong: {

@@ -1,14 +1,9 @@
-import { Analytics } from '@/app/components/components/analytics/analytics.tech'
-import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
-import { NewsHighlightWrapper } from '@/common/providers/News'
-import { Box, IconButton, useTheme } from '@/common/ui'
+import { Box, useTheme } from '@/common/ui'
 import { InputBase } from '@/common/ui/mui'
-import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
-import { AutoAwesome } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled } from '@mui/system'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -31,13 +26,17 @@ type MainSearchInputProps = {
 	gradientBorder: boolean
 	value: string
 	onChange: (value: string) => void
-	smartSearch?: boolean
-	onSmartSearchChange?: (value: boolean) => void
+	/** Enter, i.e. "go now" — the field does not wait out its pause then. */
+	onSubmit?: () => void
 	autoFocus?: boolean
 }
 
-export const MAIN_SEARCH_EVENT_NAME = 'search_event_5jh14'
-
+/**
+ * The home hero's search field — the app's front door, and a door is all it is:
+ * what you type here opens the catalog, which is the one screen that shows
+ * results (see /pisne). Home used to answer searches itself, which is why the
+ * songs list had none and why the page needed a whole second mode.
+ */
 export default function MainSearchInput(props: MainSearchInputProps) {
 	const theme = useTheme()
 	const t = useTranslations('search')
@@ -53,36 +52,6 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 		inputRef.current?.focus()
 	}, [])
 
-	const [earlyFocused, setEarlyFocused] = useState(false)
-	useChangeDelayer(
-		earlyFocused,
-		() => {
-			setEarlyFocused(false)
-		},
-		[],
-		1500
-	)
-
-	useEffect(() => {
-		// This function is called only if its called from home page
-		const handler = () => {
-			setTimeout(() => {
-				window.scrollTo({
-					top: 90,
-					behavior: 'smooth',
-				})
-				inputRef.current?.focus()
-				setEarlyFocused(true)
-			}, 200)
-		}
-		window.addEventListener(MAIN_SEARCH_EVENT_NAME, handler)
-		return () => {
-			window.removeEventListener(MAIN_SEARCH_EVENT_NAME, handler)
-		}
-	}, [])
-
-	const showSmartSearch = useFlag('enable_smart_search')
-
 	return (
 		<div
 			data-testid="main-search-container"
@@ -92,7 +61,6 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 				width: '100%',
 				borderRadius: '0.6rem',
 				padding: props.gradientBorder ? 2 : 0,
-				transform: earlyFocused ? 'scale(107%)' : '',
 				transition: 'all 0.3s ease',
 				pointerEvents: 'auto',
 			}}
@@ -102,31 +70,15 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 				<SearchInput
 					placeholder={t('searchByTitleOrText')}
 					onChange={(e) => props.onChange(e.target.value)}
+					onKeyDown={(e: React.KeyboardEvent) => {
+						if (e.key !== 'Enter') return
+						e.preventDefault()
+						props.onSubmit?.()
+					}}
 					value={props.value}
 					inputRef={inputRef}
 					inputProps={{ 'data-testid': 'main-search-input' }}
 				></SearchInput>
-
-				{showSmartSearch && (
-					<NewsHighlightWrapper
-						targetComponent="smart-search-toggle"
-						tooltipPlacement="right"
-					>
-						<IconButton
-							color={props.smartSearch ? 'primary.main' : 'grey.400'}
-							size="small"
-							onClick={() => {
-								const newValue = !props.smartSearch
-								props.onSmartSearchChange?.(newValue)
-								Analytics.track('SMART_SEARCH_TOGGLE', {
-									enabled: newValue,
-								})
-							}}
-						>
-							<AutoAwesome fontSize="small" />
-						</IconButton>
-					</NewsHighlightWrapper>
-				)}
 			</SearchContainer>
 		</div>
 	)

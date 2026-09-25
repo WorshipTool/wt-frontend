@@ -64,7 +64,7 @@ smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
 	// Open homepage
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	// Search by title
 	await searchWithSearchBar('Vira', page)
@@ -86,7 +86,7 @@ smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
 smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	await searchWithSearchBar('Jsi darcem života', page)
 
@@ -100,7 +100,7 @@ smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
 smartTest('Vyhledávání podle jednoho písmene', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	await searchWithSearchBar('A', page)
 
@@ -114,7 +114,7 @@ smartTest('Vyhledávání podle jednoho písmene', 'critical', async ({ page }) 
 smartTest('Načíst další', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
-	await page.goto('/')
+	await page.goto('/pisne')
 	await page.waitForLoadState('domcontentloaded')
 
 	await searchWithSearchBar('Pokoj', page)
@@ -128,7 +128,7 @@ smartTest('Načíst další', 'critical', async ({ page }) => {
 })
 
 smartTest('Neobsahuje cizí soukromé písně', 'critical', async ({ page }) => {
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	const api = new SongSearchingApi()
 	const searchStrings = [
@@ -170,7 +170,7 @@ smartTest(
 	'Při přihlášení obsahuje uživatelovy soukromé písně',
 	'critical',
 	async ({ page }) => {
-		await page.goto('/')
+		await page.goto('/pisne')
 
 		const user = await login(page)
 

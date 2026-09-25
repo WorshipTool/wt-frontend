@@ -5,9 +5,8 @@ import { AutoAwesome, CloseRounded } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, InputBase, SxProps, styled } from '@mui/material'
 import { useTranslations } from 'next-intl'
-import { MutableRefObject, Ref, useCallback, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, Ref, useCallback, useRef } from 'react'
 import { isMobile } from '@/tech/device.tech'
-import OnChangeDelayer from '../../providers/ChangeDelayer/ChangeDelayer'
 
 const SearchContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.grey[100],
@@ -44,6 +43,8 @@ interface SearchBarProps {
 	inputRef?: Ref<HTMLInputElement>
 	/** Shows a clear control while there is something to clear. */
 	onClear?: () => void
+	/** Test id put on the input itself (the e2e search journey looks for one). */
+	inputTestId?: string
 }
 
 export function SearchBar({
@@ -54,6 +55,7 @@ export function SearchBar({
 	autoFocus,
 	inputRef: forwardedRef,
 	onClear,
+	inputTestId,
 	...props
 }: SearchBarProps) {
 	const t = useTranslations('search')
@@ -71,46 +73,13 @@ export function SearchBar({
 
 	const onChangeHandler = (e: any) => {
 		onChange?.(e.target.value)
-		setEarlyFocused(false)
 	}
 
-	const onChangeCallback = () => {
-		setEarlyFocused(false)
-	}
-
-	const [earlyFocused, setEarlyFocused] = useState(false)
-
-	useEffect(() => {
-		const onSearchBarFocus = () => {
-			// wait for animation to finish
-			setEarlyFocused(true)
-			setTimeout(() => {
-				// @ts-ignore
-				inputRef.current?.focus()
-			}, 200)
-		}
-		window?.addEventListener('searchBarFocus', onSearchBarFocus)
-		return () => {
-			window?.removeEventListener('searchBarFocus', onSearchBarFocus)
-		}
-	}, [])
+	// A `searchBarFocus` window event used to focus and flash this bar. Nothing
+	// has dispatched it since search stopped being a layer over the home screen;
+	// a screen that wants the caret here passes `inputRef` and asks for it.
 	return (
-		<SearchContainer
-			sx={{
-				...(earlyFocused
-					? {
-							boxShadow: `0px 2px 8px #00000055`,
-							transform: 'scale(107%)',
-					  }
-					: {}),
-				...sx,
-			}}
-		>
-			<OnChangeDelayer
-				value={earlyFocused}
-				onChange={onChangeCallback}
-				delay={1500}
-			/>
+		<SearchContainer sx={sx}>
 			<SearchIcon />
 			<SearchInput
 				placeholder={placeholder ?? t('searchByTitleOrText')}
@@ -118,6 +87,7 @@ export function SearchBar({
 				value={value}
 				onChange={onChangeHandler}
 				inputRef={setInputRef}
+				inputProps={inputTestId ? { 'data-testid': inputTestId } : undefined}
 				sx={{}}
 			></SearchInput>
 

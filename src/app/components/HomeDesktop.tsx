@@ -1,6 +1,7 @@
 'use client'
 
 import { useIsPhone } from '@/common/hooks/useIsPhone'
+import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
 import MainSearchInput from '@/app/components/components/MainSearchInput'
 import RecommendedSongsList from '@/app/components/components/RecommendedSongsList/RecommendedSongsList'
@@ -10,7 +11,6 @@ import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { useScrollHandler } from '@/common/providers/OnScrollComponent/useScrollHandler'
 import { Box, Image, Typography, useTheme } from '@/common/ui'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
-import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import useWorshipCzVersion from '@/hooks/worshipcz/useWorshipCzVersion'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -21,11 +21,13 @@ import ContainerGrid, {
 } from '../../common/components/ContainerGrid'
 import FloatingAddButton from './components/FloatingAddButton'
 import HomeMobile from './HomeMobile'
-import SearchedSongsList from './components/SearchedSongsList'
 
 export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 
 const ANIMATION_DURATION = 0.2
+
+/** How long the hero's field waits before opening the catalog with what it has. */
+const LAUNCH_DELAY_MS = 600
 
 export default function HomeDesktop() {
 	const theme = useTheme()
@@ -34,28 +36,23 @@ export default function HomeDesktop() {
 
 	const scrollPointRef = useRef(null)
 
-	// Manage search input, and url state with delay
-	const [searchString, setSearchString] = useUrlState('hledat')
-	// const [searchStringRaw, setSearchStringRaw] = useState(searchString || '')
-	const [searchInputValue, setSearchInputValue] = useState(searchString || '')
+	// The field here is a door, not a search: what you type opens the catalog,
+	// which is the one screen that answers. It waits out a pause first, so a
+	// query arrives whole rather than one letter at a time — and Enter skips the
+	// wait. See MainSearchInput.
+	const navigate = useSmartNavigate()
+	const [searchInputValue, setSearchInputValue] = useState('')
 
-	const onSearchValueChange = useCallback(
-		(e: string) => {
-			setSearchInputValue(e)
-			if (searchString === null) setSearchString('')
+	const openCatalog = useCallback(
+		(value: string) => {
+			const query = value.trim()
+			if (query === '') return
+			navigate('songsList', { hledat: query, s: undefined })
 		},
-		[searchString]
+		[navigate]
 	)
 
-	useChangeDelayer(
-		searchInputValue,
-		(value) => {
-			// sync empties too — skipping them left the previous query in the URL, so
-			// clearing the box and typing again briefly showed the old results
-			setSearchString(value)
-		},
-		[]
-	)
+	useChangeDelayer(searchInputValue, openCatalog, [openCatalog], LAUNCH_DELAY_MS)
 
 	useEffect(() => {
 		const handler = () => {
@@ -68,26 +65,7 @@ export default function HomeDesktop() {
 		}
 	}, [])
 
-	// Manage scrolling to search results
 	const scrollLevel = 20
-	const scrollToTop = useCallback(() => {
-		window.scroll({
-			top: 90,
-			behavior: 'smooth',
-		})
-	}, [])
-
-	useEffect(() => {
-		// Desktop only. The phone runs a fixed app shell with its own scroller, so
-		// there is nothing here for the window to scroll — except that with the
-		// keyboard open the layout viewport is taller than the visible one, and
-		// scrolling it drags the whole fixed shell (search field included) out of
-		// view. That fired on every debounced query, which is what made typing
-		// look like it jumped to the first result.
-		if (phoneVersion) return
-		if (searchString === null) return
-		scrollToTop()
-	}, [searchString, phoneVersion, scrollToTop])
 
 	// Manage toolbar and footer
 	const { isTop } = useScrollHandler({
@@ -126,11 +104,6 @@ export default function HomeDesktop() {
 	}, [])
 
 	const useWorshipVersion = useWorshipCzVersion()
-
-	const [smartSearch, setSmartSearch] = useUrlState('smartSearch', false, {
-		parse: (value) => value === 'true',
-		stringify: (value) => (value ? 'true' : 'false'),
-	})
 
 	const paddingX = 32
 	const gapString = `calc(max(${paddingX}px, (100vw - ${containerMaxWidth}px) / 2) )`
@@ -181,12 +154,7 @@ export default function HomeDesktop() {
 			)}
 
 			{phoneVersion ? (
-				<HomeMobile
-					searchInputValue={searchInputValue}
-					onSearchValueChange={onSearchValueChange}
-					searchString={searchString}
-					smartSearch={smartSearch ?? false}
-				/>
+				<HomeMobile />
 			) : (
 				<Box
 					sx={{
@@ -313,9 +281,8 @@ export default function HomeDesktop() {
 										<MainSearchInput
 											gradientBorder={isTop}
 											value={searchInputValue}
-											onChange={onSearchValueChange}
-											smartSearch={smartSearch ?? false}
-											onSmartSearchChange={setSmartSearch}
+											onChange={setSearchInputValue}
+											onSubmit={() => openCatalog(searchInputValue)}
 										/>
 									</Box>
 								</Box>
@@ -359,12 +326,6 @@ export default function HomeDesktop() {
 							transition: `all ${ANIMATION_DURATION}s ease`,
 						}}
 					>
-						{searchString && (
-							<SearchedSongsList
-								searchString={searchString}
-								useSmartSearch={smartSearch ?? false}
-							/>
-						)}
 						<RecommendedSongsList />
 					</div>
 				</Box>

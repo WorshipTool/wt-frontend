@@ -34,7 +34,7 @@ export default function ErrorPage() {
 					<Link
 						to="home"
 						params={{
-							hledat: '',
+							hledat: undefined,
 						}}
 					>
 						{t('goHome')}
