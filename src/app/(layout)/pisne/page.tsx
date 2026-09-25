@@ -26,8 +26,9 @@ import { useApi } from '../../../api/tech-and-hooks/useApi'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
 
-/** The centred block the catalog reads in, and nothing at the window's edges. */
-const BLOCK_WIDTH = 1000
+/** The centred block the catalog reads in, and nothing at the window's edges.
+ * Wide enough that three columns of songs each keep a readable title. */
+const BLOCK_WIDTH = 1200
 /** The search field once it floats: one control, not a banner. */
 const FIELD_WIDTH = 700
 /** …and at rest, where it closes the list's heading line: wide enough for a
@@ -151,7 +152,9 @@ function SongsPage() {
 	// One source of truth for the page size across every width, phones included —
 	// the phone list used to carry its own constant while sharing the same `?s=`
 	// URL key, so the two disagreed about which songs a given page number meant.
-	const countPerPage = phone ? 12 : isSmall ? 8 : isMiddle ? 16 : 21
+	const countPerPage = phone ? 12 : isSmall ? 8 : isMiddle ? 18 : 30
+	// …and the columns they are read in: one page, filled, at every width
+	const browseColumns = isSmall ? 1 : isMiddle ? 2 : 3
 
 	// Searching is what the field says, not what the URL says: a tap on Hledat
 	// opens the field with the browse list still under it, so you can type or
@@ -266,7 +269,7 @@ function SongsPage() {
 				transition: 'opacity 0.2s ease',
 			}}
 		>
-			<SongsBrowseDesktop items={browse.items} />
+			<SongsBrowseDesktop items={browse.items} columns={browseColumns} />
 		</Box>
 	)
 

@@ -9,10 +9,6 @@ import { useMemo } from 'react'
 
 /** Lyric preview lines on a browse row — one, since a page holds many. */
 const PREVIEW_LINES = 1
-/** The songbook reads down one column and up the next. Two, because a row
- * carries a title and a line of lyrics and wants the width. */
-const COLUMNS = 2
-
 /**
  * A section's initial, with a rule running off it so the rows under it read as
  * one section rather than as a list that happens to have a letter above it.
@@ -47,9 +43,13 @@ function LetterHeader({ letter }: { letter: string }) {
  */
 export default function SongsBrowseDesktop({
 	items,
+	columns: COLUMNS = 3,
 	grouped = true,
 }: {
 	items: GetListSongData[]
+	/** How many columns the page is read in — the width's call, so the caller's,
+	 * and it has to agree with the page size or the columns come out ragged. */
+	columns?: number
 	grouped?: boolean
 }) {
 	// the page's songs cut into equal runs, each read top to bottom — a column
