@@ -879,7 +879,9 @@ declare const messages: {
 		"clearFilters": "Zrušit",
 		"allSongs": "Všechny písně",
 		"songCount": "{formatted} {count, plural, one {píseň} few {písně} other {písní}}",
-		"newestNote": "Zobrazeny naposledy přidané písně."
+		"newestNote": "Zobrazeny naposledy přidané písně.",
+		"page": "Stránka",
+		"pageOf": "{page} z {total}"
 	},
 	"loadingScreen": {
 		"message": "Načítání aplikace..."

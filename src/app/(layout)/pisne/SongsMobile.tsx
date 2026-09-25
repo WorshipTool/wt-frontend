@@ -2,10 +2,9 @@
 
 import { BasicVariantPack } from '@/api/dtos'
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
-import { GetListSongData } from '@/api/generated'
-import { useApi } from '@/api/tech-and-hooks/useApi'
 import { SearchFilters, SongSort } from '@/app/(layout)/pisne/catalog.types'
 import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
+import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
 import CatalogChips from '@/app/(layout)/pisne/components/CatalogChips'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
@@ -18,7 +17,7 @@ import { Box, Button, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { CloudOffRounded, MusicNoteRounded, RefreshRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 const PREVIEW_LINES = 1
 // small alphabetical section label above each letter's group card
@@ -85,49 +84,22 @@ export default function SongsMobile({
 }: SongsMobileProps) {
 	const t = useTranslations('songsList')
 	const tCommon = useTranslations('common')
-	const { songGettingApi } = useApi()
-
-	const [items, setItems] = useState<GetListSongData[]>([])
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(false)
-	const [reloadKey, setReloadKey] = useState(0)
-
-	const pagesCount = Math.max(1, Math.ceil(count / perPage))
-
 	const searching = query.length > 0
 
 	// the songbook read alphabetically is read by its initials; read by date it
 	// is one run, so the letters would be noise
 	const newest = !searching && sort === 'newest'
-	const letterGroups = useMemo(() => groupByFirstLetter(items), [items])
 
-	useEffect(() => {
-		// nothing to page through while results — or the recently-added batch,
-		// which the page fetches — are on screen; going back to A–Z runs this again
-		if (searching || newest) return
-		let active = true
-		setLoading(true)
-		setError(false)
-		// `page` is 1-indexed for the UI/paginator, but the backend list is
-		// 0-indexed (see Pager, which fetches `page - 1`) — so page 1 → offset 0.
-		songGettingApi
-			.getList(page - 1, perPage)
-			.then((data) => {
-				if (active) setItems(data)
-			})
-			.catch(() => {
-				if (active) {
-					setItems([])
-					setError(true)
-				}
-			})
-			.finally(() => {
-				if (active) setLoading(false)
-			})
-		return () => {
-			active = false
-		}
-	}, [page, perPage, songGettingApi, reloadKey, searching, newest])
+	const pagesCount = Math.max(1, Math.ceil(count / perPage))
+
+	// nothing to page through while results — or the recently-added batch, which
+	// the page fetches — are on screen
+	const { items, loading, error, reload } = useBrowseSongs(
+		page,
+		perPage,
+		!searching && !newest
+	)
+	const letterGroups = useMemo(() => groupByFirstLetter(items), [items])
 
 	const paginator =
 		!searching && !newest && !error && pagesCount > 1 ? (
@@ -197,7 +169,7 @@ export default function SongsMobile({
 					action={
 						<Button
 							variant="outlined"
-							onClick={() => setReloadKey((k) => k + 1)}
+							onClick={reload}
 							startIcon={<RefreshRounded />}
 							disableUppercase
 						>

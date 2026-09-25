@@ -876,7 +876,9 @@
 		"clearFilters": "Wyczyść",
 		"allSongs": "Wszystkie pieśni",
 		"songCount": "{formatted} {count, plural, one {pieśń} few {pieśni} other {pieśni}}",
-		"newestNote": "Pokazujemy ostatnio dodane pieśni."
+		"newestNote": "Pokazujemy ostatnio dodane pieśni.",
+		"page": "Strona",
+		"pageOf": "{page} z {total}"
 	},
 	"loadingScreen": {
 		"message": "Ładowanie aplikacji..."

@@ -87,11 +87,17 @@ export default function Popup({
 			c?.focus()
 		}
 
-		document.body.style.overflow = open ? 'hidden' : 'auto'
-		document.body.style.paddingRight = open ? '15px' : '0px'
+		// Closed, the page is left exactly as it was — not set to `auto`, which
+		// is not the same thing: an `overflow` on <body> makes it a scroll
+		// container of its own, and every `position: sticky` on the page then
+		// sticks to that instead of to the viewport. A closed popup was doing
+		// that to whatever screen it happened to be mounted on.
+		document.body.style.overflow = open ? 'hidden' : ''
+		document.body.style.paddingRight = open ? '15px' : ''
 
 		return () => {
-			document.body.style.overflow = 'auto'
+			document.body.style.overflow = ''
+			document.body.style.paddingRight = ''
 		}
 	}, [open])
 

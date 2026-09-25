@@ -4,25 +4,31 @@ import {
 	SearchFilters,
 	SongSort,
 } from '@/app/(layout)/pisne/catalog.types'
+import CatalogPagination from '@/app/(layout)/pisne/components/CatalogPagination'
 import CatalogSidePanel, {
 	ColumnHeading,
 } from '@/app/(layout)/pisne/components/CatalogSidePanel'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import SongsBrowseDesktop from '@/app/(layout)/pisne/components/SongsBrowseDesktop'
 import SongsMobile from '@/app/(layout)/pisne/SongsMobile'
+import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
 import { useNewestSongs } from '@/app/(layout)/pisne/useNewestSongs'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
-import Pager from '@/common/components/Pager/Pager'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
-import { Box, CircularProgress, Typography } from '@/common/ui'
-import { SongGroup } from '@/common/ui/GroupList'
+import { Box, Button, Typography } from '@/common/ui'
+import {
+	GroupRowsSkeleton,
+	ListStateView,
+	SongGroup,
+} from '@/common/ui/GroupList'
 import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
 import { Container } from '@/common/ui/mui'
+import { CloudOffRounded, RefreshRounded } from '@mui/icons-material'
 import useAuth from '@/hooks/auth/useAuth'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { useApiStateEffect } from '@/tech/ApiState'
@@ -38,8 +44,11 @@ import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
 const BLOCK_WIDTH = 1000
 /** The side panel — wide enough for "Naposledy přidané" on one line. */
 const PANEL_WIDTH = 260
-/** The search field. Narrower than the block on purpose: it is one control, not
- * a banner, and it keeps the same width in both of its positions. */
+/** Between the list and the panel, in theme units. */
+const COLUMN_GAP = 4.5
+/** The search field once it floats: one control, not a banner. Close enough to
+ * the width of the list column that moving there and back reads as a move
+ * rather than a resize. */
 const FIELD_WIDTH = 700
 /**
  * Where the field sits once searching takes over the screen: half into the 56px
@@ -48,6 +57,12 @@ const FIELD_WIDTH = 700
  */
 const FIELD_TOP_SEARCHING = 22
 const FIELD_Z = 11
+/** Where the side column comes to rest while the list scrolls past it: clear of
+ * the 56px top bar, and of the field when that is parked in it. */
+const PANEL_STICKY_TOP = 72
+/** Where the list's first row comes to rest after a page is turned — clear of
+ * the top bar, with a little air. */
+const LIST_TOP_MARGIN = 72
 /** Air under the floating field, where the flow no longer provides any. */
 const RESULTS_TOP_SPACE = 5
 /** How long the chrome takes to rearrange — the phone header's own timing. */
@@ -88,6 +103,7 @@ export default SmartPage(SongsPage)
  */
 function SongsPage() {
 	const t = useTranslations('songsList')
+	const tCommon = useTranslations('common')
 	const tSearch = useTranslations('search')
 	const phone = useIsPhone()
 	const { isLoggedIn } = useAuth()
@@ -158,11 +174,6 @@ function SongsPage() {
 	// the phone list used to carry its own constant while sharing the same `?s=`
 	// URL key, so the two disagreed about which songs a given page number meant.
 	const countPerPage = phone ? 12 : isSmall ? 8 : isMiddle ? 16 : 21
-	const getPageData = async (page: number) => {
-		const r = await songGettingApi.getList(page, countPerPage + 1)
-
-		return r.slice(0, countPerPage)
-	}
 
 	// Searching is what the field says, not what the URL says: a tap on Hledat
 	// opens the field with the browse list still under it, so you can type or
@@ -170,6 +181,25 @@ function SongsPage() {
 	const searching = query.length > 0
 	const newest = !searching && sort === 'newest'
 	const newestSongs = useNewestSongs(newest)
+	// the desktop list; the phone runs the same hook inside its own shell
+	const browse = useBrowseSongs(
+		page ?? 1,
+		countPerPage,
+		!phone && !searching && !newest
+	)
+	const pagesCount = Math.max(1, Math.ceil((count ?? 0) / countPerPage))
+
+	// A page turned from the panel is read from its first song, not from
+	// wherever in the last page you happened to be standing.
+	const listRef = useRef<HTMLDivElement>(null)
+	const goToPage = useCallback(
+		(next: number) => {
+			setPage(next)
+			const top = listRef.current?.getBoundingClientRect().top ?? 0
+			window.scrollBy({ top: top - LIST_TOP_MARGIN, behavior: 'smooth' })
+		},
+		[setPage]
+	)
 
 	// …while the *chrome* answers to the field itself, the way the home screen
 	// used to: touch the field and the field rides up to the top — on a phone it
@@ -255,44 +285,34 @@ function SongsPage() {
 				{t('newestNote')}
 			</Typography>
 		</Box>
-	) : (
-		<Pager
-			data={getPageData}
-			allCount={count || 0}
-			take={countPerPage}
-			startPage={page || 1}
-			onPageChange={setPage}
-		>
-			{(data, loading) => (
-				<Box
-					display={'flex'}
-					flexDirection={'column'}
-					gap={2}
-					position={'relative'}
+	) : browse.error ? (
+		<ListStateView
+			icon={<CloudOffRounded fontSize="inherit" />}
+			message={t('error')}
+			action={
+				<Button
+					variant="outlined"
+					onClick={browse.reload}
+					startIcon={<RefreshRounded />}
+					disableUppercase
 				>
-					<Box
-						sx={{
-							position: 'absolute',
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							bgcolor: loading ? 'grey.300' : 'transparent',
-							opacity: 0.5,
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							pointerEvents: loading ? undefined : 'none',
-							transition: 'all 0.3s',
-						}}
-					>
-						{loading && <CircularProgress />}
-					</Box>
-
-					<SongsBrowseDesktop items={data} />
-				</Box>
-			)}
-		</Pager>
+					{tCommon('tryAgain')}
+				</Button>
+			}
+		/>
+	) : browse.loading && browse.items.length === 0 ? (
+		<GroupRowsSkeleton rows={8} withIcon={false} />
+	) : (
+		// the page you came from stays legible while the next one loads, rather
+		// than the list emptying under you
+		<Box
+			sx={{
+				opacity: browse.loading ? 0.45 : 1,
+				transition: 'opacity 0.2s ease',
+			}}
+		>
+			<SongsBrowseDesktop items={browse.items} />
+		</Box>
 	)
 
 	return (
@@ -312,8 +332,10 @@ function SongsPage() {
 					<Gap value={3} />
 
 					{/* One wrapper that moves, never two that swap: a swap would rebuild
-					    the input and drop the caret the moment you touched it. Searching
-					    lifts it out of the flow to rest half in the top bar, whose own
+					    the input and drop the caret the moment you touched it.
+					    At rest it belongs to the list — it opens the left column, over
+					    the rows it searches, not over the whole page. Searching lifts it
+					    out of the flow to rest half in the top bar, centred, whose own
 					    links have stood down for it. */}
 					<Box
 						sx={
@@ -333,10 +355,25 @@ function SongsPage() {
 										},
 										animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
 								  }
-								: { width: '100%', display: 'flex', justifyContent: 'center' }
+								: {
+										width: '100%',
+										display: 'flex',
+										// the padding is the panel's column, kept clear, so the
+										// field ends exactly where the list ends — and it has to
+										// come out of the width, not be added to it
+										boxSizing: 'border-box',
+										paddingRight: `${PANEL_WIDTH + COLUMN_GAP * 8}px`,
+								  }
 						}
 					>
-						<Box sx={{ width: '100%', maxWidth: FIELD_WIDTH }}>{field}</Box>
+						<Box
+							sx={{
+								width: '100%',
+								maxWidth: searchMode ? FIELD_WIDTH : undefined,
+							}}
+						>
+							{field}
+						</Box>
 					</Box>
 
 					{/* air under the floating field, where the flow no longer provides any */}
@@ -347,7 +384,10 @@ function SongsPage() {
 						}}
 					/>
 
-					<Box sx={{ display: 'flex', gap: 4.5, alignItems: 'flex-start' }}>
+					<Box
+						ref={listRef}
+						sx={{ display: 'flex', gap: COLUMN_GAP, alignItems: 'flex-start' }}
+					>
 						<Box
 							sx={{
 								flexGrow: 1,
@@ -382,7 +422,20 @@ function SongsPage() {
 							)}
 						</Box>
 
-						<Box sx={{ width: PANEL_WIDTH, flexShrink: 0 }}>
+						{/* The column travels with the page: the order, and under it where
+						    you are in the songbook, both stay reachable however far down
+						    the list you have read. */}
+						<Box
+							sx={{
+								width: PANEL_WIDTH,
+								flexShrink: 0,
+								position: 'sticky',
+								top: PANEL_STICKY_TOP,
+								display: 'flex',
+								flexDirection: 'column',
+								gap: 3,
+							}}
+						>
 							<CatalogSidePanel
 								searching={searching}
 								sort={sort}
@@ -391,6 +444,14 @@ function SongsPage() {
 								onFiltersChange={setFilters}
 								loggedIn={isLoggedIn()}
 							/>
+
+							{!searching && !newest && (
+								<CatalogPagination
+									page={page ?? 1}
+									pagesCount={pagesCount}
+									onChange={goToPage}
+								/>
+							)}
 						</Box>
 					</Box>
 

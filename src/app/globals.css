@@ -11,13 +11,18 @@ body {
 	overflow-x: clip;
 }
 
-body {
+/* The always-present scrollbar gutter belongs to the element that actually
+   scrolls, which is <html>. It used to sit on <body>: body then became a
+   scroll container of its own that never scrolls (its height is its content),
+   and every `position: sticky` on the page stuck to *that* instead of to the
+   viewport — which is to say, not at all. */
+html {
 	overflow-y: scroll;
 }
 
 /*If its phone, set overflow to auto*/
 @media (max-width: 768px) {
-	body {
+	html {
 		overflow-y: auto;
 	}
 }
