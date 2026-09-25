@@ -233,7 +233,7 @@ export default function HomeMobile({
 
 	const browseAction = (
 		<Clickable>
-			<Link to="songsList" params={{ s: undefined }}>
+			<Link to="songsList" params={{ s: undefined, hledat: undefined }}>
 				<Typography small strong uppercase color="primary.main">
 					{tHome('allList.browse')}
 				</Typography>

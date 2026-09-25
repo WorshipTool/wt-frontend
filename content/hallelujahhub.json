@@ -605,9 +605,12 @@
 		"cancel": "Cancel"
 	},
 	"songsList": {
-		"title": "List of all songs",
+		"title": "Songs",
 		"empty": "There are no songs yet.",
-		"error": "Couldn't load the songs."
+		"error": "Couldn't load the songs.",
+		"results": "Search results",
+		"noResults": "We didn't find anything...",
+		"loadMore": "Load more"
 	},
 	"loadingScreen": {
 		"message": "Loading app..."

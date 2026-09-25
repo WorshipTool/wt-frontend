@@ -860,9 +860,12 @@
 		}
 	},
 	"songsList": {
-		"title": "Lista wszystkich pieśni",
+		"title": "Pieśni",
 		"empty": "Nie ma jeszcze żadnych pieśni.",
-		"error": "Nie udało się załadować pieśni."
+		"error": "Nie udało się załadować pieśni.",
+		"results": "Wyniki wyszukiwania",
+		"noResults": "Niczego nie znaleźliśmy...",
+		"loadMore": "Załaduj więcej"
 	},
 	"loadingScreen": {
 		"message": "Ładowanie aplikacji..."

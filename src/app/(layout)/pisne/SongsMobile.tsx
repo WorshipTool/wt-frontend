@@ -3,6 +3,7 @@
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
 import { GetListSongData } from '@/api/generated'
 import { useApi } from '@/api/tech-and-hooks/useApi'
+import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import {
 	GroupRowsSkeleton,
@@ -13,7 +14,7 @@ import { Box, Button, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { CloudOffRounded, MusicNoteRounded, RefreshRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 const PREVIEW_LINES = 1
 // small alphabetical section label above each letter's group card
@@ -28,6 +29,12 @@ const firstLetter = (title: string) =>
 	(title.trim().charAt(0) || '#').toLocaleUpperCase('cs')
 
 type SongsMobileProps = {
+	/** The search field, owned by the page so both widths share one. It lives in
+	 * the header's control strip, where it cannot be scrolled away. */
+	field: ReactNode
+	/** The query being searched (trimmed, debounced). Empty means browsing. */
+	query: string
+	smartSearch: boolean
 	/** 1-indexed page, kept in the URL by the parent (shared with desktop) */
 	page: number
 	onPageChange: (page: number) => void
@@ -37,13 +44,19 @@ type SongsMobileProps = {
 }
 
 /**
- * Native-feeling mobile songs list, built on the shared MobileAppHeader
- * app-shell (collapsing title, only the content scrolls, paginator pinned in a
- * quiet bottom panel — see docs/design/MOBILE.md). The songs of the current
- * page are grouped by first letter; there are thousands of songs, so paging
- * beats an endless scroll. The desktop grid stays in page.tsx.
+ * Native-feeling mobile song catalog, built on the shared MobileAppHeader
+ * app-shell (collapsing title, search field pinned under it, only the content
+ * scrolls, paginator in a quiet bottom panel — see docs/design/MOBILE.md).
+ *
+ * Browsing groups the current page's songs by first letter; there are thousands
+ * of songs, so paging beats an endless scroll. Searching replaces that body
+ * (and the paginator with it, since results scroll themselves). The desktop
+ * layout of the same two states stays in page.tsx.
  */
 export default function SongsMobile({
+	field,
+	query,
+	smartSearch,
 	page,
 	onPageChange,
 	count,
@@ -60,6 +73,8 @@ export default function SongsMobile({
 
 	const pagesCount = Math.max(1, Math.ceil(count / perPage))
 
+	const searching = query.length > 0
+
 	// split the current page's songs into consecutive first-letter sections so
 	// each new starting letter gets a header — kept entirely within the page
 	// (the backend returns the list alphabetically sorted)
@@ -75,6 +90,9 @@ export default function SongsMobile({
 	}, [items])
 
 	useEffect(() => {
+		// nothing to browse while results are on screen; clearing the query runs
+		// this again and brings the page back
+		if (searching) return
 		let active = true
 		setLoading(true)
 		setError(false)
@@ -97,10 +115,10 @@ export default function SongsMobile({
 		return () => {
 			active = false
 		}
-	}, [page, perPage, songGettingApi, reloadKey])
+	}, [page, perPage, songGettingApi, reloadKey, searching])
 
 	const paginator =
-		!error && pagesCount > 1 ? (
+		!searching && !error && pagesCount > 1 ? (
 			<Pagination
 				count={pagesCount}
 				page={Math.min(page, pagesCount)}
@@ -122,10 +140,15 @@ export default function SongsMobile({
 	return (
 		<MobileAppHeader
 			title={t('title')}
+			controlPanel={field}
 			bottomPanel={paginator}
-			scrollResetKey={page}
+			// a new query starts at the top of its own results, and so does a new
+			// page of the browse list
+			scrollResetKey={searching ? query : page}
 		>
-			{loading ? (
+			{searching ? (
+				<SongSearchResults query={query} smartSearch={smartSearch} />
+			) : loading ? (
 				<GroupRowsSkeleton rows={perPage} withIcon />
 			) : error ? (
 				<ListStateView

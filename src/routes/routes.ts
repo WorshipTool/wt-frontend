@@ -93,5 +93,9 @@ export const routesSearchParams = {
 	},
 	songsList: {
 		s: 0 as number | undefined,
+		// The catalog's own search. It used to be a parameter of `home`, which is
+		// why searching was a place rather than something this screen does; home
+		// still accepts it and forwards here so old links keep working.
+		hledat: 'string' as string | undefined,
 	},
 }

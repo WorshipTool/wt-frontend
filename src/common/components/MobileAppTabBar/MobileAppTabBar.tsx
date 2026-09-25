@@ -74,7 +74,11 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 						active={active === 'home' && !searchActive}
 					/>
 				</Link>
-				<Link to="songsList" params={{ s: undefined }} style={{ flex: 1, minWidth: 0 }}>
+				<Link
+					to="songsList"
+					params={{ s: undefined, hledat: undefined }}
+					style={{ flex: 1, minWidth: 0 }}
+				>
 					<TabItem
 						icon={<LibraryMusicOutlined />}
 						activeIcon={<LibraryMusicRounded />}
