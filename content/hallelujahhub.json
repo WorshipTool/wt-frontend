@@ -613,7 +613,6 @@
 		"loadMore": "Load more",
 		"allSongs": "All songs",
 		"songCount": "{formatted} {count, plural, one {song} other {songs}}",
-		"page": "Page",
 		"pageOf": "{page} of {total}"
 	},
 	"loadingScreen": {

@@ -868,7 +868,6 @@
 		"loadMore": "Załaduj więcej",
 		"allSongs": "Wszystkie pieśni",
 		"songCount": "{formatted} {count, plural, one {pieśń} few {pieśni} other {pieśni}}",
-		"page": "Strona",
 		"pageOf": "{page} z {total}"
 	},
 	"loadingScreen": {

@@ -871,7 +871,6 @@ declare const messages: {
 		"loadMore": "Načíst další",
 		"allSongs": "Všechny písně",
 		"songCount": "{formatted} {count, plural, one {píseň} few {písně} other {písní}}",
-		"page": "Stránka",
 		"pageOf": "{page} z {total}"
 	},
 	"loadingScreen": {

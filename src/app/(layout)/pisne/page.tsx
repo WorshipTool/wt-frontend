@@ -26,13 +26,8 @@ import { useApi } from '../../../api/tech-and-hooks/useApi'
 import { Gap } from '../../../common/ui/Gap/Gap'
 import { useSmartUrlState } from '../../../hooks/urlstate/useUrlState'
 
-/** The centred block: the list and the column beside it, and nothing at the
- * window's edges. */
+/** The centred block the catalog reads in, and nothing at the window's edges. */
 const BLOCK_WIDTH = 1000
-/** The column beside the list, which holds where you are in the songbook. */
-const PANEL_WIDTH = 260
-/** Between the list and that column, in theme units. */
-const COLUMN_GAP = 4.5
 /** The search field once it floats: one control, not a banner. */
 const FIELD_WIDTH = 700
 /** …and at rest, where it closes the list's heading line: wide enough for a
@@ -46,9 +41,6 @@ const FIELD_WIDTH_RESTING = 340
  */
 const FIELD_TOP_SEARCHING = 22
 const FIELD_Z = 11
-/** Where the side column comes to rest while the list scrolls past it: clear of
- * the 56px top bar, and of the field when that is parked in it. */
-const PANEL_STICKY_TOP = 72
 /** Where the list's first row comes to rest after a page is turned — clear of
  * the top bar, with a little air. */
 const LIST_TOP_MARGIN = 72
@@ -169,8 +161,7 @@ function SongsPage() {
 	const browse = useBrowseSongs(page ?? 1, countPerPage, !phone && !searching)
 	const pagesCount = Math.max(1, Math.ceil((count ?? 0) / countPerPage))
 
-	// A page turned from the column beside the list is read from its first song,
-	// not from
+	// A page turned from the floating bar is read from its first song, not from
 	// wherever in the last page you happened to be standing.
 	const listRef = useRef<HTMLDivElement>(null)
 	const goToPage = useCallback(
@@ -303,100 +294,85 @@ function SongsPage() {
 
 					<Box
 						ref={listRef}
-						sx={{ display: 'flex', gap: COLUMN_GAP, alignItems: 'flex-start' }}
+						sx={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 1.5,
+							minWidth: 0,
+						}}
 					>
-						<Box
-							sx={{
-								flexGrow: 1,
-								minWidth: 0,
-								display: 'flex',
-								flexDirection: 'column',
-								gap: 1.5,
-							}}
+						<ColumnHeading
+							label={searching ? t('results') : t('allSongs')}
+							meta={
+								!searching && (
+									<Typography small color="grey.600">
+										{t('songCount', {
+											count: browseCount,
+											// the reader's own thousands separator: the app pins
+											// next-intl to one locale for all three brands, so ICU's
+											// own number format would write 2,057 to a Czech reader
+											formatted: browseCount.toLocaleString(),
+										})}
+									</Typography>
+								)
+							}
 						>
-							<ColumnHeading
-								label={searching ? t('results') : t('allSongs')}
-								meta={
-									!searching && (
-										<Typography small color="grey.600">
-											{t('songCount', {
-												count: browseCount,
-												// the reader's own thousands separator: the app pins
-												// next-intl to one locale for all three brands, so ICU's
-												// own number format would write 2,057 to a Czech reader
-												formatted: browseCount.toLocaleString(),
-											})}
-										</Typography>
-									)
-								}
-							>
-
-								{/* One wrapper that moves, never two that swap, and never a
+							{/* One wrapper that moves, never two that swap, and never a
 								    different parent: rebuilding the input would drop the caret
 								    the moment you touched it. At rest the field closes the
 								    list's own heading line, over the rows it searches. Searching
 								    takes it out of the flow, to rest half in the top bar whose
 								    links have stood down for it. */}
-								<Box
-									sx={
-										searchMode
-											? {
-													position: 'fixed',
-													top: FIELD_TOP_SEARCHING,
-													left: 0,
-													right: 0,
-													zIndex: FIELD_Z,
-													display: 'flex',
-													justifyContent: 'center',
-													paddingX: 2,
-													'@keyframes fieldToTop': {
-														from: { transform: 'translateY(12px)', opacity: 0.4 },
-														to: { transform: 'translateY(0)', opacity: 1 },
-													},
-													animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
-											  }
-											: { width: FIELD_WIDTH_RESTING, flexShrink: 0 }
-									}
-								>
-									<Box
-										sx={{
-											width: '100%',
-											maxWidth: searchMode ? FIELD_WIDTH : undefined,
-										}}
-									>
-										{field}
-									</Box>
-								</Box>
-							</ColumnHeading>
-
-							{searching ? (
-								<SongSearchResults query={query} smartSearch={smartSearch} />
-							) : (
-								browseBody
-							)}
-						</Box>
-
-						{/* Where you are in the songbook, travelling with the page so the
-						    next one is a click away however far down you have read. Results
-						    scroll themselves, so there is nothing to put here then — and
-						    the column goes, rather than standing empty beside them. */}
-						{!searching && (
 							<Box
-								sx={{
-									width: PANEL_WIDTH,
-									flexShrink: 0,
-									position: 'sticky',
-									top: PANEL_STICKY_TOP,
-								}}
+								sx={
+									searchMode
+										? {
+												position: 'fixed',
+												top: FIELD_TOP_SEARCHING,
+												left: 0,
+												right: 0,
+												zIndex: FIELD_Z,
+												display: 'flex',
+												justifyContent: 'center',
+												paddingX: 2,
+												'@keyframes fieldToTop': {
+													from: { transform: 'translateY(12px)', opacity: 0.4 },
+													to: { transform: 'translateY(0)', opacity: 1 },
+												},
+												animation: `fieldToTop ${COLLAPSE_MS}ms ease`,
+											}
+										: { width: FIELD_WIDTH_RESTING, flexShrink: 0 }
+								}
 							>
-								<CatalogPagination
-									page={page ?? 1}
-									pagesCount={pagesCount}
-									onChange={goToPage}
-								/>
+								<Box
+									sx={{
+										width: '100%',
+										maxWidth: searchMode ? FIELD_WIDTH : undefined,
+									}}
+								>
+									{field}
+								</Box>
 							</Box>
+						</ColumnHeading>
+
+						{searching ? (
+							<SongSearchResults query={query} smartSearch={smartSearch} />
+						) : (
+							browseBody
 						)}
 					</Box>
+
+					{/* Where you are in the songbook, floating over the bottom of the
+					    window, so the next page is a click away however far down you
+					    have read. Results scroll themselves, so searching has no page
+					    to be on. */}
+					{!searching && (
+						<CatalogPagination
+							page={page ?? 1}
+							pagesCount={pagesCount}
+							onChange={goToPage}
+						/>
+					)}
 
 					<Gap value={2} />
 				</Box>
