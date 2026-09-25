@@ -16,6 +16,9 @@ const RESTING_AIR = 8
 /** Above the page, below the top bar (10) and the search field (11) — it never
  * reaches either, and the scale in Z_INDEX starts above 100. */
 const BAR_Z = 9
+/** The bar's own height — a fixed bar takes none of the flow, so the air at the
+ * end of the page has to carry it. */
+const BAR_HEIGHT = 40
 
 /**
  * Where you are in the songbook, floating over the bottom of the window.
@@ -25,8 +28,10 @@ const BAR_Z = 9
  * however far down the page you have read, and the list keeps the full width
  * of the block.
  *
- * Sticky rather than fixed, and so still part of the page: it comes to rest
- * under the last row instead of covering the footer at the end of the scroll.
+ * It holds the bottom edge of the window for the whole scroll, and the page
+ * keeps air at its end so the last row is never under it. The footer passes
+ * beneath it at the very bottom of the scroll, which is the price of a control
+ * that is always in the same place.
  *
  * Compact on purpose: the ends and the pages around the current one, the rest
  * an ellipsis.
@@ -55,13 +60,19 @@ export default function CatalogPagination({
 		<>
 			<Box
 				sx={{
-					position: 'sticky',
+					// Fixed on a desktop, so it holds the bottom edge for the whole
+					// scroll; sticky let go of it the moment it reached its place in the
+					// flow, which on a short page is most of the way down. On a phone it
+					// stays sticky inside the shell's scroller, whose bottom edge is the
+					// screen's, so it comes to rest above the tab bar.
+					position: touch ? 'sticky' : 'fixed',
 					bottom: offset,
+					...(touch ? {} : { left: 0, right: 0 }),
 					zIndex: BAR_Z,
 					display: 'flex',
 					justifyContent: 'center',
-					// the strip itself is only as wide as the bar, so the rows it floats
-					// over stay clickable either side of it
+					// the strip itself is only as wide as the bar, so whatever it floats
+					// over stays clickable either side of it
 					pointerEvents: 'none',
 				}}
 			>
@@ -115,10 +126,16 @@ export default function CatalogPagination({
 				</Box>
 			</Box>
 
-			{/* the bar's own room at the end of the scroll: without it the last row
-			    stays under the bar, which never reaches its place in the flow */}
+			{/* the bar's own room at the end of the page, so the last row never ends
+			    up under it — a fixed bar takes none of the flow, so the air has to
+			    carry its height too */}
 			<Box
-				sx={{ height: `${Math.max(0, offset) + RESTING_AIR}px`, flexShrink: 0 }}
+				sx={{
+					height: `${
+						Math.max(0, offset) + RESTING_AIR + (touch ? 0 : BAR_HEIGHT)
+					}px`,
+					flexShrink: 0,
+				}}
 			/>
 		</>
 	)
