@@ -169,8 +169,11 @@ export const SongVariantCard = memo(function S({
 		lyrics,
 		props.highlight,
 		previewLineCount,
-		// a dense row does not wrap, so a match past its end would never show
-		dense ? LEAD_IN_CHARS : undefined
+		// Always, on either width: a preview line is one line and it is cut off at
+		// the edge of the card or the row — a desktop card does not wrap it, it
+		// clips it — so a match further along the line would never be seen. Gating
+		// this on `dense` left exactly that hole on a desktop.
+		LEAD_IN_CHARS
 	)
 
 	const linkProps = useMemo(() => {
