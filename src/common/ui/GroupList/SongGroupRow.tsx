@@ -32,7 +32,8 @@ const EDGE_SHADES = ['grey.100', 'grey.200', 'grey.300'] as const
  *
  * It carries its own card rather than sitting in the list's shared surface,
  * because a pile needs something to be a pile *of*: a row flush in a surface has
- * no edge for anything to peek out from under.
+ * no edge for anything to peek out from under. The list it sits in gives every
+ * result a card for the same reason — see SongSearchResults.
  *
  * Without it, a search for a wedding song answered with five rows all called
  * "Svatební" and nothing saying which of them were the same song.
@@ -76,7 +77,7 @@ export default function SongGroupRow({
 						onClick={() => setChoosing(true)}
 						// the air belongs under the pile rather than around the whole
 						// group: what follows is the next line of the same list
-						sx={{ cursor: 'pointer', marginBottom: 0.5 }}
+						sx={{ cursor: 'pointer' }}
 					>
 						{Array.from({ length: edges }).map((_, i) => (
 							<Box
