@@ -8,6 +8,8 @@ import {
 	consumeSearchFieldRect,
 	consumeSearchFocus,
 	FieldRect,
+	registerSearchField,
+	releaseSearchKeyboard,
 } from '@/app/(layout)/pisne/searchHandoff'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
@@ -127,7 +129,14 @@ function SongsPage() {
 	const [value, setValue] = useState(urlQuery ?? '')
 	const [query, setQuery] = useState((urlQuery ?? '').trim())
 
-	const fieldRef = useRef<HTMLInputElement>(null)
+	// A callback ref, so the field says the moment it exists and the moment it
+	// stops: the Hledat tab needs to know whether there is a field on screen to
+	// focus, and it has to know inside the tap itself (see searchHandoff).
+	const fieldRef = useRef<HTMLInputElement | null>(null)
+	const setFieldRef = useCallback((node: HTMLInputElement | null) => {
+		fieldRef.current = node
+		registerSearchField(node)
+	}, [])
 
 	// Navigation — a tab, the toolbar, Back — is what moves the screen between
 	// browsing and searching. Typing is not navigation, and its replaceState is
@@ -167,6 +176,9 @@ function SongsPage() {
 		field.focus()
 		const end = field.value.length
 		field.setSelectionRange(end, end)
+		// …and the keyboard the tap opened can let go of whatever it was holding
+		// onto while this screen was on its way
+		releaseSearchKeyboard()
 	}, [urlQuery, phone])
 
 	useChangeDelayer(
@@ -339,7 +351,7 @@ function SongsPage() {
 					// the field takes focus when navigation asks for search, not on
 					// every visit to the catalog
 					autoFocus={false}
-					inputRef={fieldRef}
+					inputRef={setFieldRef}
 					inputTestId="main-search-input"
 					onClear={clear}
 					showSmartSearch={showSmartSearch}

@@ -1,5 +1,6 @@
 'use client'
 
+import { takeSearchKeyboard } from '@/app/(layout)/pisne/searchHandoff'
 import BrandSheepIcon from '@/assets/icon.svg'
 import MobileBottomDock from '@/common/components/MobileAppTabBar/MobileBottomDock'
 import MobileToolsMenu from '@/common/components/MobileAppTabBar/MobileToolsMenu'
@@ -101,12 +102,18 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 					params={{ hledat: '', s: undefined }}
 					style={{ flex: 1, minWidth: 0 }}
 				>
-					<TabItem
-						icon={<SearchOutlined />}
-						activeIcon={<Search />}
-						label={tNav('search')}
-						active={searchActive}
-					/>
+					{/* The keyboard belongs to the tap: a phone opens it for a field
+					    focused inside the gesture and for nothing else, and the
+					    catalog's field is focused a navigation later. So the tap takes
+					    a field of its own — see searchHandoff. */}
+					<Box onClick={takeSearchKeyboard}>
+						<TabItem
+							icon={<SearchOutlined />}
+							activeIcon={<Search />}
+							label={tNav('search')}
+							active={searchActive}
+						/>
+					</Box>
 				</Link>
 
 				{/* Nástroje opens the signed-in user's own stuff, so there is nothing

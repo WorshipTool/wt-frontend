@@ -210,6 +210,22 @@ still shows its results without opening a keyboard over them.
 Wait for the pause rather than jumping on the first letter: the two screens
 swap around the caret, and a letter typed mid-swap has no field to land in.
 
+**The keyboard belongs to the tap.** A phone opens it for a field focused
+inside the gesture and for nothing else, so focus given from an effect — the
+earliest the catalog's field exists, a navigation after the tab was tapped —
+moves the caret and leaves the keyboard shut. The Hledat tab therefore focuses
+a field itself, while the tap still counts as one: the catalog's own field when
+that screen is already up (which is also the only thing that answers a second
+tap on Hledat, since it changes no URL and wakes no effect), and otherwise a
+stand-in of one invisible pixel that the real field takes the caret from on
+arrival. Moving focus between two fields leaves the keyboard up; letting go of
+the last one is what closes it — so the stand-in is removed only after the real
+field has focus, and a tap whose navigation never lands gives the keyboard back
+after two seconds rather than leaving a focused nothing behind. It is
+`takeSearchKeyboard()` / `releaseSearchKeyboard()` in `searchHandoff`, and the
+stand-in must be neither `display: none` nor `readonly` (either keeps the
+keyboard shut) and at least 16px of font (smaller makes iOS zoom the page in).
+
 **The field travels; it is never two fields.** The place it stood goes with the
 caret — `handOffSearchFocus(el)` takes the element it is leaving — and the
 catalog's field starts life in that rect and flies to its own over 280ms. Same

@@ -1,8 +1,11 @@
 'use client'
 
 /**
- * The passage from home's field to the catalog's — the caret, and the place the
- * field stood.
+ * Everything that has to survive the trip to the catalog's search field: the
+ * caret, the place the field it came from stood, and the keyboard.
+ *
+ * The first two belong to home, below. The third belongs to the Hledat tab, at
+ * the bottom of this file.
  *
  * Home is a door: type in its field and the catalog opens with what you typed.
  * The two fields are different elements on different screens, so neither the
@@ -48,6 +51,72 @@ export function consumeSearchFocus(): boolean {
 	const was = handingOver
 	handingOver = false
 	return was
+}
+
+// ---- the keyboard, for search asked for from the tab bar -------------------
+
+/**
+ * A phone opens its keyboard for the tap that asked for it and for nothing
+ * else. Focus given from an effect — which is the earliest the catalog's field
+ * exists, a navigation after the tap — moves the caret and leaves the keyboard
+ * shut, so tapping Hledat landed you in a field you then had to tap again.
+ *
+ * So the tap focuses a field itself, while it still counts as a tap. If the
+ * catalog is already the screen you are on, that is its own field. If it is not,
+ * it is a stand-in — one pixel of input with nothing in it — and the real field
+ * takes the caret from it on arrival: moving focus between two fields leaves the
+ * keyboard up, letting go of the last one is what closes it.
+ */
+let liveField: HTMLInputElement | null = null
+let standIn: HTMLInputElement | null = null
+let standInTimer = 0
+
+/** How long the stand-in holds the keyboard open waiting for the catalog. A
+ * navigation that never lands must not leave a focused nothing behind. */
+const STAND_IN_TIMEOUT_MS = 2000
+
+/** The catalog's own field registers itself here for as long as it is mounted. */
+export function registerSearchField(field: HTMLInputElement | null) {
+	liveField = field
+}
+
+/** Called from the tap that asks for search, while the gesture is still live. */
+export function takeSearchKeyboard() {
+	if (liveField?.isConnected) {
+		// already on the catalog: its field is right there, and this is also the
+		// only thing that answers a second tap on Hledat, which changes no URL and
+		// so wakes no effect
+		liveField.focus()
+		const end = liveField.value.length
+		liveField.setSelectionRange(end, end)
+		return
+	}
+	if (standIn) return
+
+	const el = document.createElement('input')
+	el.type = 'search'
+	el.tabIndex = -1
+	el.setAttribute('aria-hidden', 'true')
+	// Invisible and out of the way, but neither `display: none` nor `readonly`:
+	// either of those and the keyboard stays shut. 16px because anything smaller
+	// makes iOS zoom the page in on focus.
+	el.style.cssText =
+		'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;font-size:16px;caret-color:transparent;z-index:-1'
+	document.body.appendChild(el)
+	standIn = el
+	el.focus({ preventScroll: true })
+	standInTimer = window.setTimeout(releaseSearchKeyboard, STAND_IN_TIMEOUT_MS)
+}
+
+/** Called by the catalog once its own field has the caret — or by the timeout,
+ * which gives the keyboard back to a screen that never arrived. */
+export function releaseSearchKeyboard() {
+	if (standInTimer) clearTimeout(standInTimer)
+	standInTimer = 0
+	const el = standIn
+	standIn = null
+	// by now the real field holds the focus, so this takes nothing with it
+	el?.remove()
 }
 
 /**
