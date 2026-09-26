@@ -52,13 +52,13 @@ type MobileSongDockProps = {
 
 /**
  * Phone-only floating control dock for the song page (the V12 layout): a
- * detached white bar above the tab bar — [chords toggle, like] | [− key +] |
- * [options menu]. Everything that doesn't fit the dock (presentation, print,
- * edit, create copy, add to playlist…) lives in the options menu, keeping
- * behavior parity with the desktop TopPanel. Portalled into the tab bar's
- * slot so it stacks above the bar via layout. Desktop keeps the classic
- * TopPanel; this renders instead of it on phones (outside edit mode, which
- * brings the TopPanel back for its save/cancel UI).
+ * detached white bar above the tab bar — [print, like] | [− key +] | [options
+ * menu]. Everything that doesn't fit the dock (the chords toggle, presentation,
+ * edit, create copy…) lives in the options menu, keeping behavior parity with
+ * the desktop TopPanel. Portalled into the tab bar's slot so it stacks above
+ * the bar via layout. Desktop keeps the classic TopPanel; this renders instead
+ * of it on phones (outside edit mode, which brings the TopPanel back for its
+ * save/cancel UI).
  */
 export default function MobileSongDock(props: MobileSongDockProps) {
 	const { user, isLoggedIn } = useAuth()
@@ -100,6 +100,17 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 		<>
 			{/* the options menu carries everything that doesn't fit the dock —
 			    mirrors the desktop TopPanel's extra actions */}
+			{/* Chords are a setting, not an action: you turn them on for the song you
+			    are about to play and then leave them alone, so the dock's one open
+			    slot goes to printing instead — the thing you reach for while holding
+			    the phone. The item still shows which way it is set. */}
+			{hasChords && (
+				<SmartPortalMenuItem
+					title={props.showChords ? tHide('hide') : tHide('show')}
+					icon={props.showChords ? <MusicNoteRounded /> : <MusicOffRounded />}
+					onClick={() => props.onToggleChords(!props.showChords)}
+				/>
+			)}
 			<SmartPortalMenuItem
 				title={tTopPanel('presentationItem.title')}
 				subtitle={tTopPanel('presentationItem.subtitle')}
@@ -109,11 +120,6 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					key: props.sheet.getKeyNote() ?? undefined,
 				}}
 				icon={<FeaturedPlayList />}
-			/>
-			<SmartPortalMenuItem
-				title={tPrint('label')}
-				icon={<Print />}
-				onClick={onPrintClick}
 			/>
 			{/* on phones EditButton renders as an options-menu item */}
 			{isOwner && !props.variant.public && (
@@ -153,21 +159,9 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					height: 58,
 				}}
 			>
-				{hasChords && (
-					<IconButton
-						tooltip={props.showChords ? tHide('hide') : tHide('show')}
-						onClick={() => props.onToggleChords(!props.showChords)}
-					>
-						{props.showChords ? (
-							<MusicNoteRounded
-								fontSize="small"
-								sx={{ color: 'primary.main' }}
-							/>
-						) : (
-							<MusicOffRounded fontSize="small" sx={{ color: 'grey.500' }} />
-						)}
-					</IconButton>
-				)}
+				<IconButton tooltip={tPrint('tooltip')} onClick={onPrintClick}>
+					<Print fontSize="small" sx={{ color: 'grey.700' }} />
+				</IconButton>
 				{user && (
 					<HeartLikeButton packGuid={props.variant.packGuid} interactable />
 				)}

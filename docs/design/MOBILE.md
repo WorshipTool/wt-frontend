@@ -330,7 +330,12 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    action → the header (a "+ Add" pill), **not** a FAB. Contextual controls →
    `controlPanel` at the top. Content navigation (pagination) → a quiet
    `bottomPanel`.
-7. **Never a blank screen.** A data-backed screen always renders one of four
+7. **A dock holds actions, not settings.** The song page's dock has room for a
+   handful of controls; they go to what you reach for *while holding the phone*
+   — printing, liking, the key, the playlist. A setting you turn on for the
+   song you are about to play and then leave alone (the chords toggle) belongs
+   in the options menu, where its item still says which way it is set.
+8. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that
    shows only its header while data is missing is a bug: the user can't tell
