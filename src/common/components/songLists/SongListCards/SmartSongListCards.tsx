@@ -3,6 +3,7 @@ import { SearchSongDto } from '@/api/dtos/song/song.search.dto'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Masonry } from '@/common/ui/Masonry'
 import { Grid } from '@/common/ui/mui/Grid'
+import { groupSearchResults } from '@/common/components/songLists/songGroups'
 import SongGroupCard from '@/common/ui/SongCard/SongGroupCard'
 import { ResponsiveStyleValue } from '@mui/system'
 import { ComponentProps, memo, useCallback, useMemo } from 'react'
@@ -134,45 +135,26 @@ export const SmartSongListCard = memo(function SongListCards({
 		</Grid>
 	) : (
 		<Masonry columns={columns} sx={{}} spacing={spacing}>
-			{data
-				.map((v) => {
-					if (!useGroupCards) {
-						return v.found.map((v) => (
-							<SongVariantCard
-								data={v}
-								key={v.packGuid}
-								dense={props.dense}
-								highlight={props.highlight}
-								properties={['SHOW_PRIVATE_LABEL']}
-							/>
-						))
-					}
-
-					const publicPacks = v.found.filter((v) => v.public)
-					const privatePacks = v.found.filter((v) => !v.public)
-					return [
-						privatePacks.map((v) => (
-							<SongVariantCard
-								data={v}
-								key={v.packGuid}
-								dense={props.dense}
-								highlight={props.highlight}
-								properties={['SHOW_PRIVATE_LABEL']}
-							/>
-						)),
-
-						...(publicPacks.length > 0
-							? [
-									<PackGroupCommonCard
-										packs={publicPacks}
-										original={v.original}
-										key={v.found[0].packGuid}
-									/>,
-							  ]
-							: []),
-					].flat()
-				})
-				.flat()}
+			{/* one card per line of results — a song on its own, or a song with its
+			    translations stacked behind it. The rule for which is which is shared
+			    with the phone's rows (songGroups), so the two cannot drift apart. */}
+			{groupSearchResults(data, useGroupCards).map((entry) =>
+				entry.kind === 'group' ? (
+					<PackGroupCommonCard
+						key={entry.packs[0].packGuid}
+						packs={entry.packs}
+						original={entry.original}
+					/>
+				) : (
+					<SongVariantCard
+						data={entry.pack}
+						key={entry.pack.packGuid}
+						dense={props.dense}
+						highlight={props.highlight}
+						properties={['SHOW_PRIVATE_LABEL']}
+					/>
+				)
+			)}
 		</Masonry>
 	)
 })

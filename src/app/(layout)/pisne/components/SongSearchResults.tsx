@@ -6,17 +6,29 @@ import SmartSongListCards from '@/common/components/songLists/SongListCards/Smar
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box, CircularProgress } from '@/common/ui'
 import {
+	GroupCard,
+	GroupDivider,
 	GroupRowsSkeleton,
 	ListStateView,
-	SongGroup,
+	SongGroupRow,
+	SongRow,
 } from '@/common/ui/GroupList'
+import { groupSearchResults } from '@/common/components/songLists/songGroups'
+import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import useSongSearch from '@/hooks/song/useSongSearch'
 import usePagination from '@/hooks/usePagination'
 import { useIsInViewport } from '@/hooks/useIsInViewport'
 import { SearchKey } from '@/types/song/search.types'
 import { SearchRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
 
 /** Lyric preview lines on a result row: the phone's row is taller and can
  * carry two, a desktop row stays one line so more results fit the screen. */
@@ -97,6 +109,15 @@ export default function SongSearchResults({
 		if (songs.length > 0 && nextExists) loadNext()
 	})
 
+	// The same rule the desktop's cards follow, so the two can never disagree
+	// about which songs belong together — including the flag that turns grouping
+	// on at all.
+	const grouped = useFlag('group_translations')
+	const entries = useMemo(
+		() => groupSearchResults(songs, grouped),
+		[songs, grouped]
+	)
+
 	const empty = songs.length === 0
 
 	if (loading && empty)
@@ -121,12 +142,37 @@ export default function SongSearchResults({
 			sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}
 		>
 			{phone ? (
-				<SongGroup
-					songs={songs.flatMap((song) => song.found)}
-					previewLines={PREVIEW_LINES_PHONE}
-					withIcon
-					highlight={query}
-				/>
+				// The phone reads the same grouping the desktop's cards do — one line
+				// per song, its translations gathered behind it — as rows instead of a
+				// stack of cards. It used to flatten every translation onto a line of
+				// its own, which is how a search for a wedding song answered with five
+				// rows all called "Svatební".
+				<GroupCard>
+					{entries.map((entry, i) => (
+						<Fragment
+							key={
+								entry.kind === 'group'
+									? `g-${String(entry.packs[0].packGuid)}`
+									: `s-${String(entry.pack.packGuid)}`
+							}
+						>
+							{entry.kind === 'group' ? (
+								<SongGroupRow
+									packs={entry.packs}
+									previewLines={PREVIEW_LINES_PHONE}
+									highlight={query}
+								/>
+							) : (
+								<SongRow
+									song={entry.pack}
+									previewLines={PREVIEW_LINES_PHONE}
+									highlight={query}
+								/>
+							)}
+							{i < entries.length - 1 && <GroupDivider inset="icon" />}
+						</Fragment>
+					))}
+				</GroupCard>
 			) : (
 				<SmartSongListCards
 					data={songs}

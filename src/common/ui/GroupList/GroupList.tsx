@@ -107,6 +107,40 @@ export function SongLeadingIcon() {
 }
 
 /**
+ * One song as a row of a group — the list's smallest unit, and the shape
+ * everything else here is built from.
+ *
+ * `trailing` replaces the disclosure chevron for a row that has something else
+ * to offer at its end (see SongGroupRow, which puts the translation count
+ * there).
+ */
+export function SongRow({
+	song,
+	previewLines = 1,
+	withIcon = true,
+	highlight,
+	trailing,
+}: {
+	song: BasicVariantPack
+	previewLines?: number
+	withIcon?: boolean
+	highlight?: string
+	trailing?: ReactNode
+}) {
+	return (
+		<SongVariantCard
+			data={song}
+			dense
+			previewLines={previewLines}
+			highlight={highlight}
+			leadingIcon={withIcon ? <SongLeadingIcon /> : undefined}
+			trailingIcon={trailing ?? <ChevronRightRounded sx={{ color: 'grey.400' }} />}
+			sx={FLAT_ROW_SX}
+		/>
+	)
+}
+
+/**
  * A whole group of song rows — the shape the songs list, home and the account
  * lists all render. Pass `previewLines` to trade lyric preview for density.
  */
@@ -130,14 +164,11 @@ export function SongGroup({
 		<GroupCard sx={sx}>
 			{songs.map((song, i) => (
 				<Fragment key={`${String(song.packGuid)}-${i}`}>
-					<SongVariantCard
-						data={song}
-						dense
+					<SongRow
+						song={song}
 						previewLines={previewLines}
+						withIcon={withIcon}
 						highlight={highlight}
-						leadingIcon={withIcon ? <SongLeadingIcon /> : undefined}
-						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
-						sx={FLAT_ROW_SX}
 					/>
 					{i < songs.length - 1 && (
 						<GroupDivider inset={withIcon ? 'icon' : 'text'} />
