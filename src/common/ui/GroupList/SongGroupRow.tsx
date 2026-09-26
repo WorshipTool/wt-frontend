@@ -75,8 +75,8 @@ export default function SongGroupRow({
 						role="button"
 						aria-label={t('selectOther')}
 						onClick={() => setChoosing(true)}
-						// the air belongs under the pile rather than around the whole
-						// group: what follows is the next line of the same list
+						// the whole pile is the way to the chooser, the way the desktop
+						// card's own stack is; the air under it is the list's gap
 						sx={{ cursor: 'pointer' }}
 					>
 						{Array.from({ length: edges }).map((_, i) => (
