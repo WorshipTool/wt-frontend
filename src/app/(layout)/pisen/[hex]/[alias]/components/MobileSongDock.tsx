@@ -35,6 +35,14 @@ import { createPortal } from 'react-dom'
 import { SongDto } from '../../../../../../api/dtos'
 import { routesPaths } from '../../../../../../routes'
 
+/**
+ * A ruler, not a key: the widest letter and the widest accidental a note can be
+ * printed with, so no real key's label is ever wider than the space kept for it.
+ * Measured in the dock's own type — `Tónina H` is a pixel past `Tónina C`, and
+ * `#` a pixel past `b`.
+ */
+const WIDEST_NOTE = 'H#'
+
 type MobileSongDockProps = {
 	variant: ExtendedVariantPack
 	sheet: Sheet
@@ -184,11 +192,35 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 						>
 							<RemoveRounded />
 						</IconButton>
-						<Typography strong noWrap sx={{ minWidth: 54, textAlign: 'center' }}>
-							{keyNote
-								? tTranspose('keyWithNote', { note: keyNote })
-								: tTranspose('title')}
-						</Typography>
+						{/* The label is what used to make the pill breathe: an accidental
+						    is nine pixels of type, so the pill — and every control it
+						    pushes along the dock — shifted a little each time you
+						    transposed, under the thumb doing the transposing. The cell
+						    keeps the width of the widest label this language can print
+						    and the real one is centred in it, so nothing moves. A width
+						    in pixels would not do: the word is `Tónina` here, `Tonacja`
+						    and `Key` in the other two catalogs. */}
+						<Box
+							sx={{
+								display: 'grid',
+								justifyItems: 'center',
+								alignItems: 'center',
+								minWidth: 54,
+							}}
+						>
+							<Typography
+								strong
+								noWrap
+								sx={{ gridArea: '1 / 1', visibility: 'hidden' }}
+							>
+								{tTranspose('keyWithNote', { note: WIDEST_NOTE })}
+							</Typography>
+							<Typography strong noWrap sx={{ gridArea: '1 / 1' }}>
+								{keyNote
+									? tTranspose('keyWithNote', { note: keyNote })
+									: tTranspose('title')}
+							</Typography>
+						</Box>
 						<IconButton
 							tooltip={tTranspose('increase')}
 							onClick={() => props.transpose(1)}
