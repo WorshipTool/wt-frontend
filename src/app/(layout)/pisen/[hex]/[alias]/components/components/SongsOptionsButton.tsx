@@ -1,7 +1,7 @@
 'use client'
 
 import SendToApproval from '@/app/(layout)/pisen/[hex]/[alias]/components/components/SendToApproval'
-import Menu from '@/common/components/Menu/Menu'
+import Menu, { ABOVE_ANCHOR } from '@/common/components/Menu/Menu'
 import { Divider, IconButton, Tooltip } from '@/common/ui'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { ExtendedVariantPack } from '@/types/song'
@@ -24,6 +24,9 @@ type SongsOptionsButtonProps = {
 	editedTitle: string
 	isOwner: boolean
 	anyChange: boolean
+	/** For the phone's floating dock, where the button sits at the bottom of the
+	 * screen: the menu opens upward, onto its button (see ABOVE_ANCHOR). */
+	openAbove?: boolean
 }
 
 export const SONG_OPTIONS_BUTTON_ID = 'song-options-button'
@@ -58,6 +61,7 @@ export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 			<Menu
 				id="basic-menu"
 				anchor={anchorEl}
+				{...(props.openAbove ? ABOVE_ANCHOR : {})}
 				open={open}
 				onClose={handleClose}
 				keepMounted

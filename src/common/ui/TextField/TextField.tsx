@@ -16,6 +16,8 @@ type TextFieldProps = {
 	disabled?: boolean
 
 	autoFocus?: boolean
+	/** Ref to the underlying input, e.g. to focus it from elsewhere. */
+	inputRef?: React.Ref<HTMLInputElement>
 }
 
 export function TextField({
@@ -39,6 +41,7 @@ export function TextField({
 			multiline={props.multiline}
 			disabled={props.disabled}
 			autoFocus={props.autoFocus}
+			inputRef={props.inputRef}
 		/>
 	)
 }

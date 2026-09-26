@@ -3,6 +3,7 @@ import { SearchSongDto } from '@/api/dtos/song/song.search.dto'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Masonry } from '@/common/ui/Masonry'
 import { Grid } from '@/common/ui/mui/Grid'
+import { groupSearchResults } from '@/common/components/songLists/songGroups'
 import SongGroupCard from '@/common/ui/SongCard/SongGroupCard'
 import { ResponsiveStyleValue } from '@mui/system'
 import { ComponentProps, memo, useCallback, useMemo } from 'react'
@@ -13,6 +14,9 @@ type CommmonProps = {
 	data: SearchSongDto[]
 	properties?: ComponentProps<typeof SongVariantCard>['properties']
 	cardToLinkProps?: ComponentProps<typeof SongVariantCard>['toLinkProps']
+	dense?: boolean
+	/** What a search matched, lit up in every card's title. */
+	highlight?: string
 	onCardClick?: (data: BasicVariantPack) => void
 
 	// Selecting
@@ -28,12 +32,12 @@ type ListProps = CommmonProps & {
 
 type MasonryGridProps = CommmonProps & {
 	variant?: 'masonrygrid'
-	columns?: ResponsiveStyleValue<string | number>
+	columns?: ResponsiveStyleValue<number>
 }
 
 type RowProps = CommmonProps & {
 	variant: 'row'
-	columns?: ResponsiveStyleValue<string | number>
+	columns?: ResponsiveStyleValue<number>
 }
 
 type SmartSongListCardsProps = ListProps | MasonryGridProps | RowProps
@@ -51,21 +55,13 @@ export const SmartSongListCard = memo(function SongListCards({
 
 	const variant = props.variant
 
-	let columns: ResponsiveStyleValue<number> = useMemo(() => {
-		switch (variant) {
-			case 'list':
-				return 1
-			case undefined:
-			case 'masonrygrid':
-			case 'row':
-				return {
-					xs: 1,
-					md: 2,
-					lg: 4,
-					xl: 5,
-				}
-		}
-	}, [props])
+	// `columns` is the caller's when it passes one — it was declared and then
+	// dropped, so a list that asked for wider cards silently got these four.
+	const asked = 'columns' in props ? props.columns : undefined
+	const columns: ResponsiveStyleValue<number> = useMemo(() => {
+		if (variant === 'list') return 1
+		return asked ?? { xs: 1, md: 2, lg: 4, xl: 5 }
+	}, [variant, asked])
 
 	const PackGroupCommonCard = useCallback(
 		({
@@ -82,6 +78,8 @@ export const SmartSongListCard = memo(function SongListCards({
 					packs={packs}
 					original={original}
 					flexibleHeight={flexibleHeight}
+					dense={props.dense}
+					highlight={props.highlight}
 				/>
 			)
 		},
@@ -104,6 +102,8 @@ export const SmartSongListCard = memo(function SongListCards({
 										<SongVariantCard
 											data={v}
 											key={v.packGuid}
+											dense={props.dense}
+											highlight={props.highlight}
 											properties={['SHOW_PRIVATE_LABEL']}
 										/>
 									))
@@ -116,6 +116,8 @@ export const SmartSongListCard = memo(function SongListCards({
 										<SongVariantCard
 											data={v}
 											key={v.packGuid}
+											dense={props.dense}
+											highlight={props.highlight}
 											properties={['SHOW_PRIVATE_LABEL']}
 										/>
 									)),
@@ -133,41 +135,26 @@ export const SmartSongListCard = memo(function SongListCards({
 		</Grid>
 	) : (
 		<Masonry columns={columns} sx={{}} spacing={spacing}>
-			{data
-				.map((v) => {
-					if (!useGroupCards) {
-						return v.found.map((v) => (
-							<SongVariantCard
-								data={v}
-								key={v.packGuid}
-								properties={['SHOW_PRIVATE_LABEL']}
-							/>
-						))
-					}
-
-					const publicPacks = v.found.filter((v) => v.public)
-					const privatePacks = v.found.filter((v) => !v.public)
-					return [
-						privatePacks.map((v) => (
-							<SongVariantCard
-								data={v}
-								key={v.packGuid}
-								properties={['SHOW_PRIVATE_LABEL']}
-							/>
-						)),
-
-						...(publicPacks.length > 0
-							? [
-									<PackGroupCommonCard
-										packs={publicPacks}
-										original={v.original}
-										key={v.found[0].packGuid}
-									/>,
-							  ]
-							: []),
-					].flat()
-				})
-				.flat()}
+			{/* one card per line of results — a song on its own, or a song with its
+			    translations stacked behind it. The rule for which is which is shared
+			    with the phone's rows (songGroups), so the two cannot drift apart. */}
+			{groupSearchResults(data, useGroupCards).map((entry) =>
+				entry.kind === 'group' ? (
+					<PackGroupCommonCard
+						key={entry.packs[0].packGuid}
+						packs={entry.packs}
+						original={entry.original}
+					/>
+				) : (
+					<SongVariantCard
+						data={entry.pack}
+						key={entry.pack.packGuid}
+						dense={props.dense}
+						highlight={props.highlight}
+						properties={['SHOW_PRIVATE_LABEL']}
+					/>
+				)
+			)}
 		</Masonry>
 	)
 })

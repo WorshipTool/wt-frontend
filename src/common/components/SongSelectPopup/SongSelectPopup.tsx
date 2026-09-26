@@ -5,7 +5,14 @@ import PopupSongList from '@/common/components/SongSelectPopup/components/PopupS
 import SelectedPanel from '@/common/components/SongSelectPopup/components/SelectedPanel'
 import SelectFromOptions from '@/common/components/SongSelectPopup/components/SelectFromOptions'
 import { SelectSearch } from '@/common/components/SongSelectPopup/components/SelectSearch'
+import { measureBottomDock } from '@/common/components/MobileAppTabBar/nav.constants'
 import { useSongSelectSpecifier } from '@/common/components/SongSelectPopup/hooks/useSongSelectSpecifier'
+import {
+	getPopupPosition,
+	MAX_WIDTH,
+	OFFSET,
+	PopupPosition,
+} from '@/common/components/SongSelectPopup/popupPosition'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
@@ -24,6 +31,10 @@ type PopupProps = {
 
 	anchorRef: React.RefObject<HTMLElement>
 	anchorName?: string
+
+	/** Place it as a bottom sheet rather than a menu on the anchor — see
+	 * `PopupPlacement`. The narrow layouts want this. */
+	asSheet?: boolean
 
 	// Filter function, for example to filter out previously selected songs
 	filterFunc?: (pack: BasicVariantPack) => boolean
@@ -103,43 +114,27 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 
 	// Positioning
 	const popupRef = useRef(null)
-	const [position, setPosition] = useState<{
-		top?: number
-		bottom?: number
-		left?: number
-		right?: number
-	}>({ top: 0, left: 0 })
-
-	const MAX_WIDTH = 600
-	const OFFSET = 8
+	const [position, setPosition] = useState<PopupPosition>({
+		top: 0,
+		left: 0,
+		maxHeight: 0,
+	})
 
 	const updatePopupPosition = useCallback(() => {
 		if (props.anchorRef?.current) {
-			const rect = props.anchorRef.current.getBoundingClientRect()
-			const toRightMode = rect.left < window.innerWidth / 2
-			const t = props.upDirection ? undefined : rect.top + OFFSET
-			const b = props.upDirection
-				? window.innerHeight - rect.bottom + OFFSET
-				: undefined
-
-			if (toRightMode) {
-				const l = rect.left + OFFSET
-				setPosition({
-					top: t,
-					bottom: b,
-					left: Math.min(l, window.innerWidth - MAX_WIDTH - OFFSET),
-				})
-			} else {
-				const r = window.innerWidth - rect.right + OFFSET
-
-				setPosition({
-					top: t,
-					bottom: b,
-					right: Math.max(r, OFFSET),
-				})
-			}
+			setPosition(
+				getPopupPosition(
+					props.anchorRef.current.getBoundingClientRect(),
+					{
+						width: window.innerWidth,
+						height: window.innerHeight,
+						bottomInset: measureBottomDock(),
+					},
+					{ upDirection: props.upDirection, asSheet: props.asSheet }
+				)
+			)
 		}
-	}, [props.anchorRef, props.anchorName, props.upDirection])
+	}, [props.anchorRef, props.anchorName, props.upDirection, props.asSheet])
 
 	useEffect(() => {
 		updatePopupPosition() // Initial position
@@ -212,6 +207,11 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							bgcolor: 'grey.200',
 							maxWidth: `min(${MAX_WIDTH}px, calc(100% - ${OFFSET * 2}px))`,
 							width: MAX_WIDTH,
+							// never taller than the room between the top of the screen and
+							// the bottom dock — a long list scrolls inside the popup rather
+							// than disappearing under the tab bar
+							maxHeight: position.maxHeight,
+							overflowY: 'auto',
 							borderRadius: 3,
 							boxShadow: '0px 0px 15px rgba(0,0,0,0.25)',
 							position: 'fixed',

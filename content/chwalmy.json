@@ -20,6 +20,7 @@
 		"discard": "Odrzuć",
 		"open": "Otwórz",
 		"tryAgain": "Spróbuj ponownie",
+		"updatingVersion": "Aktualizuję do nowej wersji…",
 		"or": "Lub",
 		"backgroundAlt": "Tło",
 		"cancelCurrentEdits": "Anuluj bieżące zmiany",
@@ -41,6 +42,7 @@
 	"navigation": {
 		"home": "Strona główna",
 		"songs": "Pieśni",
+		"tools": "Narzędzia",
 		"playlists": "Playlisty",
 		"teams": "Zespoły",
 		"about": "O aplikacji",
@@ -106,7 +108,7 @@
 			"subtitleLower": "na chwalmy.com"
 		},
 		"recommended": {
-			"idea": "Jakaś propozycja:",
+			"idea": "Jakaś propozycja",
 			"error": "Wystąpił błąd podczas ładowania..."
 		},
 		"allList": {
@@ -120,7 +122,7 @@
 			"label": "Utwórz"
 		},
 		"search": {
-			"resultsTitle": "Wyniki wyszukiwania:",
+			"resultsTitle": "Wyniki wyszukiwania",
 			"loadMore": "Załaduj więcej",
 			"noResults": "Niczego nie znaleźliśmy..."
 		}
@@ -232,6 +234,7 @@
 			"password": "Hasło",
 			"enterPassword": "Wpisz hasło",
 			"loginButton": "Zaloguj się",
+			"continueWithEmail": "Kontynuuj przez e-mail",
 			"forgotPassword": "Zapomniałeś hasła?",
 			"noAccount": "Nie masz jeszcze konta?",
 			"createAccount": "Stwórz je",
@@ -276,6 +279,13 @@
 		"share": "Udostępnij",
 		"linkCopiedToClipboard": "Link skopiowany do schowka",
 		"presentation": "Prezentacja",
+		"songsCount": "{count, plural, one {# pieśń} few {# pieśni} many {# pieśni} other {# pieśni}}",
+		"typeLabel": "Playlista",
+		"shareTitle": "{title} – Playlista",
+		"tabSongs": "Lista pieśni",
+		"tabDetail": "Szczegóły pieśni",
+		"prevSong": "Poprzednia pieśń",
+		"nextSong": "Następna pieśń",
 		"rename": "Zmień nazwę",
 		"playlistNamePlaceholder": "Nazwa playlisty",
 		"print": "Drukuj",
@@ -335,6 +345,11 @@
 	},
 	"songPage": {
 		"topPanel": {
+			"addToPlaylist": "Dodaj do playlisty",
+			"presentationItem": {
+				"title": "Prezentacja",
+				"subtitle": "Otwórz jako prezentację"
+			},
 			"cannotEditPublished": "Nie można edytować opublikowanej pieśni.",
 			"updateSuccess": {
 				"withTitle": "Pieśń {title} została edytowana.",
@@ -390,6 +405,7 @@
 		},
 		"transpose": {
 			"title": "Transpozycja",
+			"keyWithNote": "Tonacja {note}",
 			"increase": "Podnieś o półton",
 			"decrease": "Obniż o półton"
 		},
@@ -798,27 +814,42 @@
 				"dateAdded": "Daty dodania",
 				"title": "Tytułu"
 			}
+		},
+		"songs": {
+			"title": "Moje pieśni",
+			"totalSongs": "Łącznie {count} pieśni",
+			"empty": "Nie masz jeszcze własnych pieśni."
+		},
+		"playlists": {
+			"untitled": "Bez nazwy",
+			"playlistsCount": "{count, plural, one {# playlista} few {# playlisty} many {# playlist} other {# playlisty}}",
+			"empty": "Nie masz jeszcze żadnej playlisty. Utwórz pierwszą przyciskiem powyżej."
 		}
 	},
 	"upload": {
 		"title": "Prześlij",
+		"addTitle": "Utwórz pieśń",
 		"uploadFile": "Prześlij plik",
 		"uploadFileSubtitle": "Automatycznie konwertuj pieśń z obrazu",
 		"writeManually": "Napisz ręcznie",
+		"writeManuallySubtitle": "Wpisz tekst i akordy w edytorze",
 		"createTooltip": "Dodaj",
+		"create": "Utwórz",
 		"createPrivately": "Utwórz (niepublicznie)",
 		"uploadSong": "Prześlij pieśń",
 		"songTitle": "Tytuł pieśni",
 		"songContent": "Zawartość pieśni",
 		"dragAndDrop": "Przeciągnij pliki tutaj",
+		"dropFilesHere": "Upuść pliki tutaj",
 		"selectFiles": "Wybierz pliki",
-		"supportedFormats": "Obsługiwane formaty",
+		"supportedFormats": "Obsługiwane formaty: {formats}",
 		"songDataCopied": "Dane pieśni skopiowane.",
 		"uploading": "Przesyłanie",
 		"queueing": "Czekanie w kolejce",
 		"processing": "Przetwarzanie plików",
 		"processed": "Przetworzone",
 		"errorOccurred": "Wystąpił błąd",
+		"loginRequired": "Aby przesłać plik, musisz się zalogować.",
 		"pleaseWait": "Proszę czekać",
 		"withAI": "Z pomocą AI",
 		"copy": "Kopiuj",
@@ -829,7 +860,15 @@
 		}
 	},
 	"songsList": {
-		"title": "Lista wszystkich pieśni"
+		"title": "Pieśni",
+		"empty": "Nie ma jeszcze żadnych pieśni.",
+		"error": "Nie udało się załadować pieśni.",
+		"results": "Wyniki",
+		"noResults": "Niczego nie znaleźliśmy...",
+		"loadMore": "Załaduj więcej",
+		"allSongs": "Wszystkie pieśni",
+		"songCount": "{formatted} {count, plural, one {pieśń} few {pieśni} other {pieśni}}",
+		"pageOf": "{page} z {total}"
 	},
 	"loadingScreen": {
 		"message": "Ładowanie aplikacji..."
@@ -921,6 +960,9 @@
 		"markChorus": "Oznacz refren",
 		"markBridge": "Oznacz bridge",
 		"insertChord": "Wstaw akord",
+		"chord": "Akord",
+		"chordMajor": "dur",
+		"done": "Gotowe",
 		"titlePlaceholder": "Wpisz tytuł pieśni",
 		"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"
 	},

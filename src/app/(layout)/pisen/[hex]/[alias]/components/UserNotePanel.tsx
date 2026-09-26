@@ -12,7 +12,13 @@ import { AddComment, Edit } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
-export default function UserNotePanel() {
+/**
+ * The logged-in user's private note for the song. By default it renders its
+ * own floating trigger (desktop side panel); with `forceOpen` the trigger is
+ * skipped and the panel body is always shown, jumping straight into editing
+ * when no note exists yet (used inside the mobile note popup).
+ */
+export default function UserNotePanel({ forceOpen }: { forceOpen?: boolean }) {
 	const { songNotesApi } = useApi()
 	const { packGuid } = useInnerPack()
 	const t = useTranslations('userNote')
@@ -70,6 +76,12 @@ export default function UserNotePanel() {
 
 	const hasNote = notes.length > 0
 
+	// forceOpen (mobile popup): no separate trigger — start editing right away
+	// when there is no note yet
+	useEffect(() => {
+		if (forceOpen && !getLoading && !hasNote) setAdding(true)
+	}, [forceOpen, getLoading, hasNote])
+
 	const isButtonDeleting = hasNote && content.trim().length === 0
 	const isButtonCanceling = !hasNote && content.trim().length === 0
 	const isContentEmpty = content.trim().length === 0
@@ -97,18 +109,20 @@ export default function UserNotePanel() {
 
 	return (
 		<Box display={'flex'} flexDirection={'column'}>
-			<Box display={'flex'} justifyContent={'end'}>
-				{!hasNote && !adding && !loading && (
-					<IconButton
-						onClick={() => {
-							setAdding(true)
-						}}
-						tooltip={t('add')}
-					>
-						<AddComment />
-					</IconButton>
-				)}
-			</Box>
+			{!forceOpen && (
+				<Box display={'flex'} justifyContent={'end'}>
+					{!hasNote && !adding && !loading && (
+						<IconButton
+							onClick={() => {
+								setAdding(true)
+							}}
+							tooltip={t('add')}
+						>
+							<AddComment />
+						</IconButton>
+					)}
+				</Box>
+			)}
 
 			{(hasNote || adding) && (
 				<Box
@@ -119,7 +133,7 @@ export default function UserNotePanel() {
 						padding: 2,
 					}}
 					flexDirection={'column'}
-					maxWidth={300}
+					maxWidth={forceOpen ? '100%' : 300}
 				>
 					<Box
 						display={'flex'}

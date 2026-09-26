@@ -1,11 +1,13 @@
 'use client'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { CreatedType, VariantPackAlias } from '@/api/dtos'
 import { PostCreateVariantOutDto } from '@/api/generated'
 import WrittenPreview from '@/app/(layout)/vytvorit/napsat/components/WrittenPreview'
+import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import SheetEditor from '@/common/components/SheetEditor/SheetEditor'
 import { useDownSize } from '@/common/hooks/useDownSize'
-import { Box, Button, Tooltip } from '@/common/ui'
+import { Box, Button, Tooltip, useTheme } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -19,6 +21,7 @@ import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
 import { useApiState } from '../../../../tech/ApiState'
 import { isSheetDataValid } from '../../../../tech/sheet.tech'
 import NotValidWarning from './components/NotValidWarning'
+import WriteSongMobile from './components/WriteSongMobile'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
 	padding: theme.spacing(3),
@@ -43,6 +46,9 @@ function Create() {
 
 	const [title, setTitle] = useState('')
 	const [sheetData, setSheetData] = useState('')
+
+	// an auto-update reload here would throw away whatever they've written
+	useBlockAppReload(title !== '' || sheetData !== '', 'writing a song')
 
 	const cursorRef = useRef<{ start: number; end: number } | null>() // Ref pro uchování pozice kurzoru
 
@@ -84,6 +90,26 @@ function Create() {
 	}
 
 	const isSmall = useDownSize('sm')
+
+	const theme = useTheme()
+	const phoneVersion = useIsPhone()
+
+	// phones get the native app-shell editor; desktop keeps the side-by-side
+	// editor/preview layout below
+	if (phoneVersion) {
+		return (
+			<WriteSongMobile
+				onTitleChange={setTitle}
+				onSheetDataChange={setSheetData}
+				canCreate={
+					!posting && title !== '' && sheetData !== '' && isSheetValid
+				}
+				posting={posting}
+				showInvalidWarning={sheetData !== '' && !isSheetValid}
+				onCreate={onPostClick}
+			/>
+		)
+	}
 
 	return (
 		<>

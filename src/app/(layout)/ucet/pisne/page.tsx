@@ -1,4 +1,5 @@
 'use client'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import CreateNewMySongButton from '@/app/(layout)/ucet/pisne/components/CreateNewMySongButton'
 import MySongItem from '@/app/(layout)/ucet/pisne/components/MySongItem'
 import MySongListOrderSelect, {
@@ -7,12 +8,18 @@ import MySongListOrderSelect, {
 import MySongsFilterPanel, {
 	MySongFilterOption,
 } from '@/app/(layout)/ucet/pisne/components/MySongsFilterPanel'
+import {
+	MobileHeaderPill,
+	MobileSongListView,
+} from '@/common/components/MobileAppHeader'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import Pager from '@/common/components/Pager/Pager'
 import { Box, LinearProgress } from '@/common/ui'
 import { Typography } from '@/common/ui/Typography'
 import { useUrlState } from '@/hooks/urlstate/useUrlState'
 import { useApiStateEffect } from '@/tech/ApiState'
+import { AddRounded } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import { mapBasicVariantPackApiToDto } from '../../../../api/dtos'
 import { useApi } from '../../../../api/tech-and-hooks/useApi'
@@ -21,6 +28,9 @@ export default SmartPage(MySongsList, ['middleWidth'])
 
 function MySongsList() {
 	const { songGettingApi } = useApi()
+	const t = useTranslations('account.songs')
+	const tCommon = useTranslations('common')
+	const phoneVersion = useIsPhone()
 
 	const [sortOption, setSortOption] = useUrlState<MySongsOrderOptions>(
 		'sortKey',
@@ -77,6 +87,32 @@ function MySongsList() {
 
 		return [...arr]
 	}, [filteredVariants, sortOption])
+
+	if (phoneVersion) {
+		return (
+			<MobileSongListView
+				title={t('title')}
+				subtitle={
+					loading ? undefined : t('totalSongs', { count: variants.length.toString() })
+				}
+				backTo="account"
+				actions={[
+					<MobileHeaderPill
+						key="add"
+						to="addMenu"
+						icon={<AddRounded />}
+						alt={tCommon('add')}
+					>
+						{tCommon('add')}
+					</MobileHeaderPill>,
+				]}
+				items={variants}
+				loading={loading}
+				emptyText={t('empty')}
+				perPage={12}
+			/>
+		)
+	}
 
 	try {
 		return (

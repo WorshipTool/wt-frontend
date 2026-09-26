@@ -4,14 +4,11 @@ import { Button, ButtonProps } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
 import { Favorite } from '@mui/icons-material'
 
-import { MAIN_SEARCH_EVENT_NAME } from '@/app/components/components/MainSearchInput'
 import { useCloudNumber } from '@/common/providers/FeatureFlags/useCloudNumber'
 import { Gap } from '@/common/ui/Gap'
 import { Link } from '@/common/ui/Link/Link'
 import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
 import { RoutesKeys } from '@/routes'
-import { useSmartMatch } from '@/routes/useSmartMatch'
-import { useSmartParams } from '@/routes/useSmartParams'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -19,7 +16,7 @@ import { useMemo } from 'react'
 import './footer.styles.css'
 
 type Links = [
-	ButtonProps<'home'>,
+	ButtonProps<'songsList'>,
 	ButtonProps<'songsList'>,
 	ButtonProps<'about'>,
 	ButtonProps<'teams'>,
@@ -29,25 +26,24 @@ type Links = [
 	ButtonProps<'contact'>
 ]
 export default function Footer() {
-	const { hledat: searchString } = useSmartParams('home')
-	const isHome = useSmartMatch('home')
 	const tFooter = useTranslations('footer')
 
 	const year = useCloudNumber('year', 2024)
 
 	const links: Links = useMemo(
 		() => [
+			// The catalog, twice over: with its field asking for the caret, and
+			// plain to browse. Searching used to be a mode of home, so these two
+			// pointed at different screens.
 			{
 				children: tFooter('links.searchSong'),
-				to: 'home',
-				toParams: { hledat: isHome ? searchString : '' },
-				onClick: () => {
-					window.dispatchEvent(new Event(MAIN_SEARCH_EVENT_NAME))
-				},
+				to: 'songsList',
+				toParams: { hledat: '', s: undefined },
 			},
 			{
 				children: tFooter('links.songList'),
 				to: 'songsList',
+				toParams: { hledat: undefined, s: undefined },
 			},
 			{
 				children: tFooter('links.about'),
@@ -75,7 +71,7 @@ export default function Footer() {
 				to: 'contact',
 			},
 		],
-		[isHome, searchString, tFooter]
+		[tFooter]
 	)
 
 	const footer = useFooter()

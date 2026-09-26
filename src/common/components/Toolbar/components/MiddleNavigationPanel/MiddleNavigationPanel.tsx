@@ -1,4 +1,3 @@
-import { MAIN_SEARCH_EVENT_NAME } from '@/app/components/components/MainSearchInput'
 import MobileNavigationItem from '@/common/components/Toolbar/components/MiddleNavigationPanel/MobileNavigationItem'
 import NavigationItem, {
 	NavigationItemProps,
@@ -16,33 +15,31 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 type NavigationItems = [
-	NavigationItemProps<'home'>,
+	NavigationItemProps<'songsList'>,
 	NavigationItemProps<'about'>,
 	NavigationItemProps<'teams'>,
 	NavigationItemProps<'contact'>
 ]
 
 export default function MiddleNavigationPanel() {
-	const { hledat: searchString } = useSmartParams('home')
-	const isHome = useSmartMatch('home')
 	const tNavigation = useTranslations('navigation')
 
 	const navigationItems: NavigationItems = useMemo(
 		() => [
 			{
+				// the catalog, opened with its field asking for the caret. It used to
+				// be home with a parameter, so "Hledat" on any other page meant
+				// leaving that page for the home screen.
 				title: tNavigation('search'),
-				to: 'home',
-				toParams: { hledat: isHome ? searchString || '' : '' },
+				to: 'songsList',
+				toParams: { hledat: '', s: undefined },
 				enabled: false,
-				onClick: () => {
-					window.dispatchEvent(new Event(MAIN_SEARCH_EVENT_NAME))
-				},
 			},
 			{ title: tNavigation('aboutUs'), to: 'about' },
 			{ title: tNavigation('worshipTeams'), to: 'teams' },
 			{ title: tNavigation('contact'), to: 'contact' },
 		],
-		[isHome, searchString, tNavigation]
+		[tNavigation]
 	)
 
 	const { hideMiddleNavigation, _setTempSolid, transparent } = useToolbar()

@@ -1,6 +1,9 @@
 'use client'
 
+import { useIsPhone } from '@/common/hooks/useIsPhone'
+import EmailSignInButton from '@/app/(nolayout)/(background)/prihlaseni/components/EmailSignInButton'
 import GoogleLoginButton from '@/app/(nolayout)/(background)/prihlaseni/components/GoogleLoginButton'
+import LoginMobile from '@/app/(nolayout)/(background)/prihlaseni/components/LoginMobile'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import LogoTitle from '@/common/components/Toolbar/components/LogoTitle'
 import { Box } from '@/common/ui'
@@ -25,6 +28,7 @@ export default SmartPage(Login, {
 function Login() {
 	const t = useTranslations('auth.login')
 	const tCommon = useTranslations('common')
+	const phoneVersion = useIsPhone()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -35,6 +39,10 @@ function Login() {
 	const [errorMessage, setErrorMessage] = useState('')
 
 	const [inProgress, setInProgress] = useState(false)
+
+	// keep the e-mail/password fields hidden until the user picks that path,
+	// so Google and e-mail read as two equal sign-in options
+	const [showEmailForm, setShowEmailForm] = useState(false)
 
 	const navigate = useSmartNavigate()
 
@@ -112,6 +120,28 @@ function Login() {
 		navigate('resetPassword', {})
 	}
 
+	if (phoneVersion) {
+		return (
+			<LoginMobile
+				email={email}
+				password={password}
+				onEmailChange={setEmail}
+				onPasswordChange={setPassword}
+				isEmailOk={isEmailOk}
+				isPasswordOk={isPasswordOk}
+				inProgress={inProgress}
+				errorMessage={errorMessage}
+				message={params.message}
+				previousPage={params.previousPage}
+				showEmailForm={showEmailForm}
+				onUseEmail={() => setShowEmailForm(true)}
+				onSubmit={onLoginClick}
+				onForgotPassword={resetPassword}
+				onGoogleLogin={afterGoogleLogin}
+			/>
+		)
+	}
+
 	return (
 		<Box
 			display={'flex'}
@@ -164,227 +194,105 @@ function Login() {
 					<Box color={'grey.800'}>
 						{errorMessage != '' && (
 							<>
-								<Typography color={'red'}>{errorMessage}</Typography>
+								<Typography color={'error'}>{errorMessage}</Typography>
 								<Gap />
 							</>
 						)}
-						<form
-							onSubmit={(e) => {
-								e.preventDefault()
-								onLoginClick()
-							}}
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-							}}
-						>
-							<TextInput
-								title={t('email')}
-								value={email}
-								onChange={(e) => setEmail(e)}
-								error={!isEmailOk}
-								disabled={inProgress}
-								type="email"
-								placeholder={t('enterEmail')}
-								required
-							/>
-							<Gap />
-							<TextInput
-								title={t('password')}
-								value={password}
-								onChange={(e) => setPassword(e)}
-								error={!isPasswordOk}
-								disabled={inProgress}
-								type="password"
-								placeholder={t('enterPassword')}
-								required
-							/>
-							<Box
-								display={'flex'}
-								flexDirection={'row'}
-								alignItems={'center'}
-								justifyContent={'start'}
+						{/* e-mail/password stays hidden behind a button until chosen, so
+						    Google and e-mail read as two equal sign-in options */}
+						{!showEmailForm ? (
+							<EmailSignInButton onClick={() => setShowEmailForm(true)} />
+						) : (
+							<form
+								onSubmit={(e) => {
+									e.preventDefault()
+									onLoginClick()
+								}}
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+								}}
 							>
-								<Button
-									size={'small'}
-									variant="text"
-									color="grey.600"
-									onClick={resetPassword}
+								<TextInput
+									title={t('email')}
+									value={email}
+									onChange={(e) => setEmail(e)}
+									error={!isEmailOk}
+									disabled={inProgress}
+									type="email"
+									placeholder={t('enterEmail')}
+									autoFocus
+									required
+								/>
+								<Gap />
+								<TextInput
+									title={t('password')}
+									value={password}
+									onChange={(e) => setPassword(e)}
+									error={!isPasswordOk}
+									disabled={inProgress}
+									type="password"
+									placeholder={t('enterPassword')}
+									required
+								/>
+								<Box
+									display={'flex'}
+									flexDirection={'row'}
+									alignItems={'center'}
+									justifyContent={'start'}
 								>
-									{t('forgotPassword')}
-								</Button>
-							</Box>
-							<Gap />
-							<Box
-								display={'flex'}
-								flexDirection={'row'}
-								justifyContent={'center'}
-							>
-								<Button
-									type="submit"
-									loading={inProgress}
-									variant="contained"
-									sx={{
-										width: 200,
-									}}
-									color="primarygradient"
+									<Button
+										size={'small'}
+										variant="text"
+										color="grey.600"
+										onClick={resetPassword}
+									>
+										{t('forgotPassword')}
+									</Button>
+								</Box>
+								<Gap />
+								<Box
+									display={'flex'}
+									flexDirection={'row'}
+									justifyContent={'center'}
 								>
-									{t('loginButton')}
-								</Button>
-							</Box>
-							<Gap />
-							<Box
-								display={'flex'}
-								flexDirection={'row'}
-								alignItems={'center'}
-								justifyContent={'center'}
-							>
-								<Typography size={'0.9rem'}>{t('noAccount')}</Typography>
-								<Button
-									size={'small'}
-									variant="text"
-									to="signup"
-									toParams={{
-										previousPage: params.previousPage,
-									}}
-								>
-									{t('createAccount')}
-								</Button>
-							</Box>
-						</form>
-					</Box>
-				</Box>
-			</StandaloneCard>
-			<Gap value={5} />
-			{/* <Box
-				flex={1}
-				display={'flex'}
-				justifyContent={'center'}
-				flexDirection={'column'}
-				alignItems={'center'}
-				paddingTop={5}
-			>
-				{params.message && (
-					<StyledContainer
-						style={{
-							marginBottom: theme.spacing(2),
-						}}
-					>
-						<Box
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-								alignItems: 'center',
-								gap: theme.spacing(1),
-								padding: '30px',
-							}}
-						>
-							<Info fontSize="large" color="info" />
-							<Typography>{params.message}</Typography>
-						</Box>
-					</StyledContainer>
-				)}
-				<StyledContainer>
-					<Box
-						sx={{
-							padding: '30px',
-						}}
-					>
-						<Box display={'flex'} flexDirection={'column'}>
-							<Typography variant={'h5'} strong={'bold'} flex={1}>
-								Která jsi ovce?
-							</Typography>
-						</Box>
+									<Button
+										type="submit"
+										loading={inProgress}
+										variant="contained"
+										sx={{
+											width: 200,
+										}}
+										color="primarygradient"
+									>
+										{t('loginButton')}
+									</Button>
+								</Box>
+							</form>
+						)}
 						<Gap />
-						{errorMessage != '' && (
-							<>
-								<Typography variant="subtitle2" color={'red'}>
-									{errorMessage}
-								</Typography>
-								<Gap />
-							</>
-						)}
-
-						<form
-							onSubmit={(e) => {
-								e.preventDefault()
-								onLoginClick()
-							}}
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-							}}
-						>
-							<Typography variant="subtitle2">Email</Typography>
-							<TextField
-								size="small"
-								value={email}
-								onChange={onEmailChange}
-								error={!isEmailOk}
-								helperText={emailMessage}
-								disabled={inProgress}
-								type="email"
-							/>
-							<Gap />
-							<Typography variant="subtitle2">Heslo</Typography>
-							<TextField
-								size="small"
-								fullWidth
-								value={password}
-								onChange={onPasswordChange}
-								error={!isPasswordOk}
-								helperText={passwordMessage}
-								disabled={inProgress}
-								type="password"
-							/>
-							<Box
-								display={'flex'}
-								flexDirection={'row'}
-								alignItems={'center'}
-								justifyContent={'start'}
-							>
-								<Button
-									size={'small'}
-									variant="text"
-									color="grey.600"
-									onClick={resetPassword}
-								>
-									{t('forgotPassword')}
-								</Button>
-							</Box>
-							<Gap />
-							<Box>
-								<Button type="submit" loading={inProgress} variant="contained">
-									{t('loginButton')}
-								</Button>
-							</Box>
-						</form>
-
 						<Box
 							display={'flex'}
 							flexDirection={'row'}
 							alignItems={'center'}
-							justifyContent={'end'}
+							justifyContent={'center'}
 						>
-							<Typography variant={'subtitle2'}>Nemáte ještě účet?</Typography>
-							<Button size={'small'} variant="text" to="signup">
-								Vytvořte si ho
+							<Typography size={'0.9rem'}>{t('noAccount')}</Typography>
+							<Button
+								size={'small'}
+								variant="text"
+								to="signup"
+								toParams={{
+									previousPage: params.previousPage,
+								}}
+							>
+								{t('createAccount')}
 							</Button>
 						</Box>
-						<Gap value={2} />
-						<Box
-							sx={{
-								display: 'flex',
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'end',
-							}}
-						>
-							<GoogleLoginButton afterLogin={afterGoogleLogin} />
-						</Box>
 					</Box>
-				</StyledContainer>
-			</Box> */}
+				</Box>
+			</StandaloneCard>
+			<Gap value={5} />
 		</Box>
 	)
 }

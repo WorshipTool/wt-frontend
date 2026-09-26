@@ -63,6 +63,14 @@ export default (phase, { defaultConfig }) => {
 						destination: '/pisen/:hex/:alias',
 						permanent: true,
 					},
+					// The song catalog used to live here, and it is an indexed URL
+					// (see src/app/sitemap.ts) that has been shared for years. Next
+					// carries the query string over, so `?s=3` keeps its page.
+					{
+						source: '/seznam',
+						destination: '/pisne',
+						permanent: true,
+					},
 				]
 			},
 

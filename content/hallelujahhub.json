@@ -20,6 +20,7 @@
 		"discard": "Discard",
 		"open": "Open",
 		"tryAgain": "Try again",
+		"updatingVersion": "Updating to a new version…",
 		"or": "Or",
 		"preferThisTranslation": "I prefer this translation",
 		"private": "Private",
@@ -41,6 +42,7 @@
 	"navigation": {
 		"home": "Home",
 		"songs": "Songs",
+		"tools": "Tools",
 		"playlists": "Playlists",
 		"teams": "Teams",
 		"about": "About",
@@ -120,7 +122,7 @@
 			"label": "Create"
 		},
 		"search": {
-			"resultsTitle": "Search results:",
+			"resultsTitle": "Search results",
 			"loadMore": "Load more",
 			"noResults": "We didn't find anything..."
 		}
@@ -232,6 +234,7 @@
 			"password": "Password",
 			"enterPassword": "Enter password",
 			"loginButton": "Sign In",
+			"continueWithEmail": "Continue with email",
 			"forgotPassword": "Forgot password?",
 			"noAccount": "Don't have an account yet?",
 			"createAccount": "Create one",
@@ -276,6 +279,13 @@
 		"share": "Share",
 		"linkCopiedToClipboard": "Link copied to clipboard",
 		"presentation": "Presentation",
+		"songsCount": "{count, plural, one {# song} other {# songs}}",
+		"typeLabel": "Playlist",
+		"shareTitle": "{title} – Playlist",
+		"tabSongs": "Song list",
+		"tabDetail": "Song detail",
+		"prevSong": "Previous song",
+		"nextSong": "Next song",
 		"rename": "Rename",
 		"playlistNamePlaceholder": "Playlist name",
 		"print": "Print",
@@ -335,6 +345,11 @@
 	},
 	"songPage": {
 		"topPanel": {
+			"addToPlaylist": "Add to playlist",
+			"presentationItem": {
+				"title": "Presentation",
+				"subtitle": "Open as a presentation"
+			},
 			"cannotEditPublished": "Cannot edit a published song.",
 			"updateSuccess": {
 				"withTitle": "Song {title} has been updated.",
@@ -390,6 +405,7 @@
 		},
 		"transpose": {
 			"title": "Transpose",
+			"keyWithNote": "Key {note}",
 			"increase": "Transpose up a semitone",
 			"decrease": "Transpose down a semitone"
 		},
@@ -551,23 +567,28 @@
 	},
 	"upload": {
 		"title": "Upload",
+		"addTitle": "Create a song",
 		"uploadFile": "Upload file",
 		"uploadFileSubtitle": "Automatically convert song from image",
 		"writeManually": "Write Manually",
+		"writeManuallySubtitle": "Write the lyrics and chords in the editor",
 		"createTooltip": "Add",
+		"create": "Create",
 		"createPrivately": "Create (privately)",
 		"uploadSong": "Upload song",
 		"songTitle": "Song title",
 		"songContent": "Song content",
 		"dragAndDrop": "Drag and drop files here",
+		"dropFilesHere": "Drop the files here",
 		"selectFiles": "Select files",
-		"supportedFormats": "Supported formats",
+		"supportedFormats": "Supported formats: {formats}",
 		"songDataCopied": "Song data copied.",
 		"uploading": "Uploading",
 		"queueing": "Waiting in queue",
 		"processing": "Processing files",
 		"processed": "Processed",
 		"errorOccurred": "An error occurred",
+		"loginRequired": "You need to be signed in to upload a file.",
 		"pleaseWait": "Please wait",
 		"withAI": "With AI assistance",
 		"copy": "Copy",
@@ -584,7 +605,15 @@
 		"cancel": "Cancel"
 	},
 	"songsList": {
-		"title": "List of all songs"
+		"title": "Songs",
+		"empty": "There are no songs yet.",
+		"error": "Couldn't load the songs.",
+		"results": "Results",
+		"noResults": "We didn't find anything...",
+		"loadMore": "Load more",
+		"allSongs": "All songs",
+		"songCount": "{formatted} {count, plural, one {song} other {songs}}",
+		"pageOf": "{page} of {total}"
 	},
 	"loadingScreen": {
 		"message": "Loading app..."
@@ -857,6 +886,16 @@
 				"dateAdded": "Date added",
 				"title": "Title"
 			}
+		},
+		"songs": {
+			"title": "My songs",
+			"totalSongs": "Total {count} songs",
+			"empty": "You don't have any songs yet."
+		},
+		"playlists": {
+			"untitled": "Untitled",
+			"playlistsCount": "{count, plural, one {# playlist} other {# playlists}}",
+			"empty": "You don't have any playlists yet. Create your first with the button above."
 		}
 	},
 	"transpose": {
@@ -911,6 +950,9 @@
 		"markChorus": "Mark chorus",
 		"markBridge": "Mark bridge",
 		"insertChord": "Insert chord",
+		"chord": "Chord",
+		"chordMajor": "major",
+		"done": "Done",
 		"titlePlaceholder": "Song title",
 		"contentPlaceholder": "Song content"
 	},

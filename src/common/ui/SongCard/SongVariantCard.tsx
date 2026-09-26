@@ -10,12 +10,17 @@ import { useTranslationLikesCount } from '@/common/ui/SongCard/hooks/useTranslat
 import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
+import {
+	HighlightPart,
+	previewLinesAroundMatch,
+	splitByMatch,
+} from '@/tech/string/highlight.string.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
-import { alpha, styled, useTheme } from '@mui/material'
+import { alpha, styled, Theme, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, ReactNode, useEffect, useMemo, useState } from 'react'
 import { BasicVariantPack } from '../../../api/dtos'
 import useAuth from '../../../hooks/auth/useAuth'
 import { CustomChip } from '../CustomChip/CustomChip'
@@ -37,6 +42,37 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 	outlineStyle: 'solid',
 	position: 'relative',
 }))
+
+/** What a search matched, in a highlighter's yellow rather than the brand's
+ * blue: blue is what this app spends on the current tab and on the one primary
+ * action of a screen, so a marked-up title read like something to press. Yellow
+ * means nothing else here, which is what a mark on a page should mean. */
+const MARK_SX = {
+	bgcolor: (theme: Theme) => alpha(theme.palette.secondary.main, 0.45),
+	color: 'inherit',
+	borderRadius: 0.5,
+	paddingX: 0.25,
+} as const
+
+/** How much of a line is kept in front of a match on a row that cannot wrap. */
+const LEAD_IN_CHARS = 12
+
+/** A piece of text with the search's match marked in it. */
+function Highlighted({ parts }: { parts: HighlightPart[] }) {
+	return (
+		<>
+			{parts.map((part, i) =>
+				part.match ? (
+					<Box key={i} component="mark" sx={MARK_SX}>
+						{part.text}
+					</Box>
+				) : (
+					<span key={i}>{part.text}</span>
+				)
+			)}
+		</>
+	)
+}
 
 const SONG_CARD_PROPERTIES = [
 	'SHOW_PRIVATE_LABEL',
@@ -62,6 +98,10 @@ type SongCardIconData = (
 type SongCardProps = {
 	data: BasicVariantPack
 	flexibleHeight?: boolean
+	/** Compact list-row look: single preview line, tighter padding (mobile lists) */
+	dense?: boolean
+	/** Override how many lyric preview lines to show (defaults: dense=1, else 4) */
+	previewLines?: number
 	properties?: SongCardProperty[]
 	toLinkProps?: ToLinkProps
 	selected?: boolean
@@ -70,11 +110,18 @@ type SongCardProps = {
 	onSelect?: (selected: boolean) => void
 	onDeselect?: (selected: boolean) => void
 	icons?: SongCardIconData
+	/** Optional decorative icon rendered in a leading slot (mobile list rows) */
+	leadingIcon?: ReactNode
+	/** Optional icon rendered in a trailing slot, e.g. a disclosure chevron */
+	trailingIcon?: ReactNode
+	/** Marks this text inside the title — what a search matched. */
+	highlight?: string
 	sx?: SxProps
 }
 export const SongVariantCard = memo(function S({
 	data,
 	flexibleHeight: flexibleHeght = true,
+	dense = false,
 	...props
 }: SongCardProps) {
 	const t = useTranslations('common')
@@ -111,7 +158,23 @@ export const SongVariantCard = memo(function S({
 	// Title and sheet data to display
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
-	const dataLines = sheet.getSections()[0]?.text?.split('\n').slice(0, 4)
+	const previewLineCount = props.previewLines ?? (dense ? 1 : 4)
+	// The whole song, not only its first section: a search that matched the third
+	// verse has to be able to show the third verse.
+	const lyrics = sheet
+		.getSections()
+		.map((section) => section.text ?? '')
+		.join('\n')
+	const previewLines = previewLinesAroundMatch(
+		lyrics,
+		props.highlight,
+		previewLineCount,
+		// Always, on either width: a preview line is one line and it is cut off at
+		// the edge of the card or the row — a desktop card does not wrap it, it
+		// clips it — so a match further along the line would never be seen. Gating
+		// this on `dense` left exactly that hole on a desktop.
+		LEAD_IN_CHARS
+	)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -238,7 +301,7 @@ export const SongVariantCard = memo(function S({
 					sx={{
 						outlineColor: showPrivate ? theme.palette.grey[300] : 'transparent',
 
-						height: flexibleHeght ? 'auto' : '11rem',
+						height: flexibleHeght || dense ? 'auto' : '11rem',
 						overflowY: 'hidden',
 
 						...(selected && {
@@ -253,10 +316,53 @@ export const SongVariantCard = memo(function S({
 					onMouseEnter={() => setIsOver(true)}
 					onMouseLeave={() => setIsOver(false)}
 				>
+					{props.leadingIcon || props.trailingIcon ? (
+						<Box
+							sx={{
+								display: 'flex',
+								flexDirection: 'row',
+								alignItems: 'center',
+								gap: 1.5,
+								paddingLeft: props.leadingIcon ? '1rem' : 0,
+								paddingRight: props.trailingIcon ? '1rem' : 0,
+							}}
+						>
+							{props.leadingIcon && (
+								<Box sx={{ flexShrink: 0, display: 'flex' }}>
+									{props.leadingIcon}
+								</Box>
+							)}
+							<Box sx={{ flex: 1, minWidth: 0 }}>
+								{renderContent({
+									noLeftPad: !!props.leadingIcon,
+									noRightPad: !!props.trailingIcon,
+								})}
+							</Box>
+							{props.trailingIcon && (
+								<Box sx={{ flexShrink: 0, display: 'flex' }}>
+									{props.trailingIcon}
+								</Box>
+							)}
+						</Box>
+					) : (
+						renderContent()
+					)}
+				</StyledContainer>
+			</Link>
+		</DraggableSong>
+	)
+
+	function renderContent(opts?: { noLeftPad?: boolean; noRightPad?: boolean }) {
+		const py = dense ? '0.6rem' : '1rem'
+		const px = '1rem'
+		const padding = `${py} ${opts?.noRightPad ? '0' : px} ${py} ${
+			opts?.noLeftPad ? '0' : px
+		}`
+		return (
 					<Box
 						sx={{
 							position: 'relative',
-							padding: '1rem',
+							padding,
 							...(selected && {
 								borderColor: 'primary.main',
 								borderWidth: 2,
@@ -266,7 +372,7 @@ export const SongVariantCard = memo(function S({
 									bgcolor: alpha(theme.palette.primary.main, 0.2),
 								},
 							}),
-							height: 'calc(100% - 2rem)',
+							height: dense ? 'auto' : 'calc(100% - 2rem)',
 							display: 'flex',
 							flexDirection: 'column',
 							overflow: 'hidden',
@@ -275,6 +381,7 @@ export const SongVariantCard = memo(function S({
 						<Box display={'flex'} flexDirection={'row'} gap={1}>
 							<Typography
 								strong
+								noWrap={dense}
 								sx={{
 									flex: 1,
 									...(!data.ggValidated &&
@@ -287,7 +394,11 @@ export const SongVariantCard = memo(function S({
 									language={data.language}
 									translationType={data.translationType}
 								/>
-								{title}
+								{props.highlight ? (
+									<Highlighted parts={splitByMatch(title, props.highlight)} />
+								) : (
+									title
+								)}
 							</Typography>
 							<Box>
 								{showPrivate || showYourPublic ? (
@@ -332,20 +443,18 @@ export const SongVariantCard = memo(function S({
 									overflow: 'hidden',
 								}}
 							>
-								{dataLines.map((line, index) => {
+								{previewLines.map((parts, index) => {
 									return (
-										<Box
-											display={'flex'}
-											flexDirection={'row'}
-											key={line + index}
-										>
+										<Box display={'flex'} flexDirection={'row'} key={index}>
 											<Typography
 												key={'SearchItemText' + index}
+												small={dense}
+												noWrap={dense}
 												sx={{
 													flex: 1,
 												}}
 											>
-												{line}
+												<Highlighted parts={parts} />
 											</Typography>
 										</Box>
 									)
@@ -358,8 +467,6 @@ export const SongVariantCard = memo(function S({
 							/>
 						</Box>
 					</Box>
-				</StyledContainer>
-			</Link>
-		</DraggableSong>
-	)
+		)
+	}
 })

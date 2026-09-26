@@ -1,8 +1,10 @@
 'use client'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import FavouritesListOrderSelect, {
 	FavouritesOrderOptions,
 } from '@/app/(layout)/ucet/oblibene/components/FavouritesListOrderSelect'
 import FavouritesRowItem from '@/app/(layout)/ucet/oblibene/components/FavouritesRowItem'
+import { MobileSongListView } from '@/common/components/MobileAppHeader'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import Pager from '@/common/components/Pager/Pager'
 import { Box, Typography } from '@/common/ui'
@@ -26,9 +28,10 @@ export type FavouriteItem = {
 
 function page() {
 	const t = useTranslations('account.favourites')
+	const phoneVersion = useIsPhone()
 	const { selectionGuid, items: bsItems } = useFavourites()
 
-	const { items: allItems } = useSelection(selectionGuid as PlaylistGuid)
+	const { items: allItems, loading } = useSelection(selectionGuid as PlaylistGuid)
 
 	const [sortOption, setSortOption] = useUrlState<FavouritesOrderOptions>(
 		'sortKey',
@@ -59,6 +62,21 @@ function page() {
 			})
 		return [...arr]
 	}, [allItems, sortOption, bsItems])
+
+	if (phoneVersion) {
+		return (
+			<MobileSongListView
+				title={t('title')}
+				subtitle={
+					loading ? undefined : t('totalSongs', { count: items.length.toString() })
+				}
+				backTo="account"
+				items={items.map((i) => i.data.pack)}
+				loading={loading}
+				emptyText={t('noFavourites')}
+			/>
+		)
+	}
 
 	return (
 		<Box display={'flex'} flexDirection={'column'} gap={2}>

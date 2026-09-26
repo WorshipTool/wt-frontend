@@ -35,7 +35,10 @@ export default function CollaborationWithWorshipkoCard() {
 					display={'flex'}
 					flexDirection={'row'}
 					alignItems={'center'}
+					justifyContent={'center'}
 					gap={2}
+					flexWrap={'wrap'}
+					sx={{ maxWidth: '100%', paddingX: 2, boxSizing: 'border-box' }}
 				>
 					<Typography variant="h5" noWrap thin>
 						{tAbout('collaboration.title')}
@@ -47,6 +50,7 @@ export default function CollaborationWithWorshipkoCard() {
 						width={240}
 						style={{
 							objectFit: 'contain',
+							maxWidth: '100%',
 						}}
 					/>
 				</Box>

@@ -1,21 +1,27 @@
+'use client'
+
 import TeamBottomMenu from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/LeftPanel/components/TeamBottomMenu'
 import { useTeamSideBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/SmartTeamPage/hooks/useTeamSideBar'
 import useBottomPanel from '@/app/providers/BottomPanelProvider'
-import { Box } from '@/common/ui'
+import MobileBottomDock from '@/common/components/MobileAppTabBar/MobileBottomDock'
+import { MOBILE_NAV_BAR_HEIGHT } from '@/common/components/MobileAppTabBar/nav.constants'
 import { useEffect } from 'react'
 
-const TRANSITION = 'all 0.2s'
-
+/**
+ * The team's own section tabs (Přehled / Zpěvník / Playlisty / Lidé) on a phone.
+ *
+ * It is not a second bar under the app's: it *is* the bottom bar while you are
+ * inside a team, in the same dock, in the same visual language — the app's tab
+ * bar steps aside on these routes (see `hasContextualBottomBar`) and the team's
+ * sections carry the way back out as their first item.
+ */
 export default function TeamBottomPanel() {
-	const { darkMode, setHidden } = useTeamSideBar()
-
+	const { setHidden } = useTeamSideBar()
 	const { setHeight } = useBottomPanel()
-
-	const HEIGHT = 60
 
 	useEffect(() => {
 		setHidden(true)
-		setHeight(60)
+		setHeight(MOBILE_NAV_BAR_HEIGHT)
 
 		return () => {
 			setHeight(0)
@@ -23,28 +29,8 @@ export default function TeamBottomPanel() {
 	}, [])
 
 	return (
-		<>
-			<Box
-				sx={{
-					bgcolor: darkMode ? 'grey.900' : 'grey.100',
-					minHeight: HEIGHT,
-					maxHeight: HEIGHT,
-					position: 'fixed',
-					bottom: 0,
-					left: 0,
-					right: 0,
-					boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.1)',
-					transition: TRANSITION,
-					zIndex: 2,
-					color: darkMode ? 'grey.100' : 'grey.800',
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-				}}
-			>
-				<TeamBottomMenu />
-			</Box>
-			<Box sx={{ height: HEIGHT }} />
-		</>
+		<MobileBottomDock>
+			<TeamBottomMenu />
+		</MobileBottomDock>
 	)
 }

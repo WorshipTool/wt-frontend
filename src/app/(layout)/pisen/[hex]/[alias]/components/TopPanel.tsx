@@ -1,33 +1,20 @@
 'use client'
 
-import { useApi } from '@/api/tech-and-hooks/useApi'
 import AllSongAdminOptions from '@/app/(layout)/pisen/[hex]/[alias]/components/admin/AllSongAdminOptions'
 import CreateCopyButton from '@/app/(layout)/pisen/[hex]/[alias]/components/components/CreateCopyButton'
-import { useInnerPackSong } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useInnerPack'
+import { SongEditing } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useSongEditing'
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
 import { useDownSize } from '@/common/hooks/useDownSize'
-import { Box, useTheme } from '@/common/ui'
+import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ExtendedVariantPack } from '@/types/song'
 import { FeaturedPlayList } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
-import { useSnackbar } from 'notistack'
 import { useMemo } from 'react'
-import {
-	CreatedType,
-	SongDto,
-	VariantPackAlias,
-} from '../../../../../../api/dtos'
-import {
-	EditVariantOutDto,
-	PostEditVariantInDto,
-} from '../../../../../../api/generated'
+import { SongDto } from '../../../../../../api/dtos'
 import useAuth from '../../../../../../hooks/auth/useAuth'
-import { useSmartNavigate } from '../../../../../../routes/useSmartNavigate'
-import { useApiState } from '../../../../../../tech/ApiState'
-import { isSheetDataValid } from '../../../../../../tech/sheet.tech'
 import NotValidWarning from '../../../../vytvorit/napsat/components/NotValidWarning'
 import AddToPlaylistButton from './components/AddToPlaylistButton/AddToPlaylistButton'
 import EditButton from './components/EditButton'
@@ -41,19 +28,19 @@ interface TopPanelProps {
 	variant: ExtendedVariantPack
 	reloadSong: () => void
 	sheet: Sheet
-	title: string
 	editedTitle: string
 	song: SongDto
 	// variantIndex: number
 	// onChangeVariant: (i:number)=>void,
-	onEditClick?: (editable: boolean) => Promise<void>
+	/** Edit/save behaviour, owned by the page so the phone dock shares it. */
+	editing: SongEditing
 	cancelEditing: () => void
 	isInEditMode?: boolean
 	hideChords: boolean
 }
 
 export default function TopPanel(props: TopPanelProps) {
-	const { isAdmin, isTrustee, isLoggedIn, user, apiConfiguration } = useAuth()
+	const { isLoggedIn, user } = useAuth()
 	const tSongPage = useTranslations('songPage')
 	const tCommon = useTranslations('common')
 	const isOwner = useMemo(() => {
@@ -61,66 +48,7 @@ export default function TopPanel(props: TopPanelProps) {
 		return props.variant.createdByGuid === user?.guid
 	}, [user, props.variant])
 
-	const { song } = useInnerPackSong()
-
-	const { enqueueSnackbar } = useSnackbar()
-	const navigate = useSmartNavigate()
-
-	const { songEditingApi } = useApi()
-	const {
-		fetchApiState,
-		apiState: { loading: saving },
-	} = useApiState<EditVariantOutDto>()
-
-	const anyChange = useMemo(() => {
-		const t = props.variant.title !== props.editedTitle
-		const s =
-			new Sheet(props.variant?.sheetData).toString() !== props.sheet?.toString()
-		return t || s
-	}, [props.sheet, props.editedTitle, props.variant])
-
-	const onEditClick = async (editable: boolean) => {
-		if (editable) {
-			if (props.variant.verified) {
-				enqueueSnackbar(tSongPage('topPanel.cannotEditPublished'))
-				return
-			}
-			await props.onEditClick?.(editable)
-			return
-		}
-
-		const body: PostEditVariantInDto = {
-			variantAlias: props.variant.packAlias,
-			sheetData: props.sheet.getOriginalSheetData(),
-			title: props.title,
-			createdType: CreatedType.Manual,
-		}
-		fetchApiState(
-			async () => {
-				return await songEditingApi.editVariant(body)
-			},
-			async (result) => {
-				await props.onEditClick?.(editable)
-				const message = props.variant.title
-					? tSongPage('topPanel.updateSuccess.withTitle', {
-							title: props.variant.title,
-					  })
-					: tSongPage('topPanel.updateSuccess.withoutTitle')
-				enqueueSnackbar(message)
-				navigate('variant', {
-					...parseVariantAlias(result.alias as VariantPackAlias),
-				})
-			}
-		)
-	}
-
-	const theme = useTheme()
-
-	const isValid = useMemo(() => {
-		if (!props.sheet) return false
-		const data = props.sheet?.toString()
-		return isSheetDataValid(data)
-	}, [props.sheet, props.sheet?.toString()])
+	const { onEditClick, saving, anyChange, isValid } = props.editing
 
 	const isSmall = useDownSize('md')
 
@@ -135,8 +63,8 @@ export default function TopPanel(props: TopPanelProps) {
 				}}
 			>
 				<SmartPortalMenuItem
-					title={'Prezentace'}
-					subtitle="Otevřít jako prezentaci"
+					title={tSongPage('topPanel.presentationItem.title')}
+					subtitle={tSongPage('topPanel.presentationItem.subtitle')}
 					to="variantCards"
 					toParams={{
 						...parseVariantAlias(props.variant.packAlias),

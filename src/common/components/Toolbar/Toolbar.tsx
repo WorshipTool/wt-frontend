@@ -4,11 +4,16 @@ import LeftWebTitle from '@/common/components/Toolbar/components/LeftWebTItle'
 import MiddleNavigationPanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/MiddleNavigationPanel'
 import NavigationMobilePanel from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'
 import RightAccountPanel from '@/common/components/Toolbar/components/RightAccountPanel/RightAccountPanel'
+import {
+	isMobileTabBarRoute,
+	MOBILE_NAV_BREAKPOINT,
+} from '@/common/components/MobileAppTabBar/nav.constants'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, useTheme } from '@/common/ui'
 import { grey } from '@/common/ui/mui/colors'
 import { styled, useMediaQuery } from '@mui/system'
 import { motion } from 'framer-motion'
+import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { useEffect, useMemo, useState } from 'react'
 
 const TopBar = styled(Box)(({ theme }) => ({
@@ -29,6 +34,26 @@ export function Toolbar() {
 
 	const { transparent, variant, whiteVersion, hidden } = useToolbar()
 
+	// On app-shell routes the bottom tab bar replaces the top bar on phones.
+	// The top bar hides itself here (a persistent element, styled via the head)
+	// so it never flashes in during streaming or client-side navigation — unlike
+	// a post-hydration setHidden effect or a per-page <style> in the body.
+	// The visible bar is hidden and its layout spacer shrinks to just the safe
+	// area (no leftover 56px gap at the top of app pages).
+	const hideOnMobile = isMobileTabBarRoute(useClientPathname())
+	const barHideSx = hideOnMobile
+		? { [theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: { display: 'none' } }
+		: {}
+	// On app-shell routes the phone shell owns the whole viewport, including the
+	// safe area — its header pads itself by `env(safe-area-inset-top)`. So the
+	// spacer must contribute *nothing* here. It used to reserve the safe-area
+	// strip, which every shell screen then cancelled with a negative margin; once
+	// the inset stopped being 0 (viewport-fit=cover) any mismatch between the two
+	// shifted the whole shell up under the status bar.
+	const spacerShrinkSx = hideOnMobile
+		? { [theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: { height: 0 } }
+		: {}
+
 	const white = useMemo(() => {
 		return whiteVersion || !transparent
 	}, [whiteVersion, transparent])
@@ -48,6 +73,7 @@ export function Toolbar() {
 				zIndex={0}
 				sx={{
 					transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+					...spacerShrinkSx,
 				}}
 			></TopBar>
 			<TopBar
@@ -55,6 +81,7 @@ export function Toolbar() {
 				position={'fixed'}
 				sx={{
 					transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+					...barHideSx,
 				}}
 			>
 				<motion.div

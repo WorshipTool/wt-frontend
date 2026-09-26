@@ -46,8 +46,8 @@ async function SongRoutePage({ params }: SongRoutePageProps) {
 
 			<ContainerGrid
 				sx={{
-					marginTop: 2,
-					marginBottom: 2,
+					marginTop: { xs: 0, md: 2 },
+					marginBottom: { xs: 0, md: 2 },
 					// paddingX: 6,
 					gap: 2,
 					alignItems: 'start',
@@ -55,13 +55,27 @@ async function SongRoutePage({ params }: SongRoutePageProps) {
 			>
 				<Box
 					sx={{
-						padding: 3,
-						backgroundColor: 'grey.200',
+						// phone: the collapsing MobileAppHeader (in SongContainer) owns the
+						// full-bleed white app-shell + scroll, so this wrapper stays neutral;
+						// desktop (md+): the original grey "paper" card
+						width: { xs: 'auto', md: 'auto' },
+						minWidth: { xs: 0, md: 0 },
+						marginLeft: { xs: 0, md: 0 },
+						// no global border-box reset in the app — without this the
+						// padding would push the surface past the viewport
+						boxSizing: 'border-box',
+						padding: { xs: 0, md: 3 },
+						paddingBottom: { xs: 0, md: 3 },
+						backgroundColor: { xs: 'transparent', md: 'grey.200' },
 						borderStyle: 'solid',
-						borderWidth: 1,
+						borderWidth: { xs: 0, md: 1 },
 						borderColor: 'grey.300',
-						boxShadow: '0px 2px 3px 1px rgba(0, 0, 0, 0.1)',
-						borderRadius: 1,
+						boxShadow: {
+							xs: 'none',
+							md: '0px 2px 3px 1px rgba(0, 0, 0, 0.1)',
+						},
+						borderRadius: { xs: 0, md: 1 },
+						minHeight: { xs: 'auto', md: 'auto' },
 						flex: 1,
 						display: 'flex',
 						flexDirection: 'column',

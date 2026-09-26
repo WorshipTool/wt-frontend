@@ -12,7 +12,7 @@ interface UploadPanelProps {
 }
 
 export default function UploadPanel(props: UploadPanelProps) {
-	const inputRef = useRef(null)
+	const inputRef = useRef<HTMLInputElement>(null)
 
 	const [draggingOver, setDraggingOver] = React.useState(false)
 
@@ -22,10 +22,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 		if (props.onUpload) props.onUpload(files)
 	}
 
-	const openFilePicker = () => {
-		//@ts-ignore
-		inputRef.current.click()
-	}
+	const openFilePicker = () => inputRef.current?.click()
 
 	return (
 		<DragAndDrop
@@ -106,7 +103,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 									alignItems: 'center',
 								}}
 							>
-								<Typography>Pusťte soubory zde</Typography>
+								<Typography>{t('dropFilesHere')}</Typography>
 							</Box>
 						</Box>
 					)}
@@ -135,13 +132,12 @@ export default function UploadPanel(props: UploadPanelProps) {
 					}}
 					width={200}
 				>
-					<Typography color={'grey'}>{t('supportedFormats')}: png, jpg, jpeg, pdf</Typography>
+					<Typography color={'grey'}>
+						{t('supportedFormats', { formats: 'png, jpg, jpeg, pdf' })}
+					</Typography>
 				</Box>
 			</Paper>
-			<UploadFileInput
-				inputRef={inputRef}
-				onUpload={(files) => uploadFiles(files)}
-			/>
+			<UploadFileInput inputRef={inputRef} onUpload={uploadFiles} />
 		</DragAndDrop>
 	)
 }

@@ -6,6 +6,7 @@ import PeopleList from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/l
 import TeamPeopleAdminOption from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/lide/components/TeamPeopleAdminOption'
 import { encodeTeamCode } from '@/app/(submodules)/(teams)/sub/tymy/pripojitse/[code]/tech'
 import Popup from '@/common/components/Popup/Popup'
+import PageAction from '@/common/components/PageAction/PageAction'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Gap } from '@/common/ui/Gap'
@@ -59,14 +60,16 @@ function TeamPeoplePage() {
 		<Box display={'flex'} flexDirection={'column'} gap={4}>
 			<TeamPageTitle>
 				{t('people')}
-				<Button
-					size="small"
-					variant="outlined"
-					endIcon={<PersonAdd />}
-					onClick={() => setPopupOpen(true)}
-				>
-					{t('invite')}
-				</Button>
+				<PageAction>
+					<Button
+						size="small"
+						variant="outlined"
+						endIcon={<PersonAdd />}
+						onClick={() => setPopupOpen(true)}
+					>
+						{t('invite')}
+					</Button>
+				</PageAction>
 			</TeamPageTitle>
 			<TeamPeopleAdminOption />
 			<PeopleList />

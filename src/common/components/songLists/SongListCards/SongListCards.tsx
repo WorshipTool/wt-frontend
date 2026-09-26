@@ -10,6 +10,7 @@ type CommmonProps = {
 	data: BasicVariantPack[]
 	properties?: ComponentProps<typeof SongVariantCard>['properties']
 	cardToLinkProps?: ComponentProps<typeof SongVariantCard>['toLinkProps']
+	dense?: boolean
 	onCardClick?: (data: BasicVariantPack) => void
 
 	// Selecting
@@ -77,6 +78,7 @@ export const SongListCard = memo(function SongListCards({
 					data={v}
 					key={v.packGuid}
 					flexibleHeight={flexibleHeight}
+					dense={props.dense}
 					toLinkProps={props.cardToLinkProps}
 					properties={props.properties}
 					onClick={() => {
