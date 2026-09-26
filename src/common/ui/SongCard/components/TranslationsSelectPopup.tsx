@@ -18,9 +18,10 @@ type Props = {
 
 export default function TranslationsSelectPopup(props: Props) {
 	const t = useTranslations('song.translations')
-	// A phone reaches this from a list row now (SongGroupRow), not from a card on
-	// a wide canvas: four lines of lyric at full width clip mid-word there, so the
-	// choices read as rows, like everything else in the list they came from.
+	// A phone reaches this from a list row now (SongGroupCard's row variant),
+	// not from a card on a wide canvas: four lines of lyric at full width clip
+	// mid-word there, so the choices read as rows, like everything else in the
+	// list they came from.
 	const phone = useIsPhone()
 
 	return (

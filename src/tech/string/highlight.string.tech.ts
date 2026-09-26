@@ -36,14 +36,19 @@ function foldAll(text: string): string {
 	return out
 }
 
-/** Exactly what was typed, accents and case aside. */
-function findExact(text: string, query: string): Range | null {
+/** Exactly what was typed, accents and case aside — every time it occurs. */
+function findExact(text: string, query: string): Range[] {
 	const needle = foldAll(query)
-	if (needle === '') return null
+	if (needle === '') return []
 
-	const start = foldAll(text).indexOf(needle)
-	if (start < 0) return null
-	return [start, start + needle.length]
+	const hay = foldAll(text)
+	const found: Range[] = []
+	let at = hay.indexOf(needle)
+	while (at >= 0) {
+		found.push([at, at + needle.length])
+		at = hay.indexOf(needle, at + needle.length)
+	}
+	return found
 }
 
 /** One character of the app's search normalization, and the slice of the
@@ -115,15 +120,62 @@ function normalizeWithSource(text: string): {
 }
 
 /** What the app's own search would call a match, mapped back onto the text. */
-function findNormalized(text: string, query: string): Range | null {
+function findNormalized(
+	query: string,
+	{ normalized, chars }: { normalized: string; chars: NormalizedChar[] }
+): Range[] {
 	const needle = normalizeSearchText(query)
-	if (needle === '') return null
+	if (needle === '') return []
 
-	const { normalized, chars } = normalizeWithSource(text)
-	const start = normalized.indexOf(needle)
-	if (start < 0) return null
+	const found: Range[] = []
+	let start = normalized.indexOf(needle)
+	while (start >= 0) {
+		found.push([chars[start].from, chars[start + needle.length - 1].to])
+		start = normalized.indexOf(needle, start + needle.length)
+	}
+	return found
+}
 
-	return [chars[start].from, chars[start + needle.length - 1].to]
+/**
+ * Every stretch of the text the query marks.
+ *
+ * The phrase first, so "nový den" underlines the two words together wherever
+ * they stand. Failing that, each word on its own — which is how the search
+ * itself reads a phrase: a song is in the list because it has the words, not
+ * because it has them side by side. Without this, searching for three words
+ * found songs and then underlined nothing in any of them.
+ */
+function rangesFor(text: string, query: string): Range[] {
+	const map = normalizeWithSource(text)
+
+	const whole = findExact(text, query)
+	if (whole.length > 0) return whole
+	const wholeNormalized = findNormalized(query, map)
+	if (wholeNormalized.length > 0) return wholeNormalized
+
+	// One letter would mark half the song, so those go. What is left is worth a
+	// pass unless it is the query itself, which has just been tried whole.
+	const words = query.split(/\s+/).filter((word) => word.length > 1)
+	if (words.length === 0) return []
+	if (words.length === 1 && words[0] === query) return []
+
+	const found = words.flatMap((word) => {
+		const exact = findExact(text, word)
+		return exact.length > 0 ? exact : findNormalized(word, map)
+	})
+
+	// …in reading order, and never twice over the same letters
+	found.sort((a, b) => a[0] - b[0])
+	const ranges: Range[] = []
+	for (const range of found) {
+		const last = ranges[ranges.length - 1]
+		if (last && range[0] < last[1]) {
+			last[1] = Math.max(last[1], range[1])
+			continue
+		}
+		ranges.push([...range] as Range)
+	}
+	return ranges
 }
 
 /**
@@ -143,14 +195,19 @@ function findNormalized(text: string, query: string): Range | null {
  */
 export function splitByMatch(text: string, query: string): HighlightPart[] {
 	const trimmed = query.trim()
-	const range = findExact(text, trimmed) ?? findNormalized(text, trimmed)
-	if (!range) return [{ text, match: false }]
+	if (trimmed === '') return [{ text, match: false }]
 
-	const [from, to] = range
+	const ranges = rangesFor(text, trimmed)
+	if (ranges.length === 0) return [{ text, match: false }]
+
 	const parts: HighlightPart[] = []
-	if (from > 0) parts.push({ text: text.slice(0, from), match: false })
-	parts.push({ text: text.slice(from, to), match: true })
-	if (to < text.length) parts.push({ text: text.slice(to), match: false })
+	let at = 0
+	for (const [from, to] of ranges) {
+		if (from > at) parts.push({ text: text.slice(at, from), match: false })
+		parts.push({ text: text.slice(from, to), match: true })
+		at = to
+	}
+	if (at < text.length) parts.push({ text: text.slice(at), match: false })
 	return parts
 }
 
@@ -233,7 +290,17 @@ export function previewLinesAroundMatch(
 	if (trimmed === '') return plain()
 
 	const split = linesOf(splitByMatch(lines.join('\n'), trimmed))
-	const at = split.findIndex((line) => line.some((part) => part.match))
+	// the line the query landed on hardest — for a phrase found word by word,
+	// the line holding two of the words says more than the one holding the first
+	let at = -1
+	let best = 0
+	split.forEach((line, i) => {
+		const marks = line.filter((part) => part.match).length
+		if (marks > best) {
+			best = marks
+			at = i
+		}
+	})
 	// matched by its title, then, and the song opens where it always did
 	if (at < 0) return plain()
 

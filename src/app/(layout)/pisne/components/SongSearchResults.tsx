@@ -9,9 +9,9 @@ import {
 	GroupCard,
 	GroupRowsSkeleton,
 	ListStateView,
-	SongGroupRow,
 	SongRow,
 } from '@/common/ui/GroupList'
+import SongGroupCard from '@/common/ui/SongCard/SongGroupCard'
 import { groupSearchResults } from '@/common/components/songLists/songGroups'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import useSongSearch from '@/hooks/song/useSongSearch'
@@ -156,9 +156,13 @@ export default function SongSearchResults({
 					{entries.map((entry) => {
 						if (entry.kind === 'group' && entry.packs.length > 1)
 							return (
-								<SongGroupRow
+								// the same component the desktop's results are made of, drawn
+								// as a row: one song, its translations piled under it
+								<SongGroupCard
 									key={String(entry.packs[0].packGuid)}
+									variant="row"
 									packs={entry.packs}
+									original={entry.original}
 									previewLines={PREVIEW_LINES_PHONE}
 									highlight={query}
 								/>

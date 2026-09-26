@@ -111,8 +111,7 @@ export function SongLeadingIcon() {
  * everything else here is built from.
  *
  * `trailing` replaces the disclosure chevron for a row that has something else
- * to offer at its end (see SongGroupRow, which puts the translation count
- * there).
+ * to offer at its end.
  */
 export function SongRow({
 	song,

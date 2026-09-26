@@ -1,5 +1,7 @@
 import { Box } from '@/common/ui/Box'
 import { Clickable } from '@/common/ui/Clickable'
+import { GroupCard, SongRow } from '@/common/ui/GroupList/GroupList'
+import { SxProps } from '@/common/ui/mui'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
 import {
 	SongVariantCard,
@@ -7,7 +9,20 @@ import {
 } from '@/common/ui/SongCard/SongVariantCard'
 import { Typography } from '@/common/ui/Typography'
 import { BasicVariantPack } from '@/types/song'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
+
+/** How many cards show under the top one in the row variant, however many
+ * translations there are — the card variant stacks the same handful. */
+const MAX_EDGES = 3
+/** The sliver of each card left showing, and how far it is tucked in at each
+ * side, so the pile narrows as it goes down. */
+const EDGE_HEIGHT = 6
+const EDGE_INSET = 8
+/** …and how much deeper each card is than the one above it. A card behind is a
+ * card in shadow, which the card variant draws by taking the brightness down a
+ * step instead. */
+const EDGE_SHADES = ['grey.100', 'grey.200', 'grey.300'] as const
 
 type SongGroupCardProps = {
 	packs: BasicVariantPack[]
@@ -17,6 +32,18 @@ type SongGroupCardProps = {
 	toLinkProps?: ToLinkProps
 	/** What a search matched, lit up in the title of the card on top. */
 	highlight?: string
+	/**
+	 * How the pile is drawn. `card` is the desktop's: the top translation face up
+	 * with the others stacked behind it. `row` is the phone's: the same pile with
+	 * a list row for a face and the others' edges showing underneath, because a
+	 * phone list has no room for a stack.
+	 */
+	variant?: 'card' | 'row'
+	/** Row variant: lyric preview lines, and the leading music icon. */
+	previewLines?: number
+	withIcon?: boolean
+	/** Row variant: the card's own styling — corners, where a list carries on. */
+	sx?: SxProps
 }
 
 export default function SongGroupCard({
@@ -24,8 +51,13 @@ export default function SongGroupCard({
 	dense = false,
 	packs,
 	original,
+	variant = 'card',
+	previewLines,
+	withIcon = true,
+	sx,
 	...props
 }: SongGroupCardProps) {
+	const t = useTranslations('song.translations')
 	const MAX_PACKS = 4
 	const first = packs[0]
 	const restSliced = packs.slice(1, MAX_PACKS)
@@ -43,6 +75,64 @@ export default function SongGroupCard({
 
 	const BORDER_COLOR = 'grey.300'
 	const BORDER_WIDTH = '1px'
+
+	// one chooser, whichever way the pile is drawn
+	const chooser = (
+		<TranslationsSelectPopup
+			open={variantsShown}
+			onClose={() => setVariantsShown(false)}
+			packs={packs}
+			toLinkProps={props.toLinkProps}
+		/>
+	)
+
+	if (variant === 'row') {
+		const edges = Math.min(packs.length - 1, MAX_EDGES)
+		return (
+			<>
+				<Box>
+					<GroupCard sx={sx}>
+						<SongRow
+							song={first}
+							previewLines={previewLines}
+							withIcon={withIcon}
+							highlight={props.highlight}
+						/>
+					</GroupCard>
+
+					{edges > 0 && (
+						<Box
+							role="button"
+							aria-label={t('selectOther')}
+							onClick={() => setVariantsShown(true)}
+							// the whole pile is the way to the chooser, the way the card
+							// variant's own stack is; the air under it is the list's gap
+							sx={{ cursor: 'pointer' }}
+						>
+							{Array.from({ length: edges }).map((_, i) => (
+								<Box
+									key={i}
+									sx={{
+										height: EDGE_HEIGHT,
+										// each card a little further under the one above it, and a
+										// shade deeper, which is the whole of how a pile reads
+										marginX: `${(i + 1) * EDGE_INSET}px`,
+										bgcolor: EDGE_SHADES[i],
+										borderBottomLeftRadius: 12,
+										borderBottomRightRadius: 12,
+										...(i === edges - 1 && {
+											boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+										}),
+									}}
+								/>
+							))}
+						</Box>
+					)}
+				</Box>
+				{chooser}
+			</>
+		)
+	}
 
 	return (
 		<>
@@ -190,12 +280,7 @@ export default function SongGroupCard({
 				)}
 			</Box>
 
-			<TranslationsSelectPopup
-				open={variantsShown}
-				onClose={() => setVariantsShown(false)}
-				packs={packs}
-				toLinkProps={props.toLinkProps}
-			/>
+			{chooser}
 		</>
 	)
 }

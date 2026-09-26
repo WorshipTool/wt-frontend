@@ -73,8 +73,25 @@ describe('splitByMatch', () => {
 		})
 	})
 
-	it('marks only the first occurrence', () => {
-		expect(shape('Amen, amen', 'amen')).toBe('[Amen], amen')
+	it('marks every occurrence, not only the first', () => {
+		expect(shape('Amen, amen', 'amen')).toBe('[Amen], [amen]')
+	})
+
+	it('marks each word of a phrase the song does not have side by side', () => {
+		// the search finds the song by its words, so the words are what is marked
+		expect(shape('Chval Ho, ó duše má', 'chval duse')).toBe(
+			'[Chval] Ho, ó [duše] má'
+		)
+	})
+
+	it('prefers the phrase whole where the song has it', () => {
+		expect(shape('nový den a nový začátek', 'nový den')).toBe(
+			'[nový den] a nový začátek'
+		)
+	})
+
+	it('leaves one-letter words out of a phrase', () => {
+		expect(shape('A ty jsi král', 'a kral')).toBe('A ty jsi [král]')
 	})
 
 	it('returns the text whole when nothing matches', () => {
