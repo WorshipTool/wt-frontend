@@ -1,17 +1,16 @@
 'use client'
 
+import { BasicVariantPack } from '@/api/dtos'
 import { SearchSongDto } from '@/api/dtos/song/song.search.dto'
 import { Analytics } from '@/app/components/components/analytics/analytics.tech'
 import SmartSongListCards from '@/common/components/songLists/SongListCards/SmartSongListCards'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box, CircularProgress } from '@/common/ui'
 import {
-	GroupCard,
-	GroupDivider,
 	GroupRowsSkeleton,
 	ListStateView,
+	SongGroup,
 	SongGroupRow,
-	SongRow,
 } from '@/common/ui/GroupList'
 import { groupSearchResults } from '@/common/components/songLists/songGroups'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
@@ -21,14 +20,7 @@ import { useIsInViewport } from '@/hooks/useIsInViewport'
 import { SearchKey } from '@/types/song/search.types'
 import { SearchRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import {
-	Fragment,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 /** Lyric preview lines on a result row: the phone's row is taller and can
  * carry two, a desktop row stays one line so more results fit the screen. */
@@ -37,6 +29,9 @@ const PREVIEW_LINES_PHONE = 2
  * now, not a column beside a panel, so the results wear the card list's own
  * widths — the ones home's search has always used. */
 const CARD_COLUMNS = { xs: 1, md: 2, lg: 4, xl: 5 }
+/** Air between a run of songs and the next block on a phone — the gap the piled
+ * cards of a group stand in. */
+const PHONE_BLOCK_GAP = 1.5
 
 type SongSearchResultsProps = {
 	/** The query actually being searched (already debounced and trimmed). */
@@ -118,6 +113,23 @@ export default function SongSearchResults({
 		[songs, grouped]
 	)
 
+	// …and the shape the phone reads it in: songs on their own share a surface,
+	// a song with translations gets a card of its own to pile under.
+	const blocks = useMemo(() => {
+		const out: { kind: 'singles' | 'group'; packs: BasicVariantPack[] }[] = []
+		for (const entry of entries) {
+			if (entry.kind === 'group' && entry.packs.length > 1) {
+				out.push({ kind: 'group', packs: entry.packs })
+				continue
+			}
+			const pack = entry.kind === 'group' ? entry.packs[0] : entry.pack
+			const last = out[out.length - 1]
+			if (last?.kind === 'singles') last.packs.push(pack)
+			else out.push({ kind: 'singles', packs: [pack] })
+		}
+		return out
+	}, [entries])
+
 	const empty = songs.length === 0
 
 	if (loading && empty)
@@ -143,36 +155,40 @@ export default function SongSearchResults({
 		>
 			{phone ? (
 				// The phone reads the same grouping the desktop's cards do — one line
-				// per song, its translations gathered behind it — as rows instead of a
-				// stack of cards. It used to flatten every translation onto a line of
-				// its own, which is how a search for a wedding song answered with five
-				// rows all called "Svatební".
-				<GroupCard>
-					{entries.map((entry, i) => (
-						<Fragment
-							key={
-								entry.kind === 'group'
-									? `g-${String(entry.packs[0].packGuid)}`
-									: `s-${String(entry.pack.packGuid)}`
-							}
-						>
-							{entry.kind === 'group' ? (
-								<SongGroupRow
-									packs={entry.packs}
-									previewLines={PREVIEW_LINES_PHONE}
-									highlight={query}
-								/>
-							) : (
-								<SongRow
-									song={entry.pack}
-									previewLines={PREVIEW_LINES_PHONE}
-									highlight={query}
-								/>
-							)}
-							{i < entries.length - 1 && <GroupDivider inset="icon" />}
-						</Fragment>
-					))}
-				</GroupCard>
+				// per song, its translations piled under it — as rows instead of cards.
+				// It used to flatten every translation onto a line of its own, which is
+				// how a search for a wedding song answered with five rows all called
+				// "Svatební".
+				//
+				// Songs on their own share a surface, the way every list on a phone
+				// does. A song with translations stands on a card of its own, because
+				// the pile under it needs an edge to peek out from.
+				<Box
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						gap: PHONE_BLOCK_GAP,
+					}}
+				>
+					{blocks.map((block) =>
+						block.kind === 'group' ? (
+							<SongGroupRow
+								key={`g-${String(block.packs[0].packGuid)}`}
+								packs={block.packs}
+								previewLines={PREVIEW_LINES_PHONE}
+								highlight={query}
+							/>
+						) : (
+							<SongGroup
+								key={`s-${String(block.packs[0].packGuid)}`}
+								songs={block.packs}
+								previewLines={PREVIEW_LINES_PHONE}
+								withIcon
+								highlight={query}
+							/>
+						)
+					)}
+				</Box>
 			) : (
 				<SmartSongListCards
 					data={songs}

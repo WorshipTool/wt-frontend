@@ -339,7 +339,14 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    `common/components/Menu`): MUI's Popover does not flip, so with no room below
    it keeps the menu below the anchor and slides it back into the window — which
    put these menus 200px from their button, over the dock itself.
-8. **Never a blank screen.** A data-backed screen always renders one of four
+8. **A row that stands for several things carries them as a pile, not as a
+   number.** A song with translations is one row on a card of its own, with the
+   edges of the cards under it showing below (`SongGroupRow`) — the phone's
+   reading of the desktop's stacked `SongGroupCard`. Tapping the row opens the
+   one on top; tapping the pile opens the same chooser the desktop card opens.
+   The pile needs the card: a row flush in a shared surface has no edge for
+   anything to peek out from under, so a grouped song breaks out of the run.
+9. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that
    shows only its header while data is missing is a bug: the user can't tell

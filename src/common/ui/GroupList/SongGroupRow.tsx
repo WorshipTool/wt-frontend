@@ -1,22 +1,37 @@
 'use client'
 
 import { Box } from '@/common/ui/Box'
-import { SongRow } from '@/common/ui/GroupList/GroupList'
+import { GroupCard, SongRow } from '@/common/ui/GroupList/GroupList'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
-import { Typography } from '@/common/ui/Typography'
 import { BasicVariantPack } from '@/types/song'
-import { ChevronRightRounded, TranslateRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
+
+/** How many cards can show under the top one, however many translations there
+ * are — the desktop card stacks the same handful. */
+const MAX_EDGES = 3
+/** The sliver of each card left showing, and how far it is tucked in at each
+ * side, so the pile narrows as it goes down. */
+const EDGE_HEIGHT = 6
+const EDGE_INSET = 8
+/** …and how much deeper each one is than the card above it. A card behind is a
+ * card in shadow: on a desktop the same pile is drawn by taking the brightness
+ * down a step per card. */
+const EDGE_SHADES = ['grey.100', 'grey.200', 'grey.300'] as const
 
 /**
  * A song and its translations as one row — the phone's SongGroupCard.
  *
- * The desktop card gathers a song's translations into a stack and lets you pull
- * another one off it; a phone list has no room for a stack, so the group is one
- * ordinary row with the count of translations at its end. Tapping the row opens
- * the one on top, exactly as the card's face does; tapping the count opens the
- * same chooser the card opens.
+ * The desktop card gathers a song's translations into a pile, the top one face
+ * up and the others' edges showing beneath it. This is the same pile with a row
+ * as its face: the song is an ordinary list row on its own card, and the
+ * translations under it are the edges below. Tapping the row opens the one on
+ * top, exactly as the card's face does; tapping the pile opens the same chooser
+ * the card opens.
+ *
+ * It carries its own card rather than sitting in the list's shared surface,
+ * because a pile needs something to be a pile *of*: a row flush in a surface has
+ * no edge for anything to peek out from under.
  *
  * Without it, a search for a wedding song answered with five rows all called
  * "Svatební" and nothing saying which of them were the same song.
@@ -36,55 +51,47 @@ export default function SongGroupRow({
 	const t = useTranslations('song.translations')
 	const [choosing, setChoosing] = useState(false)
 
-	// a group of one is a song like any other: nothing to choose between
-	const hasOthers = packs.length > 1
+	const edges = Math.min(packs.length - 1, MAX_EDGES)
 
 	return (
 		<>
-			<SongRow
-				song={packs[0]}
-				previewLines={previewLines}
-				withIcon={withIcon}
-				highlight={highlight}
-				trailing={
-					hasOthers ? (
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+			<Box>
+				<GroupCard>
+					<SongRow
+						song={packs[0]}
+						previewLines={previewLines}
+						withIcon={withIcon}
+						highlight={highlight}
+					/>
+				</GroupCard>
+
+				{edges > 0 && (
+					<Box
+						role="button"
+						aria-label={t('selectOther')}
+						onClick={() => setChoosing(true)}
+						sx={{ cursor: 'pointer' }}
+					>
+						{Array.from({ length: edges }).map((_, i) => (
 							<Box
-								component="button"
-								type="button"
-								aria-label={t('selectOther')}
-								onClick={(e: React.MouseEvent) => {
-									// the row is a link to the song; this is not
-									e.preventDefault()
-									e.stopPropagation()
-									setChoosing(true)
-								}}
+								key={i}
 								sx={{
-									display: 'flex',
-									alignItems: 'center',
-									gap: 0.25,
-									height: 32,
-									paddingX: 1,
-									border: '1px solid',
-									borderColor: 'grey.300',
-									borderRadius: 2,
-									bgcolor: 'grey.50',
-									color: 'grey.700',
-									font: 'inherit',
-									cursor: 'pointer',
-									'&:active': { bgcolor: 'grey.200' },
+									height: EDGE_HEIGHT,
+									// each card a little further under the one above it, and a
+									// shade deeper, which is the whole of how a pile reads
+									marginX: `${(i + 1) * EDGE_INSET}px`,
+									bgcolor: EDGE_SHADES[i],
+									borderBottomLeftRadius: 12,
+									borderBottomRightRadius: 12,
+									...(i === edges - 1 && {
+										boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+									}),
 								}}
-							>
-								<TranslateRounded sx={{ fontSize: 16 }} />
-								<Typography small strong color="grey.700">
-									{packs.length}
-								</Typography>
-							</Box>
-							<ChevronRightRounded sx={{ color: 'grey.400' }} />
-						</Box>
-					) : undefined
-				}
-			/>
+							/>
+						))}
+					</Box>
+				)}
+			</Box>
 
 			<TranslationsSelectPopup
 				open={choosing}
