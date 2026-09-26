@@ -140,10 +140,24 @@ function findNormalized(
  * Every stretch of the text the query marks.
  *
  * The phrase first, so "nový den" underlines the two words together wherever
- * they stand. Failing that, each word on its own — which is how the search
- * itself reads a phrase: a song is in the list because it has the words, not
- * because it has them side by side. Without this, searching for three words
- * found songs and then underlined nothing in any of them.
+ * they stand. Failing that, each word on its own.
+ *
+ * Which is looser than the search, and deliberately so. The search normalizes
+ * the whole key at once — `normalizeSearchText` drops the spaces with the rest
+ * of the punctuation, so it becomes one run — and then requires *every* 3-gram
+ * of that run to be among the song's own (`+gram` for each, see the backend's
+ * searchTermToTrigramQuery). A song in the results therefore carries all of
+ * what you typed, but scattered: the three-letter pieces can sit anywhere, so
+ * the words are usually all in the song and rarely side by side.
+ *
+ * Marking the trigrams themselves would be unreadable — three-letter crumbs
+ * through the verse — so this marks what a reader recognises instead: the
+ * phrase where the song has it, the words where it does not. A song whose
+ * trigrams line up without the words ever appearing gets nothing marked, and
+ * opens at its first lines.
+ *
+ * Without the word pass, searching for three words found songs and then
+ * underlined nothing in any of them.
  */
 function rangesFor(text: string, query: string): Range[] {
 	const map = normalizeWithSource(text)
