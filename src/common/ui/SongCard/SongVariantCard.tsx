@@ -10,10 +10,14 @@ import { useTranslationLikesCount } from '@/common/ui/SongCard/hooks/useTranslat
 import { Typography } from '@/common/ui/Typography'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useApiState } from '@/tech/ApiState'
-import { splitByMatch } from '@/tech/string/highlight.string.tech'
+import {
+	HighlightPart,
+	previewLinesAroundMatch,
+	splitByMatch,
+} from '@/tech/string/highlight.string.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { Lock, Public, ThumbUpAlt, ThumbUpOffAlt } from '@mui/icons-material'
-import { alpha, styled, useTheme } from '@mui/material'
+import { alpha, styled, Theme, useTheme } from '@mui/material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
 import { memo, ReactNode, useEffect, useMemo, useState } from 'react'
@@ -38,6 +42,37 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 	outlineStyle: 'solid',
 	position: 'relative',
 }))
+
+/** What a search matched, in a highlighter's yellow rather than the brand's
+ * blue: blue is what this app spends on the current tab and on the one primary
+ * action of a screen, so a marked-up title read like something to press. Yellow
+ * means nothing else here, which is what a mark on a page should mean. */
+const MARK_SX = {
+	bgcolor: (theme: Theme) => alpha(theme.palette.secondary.main, 0.45),
+	color: 'inherit',
+	borderRadius: 0.5,
+	paddingX: 0.25,
+} as const
+
+/** How much of a line is kept in front of a match on a row that cannot wrap. */
+const LEAD_IN_CHARS = 12
+
+/** A piece of text with the search's match marked in it. */
+function Highlighted({ parts }: { parts: HighlightPart[] }) {
+	return (
+		<>
+			{parts.map((part, i) =>
+				part.match ? (
+					<Box key={i} component="mark" sx={MARK_SX}>
+						{part.text}
+					</Box>
+				) : (
+					<span key={i}>{part.text}</span>
+				)
+			)}
+		</>
+	)
+}
 
 const SONG_CARD_PROPERTIES = [
 	'SHOW_PRIVATE_LABEL',
@@ -124,10 +159,19 @@ export const SongVariantCard = memo(function S({
 	const title = data.title
 	const sheet = new Sheet(data.sheetData)
 	const previewLineCount = props.previewLines ?? (dense ? 1 : 4)
-	const dataLines = sheet
-		.getSections()[0]
-		?.text?.split('\n')
-		.slice(0, previewLineCount)
+	// The whole song, not only its first section: a search that matched the third
+	// verse has to be able to show the third verse.
+	const lyrics = sheet
+		.getSections()
+		.map((section) => section.text ?? '')
+		.join('\n')
+	const previewLines = previewLinesAroundMatch(
+		lyrics,
+		props.highlight,
+		previewLineCount,
+		// a dense row does not wrap, so a match past its end would never show
+		dense ? LEAD_IN_CHARS : undefined
+	)
 
 	const linkProps = useMemo(() => {
 		if (props.toLinkProps) {
@@ -347,32 +391,11 @@ export const SongVariantCard = memo(function S({
 									language={data.language}
 									translationType={data.translationType}
 								/>
-								{props.highlight
-									? splitByMatch(title, props.highlight).map((part, i) =>
-											part.match ? (
-												<Box
-													key={i}
-													component="mark"
-													sx={{
-														// A highlighter's yellow rather than the brand's blue:
-														// blue is what this app spends on the current tab and on
-														// the one primary action of a screen, so a marked-up title
-														// read like something to press. Yellow means nothing else
-														// here, which is what a mark on a page should mean.
-														bgcolor: (theme) =>
-															alpha(theme.palette.secondary.main, 0.45),
-														color: 'inherit',
-														borderRadius: 0.5,
-														paddingX: 0.25,
-													}}
-												>
-													{part.text}
-												</Box>
-											) : (
-												<span key={i}>{part.text}</span>
-											)
-									  )
-									: title}
+								{props.highlight ? (
+									<Highlighted parts={splitByMatch(title, props.highlight)} />
+								) : (
+									title
+								)}
 							</Typography>
 							<Box>
 								{showPrivate || showYourPublic ? (
@@ -417,13 +440,9 @@ export const SongVariantCard = memo(function S({
 									overflow: 'hidden',
 								}}
 							>
-								{dataLines.map((line, index) => {
+								{previewLines.map((parts, index) => {
 									return (
-										<Box
-											display={'flex'}
-											flexDirection={'row'}
-											key={line + index}
-										>
+										<Box display={'flex'} flexDirection={'row'} key={index}>
 											<Typography
 												key={'SearchItemText' + index}
 												small={dense}
@@ -432,7 +451,7 @@ export const SongVariantCard = memo(function S({
 													flex: 1,
 												}}
 											>
-												{line}
+												<Highlighted parts={parts} />
 											</Typography>
 										</Box>
 									)

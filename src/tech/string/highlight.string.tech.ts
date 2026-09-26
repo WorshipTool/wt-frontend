@@ -153,3 +153,95 @@ export function splitByMatch(text: string, query: string): HighlightPart[] {
 	if (to < text.length) parts.push({ text: text.slice(to), match: false })
 	return parts
 }
+
+/** Characters of the line kept before a match when a line is trimmed to it. */
+const LEAD_IN = 12
+
+/** Split one text into lines, each line split into its matched and unmatched
+ * pieces. A match that runs over a line break comes out marked on both. */
+function linesOf(parts: HighlightPart[]): HighlightPart[][] {
+	const lines: HighlightPart[][] = [[]]
+	for (const part of parts) {
+		const pieces = part.text.split('\n')
+		pieces.forEach((piece, i) => {
+			if (i > 0) lines.push([])
+			if (piece !== '') lines[lines.length - 1].push({ ...part, text: piece })
+		})
+	}
+	return lines
+}
+
+/**
+ * Cut a line down so the match is near its start, with an ellipsis for what was
+ * dropped. For a row that does not wrap: the matching line is no use if the
+ * match itself is past the end of the row.
+ */
+function leadInTo(line: HighlightPart[], lead: number): HighlightPart[] {
+	const at = line.findIndex((part) => part.match)
+	if (at < 0) return line
+
+	const before = line
+		.slice(0, at)
+		.map((p) => p.text)
+		.join('')
+	if (before.length <= lead) return line
+
+	const kept = before.slice(-lead)
+	// …from a word, not from the middle of one. Any whitespace, not a plain
+	// space: a sheet carries non-breaking ones, and looking for the plain kind
+	// left lines starting mid-word ("…ože, dík za").
+	const space = kept.search(/\s/)
+	const tail = space >= 0 ? kept.slice(space + 1) : kept
+
+	return [{ text: `…${tail}`, match: false }, ...line.slice(at)]
+}
+
+/**
+ * The lines of a song to show under its title in a result: the ones the search
+ * actually matched, rather than the first ones of the first verse.
+ *
+ * A search that finds a song by its words says nothing if the card then shows a
+ * verse those words are not in — the reader is left to take the result on
+ * trust. So the match decides which lines are shown, and is marked in them.
+ *
+ * The song is matched whole, not line by line, because the search does not see
+ * a line break either: `normalizeSearchText` drops it along with the rest of the
+ * punctuation, so "amenotce" matches across "Amen,\nOtče" and is marked on both
+ * lines. Blank lines are dropped — in a preview of one or two lines, an empty
+ * one is a line wasted.
+ *
+ * @param count how many lines the preview has room for
+ * @param lead for a row that does not wrap: trim a matching line to this many
+ * characters before the match, so the match is on screen. Leave it out where
+ * the text wraps and the whole line is readable anyway.
+ */
+export function previewLinesAroundMatch(
+	text: string,
+	query: string | undefined,
+	count: number,
+	lead?: number
+): HighlightPart[][] {
+	const lines = text
+		.split('\n')
+		.map((line) => line.trim())
+		.filter((line) => line !== '')
+	if (count <= 0 || lines.length === 0) return []
+
+	const trimmed = query?.trim() ?? ''
+	const plain = () =>
+		lines.slice(0, count).map((line) => [{ text: line, match: false }])
+	if (trimmed === '') return plain()
+
+	const split = linesOf(splitByMatch(lines.join('\n'), trimmed))
+	const at = split.findIndex((line) => line.some((part) => part.match))
+	// matched by its title, then, and the song opens where it always did
+	if (at < 0) return plain()
+
+	// …and if the match is near the end, back up enough to fill the preview
+	const start = Math.min(at, Math.max(0, split.length - count))
+	const window = split.slice(start, start + count)
+
+	return lead === undefined
+		? window
+		: window.map((line) => leadInTo(line, lead))
+}

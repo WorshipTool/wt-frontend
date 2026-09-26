@@ -1,4 +1,7 @@
-import { splitByMatch } from '../highlight.string.tech'
+import {
+	previewLinesAroundMatch,
+	splitByMatch,
+} from '../highlight.string.tech'
 
 const shape = (text: string, query: string) =>
 	splitByMatch(text, query).map((p) => (p.match ? `[${p.text}]` : p.text)).join('')
@@ -84,5 +87,78 @@ describe('splitByMatch', () => {
 		expect(splitByMatch('Adonai', '  ')).toEqual([
 			{ text: 'Adonai', match: false },
 		])
+	})
+})
+
+const preview = (text: string, query: string | undefined, count: number, lead?: number) =>
+	previewLinesAroundMatch(text, query, count, lead).map((line) =>
+		line.map((p) => (p.match ? `[${p.text}]` : p.text)).join('')
+	)
+
+const SONG = [
+	'Chval Ho, ó duše má,',
+	'',
+	'Slunce vychází,',
+	'nový den začíná',
+	'a je čas zpívat Tvou píseň zas.',
+	'Cokoli se může stát',
+].join('\n')
+
+describe('previewLinesAroundMatch', () => {
+	it('opens the song where it always did when nothing is searched', () => {
+		expect(preview(SONG, undefined, 2)).toEqual([
+			'Chval Ho, ó duše má,',
+			'Slunce vychází,',
+		])
+	})
+
+	it('skips the blank lines a one-line preview cannot afford', () => {
+		expect(preview(SONG, '', 2)).toEqual([
+			'Chval Ho, ó duše má,',
+			'Slunce vychází,',
+		])
+	})
+
+	it('shows the lines the search matched, not the first ones', () => {
+		expect(preview(SONG, 'novy den', 2)).toEqual([
+			'[nový den] začíná',
+			'a je čas zpívat Tvou píseň zas.',
+		])
+	})
+
+	it('opens the song at the top when only its title matched', () => {
+		expect(preview(SONG, 'svatebni', 2)).toEqual([
+			'Chval Ho, ó duše má,',
+			'Slunce vychází,',
+		])
+	})
+
+	it('backs up so the preview is still full at the end of a song', () => {
+		expect(preview(SONG, 'cokoli', 2)).toEqual([
+			'a je čas zpívat Tvou píseň zas.',
+			'[Cokoli] se může stát',
+		])
+	})
+
+	it('marks a match that runs over a line break, on both lines', () => {
+		// the search drops the break with the rest of the punctuation
+		expect(preview('Amen,\nOtče náš', 'amenotce', 2)).toEqual([
+			'[Amen,]',
+			'[Otče] náš',
+		])
+	})
+
+	it('trims a line to the match for a row that cannot wrap', () => {
+		expect(preview(SONG, 'pisen', 1, 12)).toEqual(['…Tvou [píseň] zas.'])
+	})
+
+	it('cuts at a non-breaking space too, as a sheet writes them', () => {
+		const line = 'Bu\u010f,\u00a0Bo\u017ee,\u00a0d\u00edk\u00a0za\u00a0nov\u00fd den,'
+
+		expect(preview(line, 'novy', 1, 12)).toEqual(['\u2026d\u00edk\u00a0za\u00a0[nov\u00fd] den,'])
+	})
+
+	it('leaves a short lead alone', () => {
+		expect(preview(SONG, 'novy', 1, 12)).toEqual(['[nový] den začíná'])
 	})
 })
