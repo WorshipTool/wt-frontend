@@ -345,7 +345,11 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    reading of the desktop's stacked `SongGroupCard`. Tapping the row opens the
    one on top; tapping the pile opens the same chooser the desktop card opens.
    The pile needs the card: a row flush in a shared surface has no edge for
-   anything to peek out from under, so a grouped song breaks out of the run.
+   anything to peek out from under, so a grouped song carries its own. That is
+   a seam in the surface, not a gap in the list — the blocks meet square, on an
+   ordinary inset divider, and round off only where the list itself ends and
+   under the pile. A group that stood apart with air around it read as a
+   section of its own, which it is not.
 9. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that

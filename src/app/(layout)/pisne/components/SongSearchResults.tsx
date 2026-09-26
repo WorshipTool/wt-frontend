@@ -7,6 +7,7 @@ import SmartSongListCards from '@/common/components/songLists/SongListCards/Smar
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box, CircularProgress } from '@/common/ui'
 import {
+	GroupDivider,
 	GroupRowsSkeleton,
 	ListStateView,
 	SongGroup,
@@ -20,7 +21,14 @@ import { useIsInViewport } from '@/hooks/useIsInViewport'
 import { SearchKey } from '@/types/song/search.types'
 import { SearchRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+	Fragment,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
 
 /** Lyric preview lines on a result row: the phone's row is taller and can
  * carry two, a desktop row stays one line so more results fit the screen. */
@@ -29,9 +37,10 @@ const PREVIEW_LINES_PHONE = 2
  * now, not a column beside a panel, so the results wear the card list's own
  * widths — the ones home's search has always used. */
 const CARD_COLUMNS = { xs: 1, md: 2, lg: 4, xl: 5 }
-/** Air between a run of songs and the next block on a phone — the gap the piled
- * cards of a group stand in. */
-const PHONE_BLOCK_GAP = 1.5
+/** Air between a run of songs and the next block on a phone. None: a song with
+ * translations is still a line of the same list, so it keeps the list's rhythm
+ * — only the pile under it belongs to it, and that carries its own air. */
+const PHONE_BLOCK_GAP = 0
 
 type SongSearchResultsProps = {
 	/** The query actually being searched (already debounced and trimmed). */
@@ -170,24 +179,58 @@ export default function SongSearchResults({
 						gap: PHONE_BLOCK_GAP,
 					}}
 				>
-					{blocks.map((block) =>
-						block.kind === 'group' ? (
-							<SongGroupRow
-								key={`g-${String(block.packs[0].packGuid)}`}
-								packs={block.packs}
-								previewLines={PREVIEW_LINES_PHONE}
-								highlight={query}
-							/>
-						) : (
-							<SongGroup
-								key={`s-${String(block.packs[0].packGuid)}`}
-								songs={block.packs}
-								previewLines={PREVIEW_LINES_PHONE}
-								withIcon
-								highlight={query}
-							/>
+					{blocks.map((block, i) => {
+						const isGroup = block.kind === 'group'
+						// One list, whatever it is made of: a block rounds off only where
+						// the list itself ends, and a group's bottom, which is a card's own
+						// edge with a pile under it. Everywhere else the corners are square
+						// and the blocks meet on an ordinary divider.
+						// …and a block that follows a pile starts a fresh card, because the
+						// pile ended the one before it
+						const opensCard = i === 0 || blocks[i - 1].kind === 'group'
+						const closesCard = i === blocks.length - 1 || isGroup
+						const corners = {
+							...(!opensCard && {
+								borderTopLeftRadius: 0,
+								borderTopRightRadius: 0,
+							}),
+							...(!closesCard && {
+								borderBottomLeftRadius: 0,
+								borderBottomRightRadius: 0,
+							}),
+						}
+						return (
+							<Fragment
+								key={`${block.kind}-${String(block.packs[0].packGuid)}`}
+							>
+								{/* …and a pile is a divider of its own, so none after one. The
+								    white behind it is the surface it would have been drawn on
+								    had these rows shared one, so its inset reads the same as
+								    every other divider's. */}
+								{i > 0 && blocks[i - 1].kind !== 'group' && (
+									<Box sx={{ bgcolor: 'background.paper' }}>
+										<GroupDivider inset="icon" />
+									</Box>
+								)}
+								{isGroup ? (
+									<SongGroupRow
+										packs={block.packs}
+										previewLines={PREVIEW_LINES_PHONE}
+										highlight={query}
+										sx={corners}
+									/>
+								) : (
+									<SongGroup
+										songs={block.packs}
+										previewLines={PREVIEW_LINES_PHONE}
+										withIcon
+										highlight={query}
+										sx={corners}
+									/>
+								)}
+							</Fragment>
 						)
-					)}
+					})}
 				</Box>
 			) : (
 				<SmartSongListCards

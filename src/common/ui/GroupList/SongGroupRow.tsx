@@ -2,6 +2,7 @@
 
 import { Box } from '@/common/ui/Box'
 import { GroupCard, SongRow } from '@/common/ui/GroupList/GroupList'
+import { SxProps } from '@/common/ui/mui'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
 import { BasicVariantPack } from '@/types/song'
 import { useTranslations } from 'next-intl'
@@ -41,12 +42,15 @@ export default function SongGroupRow({
 	previewLines,
 	withIcon = true,
 	highlight,
+	sx,
 }: {
 	/** The song's translations, the first of which is the one the row shows. */
 	packs: BasicVariantPack[]
 	previewLines?: number
 	withIcon?: boolean
 	highlight?: string
+	/** The card's own styling — corners, where the list carries on past it. */
+	sx?: SxProps
 }) {
 	const t = useTranslations('song.translations')
 	const [choosing, setChoosing] = useState(false)
@@ -56,7 +60,7 @@ export default function SongGroupRow({
 	return (
 		<>
 			<Box>
-				<GroupCard>
+				<GroupCard sx={sx}>
 					<SongRow
 						song={packs[0]}
 						previewLines={previewLines}
@@ -70,7 +74,9 @@ export default function SongGroupRow({
 						role="button"
 						aria-label={t('selectOther')}
 						onClick={() => setChoosing(true)}
-						sx={{ cursor: 'pointer' }}
+						// the air belongs under the pile rather than around the whole
+						// group: what follows is the next line of the same list
+						sx={{ cursor: 'pointer', marginBottom: 0.5 }}
 					>
 						{Array.from({ length: edges }).map((_, i) => (
 							<Box
