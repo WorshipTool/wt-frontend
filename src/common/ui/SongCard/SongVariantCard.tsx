@@ -354,8 +354,13 @@ export const SongVariantCard = memo(function S({
 													key={i}
 													component="mark"
 													sx={{
+														// A highlighter's yellow rather than the brand's blue:
+														// blue is what this app spends on the current tab and on
+														// the one primary action of a screen, so a marked-up title
+														// read like something to press. Yellow means nothing else
+														// here, which is what a mark on a page should mean.
 														bgcolor: (theme) =>
-															alpha(theme.palette.primary.main, 0.18),
+															alpha(theme.palette.secondary.main, 0.45),
 														color: 'inherit',
 														borderRadius: 0.5,
 														paddingX: 0.25,
