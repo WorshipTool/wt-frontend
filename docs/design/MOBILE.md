@@ -62,6 +62,25 @@ must use the same fixed frame.
 
 The invariant to check on any shell route: scrolling the *window* moves it 0px.
 
+**And it must already be true before the page wakes up.** Which layout a screen
+wears is a JS media query, so what the server renders — and what stands on the
+screen until hydration finishes — is the *desktop* layout, which is a screenful
+taller than a phone. Drag that and the gesture belongs to the document for as
+long as it lasts, momentum included; by the time it ends the shell is fixed over
+the top of it, so the screen ignores you until you lift your finger and try
+again. It reads as a phantom scroller in front of everything, and it lasted
+~2.5s on a dev build — longer the slower the phone.
+
+So an app-shell screen declares itself in `APP_SHELL_SCREENS`
+(`nav.constants.ts`), and `MobileShellScrollLock` — rendered once in
+`AppLayoutInner` — puts `:root { overflow: hidden }` under the shell's own
+breakpoint into the first HTML the browser gets. A rule, not a `style.overflow`
+set on mount: mounting is hydration, which is the end of the window rather than
+the start of it. **Add a screen to that list whenever you give it
+`MobileAppHeader`** — one left out gets the phantom back, and the screens that
+legitimately scroll their document (marketing pages, the team module, the
+storybook, the playlist detail) must stay out of it.
+
 
 
 Ask **`useIsPhone()`** (`common/hooks/useIsPhone`) — never spell out

@@ -155,6 +155,34 @@ const OWNS_BOTTOM_CLEARANCE: RoutesKeys[] = [
 	'signup',
 ]
 
+/**
+ * The screens whose phone layout is the app shell (MobileAppHeader): a fixed
+ * surface with its own scroller, where the document itself must not scroll.
+ *
+ * It must not scroll from the first paint, not from hydration: which layout a
+ * screen wears is decided by a JS media query, so what the server renders — and
+ * what stands on the screen until hydration finishes — is the *desktop* layout,
+ * which is tall. Drag it and the gesture belongs to the document for as long as
+ * it lasts; by the time it ends, the shell is fixed over the top of it, so the
+ * screen ignores you until your finger stops and you try again. That is the
+ * phantom scroller in front of everything. See MobileShellScrollLock.
+ *
+ * Has to stay in step with the pages that render MobileAppHeader — a screen
+ * left out of this list gets the phantom back.
+ */
+const APP_SHELL_SCREENS: RoutesKeys[] = [
+	'home',
+	'songsList',
+	'variant',
+	'account',
+	'usersSongs',
+	'usersFavourites',
+	'usersPlaylists',
+	'addMenu',
+	'writeSong',
+	'upload',
+]
+
 /** Strip a trailing slash so `/seznam/` classifies the same as `/seznam`. */
 function normalise(pathname: string): string {
 	return pathname.length > 1 && pathname.endsWith('/')
@@ -190,6 +218,13 @@ export function hasContextualBottomBar(pathname: string | null): boolean {
 	if (!pathname) return false
 	const path = normalise(pathname)
 	return CONTEXTUAL_BAR_ROUTES.some((key) => matches(path, key))
+}
+
+/** See `APP_SHELL_SCREENS`. */
+export function isMobileAppShellRoute(pathname: string | null): boolean {
+	if (!pathname) return false
+	const path = normalise(pathname)
+	return APP_SHELL_SCREENS.some((key) => matches(path, key))
 }
 
 /** See `OWNS_BOTTOM_CLEARANCE`. */

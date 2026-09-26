@@ -1,5 +1,6 @@
 'use client'
 import { RIGHT_SIDE_BAR_CLASSNAME } from '@/common/components/app/SmartPage/SmartPageInner'
+import { MobileShellScrollLock } from '@/common/components/MobileAppHeader'
 import MobileAppTabBar from '@/common/components/MobileAppTabBar/MobileAppTabBar'
 import {
 	isMobileTabBarRoute,
@@ -27,6 +28,10 @@ export default function Inner({ children }: AppContainerProps) {
 		children
 	) : (
 		<Box display={'flex'} flexDirection={'column'} minHeight={'100vh'}>
+			{/* on a phone, an app-shell screen scrolls inside its own shell and the
+			    document underneath stays put — from the first paint, not from
+			    hydration */}
+			<MobileShellScrollLock />
 			<Toolbar />
 			<Box className={'app-body-container'}>
 				{children}
