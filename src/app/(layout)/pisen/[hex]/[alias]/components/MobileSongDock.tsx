@@ -238,7 +238,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 						<PlaylistAddRounded fontSize="small" sx={{ color: 'grey.700' }} />
 					</IconButton>
 				)}
+				{/* the dock is at the bottom of the screen, so its menus open upward
+				    onto their button rather than being slid away from it */}
 				<SongsOptionsButton
+					openAbove
 					reloadSong={props.reloadSong}
 					variant={props.variant}
 					sheet={props.sheet}
@@ -261,6 +264,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 
 			{/* playlist picker anchored to the dock's playlist button */}
 			<SelectPlaylistMenu
+				openAbove
 				open={Boolean(playlistAnchor)}
 				onClose={() => setPlaylistAnchor(null)}
 				anchor={playlistAnchor}

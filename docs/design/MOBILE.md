@@ -335,6 +335,10 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    — printing, liking, the key, the playlist. A setting you turn on for the
    song you are about to play and then leave alone (the chords toggle) belongs
    in the options menu, where its item still says which way it is set.
+   A menu opened from a dock opens **upward**, onto its button (`ABOVE_ANCHOR`,
+   `common/components/Menu`): MUI's Popover does not flip, so with no room below
+   it keeps the menu below the anchor and slides it back into the window — which
+   put these menus 200px from their button, over the dock itself.
 8. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that

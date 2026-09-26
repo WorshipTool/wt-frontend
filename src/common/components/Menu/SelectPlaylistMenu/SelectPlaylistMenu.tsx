@@ -1,5 +1,5 @@
 import { PlaylistData } from '@/api/generated'
-import Menu from '@/common/components/Menu/Menu'
+import Menu, { ABOVE_ANCHOR } from '@/common/components/Menu/Menu'
 import PlaylistMenuItem from '@/common/components/Menu/SelectPlaylistMenu/PlaylistMenuItem'
 import Popup from '@/common/components/Popup/Popup'
 import { Box, CircularProgress, Divider, useTheme } from '@/common/ui'
@@ -17,6 +17,9 @@ type SelectPlaylistMenuProps = {
 	onClose: () => void
 	anchor: HTMLElement | null
 	onPlaylistClick?: (guid: PlaylistGuid) => void
+	/** For a button at the bottom of the screen: the menu opens upward, onto its
+	 * button, instead of being slid away from it (see ABOVE_ANCHOR). */
+	openAbove?: boolean
 
 	itemComponent?: (props: PlaylistData) => JSX.Element
 }
@@ -67,7 +70,7 @@ export default function SelectPlaylistMenu(props: SelectPlaylistMenuProps) {
 		<>
 			<Menu
 				anchor={props.anchor}
-				// anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+				{...(props.openAbove ? ABOVE_ANCHOR : {})}
 				open={props.open}
 				onClose={props.onClose}
 			>
