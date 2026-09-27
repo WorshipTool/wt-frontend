@@ -2,7 +2,8 @@
 
 import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
-import { InputBase, SxProps } from '@/common/ui/mui'
+import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
+import { InputBase, SxProps, Theme } from '@/common/ui/mui'
 import { useTheme } from '@/common/ui/tech'
 import { isMobile } from '@/tech/device.tech'
 import { AutoAwesome, CloseRounded, SearchRounded } from '@mui/icons-material'
@@ -26,27 +27,34 @@ import {
  * a trip that changed the field's colour, radius and shadow halfway was the
  * clearest sign the copies had drifted.
  *
- * White on a hairline, because it sits on the grey app canvas and inside white
- * surfaces alike, and a filled field disappears into the second. The hero wears
- * the brand gradient around it (`highlighted`); nothing else does.
+ * One shape on both widths — hairline, radius, shadow — and one fill each. A
+ * phone's field is paper: it stands on the grey app canvas and inside white
+ * surfaces alike, and a filled one disappears into the second. A desktop keeps
+ * the grey it has always had, which is the fill the hero's gradient frame was
+ * drawn around. The hero wears that frame (`highlighted`); nothing else does.
  */
 
-/** The resting shape: paper on a hairline, with just enough shadow to lift it. */
-const FIELD_SX = {
-	display: 'flex',
-	flexDirection: 'row',
-	alignItems: 'center',
-	gap: 1.5,
-	bgcolor: 'background.paper',
-	border: '1px solid',
-	borderColor: 'grey.300',
-	borderRadius: 2.5,
-	paddingX: 2,
-	paddingY: 1.5,
-	boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-	transition: 'border-color 0.15s ease',
-	'&:focus-within': { borderColor: 'grey.400' },
-} as const
+/** Where the fill changes — the width at which the desktop layout appears. */
+const DESKTOP = MOBILE_NAV_BREAKPOINT
+
+/** The resting shape: a hairline and just enough shadow to lift it. */
+const fieldSx = (theme: Theme) =>
+	({
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 1.5,
+		bgcolor: 'background.paper',
+		[theme.breakpoints.up(DESKTOP)]: { bgcolor: 'grey.100' },
+		border: '1px solid',
+		borderColor: 'grey.300',
+		borderRadius: 2.5,
+		paddingX: 2,
+		paddingY: 1.5,
+		boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+		transition: 'border-color 0.15s ease',
+		'&:focus-within': { borderColor: 'grey.400' },
+	} as const)
 
 /** The gradient frame the home hero wears, and the padding that reveals it. */
 const HIGHLIGHT_PADDING = 2
@@ -114,7 +122,7 @@ export function SearchBar({
 	)
 
 	const field = (
-		<Box sx={{ ...FIELD_SX, ...(highlighted ? {} : (sx as object)) }}>
+		<Box sx={fieldSx(theme)}>
 			<SearchRounded sx={{ color: 'grey.500' }} />
 			<InputBase
 				placeholder={placeholder ?? t('searchByTitleOrText')}
@@ -166,21 +174,19 @@ export function SearchBar({
 		</Box>
 	)
 
-	if (!highlighted)
-		return (
-			<Box ref={containerRef} data-testid={testId}>
-				{field}
-			</Box>
-		)
-
+	// `sx` lands here, on the box the bar stands in: it says where the bar goes —
+	// width, flex, margins — and never what it looks like, which is the whole
+	// point of there being one of these.
 	return (
 		<Box
 			ref={containerRef}
 			data-testid={testId}
 			sx={{
-				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-				borderRadius: 3,
-				padding: `${HIGHLIGHT_PADDING}px`,
+				...(highlighted && {
+					background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+					borderRadius: 3,
+					padding: `${HIGHLIGHT_PADDING}px`,
+				}),
 				...(sx as object),
 			}}
 		>

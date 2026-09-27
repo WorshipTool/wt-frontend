@@ -1,54 +1,29 @@
-import { Box } from '@/common/ui'
-import { TextField } from '@/common/ui/TextField/TextField'
-import { Search } from '@mui/icons-material'
+import { SearchBar } from '@/common/ui/SearchBar'
 import { useTranslations } from 'next-intl'
-import './SelectSearch.styles.css'
 
 type SelectSearchProps = {
 	value?: string
 	onChange?: (value: string) => void
 }
 
+/**
+ * The song picker's search, in the popup's heading row beside its title.
+ *
+ * It used to be a `TextField` with its own stylesheet, right-aligned text and
+ * the magnifier trailing the field instead of leading it — the one search in
+ * the app that read backwards. It is the app's `SearchBar` now; only the width
+ * is this screen's own, so the heading keeps room for its title.
+ */
 export const SelectSearch = (props: SelectSearchProps) => {
 	const t = useTranslations('search')
-	const onChangeHandler = (value: string) => {
-		props.onChange?.(value)
-	}
+
 	return (
-		<Box
-			display={'flex'}
-			flexDirection={'row'}
-			alignItems={'center'}
-			flex={1}
-			gap={1}
-		>
-			<TextField
-				placeholder={t('searchSong')}
-				sx={{
-					'& input': {
-						textAlign: 'right',
-					},
-					// width: 110,
-
-					paddingLeft: 0.5,
-				}}
-				value={props.value}
-				onChange={onChangeHandler}
-				className="song-select-title-box"
-				autoFocus
-			/>
-			<Box
-				color={'grey.700'}
-				display={'flex'}
-				alignItems={'center'}
-				justifyContent={'center'}
-			>
-				<Search color="inherit" />
-			</Box>
-
-			{/* <IconButton size="small">
-				<Search />
-			</IconButton> */}
-		</Box>
+		<SearchBar
+			value={props.value}
+			onChange={props.onChange}
+			placeholder={t('searchSong')}
+			autoFocus
+			sx={{ flex: 1, maxWidth: 320 }}
+		/>
 	)
 }

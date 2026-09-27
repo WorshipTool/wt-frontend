@@ -45,6 +45,7 @@ export type {
 	GridDirection,
 	SelectChangeEvent,
 	SxProps,
+	Theme,
 	ThemeOptions,
 } from '@mui/material'
 
