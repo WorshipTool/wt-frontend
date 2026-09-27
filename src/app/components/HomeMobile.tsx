@@ -196,8 +196,8 @@ export default function HomeMobile() {
 				<Box sx={{ position: 'relative' }}>
 					<Box
 						sx={{
-							fontSize: `${TITLE_SIZE}rem`,
 							...largeTitleSx,
+							fontSize: `${TITLE_SIZE}rem`,
 						}}
 					>
 						{tHome('hero.title')}

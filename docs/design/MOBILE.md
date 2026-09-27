@@ -35,17 +35,28 @@ hidden on tab-roots), `actions` (≤ 2 icons, right of the title), `controlPanel
 (top strip), `bottomPanel` (above the tab bar), `scrollResetKey`, `surface`,
 `divider`, `overlay`.
 
-**One large title, one style everywhere — one size, and one exception.**
-`LARGE_TITLE_REM` (1.5rem) and `LARGE_TITLE_COMPACT_REM` (1.125rem) in
-`common/constants/layout.ts`, with `largeTitleSx` for the rest of it — weight,
-tracking, line height, colour. The header row and the catalog (whose title
-scrolls with the list instead of sitting in the header) both take the size; to
-whoever is looking it is *the same title*, so neither keeps its own copy of the
-style. It was 1.85rem and read as the loudest thing on every screen, a song
-included, where it outweighed the sheet it was announcing; 1.5 → 1.125 are steps
-of the app's own scale (h4, h6) and are what the playlist screen had already
-settled on by hand (23 → 17.5px). The size belongs to the screen, because the
-header animates it on scroll.
+**One large title.** `LARGE_TITLE_REM` (1.5rem) and `LARGE_TITLE_COMPACT_REM`
+(1.125rem) in `common/constants/layout.ts`, with `largeTitleSx` for the rest of
+it — weight, tracking, line height, colour. The header row and the catalog
+(whose title scrolls with the list instead of sitting in the header) both take
+the size; to whoever is looking it is *the same title*, so neither keeps its own
+copy of the style. It was 1.85rem and read as the loudest thing on every screen,
+a song included, where it outweighed the sheet it was announcing. The size
+belongs to the screen, because the header animates it on scroll.
+
+1.5 → 1.125 are what the scale **renders on a phone** for `h3` and `h5`, which
+is not what `theme.tsx` declares for them: it ends in `responsiveFontSizes()`,
+so every declared heading size is the size at the widest breakpoint and below
+600px you get `1 + (max − 1) / 2`. Reach for `variant="h4"` expecting 1.5rem and
+you will get 1.25. Don't use a heading variant here anyway — the phone shell
+runs to `MOBILE_NAV_BREAKPOINT` (700px) and h3 steps back up at 600px, so the
+title would grow between 600 and 700.
+
+**Two screens keep their own size**, both on purpose: home's hero (below) and
+the playlist detail, whose title is a hand-tuned morph between two absolute
+sizes (23 → 17.5px) with tracking that has drifted to -0.3px. The playlist is
+the only screen still holding its own copy of the *style*; folding it in is its
+own small job.
 
 **Home's hero stays at 1.85rem.** Every other screen *names* itself and does it
 in a bar you read past; home *greets* you, has no bar to fit in, and is the one

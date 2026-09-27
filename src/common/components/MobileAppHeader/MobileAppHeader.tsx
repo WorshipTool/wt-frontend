@@ -277,8 +277,8 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 						<Box
 							ref={titleRef}
 							sx={{
-								fontSize: `${LARGE_TITLE_REM}rem`,
 								...largeTitleSx,
+								fontSize: `${LARGE_TITLE_REM}rem`,
 								whiteSpace: 'nowrap',
 								overflow: 'hidden',
 								textOverflow: 'ellipsis',

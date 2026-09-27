@@ -115,8 +115,8 @@ export default function SongsMobile({
 			>
 				<Box
 					sx={{
-						fontSize: `${LARGE_TITLE_REM}rem`,
 						...largeTitleSx,
+						fontSize: `${LARGE_TITLE_REM}rem`,
 					}}
 				>
 					{t('title')}
