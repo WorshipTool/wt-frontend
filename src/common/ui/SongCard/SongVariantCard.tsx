@@ -358,77 +358,147 @@ export const SongVariantCard = memo(function S({
 		const padding = `${py} ${opts?.noRightPad ? '0' : px} ${py} ${
 			opts?.noLeftPad ? '0' : px
 		}`
-		return (
-					<Box
-						sx={{
-							position: 'relative',
-							padding,
-							...(selected && {
-								borderColor: 'primary.main',
-								borderWidth: 2,
-								bgcolor: alpha(theme.palette.primary.main, 0.1),
 
-								'&:hover': {
-									bgcolor: alpha(theme.palette.primary.main, 0.2),
-								},
+		const heading = (
+			<Box display={'flex'} flexDirection={'row'} gap={1}>
+				<Typography
+					strong
+					noWrap={dense}
+					sx={{
+						flex: 1,
+						...(!data.ggValidated &&
+							isAdmin() && {
+								color: 'error.main',
 							}),
-							height: dense ? 'auto' : 'calc(100% - 2rem)',
-							display: 'flex',
-							flexDirection: 'column',
-							overflow: 'hidden',
-						}}
-					>
-						<Box display={'flex'} flexDirection={'row'} gap={1}>
+					}}
+				>
+					<VariantCardColorPoint
+						language={data.language}
+						translationType={data.translationType}
+					/>
+					{props.highlight ? (
+						<Highlighted parts={splitByMatch(title, props.highlight)} />
+					) : (
+						title
+					)}
+				</Typography>
+				<Box>
+					{showPrivate || showYourPublic ? (
+						<CustomChip
+							icon={showPrivate ? <Lock /> : <Public />}
+							label={showPrivate ? t('private') : t('createdByYou')}
+							color={
+								showPrivate
+									? theme.palette.grey[600]
+									: theme.palette.primary.main
+							}
+							borderColor={
+								showPrivate
+									? theme.palette.grey[400]
+									: theme.palette.primary.main
+							}
+						/>
+					) : null}
+					{createdByLoaderEnabled && data.createdByLoader ? (
+						<Typography size={'small'}>{t('uploadedByProgram')}</Typography>
+					) : null}
+
+					{publishedDateEnabled && data.publishedAt ? (
+						<Typography size={'small'}>
+							{t('addedOn')} {data.publishedAt.toLocaleDateString('cs-CZ')}
+						</Typography>
+					) : null}
+				</Box>
+			</Box>
+		)
+
+		const preview = (
+			<Box
+				sx={{
+					overflow: 'hidden',
+					// Lines of the song, not lines of the box. A lyric line does not
+					// break at its spaces — the sheet parser joins them with
+					// non-breaking ones so a chord cannot drift off its syllable — but
+					// it does break at a hyphen, and a song written with those stood
+					// seven lines tall on a four-line preview, with the card grown to
+					// match. The cap is the same count in line heights (1.5em is the
+					// body's), so the cut lands on a line rather than halfway through
+					// one. A row needs none: it is `noWrap`, so it is always the one
+					// line.
+					...(dense ? {} : { maxHeight: `${previewLineCount * 1.5}em` }),
+				}}
+			>
+				{previewLines.map((parts, index) => {
+					return (
+						<Box display={'flex'} flexDirection={'row'} key={index}>
 							<Typography
-								strong
+								key={'SearchItemText' + index}
+								small={dense}
 								noWrap={dense}
 								sx={{
 									flex: 1,
-									...(!data.ggValidated &&
-										isAdmin() && {
-											color: 'error.main',
-										}),
 								}}
 							>
-								<VariantCardColorPoint
-									language={data.language}
-									translationType={data.translationType}
-								/>
-								{props.highlight ? (
-									<Highlighted parts={splitByMatch(title, props.highlight)} />
-								) : (
-									title
-								)}
+								<Highlighted parts={parts} />
 							</Typography>
-							<Box>
-								{showPrivate || showYourPublic ? (
-									<CustomChip
-										icon={showPrivate ? <Lock /> : <Public />}
-										label={showPrivate ? t('private') : t('createdByYou')}
-										color={
-											showPrivate
-												? theme.palette.grey[600]
-												: theme.palette.primary.main
-										}
-										borderColor={
-											showPrivate
-												? theme.palette.grey[400]
-												: theme.palette.primary.main
-										}
-									/>
-								) : null}
-								{createdByLoaderEnabled && data.createdByLoader ? (
-									<Typography size={'small'}>{t('uploadedByProgram')}</Typography>
-								) : null}
-
-								{publishedDateEnabled && data.publishedAt ? (
-									<Typography size={'small'}>
-										{t('addedOn')} {data.publishedAt.toLocaleDateString('cs-CZ')}
-									</Typography>
-								) : null}
-							</Box>
 						</Box>
+					)
+				})}
+			</Box>
+		)
 
+		const additional = (
+			<SongCardAdditional
+				isOver={isOver}
+				data={data}
+				dense={dense}
+				icons={additionalIcons}
+			/>
+		)
+
+		return (
+			<Box
+				sx={{
+					position: 'relative',
+					padding,
+					...(selected && {
+						borderColor: 'primary.main',
+						borderWidth: 2,
+						bgcolor: alpha(theme.palette.primary.main, 0.1),
+
+						'&:hover': {
+							bgcolor: alpha(theme.palette.primary.main, 0.2),
+						},
+					}),
+					height: dense ? 'auto' : 'calc(100% - 2rem)',
+					display: 'flex',
+					flexDirection: 'column',
+					overflow: 'hidden',
+				}}
+			>
+				{dense ? (
+					// A row puts the column beside the title and the preview together,
+					// centred on the pair — the same line the leading icon and the
+					// chevron either side of it sit on. Beside the preview alone, which
+					// is the card's arrangement and right for a card, a favourite's
+					// heart hung 20px below that line.
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'row',
+							alignItems: 'center',
+							gap: 1,
+						}}
+					>
+						<Box sx={{ flex: 1, minWidth: 0 }}>
+							{heading}
+							{preview}
+						</Box>
+						{additional}
+					</Box>
+				) : (
+					<>
+						{heading}
 						<Box
 							sx={{
 								maxWidth: 'calc(100vw - 3rem)',
@@ -438,47 +508,12 @@ export const SongVariantCard = memo(function S({
 								flex: 1,
 							}}
 						>
-							<Box
-								sx={{
-									overflow: 'hidden',
-									// Lines of the song, not lines of the box. A lyric line does
-									// not break at its spaces — the sheet parser joins them with
-									// non-breaking ones so a chord cannot drift off its syllable
-									// — but it does break at a hyphen, and a song written with
-									// those stood seven lines tall on a four-line preview, with
-									// the card grown to match. The cap is the same count in line
-									// heights (1.5em is the body's), so the cut lands on a line
-									// rather than halfway through one. A row needs none: it is
-									// `noWrap`, so it is always the one line.
-									...(dense
-										? {}
-										: { maxHeight: `${previewLineCount * 1.5}em` }),
-								}}
-							>
-								{previewLines.map((parts, index) => {
-									return (
-										<Box display={'flex'} flexDirection={'row'} key={index}>
-											<Typography
-												key={'SearchItemText' + index}
-												small={dense}
-												noWrap={dense}
-												sx={{
-													flex: 1,
-												}}
-											>
-												<Highlighted parts={parts} />
-											</Typography>
-										</Box>
-									)
-								})}
-							</Box>
-							<SongCardAdditional
-								isOver={isOver}
-								data={data}
-								icons={additionalIcons}
-							/>
+							{preview}
+							{additional}
 						</Box>
-					</Box>
+					</>
+				)}
+			</Box>
 		)
 	}
 })

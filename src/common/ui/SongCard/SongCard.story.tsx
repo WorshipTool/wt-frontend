@@ -320,6 +320,19 @@ const SongCardStory = () => {
 						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
 					/>
 				</Case>
+
+				<Case label="S lajky překladu (sloupec vpravo)" width={ROW_WIDTH}>
+					{/* the column a favourite's heart shares: on a row it is centred, so
+					    it sits on the same line as the icon and the chevron */}
+					<SongVariantCard
+						data={pack({ translationLikes: 12 })}
+						dense
+						previewLines={2}
+						properties={['ENABLE_TRANSLATION_LIKE']}
+						leadingIcon={<SongLeadingIcon />}
+						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
+					/>
+				</Case>
 			</Section>
 		</Box>
 	)
