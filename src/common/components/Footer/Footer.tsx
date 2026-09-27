@@ -38,12 +38,12 @@ export default function Footer() {
 			{
 				children: tFooter('links.searchSong'),
 				to: 'songsList',
-				toParams: { hledat: '', s: undefined },
+				toParams: { hledat: '', s: undefined, chytre: undefined },
 			},
 			{
 				children: tFooter('links.songList'),
 				to: 'songsList',
-				toParams: { hledat: undefined, s: undefined },
+				toParams: { hledat: undefined, s: undefined, chytre: undefined },
 			},
 			{
 				children: tFooter('links.about'),

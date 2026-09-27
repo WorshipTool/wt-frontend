@@ -32,7 +32,7 @@ export default function MiddleNavigationPanel() {
 				// leaving that page for the home screen.
 				title: tNavigation('search'),
 				to: 'songsList',
-				toParams: { hledat: '', s: undefined },
+				toParams: { hledat: '', s: undefined, chytre: undefined },
 				enabled: false,
 			},
 			{ title: tNavigation('aboutUs'), to: 'about' },

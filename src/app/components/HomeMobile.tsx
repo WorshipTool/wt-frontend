@@ -15,6 +15,7 @@ import { getAssetUrl } from '@/tech/paths.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { ChevronRightRounded, CloudOffRounded } from '@mui/icons-material'
 import { handOffSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
+import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { SearchBar } from '@/common/ui/SearchBar'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { routesPaths } from '@/routes'
@@ -96,7 +97,7 @@ export default function HomeMobile() {
 
 	const browseAction = (
 		<Clickable>
-			<Link to="songsList" params={{ s: undefined, hledat: undefined }}>
+			<Link to="songsList" params={{ s: undefined, hledat: undefined, chytre: undefined }}>
 				<Typography small strong uppercase color="primary.main">
 					{tHome('allList.browse')}
 				</Typography>
@@ -347,6 +348,12 @@ function SearchLauncher({ label }: { label: string }) {
 	const [value, setValue] = useState('')
 	const barRef = useRef<HTMLDivElement>(null)
 
+	// The door offers the same choice the catalog does, and carries it there in
+	// the URL — a mode set here and forgotten on arrival would be worse than not
+	// offering it at all.
+	const showSmartSearch = useFlag('enable_smart_search')
+	const [smartSearch, setSmartSearch] = useState(false)
+
 	// …when you pause, not on the first letter: the two screens swap around the
 	// caret, and a letter typed mid-swap has no field to land in.
 	useChangeDelayer(
@@ -356,7 +363,11 @@ function SearchLauncher({ label }: { label: string }) {
 			// the bar's own place goes with the caret: the catalog's field arrives
 			// where this one was rather than appearing (see searchHandoff)
 			handOffSearchFocus(barRef.current)
-			navigate('songsList', { hledat: next, s: undefined })
+			navigate('songsList', {
+				hledat: next,
+				s: undefined,
+				chytre: smartSearch || undefined,
+			})
 		},
 		// no dependencies: `navigate` is a new function on every render, and a
 		// dependency that changes every render restarts the wait every render —
@@ -374,6 +385,9 @@ function SearchLauncher({ label }: { label: string }) {
 			// the screen you are about to need, fetched while you type into this
 			// one, so the swap is as short as it can be
 			onFocus={() => router.prefetch(routesPaths.songsList)}
+			showSmartSearch={showSmartSearch}
+			useSmartSearch={smartSearch}
+			onSmartSearchChange={setSmartSearch}
 			autoFocus={false}
 		/>
 	)

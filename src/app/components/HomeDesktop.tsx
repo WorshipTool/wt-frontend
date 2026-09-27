@@ -1,5 +1,6 @@
 'use client'
 
+import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
@@ -45,6 +46,12 @@ export default function HomeDesktop() {
 	const [searchInputValue, setSearchInputValue] = useState('')
 	const searchBarRef = useRef<HTMLDivElement>(null)
 
+	// The door offers the same choice the catalog does, and carries it there in
+	// the URL — a mode set here and forgotten on arrival would be worse than not
+	// offering it at all.
+	const showSmartSearch = useFlag('enable_smart_search')
+	const [smartSearch, setSmartSearch] = useState(false)
+
 	const openCatalog = useCallback(
 		(value: string) => {
 			const query = value.trim()
@@ -55,9 +62,13 @@ export default function HomeDesktop() {
 			// rather than appearing at the top of a screen that was not there a moment
 			// ago (see searchHandoff).
 			handOffSearchFocus(searchBarRef.current)
-			navigate('songsList', { hledat: query, s: undefined })
+			navigate('songsList', {
+				hledat: query,
+				s: undefined,
+				chytre: smartSearch || undefined,
+			})
 		},
-		[navigate]
+		[navigate, smartSearch]
 	)
 
 	useChangeDelayer(searchInputValue, openCatalog, [openCatalog], LAUNCH_DELAY_MS)
@@ -287,6 +298,9 @@ export default function HomeDesktop() {
 										</AnimatePresence>
 
 										<MainSearchInput
+											showSmartSearch={showSmartSearch}
+											useSmartSearch={smartSearch}
+											onSmartSearchChange={setSmartSearch}
 											gradientBorder={isTop}
 											containerRef={searchBarRef}
 											value={searchInputValue}

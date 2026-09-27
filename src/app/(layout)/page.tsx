@@ -23,7 +23,11 @@ function Home() {
 	useEffect(() => {
 		const query = searchParams.get('hledat')
 		if (query === null) return
-		navigate('songsList', { hledat: query, s: undefined }, { replace: true })
+		navigate(
+			'songsList',
+			{ hledat: query, s: undefined, chytre: undefined },
+			{ replace: true }
+		)
 	}, [searchParams, navigate])
 
 	return (

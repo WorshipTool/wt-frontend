@@ -82,7 +82,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 				</Link>
 				<Link
 					to="songsList"
-					params={{ s: undefined, hledat: undefined }}
+					params={{ s: undefined, hledat: undefined, chytre: undefined }}
 					style={{ flex: 1, minWidth: 0 }}
 				>
 					<TabItem
@@ -99,7 +99,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 				    home, so this tab went to a different screen than Písně did. */}
 				<Link
 					to="songsList"
-					params={{ hledat: '', s: undefined }}
+					params={{ hledat: '', s: undefined, chytre: undefined }}
 					style={{ flex: 1, minWidth: 0 }}
 				>
 					{/* The keyboard belongs to the tap: a phone opens it for a field

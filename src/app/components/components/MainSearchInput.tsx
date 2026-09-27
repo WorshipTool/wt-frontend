@@ -12,6 +12,11 @@ type MainSearchInputProps = {
 	/** The bar itself, for the screen that has to say where it stood: the catalog
 	 * flies its own field in from here (see searchHandoff). */
 	containerRef?: Ref<HTMLDivElement>
+	/** Search by meaning. The choice made here rides to the catalog in the URL
+	 * (`chytre`), because the door is not where the searching happens. */
+	showSmartSearch?: boolean
+	useSmartSearch?: boolean
+	onSmartSearchChange?: (value: boolean) => void
 }
 
 /**
@@ -46,12 +51,20 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 			onSubmit={props.onSubmit}
 			placeholder={t('searchByTitleOrText')}
 			highlighted={props.gradientBorder}
+			showSmartSearch={props.showSmartSearch}
+			useSmartSearch={props.useSmartSearch}
+			onSmartSearchChange={props.onSmartSearchChange}
 			autoFocus={false}
 			inputRef={inputRef}
 			containerRef={props.containerRef}
 			testId="main-search-container"
 			inputTestId="main-search-input"
-			sx={{ width: '100%' }}
+			// The hero's own wrapper is `pointer-events: none` so its decoration —
+			// the sheep, the headline — does not eat clicks meant for what is under
+			// it. The field is the one thing in there you are supposed to click, so
+			// it turns them back on. Losing this line is losing the field: it still
+			// draws, and nothing happens when you tap it.
+			sx={{ width: '100%', pointerEvents: 'auto' }}
 		/>
 	)
 }

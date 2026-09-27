@@ -101,5 +101,11 @@ export const routesSearchParams = {
 		// why searching was a place rather than something this screen does; home
 		// still accepts it and forwards here so old links keep working.
 		hledat: 'string' as string | undefined,
+		// Search by meaning rather than by letters. In the URL because it decides
+		// what the results *are*: kept in component state it was lost on every
+		// reload and never reached anyone the link was sent to, who then read a
+		// different list under the same address. It also lets home's field carry
+		// the choice here, since home is a door and the search happens on arrival.
+		chytre: true as boolean | undefined,
 	},
 }

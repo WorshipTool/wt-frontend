@@ -194,7 +194,21 @@ function SongsPage() {
 	const clear = useCallback(() => setValue(''), [])
 
 	const showSmartSearch = useFlag('enable_smart_search')
-	const [smartSearch, setSmartSearch] = useState(false)
+	// In the URL, not in state: the mode decides what the results are, so a
+	// reload, a Back or a shared link has to keep it. Home's field sets it on the
+	// way here too, which is the only way a door can carry the choice.
+	const [smartParam, setSmartParam] = useSmartUrlState('songsList', 'chytre', {
+		// `true` is what the routing layer writes when home navigates here with
+		// the mode on, so that spelling is the canonical one and the two agree.
+		// `1` is accepted as well, for a link somebody shortened by hand.
+		parse: (v) => v === 'true' || v === '1',
+		stringify: (v) => (v ? 'true' : 'false'),
+	})
+	const smartSearch = smartParam === true
+	const setSmartSearch = useCallback(
+		(next: boolean) => setSmartParam(next ? true : null),
+		[setSmartParam]
+	)
 
 	const { songGettingApi } = useApi()
 
