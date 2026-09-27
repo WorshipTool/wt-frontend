@@ -16,11 +16,17 @@ import { motion } from 'framer-motion'
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { useEffect, useMemo, useState } from 'react'
 
+/**
+ * How tall the bar across the top of a desktop page is. Exported because the
+ * screens that dock the search field do it on this bar's bottom edge.
+ */
+export const TOOLBAR_HEIGHT = 56
+
 const TopBar = styled(Box)(({ theme }) => ({
 	right: 0,
 	left: 0,
 	top: 0,
-	height: 56,
+	height: TOOLBAR_HEIGHT,
 	display: 'flex',
 	flexDirection: 'column',
 	displayPrint: 'none',

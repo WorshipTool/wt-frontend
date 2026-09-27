@@ -21,7 +21,8 @@ import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, Button, Typography } from '@/common/ui'
 import { GroupRowsSkeleton, ListStateView } from '@/common/ui/GroupList'
-import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
+import { TOOLBAR_HEIGHT } from '@/common/components/Toolbar/Toolbar'
+import { SEARCH_FIELD_HEIGHT, SearchBar } from '@/common/ui/SearchBar'
 import { Container } from '@/common/ui/mui'
 import { CloudOffRounded, RefreshRounded } from '@mui/icons-material'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
@@ -49,17 +50,20 @@ const FIELD_WIDTH = 700
  * reads as a heading with a control on it. */
 const FIELD_WIDTH_RESTING = 340
 /**
- * Where the field sits once searching takes over the screen: half into the 56px
- * top bar, which is where the home hero's field used to land when the page
- * scrolled. Above the bar's own z-index (10), since it overlaps it.
+ * Where the field sits once searching takes over the screen: astride the top
+ * bar's bottom edge, half above it and half below, which is where the home
+ * hero's field lands when the page scrolls. Above the bar's own z-index (10),
+ * since it overlaps it.
+ *
+ * Derived rather than typed out. It was 22 — right for a field 68px tall and
+ * wrong for every other one; when the field became 58 the halves came out 29
+ * above the edge and 5 below, and the eye reads that as a bar hung crooked.
  */
-const FIELD_TOP_SEARCHING = 22
+const FIELD_TOP_SEARCHING = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
 const FIELD_Z = 11
 /** Where the list's first row comes to rest after a page is turned — clear of
  * the top bar, with a little air. */
 const LIST_TOP_MARGIN = 72
-/** The app's top bar, which the page sits under. */
-const TOOLBAR_HEIGHT = 56
 /** Air under the floating field, where the flow no longer provides any. The
  * heading line under it is tall (it is the field's own line at rest), so this
  * is less than it looks. */

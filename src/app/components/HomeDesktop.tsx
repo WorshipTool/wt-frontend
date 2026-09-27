@@ -1,6 +1,8 @@
 'use client'
 
+import { TOOLBAR_HEIGHT } from '@/common/components/Toolbar/Toolbar'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
+import { SEARCH_FIELD_HEIGHT } from '@/common/ui/SearchBar'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
@@ -29,6 +31,26 @@ export const RESET_HOME_SCREEN_EVENT_NAME = 'reset_home_screen_jh1a94'
 const ANIMATION_DURATION = 0.2
 
 /** How long the hero's field waits before opening the catalog with what it has. */
+/**
+ * Where the hero stands once the page has scrolled and only the field is left
+ * showing.
+ *
+ * Anchored to the field, not to the block: the target is the field sitting
+ * astride the top bar's bottom edge, half above and half below — the same line
+ * the catalog's field docks on, so the two screens cannot disagree. The block
+ * is `HERO_ABOVE_FIELD` taller than the field's top (its headline, the gap
+ * under it and its own padding), so the block goes that much higher.
+ *
+ * It used to be `calc(-7rem + 22px - 24px)`, tuned to the field's height at the
+ * time; the day the field grew ten pixels it hung three below the edge here and
+ * five above it on the catalog.
+ */
+const HERO_ABOVE_FIELD = 144
+const FIELD_TOP_DOCKED = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
+const HERO_TOP_DOCKED = FIELD_TOP_DOCKED - HERO_ABOVE_FIELD
+/** …and where it starts that trip from, a nudge above where it lands. */
+const HERO_TOP_ARRIVING = HERO_TOP_DOCKED + 24
+
 const LAUNCH_DELAY_MS = 600
 
 export default function HomeDesktop() {
@@ -195,12 +217,12 @@ export default function HomeDesktop() {
 							pointerEvents: 'none',
 						}}
 						initial={{
-							top: isTop ? `32%` : 'calc(-7rem + 22px)',
+							top: isTop ? `32%` : `${HERO_TOP_ARRIVING}px`,
 							left: paddingX,
 							right: paddingX,
 						}}
 						animate={{
-							top: isTop ? `32%` : 'calc(-7rem + 22px - 24px)',
+							top: isTop ? `32%` : `${HERO_TOP_DOCKED}px`,
 							left: isTop ? paddingX : `calc( ${paddingX}px + ${gapString} )`,
 							right: paddingX,
 						}}
