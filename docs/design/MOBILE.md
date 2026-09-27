@@ -35,17 +35,23 @@ hidden on tab-roots), `actions` (≤ 2 icons, right of the title), `controlPanel
 (top strip), `bottomPanel` (above the tab bar), `scrollResetKey`, `surface`,
 `divider`, `overlay`.
 
-**One large title, one size, everywhere.** `LARGE_TITLE_REM` (1.5rem) and
-`LARGE_TITLE_COMPACT_REM` (1.125rem) in `common/constants/layout.ts`, with
-`largeTitleSx` for the rest of it — weight, tracking, line height, colour. Three
-screens draw this title (the header row, the catalog — whose title scrolls with
-the list instead of sitting in the header — and home's hero) and to whoever is
-looking it is *the same title*, so none of them keeps its own copy of the style.
-It was 1.85rem and read as the loudest thing on every screen, a song included,
-where it outweighed the sheet it was announcing; 1.5 → 1.125 are steps of the
-app's own scale (h4, h6) and are what the playlist screen had already settled on
-by hand (23 → 17.5px). Only the resting size belongs to the screen, because the
+**One large title, one style everywhere — one size, and one exception.**
+`LARGE_TITLE_REM` (1.5rem) and `LARGE_TITLE_COMPACT_REM` (1.125rem) in
+`common/constants/layout.ts`, with `largeTitleSx` for the rest of it — weight,
+tracking, line height, colour. The header row and the catalog (whose title
+scrolls with the list instead of sitting in the header) both take the size; to
+whoever is looking it is *the same title*, so neither keeps its own copy of the
+style. It was 1.85rem and read as the loudest thing on every screen, a song
+included, where it outweighed the sheet it was announcing; 1.5 → 1.125 are steps
+of the app's own scale (h4, h6) and are what the playlist screen had already
+settled on by hand (23 → 17.5px). The size belongs to the screen, because the
 header animates it on scroll.
+
+**Home's hero stays at 1.85rem.** Every other screen *names* itself and does it
+in a bar you read past; home *greets* you, has no bar to fit in, and is the one
+screen with the room. It wears `largeTitleSx` like the rest, so only its size
+differs — and that size is load-bearing: the sheep is cut to the gap this title
+leaves above the search field.
 
 **Same header height everywhere.** The header row keeps a fixed minimum height
 (matching the back-arrow / action buttons) so a title-only header (Účet)

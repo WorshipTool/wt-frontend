@@ -48,14 +48,16 @@ export const LARGE_TITLE_REM = 1.5
 export const LARGE_TITLE_COMPACT_REM = 1.125
 
 /**
- * Everything else about that title. Three screens draw it — the app-shell
- * header, the catalog (whose title scrolls with the list instead of sitting in
- * the header row) and home's hero — and they are the same title to whoever is
- * looking, so they cannot each keep their own copy: the day the header's shrank
- * and the catalog's didn't, the app had two sizes of the same word.
+ * Everything else about that title — for the two screens that draw it at the
+ * size above (the app-shell header and the catalog, whose title scrolls with
+ * the list instead of sitting in the header row), and for home's hero, which
+ * stays deliberately bigger because it greets rather than names. They are one
+ * title to whoever is looking, so none of them keeps its own copy of the style:
+ * the day the header's tracking changed and the catalog's didn't, the app had
+ * two versions of the same word.
  *
- * The size is deliberately not in here. The header animates it on scroll, so it
- * belongs to the screen; the rest of the style does not change.
+ * The size is deliberately not in here — the header animates it on scroll and
+ * home overrides it — but nothing else about the title varies.
  */
 export const largeTitleSx = {
 	fontWeight: 800,

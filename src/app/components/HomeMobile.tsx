@@ -7,7 +7,7 @@ import {
 	MobileAppHeader,
 	TOOLBAR_SPACER,
 } from '@/common/components/MobileAppHeader'
-import { LARGE_TITLE_REM, largeTitleSx } from '@/common/constants/layout'
+import { largeTitleSx } from '@/common/constants/layout'
 import { Box, Clickable, Image, Typography, useTheme } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
@@ -41,6 +41,14 @@ const SHEEP_SIZE = 94
 const SHEEP_TOP = -3
 /** Extra left inset for the title/slogan, past the app's normal content edge. */
 const TITLE_INSET = 2.5
+/**
+ * Hero title size (rem). Deliberately larger than the shell's large title:
+ * every other screen names itself, this one greets you, and it is the one place
+ * with room for it — the sheep is sized to the gap this title leaves above the
+ * search bar. It wears the rest of the large title's style (`largeTitleSx`);
+ * only the size is its own.
+ */
+const TITLE_SIZE = 1.85
 /** Breathing room above the title, below the status bar. */
 const HERO_TOP_SPACE = 4
 /** Gap between the hero and the search field — it also sets how deep the sheep
@@ -188,8 +196,7 @@ export default function HomeMobile() {
 				<Box sx={{ position: 'relative' }}>
 					<Box
 						sx={{
-							// the shell's large title, because this is one
-							fontSize: `${LARGE_TITLE_REM}rem`,
+							fontSize: `${TITLE_SIZE}rem`,
 							...largeTitleSx,
 						}}
 					>
