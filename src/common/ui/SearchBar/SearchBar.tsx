@@ -37,19 +37,6 @@ import {
 /** Where the fill changes — the width at which the desktop layout appears. */
 const DESKTOP = MOBILE_NAV_BREAKPOINT
 
-/**
- * How tall the field stands: an InputBase's line box (32px — the 24px line plus
- * the input's own 4px and 5px), 12px of padding either side, and a hairline on
- * each edge. Measured in the browser, because the input's own padding is
- * MUI's and not written down here.
- *
- * Exported because two screens dock the field on the top bar's bottom edge and
- * have to know its height to centre it there. They used to hold a number tuned
- * to whatever the field measured at the time, so the day it grew by ten pixels
- * it stopped sitting on the edge in two places at once.
- */
-export const SEARCH_FIELD_HEIGHT = 32 + 12 * 2 + 1 * 2
-
 /** The resting shape: a hairline and just enough shadow to lift it. */
 const fieldSx = (theme: Theme) =>
 	({

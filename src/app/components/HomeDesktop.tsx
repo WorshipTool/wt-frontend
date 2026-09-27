@@ -1,8 +1,7 @@
 'use client'
 
-import { TOOLBAR_HEIGHT } from '@/common/components/Toolbar/Toolbar'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
-import { SEARCH_FIELD_HEIGHT } from '@/common/ui/SearchBar'
+import { DOCKED_FIELD_TOP } from '@/common/constants/layout'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
@@ -46,8 +45,7 @@ const ANIMATION_DURATION = 0.2
  * five above it on the catalog.
  */
 const HERO_ABOVE_FIELD = 144
-const FIELD_TOP_DOCKED = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
-const HERO_TOP_DOCKED = FIELD_TOP_DOCKED - HERO_ABOVE_FIELD
+const HERO_TOP_DOCKED = DOCKED_FIELD_TOP - HERO_ABOVE_FIELD
 /** …and where it starts that trip from, a nudge above where it lands. */
 const HERO_TOP_ARRIVING = HERO_TOP_DOCKED + 24
 

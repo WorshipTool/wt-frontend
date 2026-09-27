@@ -21,8 +21,8 @@ import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { NewsHighlightWrapper } from '@/common/providers/News'
 import { Box, Button, Typography } from '@/common/ui'
 import { GroupRowsSkeleton, ListStateView } from '@/common/ui/GroupList'
-import { TOOLBAR_HEIGHT } from '@/common/components/Toolbar/Toolbar'
-import { SEARCH_FIELD_HEIGHT, SearchBar } from '@/common/ui/SearchBar'
+import { DOCKED_FIELD_TOP, TOOLBAR_HEIGHT } from '@/common/constants/layout'
+import { SearchBar } from '@/common/ui/SearchBar'
 import { Container } from '@/common/ui/mui'
 import { CloudOffRounded, RefreshRounded } from '@mui/icons-material'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
@@ -66,7 +66,7 @@ const SMART_PARAM = 'chytre'
  * shortened by hand. */
 const parseSmart = (value: string | null) => value === 'true' || value === '1'
 
-const FIELD_TOP_SEARCHING = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
+const FIELD_TOP_SEARCHING = DOCKED_FIELD_TOP
 const FIELD_Z = 11
 /** Where the list's first row comes to rest after a page is turned — clear of
  * the top bar, with a little air. */
