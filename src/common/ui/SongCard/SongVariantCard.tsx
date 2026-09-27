@@ -441,6 +441,15 @@ export const SongVariantCard = memo(function S({
 							<Box
 								sx={{
 									overflow: 'hidden',
+									// Lines of the song, not lines of the box: a card wraps a
+									// long one, so four lines of lyric could stand seven lines
+									// tall and the card with them. The cap is the same count in
+									// line heights (1.5em is the body's), so the cut lands on a
+									// line rather than halfway through one. A row is capped by
+									// not wrapping at all.
+									...(dense
+										? {}
+										: { maxHeight: `${previewLineCount * 1.5}em` }),
 								}}
 							>
 								{previewLines.map((parts, index) => {
