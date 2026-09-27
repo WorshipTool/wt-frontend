@@ -5,6 +5,11 @@ import {
 	MOBILE_NAV_BAR_HEIGHT,
 	MOBILE_NAV_CLEARANCE,
 } from '@/common/components/MobileAppTabBar/nav.constants'
+import {
+	LARGE_TITLE_COMPACT_REM,
+	LARGE_TITLE_REM,
+	largeTitleSx,
+} from '@/common/constants/layout'
 import { Box, IconButton, Typography, useTheme } from '@/common/ui'
 import { RoutesKeys, SmartAllParams } from '@/routes/routes.types'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
@@ -18,8 +23,6 @@ import { ReactNode, useEffect, useRef } from 'react'
 export const TOOLBAR_SPACER = 'env(safe-area-inset-top)'
 // how far you scroll before the title finishes shrinking to its compact size
 const SHRINK_DISTANCE = 64
-const TITLE_MAX = 1.85 // rem
-const TITLE_MIN = 1.2 // rem
 // sits above the scrolling content, below the app's overlays/popups (Z_INDEX.OVERLAY = 1300)
 const HEADER_Z = 100
 /** Resting top padding of the header block, above the safe-area inset. */
@@ -125,7 +128,9 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 			raf = 0
 			const p = Math.min(1, Math.max(0, scroller.scrollTop / SHRINK_DISTANCE))
 			if (titleRef.current) {
-				titleRef.current.style.fontSize = `${TITLE_MAX - (TITLE_MAX - TITLE_MIN) * p}rem`
+				titleRef.current.style.fontSize = `${
+					LARGE_TITLE_REM - (LARGE_TITLE_REM - LARGE_TITLE_COMPACT_REM) * p
+				}rem`
 			}
 			if (subtitleRef.current) {
 				subtitleRef.current.style.opacity = String(Math.max(0, 1 - p * 1.6))
@@ -272,11 +277,8 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 						<Box
 							ref={titleRef}
 							sx={{
-								fontSize: `${TITLE_MAX}rem`,
-								fontWeight: 800,
-								letterSpacing: '-0.4px',
-								lineHeight: 1.15,
-								color: 'grey.900',
+								fontSize: `${LARGE_TITLE_REM}rem`,
+								...largeTitleSx,
 								whiteSpace: 'nowrap',
 								overflow: 'hidden',
 								textOverflow: 'ellipsis',

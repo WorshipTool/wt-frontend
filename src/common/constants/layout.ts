@@ -1,5 +1,5 @@
 /**
- * Sizes that two screens have to agree on.
+ * Sizes — and the one type style — that two screens have to agree on.
  *
  * They live here, in a file that imports nothing, rather than next to the
  * components that draw them. A constant exported from a component is a constant
@@ -32,3 +32,34 @@ export const SEARCH_FIELD_HEIGHT = 32 + 12 * 2 + 1 * 2
  * half above and half below. Both the home hero and the catalog put it here.
  */
 export const DOCKED_FIELD_TOP = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
+
+/**
+ * The phone's large page title, in rem: the size it rests at, and the size it
+ * has shrunk to once the content has scrolled under it.
+ *
+ * Steps of the app's own type scale (h4 and h6), because a title is the one
+ * thing on a phone screen with nothing to compare itself against — at 1.85rem
+ * it read as the loudest thing on every page, including a song, where it
+ * outweighed the sheet it was announcing. The playlist screen, drawn later and
+ * by hand, had already settled on 23px → 17.5px; this is that, rounded onto the
+ * scale.
+ */
+export const LARGE_TITLE_REM = 1.5
+export const LARGE_TITLE_COMPACT_REM = 1.125
+
+/**
+ * Everything else about that title. Three screens draw it — the app-shell
+ * header, the catalog (whose title scrolls with the list instead of sitting in
+ * the header row) and home's hero — and they are the same title to whoever is
+ * looking, so they cannot each keep their own copy: the day the header's shrank
+ * and the catalog's didn't, the app had two sizes of the same word.
+ *
+ * The size is deliberately not in here. The header animates it on scroll, so it
+ * belongs to the screen; the rest of the style does not change.
+ */
+export const largeTitleSx = {
+	fontWeight: 800,
+	letterSpacing: '-0.4px',
+	lineHeight: 1.15,
+	color: 'grey.900',
+} as const

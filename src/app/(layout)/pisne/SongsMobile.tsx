@@ -9,6 +9,7 @@ import {
 	MobileAppHeader,
 	TOOLBAR_SPACER,
 } from '@/common/components/MobileAppHeader'
+import { LARGE_TITLE_REM, largeTitleSx } from '@/common/constants/layout'
 import {
 	GroupRowsSkeleton,
 	ListStateView,
@@ -114,11 +115,8 @@ export default function SongsMobile({
 			>
 				<Box
 					sx={{
-						fontSize: '1.85rem',
-						fontWeight: 800,
-						letterSpacing: '-0.4px',
-						lineHeight: 1.15,
-						color: 'grey.900',
+						fontSize: `${LARGE_TITLE_REM}rem`,
+						...largeTitleSx,
 					}}
 				>
 					{t('title')}
