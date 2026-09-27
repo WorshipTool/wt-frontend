@@ -13,18 +13,15 @@ import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { getSmartDateAgoString } from '@/tech/date/date.tech'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
-import {
-	ChevronRightRounded,
-	CloudOffRounded,
-	SearchRounded,
-} from '@mui/icons-material'
+import { ChevronRightRounded, CloudOffRounded } from '@mui/icons-material'
 import { handOffSearchFocus } from '@/app/(layout)/pisne/searchHandoff'
+import { SearchBar } from '@/common/ui/SearchBar'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
 import { routesPaths } from '@/routes'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { ChangeEvent, Fragment, ReactNode, useRef, useState } from 'react'
+import { Fragment, ReactNode, useRef, useState } from 'react'
 
 const PREVIEW_LINES = 2 // lyric preview lines shown on the song cards
 
@@ -369,47 +366,15 @@ function SearchLauncher({ label }: { label: string }) {
 	)
 
 	return (
-		<Box
-			ref={barRef}
-			sx={{
-				display: 'flex',
-				alignItems: 'center',
-				gap: 1.5,
-				bgcolor: 'background.paper',
-				border: '1px solid',
-				borderColor: 'grey.300',
-				borderRadius: 2.5,
-				paddingX: 2,
-				paddingY: 1.5,
-				boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-				transition: 'background-color 0.15s ease',
-				'&:focus-within': { borderColor: 'grey.400' },
-			}}
-		>
-			<SearchRounded sx={{ color: 'grey.500' }} />
-			<Box
-				component="input"
-				type="search"
-				value={value}
-				onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
-				// the screen you are about to need, fetched while you type into this
-				// one, so the swap is as short as it can be
-				onFocus={() => router.prefetch(routesPaths.songsList)}
-				placeholder={label}
-				aria-label={label}
-				enterKeyHint="search"
-				sx={{
-					flexGrow: 1,
-					minWidth: 0,
-					border: 0,
-					outline: 'none',
-					background: 'transparent',
-					font: 'inherit',
-					fontSize: '1rem',
-					color: 'grey.900',
-					'&::placeholder': { color: 'grey.600', opacity: 1 },
-				}}
-			/>
-		</Box>
+		<SearchBar
+			containerRef={barRef}
+			value={value}
+			onChange={setValue}
+			placeholder={label}
+			// the screen you are about to need, fetched while you type into this
+			// one, so the swap is as short as it can be
+			onFocus={() => router.prefetch(routesPaths.songsList)}
+			autoFocus={false}
+		/>
 	)
 }

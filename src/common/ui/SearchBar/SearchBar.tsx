@@ -1,30 +1,55 @@
 'use client'
 
+import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
-import { AutoAwesome, CloseRounded } from '@mui/icons-material'
-import SearchIcon from '@mui/icons-material/Search'
-import { Box, InputBase, SxProps, styled } from '@mui/material'
-import { useTranslations } from 'next-intl'
-import { MutableRefObject, Ref, useCallback, useRef } from 'react'
+import { InputBase, SxProps } from '@/common/ui/mui'
+import { useTheme } from '@/common/ui/tech'
 import { isMobile } from '@/tech/device.tech'
+import { AutoAwesome, CloseRounded, SearchRounded } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
+import {
+	KeyboardEvent,
+	MutableRefObject,
+	Ref,
+	useCallback,
+	useRef,
+} from 'react'
 
-const SearchContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[100],
-	padding: '0.5rem',
-	paddingLeft: '0.8rem',
-	paddingRight: '0.8rem',
-	borderRadius: '0.5rem',
+/**
+ * The app's search field. There is one, and this is it.
+ *
+ * It used to be four: this bar, a copy of it in the home hero, a second copy in
+ * `SongSearchBarBase` that nothing rendered, and a hand-rolled box of `<input>`
+ * on the phone's home screen. Home's field and the catalog's are the same field
+ * as far as the reader is concerned — the one flies into the other across the
+ * navigation (see MOBILE.md, "the field travels; it is never two fields") — so
+ * a trip that changed the field's colour, radius and shadow halfway was the
+ * clearest sign the copies had drifted.
+ *
+ * White on a hairline, because it sits on the grey app canvas and inside white
+ * surfaces alike, and a filled field disappears into the second. The hero wears
+ * the brand gradient around it (`highlighted`); nothing else does.
+ */
+
+/** The resting shape: paper on a hairline, with just enough shadow to lift it. */
+const FIELD_SX = {
 	display: 'flex',
-
-	justifyContent: 'center',
+	flexDirection: 'row',
 	alignItems: 'center',
-	boxShadow: '1px 4px 4px #00000022',
-	transition: 'all ease 0.2s',
-}))
-const SearchInput = styled(InputBase)(({ theme }) => ({
-	flex: 1,
-	marginLeft: '0.5em',
-}))
+	gap: 1.5,
+	bgcolor: 'background.paper',
+	border: '1px solid',
+	borderColor: 'grey.300',
+	borderRadius: 2.5,
+	paddingX: 2,
+	paddingY: 1.5,
+	boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+	transition: 'border-color 0.15s ease',
+	'&:focus-within': { borderColor: 'grey.400' },
+} as const
+
+/** The gradient frame the home hero wears, and the padding that reveals it. */
+const HIGHLIGHT_PADDING = 2
 
 interface SearchBarProps {
 	value?: string
@@ -41,10 +66,20 @@ interface SearchBarProps {
 	 * catalog does it when navigation asks for search). The bar keeps its own
 	 * reference either way, so both get the node. */
 	inputRef?: Ref<HTMLInputElement>
+	/** The bar's own box, for a screen that has to say where it stood — the
+	 * catalog flies its field in from home's (see searchHandoff). */
+	containerRef?: Ref<HTMLDivElement>
 	/** Shows a clear control while there is something to clear. */
 	onClear?: () => void
+	/** Enter, i.e. "go now" — for a field that otherwise waits out a pause. */
+	onSubmit?: () => void
+	onFocus?: () => void
+	/** The brand gradient around the field. The home hero, and only it. */
+	highlighted?: boolean
 	/** Test id put on the input itself (the e2e search journey looks for one). */
 	inputTestId?: string
+	/** Test id on the bar's box (what the hand-off measures). */
+	testId?: string
 }
 
 export function SearchBar({
@@ -54,11 +89,17 @@ export function SearchBar({
 	placeholder,
 	autoFocus,
 	inputRef: forwardedRef,
+	containerRef,
 	onClear,
+	onSubmit,
+	onFocus,
+	highlighted,
 	inputTestId,
+	testId,
 	...props
 }: SearchBarProps) {
 	const t = useTranslations('search')
+	const theme = useTheme()
 	const inputRef = useRef<HTMLInputElement>()
 
 	const setInputRef = useCallback(
@@ -66,30 +107,39 @@ export function SearchBar({
 			inputRef.current = node ?? undefined
 			if (typeof forwardedRef === 'function') forwardedRef(node)
 			else if (forwardedRef)
-				(forwardedRef as MutableRefObject<HTMLInputElement | null>).current = node
+				(forwardedRef as MutableRefObject<HTMLInputElement | null>).current =
+					node
 		},
 		[forwardedRef]
 	)
 
-	const onChangeHandler = (e: any) => {
-		onChange?.(e.target.value)
-	}
-
-	// A `searchBarFocus` window event used to focus and flash this bar. Nothing
-	// has dispatched it since search stopped being a layer over the home screen;
-	// a screen that wants the caret here passes `inputRef` and asks for it.
-	return (
-		<SearchContainer sx={sx}>
-			<SearchIcon />
-			<SearchInput
+	const field = (
+		<Box sx={{ ...FIELD_SX, ...(highlighted ? {} : (sx as object)) }}>
+			<SearchRounded sx={{ color: 'grey.500' }} />
+			<InputBase
 				placeholder={placeholder ?? t('searchByTitleOrText')}
 				autoFocus={autoFocus ?? !isMobile}
 				value={value}
-				onChange={onChangeHandler}
+				onChange={(e) => onChange?.(e.target.value)}
+				onFocus={onFocus}
+				onKeyDown={(e: KeyboardEvent) => {
+					if (e.key !== 'Enter' || !onSubmit) return
+					e.preventDefault()
+					onSubmit()
+				}}
 				inputRef={setInputRef}
-				inputProps={inputTestId ? { 'data-testid': inputTestId } : undefined}
-				sx={{}}
-			></SearchInput>
+				inputProps={{
+					enterKeyHint: 'search',
+					...(inputTestId ? { 'data-testid': inputTestId } : {}),
+				}}
+				sx={{
+					flex: 1,
+					minWidth: 0,
+					fontSize: '1rem',
+					color: 'grey.900',
+					'& input::placeholder': { color: 'grey.600', opacity: 1 },
+				}}
+			/>
 
 			{onClear && value !== '' && value !== undefined && (
 				<IconButton
@@ -105,18 +155,36 @@ export function SearchBar({
 			)}
 
 			{props.showSmartSearch && (
-				<>
-					<IconButton
-						color={props.useSmartSearch ? 'primary.main' : 'grey.400'}
-						size="small"
-						onClick={() => {
-							props.onSmartSearchChange?.(!props.useSmartSearch)
-						}}
-					>
-						<AutoAwesome fontSize="small" />
-					</IconButton>
-				</>
+				<IconButton
+					color={props.useSmartSearch ? 'primary.main' : 'grey.400'}
+					size="small"
+					onClick={() => props.onSmartSearchChange?.(!props.useSmartSearch)}
+				>
+					<AutoAwesome fontSize="small" />
+				</IconButton>
 			)}
-		</SearchContainer>
+		</Box>
+	)
+
+	if (!highlighted)
+		return (
+			<Box ref={containerRef} data-testid={testId}>
+				{field}
+			</Box>
+		)
+
+	return (
+		<Box
+			ref={containerRef}
+			data-testid={testId}
+			sx={{
+				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+				borderRadius: 3,
+				padding: `${HIGHLIGHT_PADDING}px`,
+				...(sx as object),
+			}}
+		>
+			{field}
+		</Box>
 	)
 }

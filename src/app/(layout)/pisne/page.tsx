@@ -343,10 +343,6 @@ function SongsPage() {
 				<SearchBar
 					value={value}
 					onChange={setValue}
-					// White on a desktop, where it sits on the grey canvas and the
-					// shadow is what lifts it. The phone keeps the bar's own grey: its
-					// header is white already, and a white field on it would vanish.
-					sx={phone ? undefined : { bgcolor: 'background.paper' }}
 					placeholder={tSearch('searchSongs')}
 					// the field takes focus when navigation asks for search, not on
 					// every visit to the catalog

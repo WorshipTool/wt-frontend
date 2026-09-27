@@ -1,26 +1,6 @@
-import { Box, useTheme } from '@/common/ui'
-import { InputBase } from '@/common/ui/mui'
-import SearchIcon from '@mui/icons-material/Search'
-import { styled } from '@mui/system'
+import { SearchBar } from '@/common/ui/SearchBar'
 import { useTranslations } from 'next-intl'
 import { Ref, useEffect, useRef } from 'react'
-
-const SearchContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[100],
-	padding: '0.5rem',
-	paddingLeft: '0.8rem',
-	paddingRight: '0.8rem',
-	borderRadius: '0.5rem',
-	display: 'flex',
-
-	justifyContent: 'center',
-	alignItems: 'center',
-}))
-const SearchInput = styled(InputBase)(({ theme }) => ({
-	flex: 1,
-	marginLeft: '0.5em',
-	zIndex: 100,
-}))
 
 type MainSearchInputProps = {
 	gradientBorder: boolean
@@ -39,11 +19,15 @@ type MainSearchInputProps = {
  * what you type here opens the catalog, which is the one screen that shows
  * results (see /pisne). Home used to answer searches itself, which is why the
  * songs list had none and why the page needed a whole second mode.
+ *
+ * The field is the app's one `SearchBar`; this adds only what is the hero's
+ * own — the gradient frame and the focus-on-arrival. It used to carry a copy of
+ * the bar's styles instead, which is how home and the catalog came to look
+ * different while flying into one another.
  */
 export default function MainSearchInput(props: MainSearchInputProps) {
-	const theme = useTheme()
 	const t = useTranslations('search')
-	const inputRef = useRef<HTMLInputElement>()
+	const inputRef = useRef<HTMLInputElement>(null)
 
 	// Focus via effect instead of the DOM autofocus attribute: the first
 	// hydration render always mounts the desktop layout, so on phones the
@@ -56,34 +40,18 @@ export default function MainSearchInput(props: MainSearchInputProps) {
 	}, [])
 
 	return (
-		<div
-			ref={props.containerRef}
-			data-testid="main-search-container"
-			style={{
-				background: `linear-gradient(120deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-				boxShadow: `0px 3px 4px ${theme.palette.grey[500]}`,
-				width: '100%',
-				borderRadius: '0.6rem',
-				padding: props.gradientBorder ? 2 : 0,
-				transition: 'all 0.3s ease',
-				pointerEvents: 'auto',
-			}}
-		>
-			<SearchContainer>
-				<SearchIcon />
-				<SearchInput
-					placeholder={t('searchByTitleOrText')}
-					onChange={(e) => props.onChange(e.target.value)}
-					onKeyDown={(e: React.KeyboardEvent) => {
-						if (e.key !== 'Enter') return
-						e.preventDefault()
-						props.onSubmit?.()
-					}}
-					value={props.value}
-					inputRef={inputRef}
-					inputProps={{ 'data-testid': 'main-search-input' }}
-				></SearchInput>
-			</SearchContainer>
-		</div>
+		<SearchBar
+			value={props.value}
+			onChange={props.onChange}
+			onSubmit={props.onSubmit}
+			placeholder={t('searchByTitleOrText')}
+			highlighted={props.gradientBorder}
+			autoFocus={false}
+			inputRef={inputRef}
+			containerRef={props.containerRef}
+			testId="main-search-container"
+			inputTestId="main-search-input"
+			sx={{ width: '100%' }}
+		/>
 	)
 }
