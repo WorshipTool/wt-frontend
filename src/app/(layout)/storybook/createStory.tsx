@@ -6,13 +6,19 @@ export type StoryBookItem = {
 	name: string
 }
 
+/**
+ * `type` is normally the component itself, whose name titles the story. Pass a
+ * string instead for a component that has no name to read: `memo()` and
+ * `forwardRef()` hand back an object rather than a function, so `.name` is
+ * undefined and the story sat in the gallery untitled.
+ */
 export const createStory = (
-	type: Function,
+	type: Function | string,
 	storyComponent: ComponentFuncType
 ) => {
 	const data: StoryBookItem = {
 		component: storyComponent,
-		name: type.name,
+		name: typeof type === 'string' ? type : type.name,
 	}
 	if (!data) return
 	storyBookComponents.push(data)

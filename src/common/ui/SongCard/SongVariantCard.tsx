@@ -441,12 +441,15 @@ export const SongVariantCard = memo(function S({
 							<Box
 								sx={{
 									overflow: 'hidden',
-									// Lines of the song, not lines of the box: a card wraps a
-									// long one, so four lines of lyric could stand seven lines
-									// tall and the card with them. The cap is the same count in
-									// line heights (1.5em is the body's), so the cut lands on a
-									// line rather than halfway through one. A row is capped by
-									// not wrapping at all.
+									// Lines of the song, not lines of the box. A lyric line does
+									// not break at its spaces — the sheet parser joins them with
+									// non-breaking ones so a chord cannot drift off its syllable
+									// — but it does break at a hyphen, and a song written with
+									// those stood seven lines tall on a four-line preview, with
+									// the card grown to match. The cap is the same count in line
+									// heights (1.5em is the body's), so the cut lands on a line
+									// rather than halfway through one. A row needs none: it is
+									// `noWrap`, so it is always the one line.
 									...(dense
 										? {}
 										: { maxHeight: `${previewLineCount * 1.5}em` }),
