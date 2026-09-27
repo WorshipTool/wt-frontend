@@ -350,6 +350,13 @@ with the tab bar still holds, and the docked strip is where that pressure goes.
    one surface with the grouped song cut out of it: a list where only that song
    is a card reads as though it had been singled out. Lists that cannot hold
    groups (home, browse, the account lists) keep the shared surface.
+   **The pile's depth comes from `stackOffset`, the same curve the desktop card
+   stacks on** — logarithmic, so the first card behind drops most of the way and
+   each one after adds less. Spread the edges evenly and a pile of five reads as
+   a staircase and pushes everything below it down the screen; on the curve it
+   stands barely taller than a pile of two (15 / 19 / 21px for one, two and
+   three edges). One function, both variants — the phone's pile is the desktop's
+   pile drawn flat.
 9. **Never a blank screen.** A data-backed screen always renders one of four
    states — **loading** (skeletons), **empty** (icon + message), **error**
    (icon + message + a "Zkusit znovu" retry), or the **content**. A page that
