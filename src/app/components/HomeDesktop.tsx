@@ -93,7 +93,14 @@ export default function HomeDesktop() {
 		[navigate, smartSearch]
 	)
 
-	useChangeDelayer(searchInputValue, openCatalog, [openCatalog], LAUNCH_DELAY_MS)
+	// No dependencies, the same as the phone's field and for the same reason:
+	// `navigate` is a new function on every render, so `openCatalog` is too, and
+	// a dependency that changes every render restarts the wait every render. On
+	// a screen that re-renders while its hero animates, the wait then never runs
+	// out — you type a word on a desktop and the catalog opens only if the page
+	// happens to fall quiet. The delayer re-reads the callback whenever the value
+	// changes, which is every keystroke, so the closure here is current anyway.
+	useChangeDelayer(searchInputValue, openCatalog, [], LAUNCH_DELAY_MS)
 
 	useEffect(() => {
 		const handler = () => {

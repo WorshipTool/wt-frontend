@@ -59,6 +59,13 @@ const FIELD_WIDTH_RESTING = 340
  * wrong for every other one; when the field became 58 the halves came out 29
  * above the edge and 5 below, and the eye reads that as a bar hung crooked.
  */
+/** The search parameter that carries search-by-meaning between screens. */
+const SMART_PARAM = 'chytre'
+/** `true` is what the routing layer writes when home navigates here with the
+ * mode on, so that spelling is canonical; `1` is taken too, for a link somebody
+ * shortened by hand. */
+const parseSmart = (value: string | null) => value === 'true' || value === '1'
+
 const FIELD_TOP_SEARCHING = TOOLBAR_HEIGHT - SEARCH_FIELD_HEIGHT / 2
 const FIELD_Z = 11
 /** Where the list's first row comes to rest after a page is turned — clear of
@@ -198,21 +205,46 @@ function SongsPage() {
 	const clear = useCallback(() => setValue(''), [])
 
 	const showSmartSearch = useFlag('enable_smart_search')
-	// In the URL, not in state: the mode decides what the results are, so a
-	// reload, a Back or a shared link has to keep it. Home's field sets it on the
-	// way here too, which is the only way a door can carry the choice.
-	const [smartParam, setSmartParam] = useSmartUrlState('songsList', 'chytre', {
-		// `true` is what the routing layer writes when home navigates here with
-		// the mode on, so that spelling is the canonical one and the two agree.
-		// `1` is accepted as well, for a link somebody shortened by hand.
-		parse: (v) => v === 'true' || v === '1',
-		stringify: (v) => (v ? 'true' : 'false'),
-	})
-	const smartSearch = smartParam === true
-	const setSmartSearch = useCallback(
-		(next: boolean) => setSmartParam(next ? true : null),
-		[setSmartParam]
-	)
+
+	// The mode rides in the URL, so a reload, a Back or a shared link keeps it —
+	// and so home's field can hand it over, home being a door rather than a place
+	// that searches.
+	//
+	// Read the same way `hledat` is, off `useSearchParams`, and for the same
+	// reason: it is the one source that is right on the server, right after
+	// hydration, and right again when navigation changes it. `useSmartUrlState`
+	// reads `window.location.search` once in a useState initialiser and then
+	// never looks again (its effect returns before it can arm itself), so
+	// whether the mode arrived depended on whether the browser's URL had caught
+	// up by the time this screen first rendered. It usually had. Usually is the
+	// worst kind of bug.
+	const urlSmart = searchParams.get('chytre')
+	const [smartSearch, setSmartSearchState] = useState(() => parseSmart(urlSmart))
+
+	// Navigation brings a mode with it; typing does not, and its replaceState is
+	// invisible to the hook above — the same dance `hledat` does just up there.
+	const lastUrlSmart = useRef(urlSmart)
+	useEffect(() => {
+		if (urlSmart === lastUrlSmart.current) return
+		lastUrlSmart.current = urlSmart
+		setSmartSearchState(parseSmart(urlSmart))
+	}, [urlSmart])
+
+	const setSmartSearch = useCallback((next: boolean) => {
+		setSmartSearchState(next)
+		// …and mirrored back into the URL, with replaceState so that turning the
+		// mode over does not put a step in the history for Back to walk through
+		const params = new URLSearchParams(window.location.search)
+		if (next) params.set(SMART_PARAM, 'true')
+		else params.delete(SMART_PARAM)
+		const query = params.toString()
+		lastUrlSmart.current = next ? 'true' : null
+		window.history.replaceState(
+			{},
+			'',
+			query ? `${window.location.pathname}?${query}` : window.location.pathname
+		)
+	}, [])
 
 	const { songGettingApi } = useApi()
 
