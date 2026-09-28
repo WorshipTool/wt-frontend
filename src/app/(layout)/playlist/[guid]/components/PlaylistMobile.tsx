@@ -118,7 +118,7 @@ export default function PlaylistMobile({
 	const navigate = useSmartNavigate()
 	const router = useRouter()
 	const { enqueueSnackbar } = useSnackbar()
-	const { items, title, loading, canUserEdit, guid, addItem, removeItem, setItems, save, rename } =
+	const { items, title, loading, canUserEdit, guid, addItem, removeItem, setItems, save, renameAndSave } =
 		useInnerPlaylist()
 
 	const [mode, setMode] = useState<'list' | 'detail'>(initialMode)
@@ -236,9 +236,13 @@ export default function PlaylistMobile({
 		setRenameValue(title ?? '')
 		setRenameOpen(true)
 	}
-	const submitRename = () => {
-		rename(renameValue.trim())
+	const submitRename = async () => {
+		const next = renameValue.trim()
 		setRenameOpen(false)
+		if (next === (title ?? '')) return
+		// commits straight away: the dialog closes on submit, so there is no Save
+		// left to press, and edit mode may never have been entered at all
+		await renameAndSave(next)
 	}
 
 	const moreItems: MenuItemObjectType[] = [
@@ -393,13 +397,25 @@ export default function PlaylistMobile({
 					<Cover />
 				</MorphItem>
 
-				{/* title — shrinks and travels up to the compact bar (whole scroll) */}
+				{/* title — shrinks and travels up to the compact bar (whole scroll).
+				    Tapping it renames. That is the only way to rename on a phone: the
+				    ⋮ holding the menu item belongs to the compact bar, and a short
+				    playlist never scrolls far enough for the bar to exist. An owner
+				    gets the pencil in edit mode so the tap is not a secret, and an
+				    untitled playlist shows the placeholder — otherwise the one thing
+				    you came to rename is nothing, and nothing cannot be tapped. */}
 				<MorphItem
 					from={{ fontSize: 23 }}
 					to={{ translateX: -40, translateY: -41, fontSize: 17.5 }}
-					sx={{ top: `${HEADER_TOP}58px)`, left: 88, maxWidth: 'calc(100vw - 210px)', fontWeight: 800, letterSpacing: '-0.3px', color: 'grey.900', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+					onClick={canUserEdit ? openRename : undefined}
+					sx={{ top: `${HEADER_TOP}58px)`, left: 88, maxWidth: 'calc(100vw - 210px)', fontWeight: 800, letterSpacing: '-0.3px', color: 'grey.900', whiteSpace: 'nowrap', overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 0.75, ...(canUserEdit && { pointerEvents: 'auto', cursor: 'pointer' }) }}
 				>
-					{title || ''}
+					<Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', ...(title ? {} : { color: 'grey.400' }) }}>
+						{title || (canUserEdit ? t('playlistNamePlaceholder') : '')}
+					</Box>
+					{canUserEdit && editMode && (
+						<DriveFileRenameOutlineRounded sx={{ fontSize: 19, color: 'grey.500', flexShrink: 0, opacity: 'calc((0.45 - var(--collapse-p, 0)) / 0.45)' }} />
+					)}
 				</MorphItem>
 
 				{/* subtitle — fades + lifts out early */}

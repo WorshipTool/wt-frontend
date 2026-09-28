@@ -142,7 +142,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setIsSaved(false)
 	}, [_undo])
 
-	const save = async () => {
+	const _persist = async (name: string) => {
 		if (!canUserEdit) return
 
 		setIsSaving(true)
@@ -157,7 +157,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		await editingApi.complexPlaylistEdit({
 			playlistGuid: guid,
 			items: complexEditItems,
-			name: state.title,
+			name,
 		})
 
 		setIsSaved(true)
@@ -166,6 +166,8 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 
 		setIsSaving(false)
 	}
+
+	const save = async () => _persist(state.title)
 
 	// Shortcuts
 	useEffect(() => {
@@ -241,6 +243,20 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		},
 		[_change]
 	)
+
+	/**
+	 * Renames and commits in one call.
+	 *
+	 * The desktop types the name into the header and presses Save afterwards, so
+	 * `rename` alone is enough there. The phone renames in a dialog that closes on
+	 * submit, with no Save left to press — and `save` would read the title out of
+	 * the render it was created in, which at that moment still holds the old one.
+	 * So the new name travels with the call instead of being looked up.
+	 */
+	const renameAndSave = async (nextTitle: string) => {
+		rename(nextTitle)
+		await _persist(nextTitle)
+	}
 
 	const setItems = useCallback(
 		(items: PlaylistItemDto[]) => {
@@ -326,6 +342,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		isSaving,
 
 		rename,
+		renameAndSave,
 		setItems,
 		setItemKeyChord,
 		removeItem,
