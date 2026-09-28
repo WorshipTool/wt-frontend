@@ -14,8 +14,13 @@ const BOTTOM_OFFSET = 24
 const TOUCH_BOTTOM_OFFSET = 8
 /** Air under the bar where it comes to rest, so the last row clears it. */
 const RESTING_AIR = 8
-/** The phone bar's own height (a 40px page button in 4px of padding). */
-const TOUCH_BAR_HEIGHT = 48
+/**
+ * A little scroll room under the phone's list, so the last card can be pushed
+ * above the bar rather than ending beneath it. It goes *before* the bar, not
+ * after: space after the bar is where the bar comes to rest, and a tall one
+ * parks it halfway up the screen instead of just above the tab bar.
+ */
+const TOUCH_SCROLL_RESERVE = 16
 /** Above the page, below the top bar (10) and the search field (11) — it never
  * reaches either, and the scale in Z_INDEX starts above 100. */
 const BAR_Z = 9
@@ -97,6 +102,9 @@ export default function CatalogPagination({
 
 	return (
 		<>
+			{touch && (
+				<Box aria-hidden sx={{ height: `${TOUCH_SCROLL_RESERVE}px`, flexShrink: 0 }} />
+			)}
 			<Box
 				ref={barRef}
 				sx={{
@@ -168,16 +176,12 @@ export default function CatalogPagination({
 			    whatever height the block has left over, so its bottom edge is the end
 			    of the page rather than the end of the list.
 
-			    On a phone it is the scroll reserve: the bar floats over the rows, so
-			    the list needs somewhere to go before it runs out, or the last card
-			    stays under the bar however far you scroll. That is the whole height
-			    of the bar and then some. */}
+			    On a phone it is also what the bar rests in, which is why it stays
+			    small: the reserve that lets the list past the bar sits above it. */}
 			<Box
 				ref={endRef}
 				sx={{
-					minHeight: touch
-						? `${TOUCH_BAR_HEIGHT + TOUCH_BOTTOM_OFFSET + RESTING_AIR}px`
-						: `${Math.max(0, offset) + RESTING_AIR}px`,
+					minHeight: `${Math.max(0, offset) + RESTING_AIR}px`,
 					flexShrink: 0,
 					...(touch ? {} : { flexGrow: 1 }),
 				}}
