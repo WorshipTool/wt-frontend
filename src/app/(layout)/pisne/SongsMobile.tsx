@@ -16,6 +16,7 @@ import {
 	SongGroup,
 } from '@/common/ui/GroupList'
 import { Box, Button, Typography, useTheme } from '@/common/ui'
+import { alpha } from '@/common/ui/mui'
 import { CloudOffRounded, MusicNoteRounded, RefreshRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { ReactNode, useMemo } from 'react'
@@ -29,6 +30,8 @@ const TITLE_MAX_HEIGHT = 72
 const COLLAPSE_MS = 240
 /** Air above and below the field in its band, in theme units. */
 const BAND_PAD = 1
+/** How far the band's colour reaches past its edge before it is gone. */
+const BAND_FADE = 20
 // small alphabetical section label above each letter's group card
 const LETTER_HEADER_SX = {
 	paddingLeft: 0.5,
@@ -127,8 +130,20 @@ export default function SongsMobile({
 			{/* The field's band: `position: sticky`, so the browser keeps it in step
 			    with the page and nothing here reads the scroll. Full width — the
 			    scroller's inset is added back inside — so the rows pass under all of
-			    it. Its line appears only once it has arrived at the top and there is
-			    something passing under it to divide from. */}
+			    it.
+
+			    Passing under it is the whole difficulty. The band is the page's own
+			    grey, so a card sliding beneath it lost its top edge to a straight
+			    horizontal cut through the middle of a line of text — which reads as
+			    a broken render rather than as something scrolling away. The band had
+			    a hairline for it, faded in by a scroll-driven animation, which is
+			    both unsupported in some browsers and too quiet to explain the cut
+			    anyway.
+
+			    So the band carries its own colour a little way past its edge instead,
+			    fading to nothing: text dissolves into the band on its way up. At rest
+			    it falls on the page's background, which is the same colour, and
+			    cannot be seen at all. */}
 			<Box
 				sx={{
 					position: 'sticky',
@@ -140,18 +155,18 @@ export default function SongsMobile({
 					paddingY: BAND_PAD,
 					marginTop: BAND_PAD,
 					bgcolor: 'grey.50',
-					borderBottom: '1px solid',
-					borderColor: 'transparent',
-					'@supports (animation-timeline: scroll())': {
-						'@keyframes songsBandPinned': {
-							from: { borderBottomColor: 'transparent' },
-							to: { borderBottomColor: theme.palette.grey[200] },
-						},
-						animationName: 'songsBandPinned',
-						animationTimeline: 'scroll(nearest block)',
-						animationRange: '8px 40px',
-						animationFillMode: 'both',
-						animationTimingFunction: 'linear',
+					'&::after': {
+						content: '""',
+						position: 'absolute',
+						left: 0,
+						right: 0,
+						top: '100%',
+						height: `${BAND_FADE}px`,
+						pointerEvents: 'none',
+						background: `linear-gradient(to bottom, ${theme.palette.grey[50]}, ${alpha(
+							theme.palette.grey[50],
+							0
+						)})`,
 					},
 				}}
 			>
