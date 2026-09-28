@@ -309,6 +309,28 @@ useBlockAppReload(sheetData !== '', 'writing a song')
 silently throw that work away. The update is applied as soon as the last blocker
 clears.
 
+## Anything that leaves the app
+
+**Installed, the app has nowhere to put a popup but inside itself.** A
+`window.open(url, '_blank', 'width=…')` in a browser tab is a small window with
+an address bar; in the home-screen app it is a chromeless panel over the screen
+you were on, with no address bar, no share sheet, no print button and no
+obvious way back. That is what printing a song used to do.
+
+So anything whose destination belongs to the browser — the rendered PDF, an
+external link — goes through a plain `target="_blank"` link when
+`isStandalonePwa()` (`tech/device.tech.ts`) says we are installed; see
+`printDocumentByUrl`. A synthesised link click is the one thing the platforms
+agree means "the browser takes this", and it has to be a real anchor in the
+document, because Safari reads a bare `window.open` as a popup and blocks it.
+Don't call `print()` on the result either — that window is the browser's, and
+its viewer has print, save and share of its own.
+
+What the platform does with the tab is still the platform's call: Android may
+show it in a Custom Tab over the app rather than switching to Chrome. That is a
+browser with its own chrome and an "open in Chrome" item, which is the thing we
+were after.
+
 ## Where a button is declared
 
 **Global navigation belongs to the tab bar, and nowhere else.** Account, tools,
