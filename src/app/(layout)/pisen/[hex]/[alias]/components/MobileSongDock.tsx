@@ -175,6 +175,11 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				)}
 
 				{hasChords && (
+					/* With the chords hidden there is nothing on screen for a
+					   transposition to change, so the pill goes quiet rather than
+					   accepting taps that do nothing: someone pressed it three times
+					   before working out that the app was not broken, the chords were
+					   just turned off. */
 					<Box
 						sx={{
 							display: 'flex',
@@ -189,6 +194,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 						<IconButton
 							tooltip={tTranspose('decrease')}
 							onClick={() => props.transpose(-1)}
+							disabled={!props.showChords}
 						>
 							<RemoveRounded />
 						</IconButton>
@@ -215,7 +221,12 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 							>
 								{tTranspose('keyWithNote', { note: WIDEST_NOTE })}
 							</Typography>
-							<Typography strong noWrap sx={{ gridArea: '1 / 1' }}>
+							<Typography
+								strong
+								noWrap
+								color={props.showChords ? undefined : 'grey.400'}
+								sx={{ gridArea: '1 / 1' }}
+							>
 								{keyNote
 									? tTranspose('keyWithNote', { note: keyNote })
 									: tTranspose('title')}
@@ -224,6 +235,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 						<IconButton
 							tooltip={tTranspose('increase')}
 							onClick={() => props.transpose(1)}
+							disabled={!props.showChords}
 						>
 							<AddRounded />
 						</IconButton>
