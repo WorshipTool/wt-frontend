@@ -10,15 +10,11 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { Roboto } from 'next/font/google'
-import { getMessages } from '../../i18n-config'
+import { getLocale, getMessages } from '../../i18n-config'
 
 import HeadersProviders from '@/app/providers/HeadersProviders'
-import dynamic from 'next/dynamic'
 
-const Analytics = dynamic(
-	() => import('@/app/components/components/analytics/Analytics'),
-	{ ssr: false }
-)
+import Analytics from '@/app/components/components/analytics/Analytics'
 import './globals.classes.css'
 import './globals.css'
 
@@ -75,14 +71,15 @@ export default async function RootLayout({
 	children: React.ReactNode
 }>) {
 	const messages = await getMessages()
+	const locale = getLocale()
 
 	return (
-		<html lang="en" className={`${roboto.variable} ${roboto.className}`}>
+		<html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
 			<HeadersProviders />
 			<Analytics />
 			<body>
 				<AppRouterCacheProvider>
-					<NextIntlClientProvider messages={messages} locale="en">
+					<NextIntlClientProvider messages={messages} locale={locale}>
 						<AppProviders>
 							{children}
 							<PopupProvider />

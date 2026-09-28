@@ -1,9 +1,11 @@
 import { getRequestConfig } from 'next-intl/server'
+import { getContentVersion, getLocale } from '../../i18n-config'
 
 export default getRequestConfig(async () => {
-	// Provide a static locale
-	const locale = 'en'
-	const contentVersion = process.env.CONTENT_VERSION || 'chvalotce'
+	// One locale per deployment — the brand decides which, because the brand is
+	// what decides the language of the catalogue. See `getLocale`.
+	const locale = getLocale()
+	const contentVersion = getContentVersion()
 
 	return {
 		locale,
