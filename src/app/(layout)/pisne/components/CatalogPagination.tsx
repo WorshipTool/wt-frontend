@@ -1,9 +1,11 @@
 'use client'
 
+import { ABOVE_TABBAR_SLOT_ID } from '@/common/components/MobileAppTabBar/nav.constants'
 import { Box, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 /** Clear of the bottom of the scroll, in px — `bottom` in `sx` is a position,
  * not a spacing, so the theme scale does not apply to it. */
@@ -14,6 +16,18 @@ const BOTTOM_OFFSET = 24
 const TOUCH_BOTTOM_OFFSET = 8
 /** Air under the bar where it comes to rest, so the last row clears it. */
 const RESTING_AIR = 8
+/** The phone bar's own height (a 40px page button in 4px of padding). */
+const TOUCH_BAR_HEIGHT = 48
+/**
+ * What a phone screen must keep free below its list so the bar covers none of
+ * it — pass it to `MobileAppHeader`'s `bottomInset`.
+ *
+ * The bar used to be sticky inside the scroller, which floats it over the rows:
+ * whichever row you stopped on, the bar was lying across it, and only the very
+ * end of the page cleared it. Now it stands above the tab bar, in room the
+ * shell keeps for it, and the list never passes underneath.
+ */
+export const MOBILE_PAGINATION_RESERVE = TOUCH_BAR_HEIGHT + TOUCH_BOTTOM_OFFSET
 /** Above the page, below the top bar (10) and the search field (11) — it never
  * reaches either, and the scale in Z_INDEX starts above 100. */
 const BAR_Z = 9
@@ -53,6 +67,12 @@ export default function CatalogPagination({
 	const t = useTranslations('songsList')
 	const barRef = useRef<HTMLDivElement>(null)
 	const endRef = useRef<HTMLDivElement>(null)
+	const [slot, setSlot] = useState<HTMLElement | null>(null)
+
+	useEffect(() => {
+		if (!touch) return
+		setSlot(document.getElementById(ABOVE_TABBAR_SLOT_ID))
+	}, [touch])
 
 	// The bar holds the window's bottom edge until the end of the page comes up
 	// to meet it, and then rides with it — so it is never over the footer that
@@ -93,16 +113,16 @@ export default function CatalogPagination({
 	const current = Math.min(page, pagesCount)
 	const offset = touch ? TOUCH_BOTTOM_OFFSET : BOTTOM_OFFSET
 
-	return (
+	const bar = (
 		<>
 			<Box
 				ref={barRef}
 				sx={{
-					// On a phone the shell's scroller ends at the tab bar with no footer
-					// under it, so sticky is the whole answer there.
-					position: touch ? 'sticky' : 'fixed',
-					bottom: offset,
-					...(touch ? {} : { left: 0, right: 0 }),
+					// On a phone it stands above the tab bar in room the shell keeps for
+					// it (`MOBILE_PAGINATION_RESERVE`), so it covers no row of the list.
+					...(touch
+						? { marginBottom: `${TOUCH_BOTTOM_OFFSET}px` }
+						: { position: 'fixed', bottom: offset, left: 0, right: 0 }),
 					zIndex: BAR_Z,
 					display: 'flex',
 					justifyContent: 'center',
@@ -161,18 +181,24 @@ export default function CatalogPagination({
 				</Box>
 			</Box>
 
-			{/* The end of the page, which is what the bar stops at — and the air it
-			    stops in, so the last row is never under it. It takes whatever height
-			    the block has left over (the block is at least a screen tall), so its
-			    bottom edge is the end of the page rather than the end of the list. */}
-			<Box
-				ref={endRef}
-				sx={{
-					minHeight: `${Math.max(0, offset) + RESTING_AIR}px`,
-					flexShrink: 0,
-					...(touch ? {} : { flexGrow: 1 }),
-				}}
-			/>
+			{/* The end of the page, which is what the desktop bar stops at — and the
+			    air it stops in, so the last row is never under it. It takes whatever
+			    height the block has left over (the block is at least a screen tall),
+			    so its bottom edge is the end of the page rather than the end of the
+			    list. The phone has no use for it: its bar is not in the scroller. */}
+			{!touch && (
+				<Box
+					ref={endRef}
+					sx={{
+						minHeight: `${Math.max(0, offset) + RESTING_AIR}px`,
+						flexShrink: 0,
+						flexGrow: 1,
+					}}
+				/>
+			)}
 		</>
 	)
+
+	if (!touch) return bar
+	return slot ? createPortal(bar, slot) : null
 }
