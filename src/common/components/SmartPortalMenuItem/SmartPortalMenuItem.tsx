@@ -10,7 +10,7 @@ type Props<T extends CommonLinkProps<RoutesKeys>['to']> = MenuItemObjectType<T>
 export default function SmartPortalMenuItem<
 	T extends CommonLinkProps<RoutesKeys>['to']
 >(props: Props<T>) {
-	const { containerId } = useSmartPortalMenu()
+	const { containerId, close } = useSmartPortalMenu()
 	const ref = useRef<HTMLDivElement | null>(null)
 	const [mounted, setMounted] = useState(false)
 
@@ -23,8 +23,17 @@ export default function SmartPortalMenuItem<
 	}, [containerId])
 
 	const menuItem = useMemo(() => {
-		return <MenuItem {...props} />
-	}, [props])
+		// choosing is the end of the menu, whatever the choice does afterwards
+		return (
+			<MenuItem
+				{...props}
+				onClick={(e) => {
+					props.onClick?.(e)
+					close()
+				}}
+			/>
+		)
+	}, [props, close])
 
 	return ref.current && mounted
 		? createSmartPortal(menuItem, containerId)

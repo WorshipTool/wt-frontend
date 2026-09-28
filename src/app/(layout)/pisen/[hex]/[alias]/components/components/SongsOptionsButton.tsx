@@ -7,7 +7,8 @@ import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { ExtendedVariantPack } from '@/types/song'
 import { MoreVert } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
-import React, { useState } from 'react'
+import useSmartPortalMenu from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
+import React, { useEffect, useState } from 'react'
 import { SongDto } from '../../../../../../../api/dtos'
 import useAuth from '../../../../../../../hooks/auth/useAuth'
 import DeleteButton from './DeleteButton'
@@ -36,15 +37,28 @@ export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 	const tOptions = useTranslations('songPage.optionsMenu')
 
+	// the items are portalled in from above this component, so they cannot reach
+	// this state; the provider lends it to them (see SmartPortalMenuProvider)
+	const { registerClose, setButton } = useSmartPortalMenu()
+
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setOpen(true)
 		setAnchorEl(event.currentTarget)
+		setButton(event.currentTarget)
 	}
 
 	const handleClose = () => {
 		setOpen(false)
 		setAnchorEl(null)
 	}
+
+	useEffect(() => {
+		registerClose(() => {
+			setOpen(false)
+			setAnchorEl(null)
+		})
+		return () => registerClose(null)
+	}, [registerClose])
 
 	const { isAdmin, isLoggedIn, isTrustee } = useAuth()
 	const [childrenCount, setChildrenCount] = useState(0)

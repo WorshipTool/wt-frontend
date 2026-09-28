@@ -10,6 +10,7 @@ import SelectPlaylistMenu from '@/common/components/Menu/SelectPlaylistMenu/Sele
 import Popup from '@/common/components/Popup/Popup'
 import { ABOVE_TABBAR_SLOT_ID } from '@/common/components/MobileAppTabBar/nav.constants'
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
+import useSmartPortalMenu from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
 import { Box, IconButton, Typography } from '@/common/ui'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
@@ -97,6 +98,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 	 */
 	const narrow = useMediaQuery('(max-width: 360px)')
 
+	// the ⋮ the options menu hangs from — where the playlist picker opens once
+	// that menu has closed
+	const { button: menuButton } = useSmartPortalMenu()
+
 	const [noteOpen, setNoteOpen] = useState(false)
 	const [playlistAnchor, setPlaylistAnchor] = useState<null | HTMLElement>(null)
 
@@ -165,10 +170,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				<SmartPortalMenuItem
 					title={tTopPanel('addToPlaylist')}
 					icon={<PlaylistAddRounded />}
-					// anchored to the row that was tapped, not to the dock: the list of
-					// playlists belongs to the thing you just pressed, wherever that
-					// happens to be
-					onClick={(e) => setPlaylistAnchor(e.currentTarget)}
+					// anchored to the ⋮ rather than to the row that was tapped: the row
+					// goes with the menu, which closes on the choice, and the list of
+					// playlists then opens where the menu was
+					onClick={() => setPlaylistAnchor(menuButton)}
 				/>
 			)}
 			<SmartPortalMenuItem
