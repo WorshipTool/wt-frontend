@@ -99,7 +99,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 			},
 			{ returnFormat: 'absolute' }
 		)
-		printDocumentByUrl(url)
+		printDocumentByUrl(url, `${props.editedTitle}.pdf`)
 	}
 
 	if (!tabBarSlot) return null

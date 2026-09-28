@@ -210,7 +210,10 @@ export default function PlaylistMobile({
 	const onPrint = async () => {
 		if (isEmpty) return
 		await save()
-		printDocumentByUrl(getReplacedUrlWithParams(routesPaths.playlistPdf, { guid }, { returnFormat: 'absolute' }))
+		printDocumentByUrl(
+			getReplacedUrlWithParams(routesPaths.playlistPdf, { guid }, { returnFormat: 'absolute' }),
+			title ? `${title}.pdf` : undefined
+		)
 	}
 	const onToggleEdit = async () => {
 		if (editMode) await save()

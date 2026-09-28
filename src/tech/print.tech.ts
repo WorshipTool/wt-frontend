@@ -14,26 +14,30 @@ export const openNewPrintWindow = (url: string) => {
 }
 
 /**
- * Hands the url to the browser the way a link would, rather than opening a
- * window of our own.
+ * Takes the file out of the app by downloading it instead of displaying it.
  *
- * The difference matters only in the installed app, and there it is the whole
- * point: `window.open` with a size asks for a popup, and an installed app has
- * nowhere to put one but inside itself — a chromeless panel over the song with
- * no address bar, no share sheet, no print button and no obvious way back. A
- * plain `target="_blank"` is the one thing the platforms agree means "this
- * belongs to the browser", so that is what this builds.
+ * An installed app cannot send an address to the browser when that address is
+ * its own. Scope — everything under `start_url`, which for us is the whole site
+ * — is what the platform uses to decide, and the printable PDF lives at
+ * `/pisen/…/pdf`, inside it. So `target="_blank"` does not mean "the browser
+ * takes this"; it means "open another window of yourself", and on a phone that
+ * window has no address bar, no share sheet and no print button. Which was the
+ * bug, in a second costume.
  *
- * It goes through a real anchor rather than `window.open(url, '_blank')`
- * because Safari treats a synthesised link click as the navigation it is and a
- * bare `window.open` as a popup to be blocked; the node has to be in the
- * document for the click to count.
+ * A download is not a navigation, so there is nothing for the app to display:
+ * the file goes to the system, and from there it opens in whatever reads PDFs —
+ * on an iPhone, the share sheet, where printing actually lives.
+ *
+ * The name is passed in rather than left to the response's own
+ * Content-Disposition: an empty `download` does not fall back to the header the
+ * way the spec reads, and Chromium saves the file as `download`. A caller that
+ * has no title gets the route's header instead, which is at least correct.
  */
-const openInBrowserTab = (url: string) => {
+const downloadOutOfApp = (url: string, fileName?: string) => {
 	const link = document.createElement('a')
 	link.href = url
-	link.target = '_blank'
-	link.rel = 'noopener noreferrer'
+	link.download = fileName ?? ''
+	// Safari counts a synthesised click only on a node that is in the document
 	document.body.appendChild(link)
 	link.click()
 	link.remove()
@@ -43,13 +47,16 @@ const openInBrowserTab = (url: string) => {
  * Opens what is to be printed — a PDF the server renders — and, in a browser,
  * raises the print dialog over it.
  *
- * Installed, it only opens it, in the browser: the window is the browser's now,
- * not ours to call `print()` on, and the viewer it lands in has a print button
- * of its own along with save and share, which is more than the popup offered.
+ * Installed, it hands the file to the system instead. `print()` has nothing to
+ * act on there, and the app has nothing worth showing the file in.
+ *
+ * `fileName` is what the saved file should be called — the song's or playlist's
+ * title. It only matters on the download path, but every caller that knows the
+ * title should pass it: it is the name the person will be looking at in Files.
  */
-export const printDocumentByUrl = (url: string) => {
+export const printDocumentByUrl = (url: string, fileName?: string) => {
 	if (isStandalonePwa()) {
-		openInBrowserTab(url)
+		downloadOutOfApp(url, fileName)
 		return
 	}
 

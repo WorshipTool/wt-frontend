@@ -311,25 +311,31 @@ clears.
 
 ## Anything that leaves the app
 
-**Installed, the app has nowhere to put a popup but inside itself.** A
-`window.open(url, '_blank', 'width=…')` in a browser tab is a small window with
-an address bar; in the home-screen app it is a chromeless panel over the screen
-you were on, with no address bar, no share sheet, no print button and no
-obvious way back. That is what printing a song used to do.
+**An installed app cannot hand the browser an address of its own.** Scope —
+everything under `start_url`, and ours is `/` — is what the platform uses to
+decide, and the printable PDF lives at `/pisen/…/pdf`, inside it. So
+`target="_blank"` there does not mean "the browser takes this"; it means "open
+another window of yourself", which on a phone has no address bar, no share
+sheet and no print button. Swapping `window.open(url, '_blank', 'width=…')` for
+a link was the same bug in a second costume, and it took a real iPhone to show
+that, because in a browser tab there is no scope and both look fine.
 
-So anything whose destination belongs to the browser — the rendered PDF, an
-external link — goes through a plain `target="_blank"` link when
-`isStandalonePwa()` (`tech/device.tech.ts`) says we are installed; see
-`printDocumentByUrl`. A synthesised link click is the one thing the platforms
-agree means "the browser takes this", and it has to be a real anchor in the
-document, because Safari reads a bare `window.open` as a popup and blocks it.
-Don't call `print()` on the result either — that window is the browser's, and
-its viewer has print, save and share of its own.
+**So don't navigate — download.** A download is not a navigation, so the app has
+nothing to display: the file goes to the system, and on an iPhone that is the
+share sheet, where printing actually lives. `printDocumentByUrl` does this when
+`isStandalonePwa()` (`tech/device.tech.ts`) says we are installed, and keeps the
+popup-and-`print()` behaviour in a browser tab.
 
-What the platform does with the tab is still the platform's call: Android may
-show it in a Custom Tab over the app rather than switching to Chrome. That is a
-browser with its own chrome and an "open in Chrome" item, which is the thing we
-were after.
+Pass the file's name with it. An empty `download` does not fall back to the
+response's `Content-Disposition` the way the spec reads — Chromium saves the
+file as `download` — so every caller that knows the song's or playlist's title
+passes it. The routes' header is correct now too (`contentDisposition`, RFC
+6266: a `filename*=UTF-8''…` for the real name and an ASCII `filename` for
+anything that cannot read it); percent-encoding the plain `filename`, which is
+what they used to do, saved the file as `10%20000%20d%C5%AFvod%C5%AF.pdf`.
+
+The only way to get a real browser tab would be to put the file outside the
+app's scope — another host. That is infrastructure, not frontend.
 
 ## Where a button is declared
 
