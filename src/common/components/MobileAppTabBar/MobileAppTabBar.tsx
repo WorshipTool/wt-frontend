@@ -2,6 +2,7 @@
 
 import { takeSearchKeyboard } from '@/app/(layout)/pisne/searchHandoff'
 import BrandSheepIcon from '@/assets/icon.svg'
+import { AccountTabAvatar } from '@/common/components/MobileAppTabBar/AccountTabAvatar'
 import MobileBottomDock from '@/common/components/MobileAppTabBar/MobileBottomDock'
 import MobileToolsMenu from '@/common/components/MobileAppTabBar/MobileToolsMenu'
 import { TAB_ICON_SIZE, TabItem } from '@/common/components/MobileAppTabBar/TabItem'
@@ -14,8 +15,6 @@ import {
 	LibraryMusicOutlined,
 	LibraryMusicRounded,
 	LoginRounded,
-	PersonOutlineRounded,
-	PersonRounded,
 	Search,
 	SearchOutlined,
 } from '@mui/icons-material'
@@ -145,9 +144,11 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 
 				{loggedIn ? (
 					<Link to="account" params={{}} style={{ flex: 1, minWidth: 0 }}>
+						{/* your own face rather than a silhouette — the same picture the
+						    desktop top bar shows, from the same hook */}
 						<TabItem
-							icon={<PersonOutlineRounded />}
-							activeIcon={<PersonRounded />}
+							icon={<AccountTabAvatar />}
+							activeIcon={<AccountTabAvatar active />}
 							label={tNav('account')}
 							active={active === 'account'}
 						/>
