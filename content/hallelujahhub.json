@@ -301,7 +301,8 @@
 		},
 		"search": {
 			"placeholder": "Search songs..."
-		}
+		},
+		"deleteConfirm": "Delete this playlist?"
 	},
 	"song": {
 		"transpose": "Transpose",

@@ -16,6 +16,7 @@ import { routesPaths } from '@/routes'
 import { getReplacedUrlWithParams, getRouteUrlWithParams } from '@/routes/tech/transformer.tech'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { printDocumentByUrl } from '@/tech/print.tech'
+import usePlaylistsGeneral from '@/hooks/playlist/usePlaylistsGeneral'
 import {
 	AddRounded,
 	ArrowBackRounded,
@@ -66,7 +67,7 @@ function Cover() {
 	)
 }
 // a secondary header action: an outlined (bordered) icon button
-function OutlinedAction({ onClick, alt, active, children }: { onClick: () => void; alt: string; active?: boolean; children: React.ReactNode }) {
+function OutlinedAction({ onClick, alt, active, children }: { onClick: (e: React.MouseEvent<HTMLElement>) => void; alt: string; active?: boolean; children: React.ReactNode }) {
 	return (
 		<Box
 			component="button"
@@ -118,8 +119,9 @@ export default function PlaylistMobile({
 	const navigate = useSmartNavigate()
 	const router = useRouter()
 	const { enqueueSnackbar } = useSnackbar()
-	const { items, title, loading, canUserEdit, guid, addItem, removeItem, setItems, save, renameAndSave } =
+	const { items, title, loading, canUserEdit, guid, addItemsAndSave, removeItem, setItems, save, renameAndSave } =
 		useInnerPlaylist()
+	const { deletePlaylist } = usePlaylistsGeneral()
 
 	const [mode, setMode] = useState<'list' | 'detail'>(initialMode)
 	const [detailIndex, setDetailIndex] = useState(0)
@@ -130,6 +132,9 @@ export default function PlaylistMobile({
 	// Playlisty creates an untitled one and navigates straight here
 	const [renameOpen, setRenameOpen] = useState(false)
 	const [renameValue, setRenameValue] = useState('')
+	// deleting: a playlist is one tap to create and, until now, impossible to
+	// throw away from a phone — the account list's delete is a desktop row
+	const [deleteOpen, setDeleteOpen] = useState(false)
 	const addAnchorRef = useRef<HTMLDivElement>(null)
 
 	const listScrollRef = useRef<HTMLDivElement>(null)
@@ -225,7 +230,9 @@ export default function PlaylistMobile({
 		setMode('detail')
 	}
 	const onAddSubmit = async (packs: BasicVariantPack[]) => {
-		for (const pack of packs) await addItem(pack)
+		// all of them, and committed: the add control shows outside edit mode too,
+		// where there is no ✓ afterwards to write anything down
+		await addItemsAndSave(packs)
 	}
 	const addFilter = (pack: BasicVariantPack) =>
 		!(items ?? []).some((i) => i.pack.packGuid === pack.packGuid)
@@ -245,6 +252,12 @@ export default function PlaylistMobile({
 		await renameAndSave(next)
 	}
 
+	const onDelete = async () => {
+		setDeleteOpen(false)
+		await deletePlaylist(guid)
+		navigate('usersPlaylists', {})
+	}
+
 	const moreItems: MenuItemObjectType[] = [
 		...(isEmpty
 			? []
@@ -254,6 +267,7 @@ export default function PlaylistMobile({
 			? [
 					{ title: t('rename'), icon: <DriveFileRenameOutlineRounded fontSize="small" />, onClick: openRename },
 					{ title: tCommon('edit'), icon: <EditRounded fontSize="small" />, onClick: onToggleEdit },
+					{ title: tCommon('delete'), icon: <DeleteOutlineRounded fontSize="small" />, onClick: () => setDeleteOpen(true) },
 				]
 			: []),
 	]
@@ -451,10 +465,23 @@ export default function PlaylistMobile({
 					{canUserEdit && (
 						<OutlinedAction onClick={onToggleEdit} alt={editMode ? tCommon('save') : tCommon('edit')} active={editMode}>{editMode ? <CheckRounded /> : <EditRounded />}</OutlinedAction>
 					)}
+					{/* the same ⋮ the compact bar gets. It used to belong to the compact
+					    bar alone, which exists only once the header has collapsed — so on
+					    a playlist too short to scroll, Přejmenovat and Smazat lived behind
+					    a control that was transparent but still took the tap. */}
+					<OutlinedAction onClick={(e) => setMenuAnchor(e.currentTarget)} alt={t('more')}><MoreVertRounded /></OutlinedAction>
 				</MorphItem>
 
-				{/* ⋮ (or ✓ in edit mode) — compact-only, fades in last, left of the circle */}
-				<MorphItem from={{ opacity: 0 }} to={{ opacity: 1 }} range={[0.5, 1]} sx={{ top: `${HEADER_TOP}7px)`, right: 66, pointerEvents: 'auto' }}>
+				{/* ⋮ (or ✓ in edit mode) — compact-only, fades in last, left of the
+				    circle. It grows from nothing rather than only fading in: at zero
+				    size, clipped, there is no square of empty header that silently
+				    swallows a tap while the bar it belongs to does not exist yet. */}
+				<MorphItem
+					from={{ opacity: 0, width: 0, height: 0 }}
+					to={{ opacity: 1, width: 40, height: 40 }}
+					range={[0.5, 1]}
+					sx={{ top: `${HEADER_TOP}7px)`, right: 66, pointerEvents: 'auto', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+				>
 					{renderMore(true)}
 				</MorphItem>
 			</CollapsingHeader>
@@ -501,6 +528,22 @@ export default function PlaylistMobile({
 					autoFocus
 				/>
 			</Popup>
+
+			<Popup
+				open={deleteOpen}
+				onClose={() => setDeleteOpen(false)}
+				title={t('deleteConfirm')}
+				actions={
+					<>
+						<Button variant="outlined" onClick={() => setDeleteOpen(false)}>
+							{tCommon('cancel')}
+						</Button>
+						<Button color="error" onClick={onDelete}>
+							{tCommon('delete')}
+						</Button>
+					</>
+				}
+			/>
 
 			{/* the shared picker, reused from desktop — but as a sheet: at this width
 			    it is nearly the whole screen, so it belongs at the bottom rather than

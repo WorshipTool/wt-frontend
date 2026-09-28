@@ -304,7 +304,8 @@ declare const messages: {
 		},
 		"search": {
 			"placeholder": "Hledat písně..."
-		}
+		},
+		"deleteConfirm": "Opravdu smazat playlist?"
 	},
 	"song": {
 		"transpose": "Transponovat",

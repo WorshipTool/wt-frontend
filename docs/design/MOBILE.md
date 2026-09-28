@@ -309,6 +309,36 @@ useBlockAppReload(sheetData !== '', 'writing a song')
 silently throw that work away. The update is applied as soon as the last blocker
 clears.
 
+**Adding something is not a draft edit.** A walkthrough added three songs to a
+playlist, watched the header count them, left, came back to an empty playlist
+and never saw a warning: the phone's save hangs on leaving edit mode, and the
+add control shows outside edit mode too. Anything reached from outside an edit
+mode commits by itself — `addItemsAndSave`, `renameAndSave`. Reordering and
+removing stay behind the ✓, because that is where the user put them.
+
+A save that follows a change in the same breath has to be **handed** the new
+value. `save()` reads `state` out of the render it was created in, which at that
+moment still holds the old one, so `_persist(name, items)` takes both. The same
+trap in reverse is `addItem` in a loop: every call read the same `state.items`
+and the last write won, so picking three songs added one.
+
+## A control that is not visible yet has no hit area
+
+The collapsing header stages its parts by fading them. Fading leaves the element
+in place, at full size, still taking taps — so the playlist's ⋮ was a 31×31
+square of nothing in the corner that opened a menu, and the menu it opened held
+Přejmenovat and Smazat, which is where they went to hide.
+
+Two rules came out of it:
+
+- **Morph the size, not only the opacity.** An item that belongs to the compact
+  bar grows `width`/`height` from `0` with `overflow: hidden`, so before the bar
+  exists there is nothing to press.
+- **A control that only exists in one state of the header needs a home in the
+  other.** The ⋮ is now in the expanded action row as well; both open the same
+  menu. Anything that lives *only* behind a collapsed-state control is
+  unreachable on a screen too short to scroll — which is every short playlist.
+
 ## Anything that leaves the app
 
 **An installed app cannot hand the browser an address of its own.** Scope —

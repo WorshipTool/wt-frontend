@@ -142,17 +142,21 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setIsSaved(false)
 	}, [_undo])
 
-	const _persist = async (name: string) => {
+	/**
+	 * Writes the playlist to the server.
+	 *
+	 * Takes what to write rather than reading it out of `state`, because every
+	 * caller that changes something and saves in the same breath would otherwise
+	 * send the state of the render it was created in — the one before the change.
+	 */
+	const _persist = async (name: string, items: PlaylistItemDto[]) => {
 		if (!canUserEdit) return
 
 		setIsSaving(true)
 
 		// Only genuinely changed items carry newData; unchanged items omit it so
 		// the backend skips the heavy per-song copy/version path.
-		const complexEditItems = buildComplexEditItems(
-			state.items,
-			playlist.items
-		)
+		const complexEditItems = buildComplexEditItems(items, playlist.items)
 
 		await editingApi.complexPlaylistEdit({
 			playlistGuid: guid,
@@ -167,7 +171,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setIsSaving(false)
 	}
 
-	const save = async () => _persist(state.title)
+	const save = async () => _persist(state.title, state.items)
 
 	// Shortcuts
 	useEffect(() => {
@@ -255,7 +259,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	 */
 	const renameAndSave = async (nextTitle: string) => {
 		rename(nextTitle)
-		await _persist(nextTitle)
+		await _persist(nextTitle, state.items)
 	}
 
 	const setItems = useCallback(
@@ -283,18 +287,47 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setItems(newItems)
 	}
 
-	const addItem = async (pack: BasicVariantPack) => {
-		const item: PlaylistItemDto = {
+	/** The list as it would be with these packs appended, in the order given. */
+	const _withAppended = (packs: BasicVariantPack[]): PlaylistItemDto[] => {
+		const appended: PlaylistItemDto[] = packs.map((pack, i) => ({
 			guid: v4() as PlaylistItemGuid,
-			pack: pack,
+			pack,
 			toneKey: 'C',
-			order: state.items.length,
-		}
-		if (!item) return
-
-		const newItems = [...state.items, item].sort((a, b) => a.order - b.order)
-		setItems(newItems)
+			order: state.items.length + i,
+		}))
+		return [...state.items, ...appended].sort((a, b) => a.order - b.order)
 	}
+
+	/**
+	 * Appends several songs at once.
+	 *
+	 * Calling `addItem` in a loop looked like it would do this and did not: each
+	 * call read `state.items` out of the same render, so every one of them built
+	 * its list from the state before the loop started and the last write won —
+	 * pick three songs, get one. The desktop never saw it because its picker
+	 * passes `disableMultiselect` and adds one at a time.
+	 */
+	const addItems = async (packs: BasicVariantPack[]) => {
+		if (!packs.length) return
+		setItems(_withAppended(packs))
+	}
+
+	/**
+	 * Appends and writes to the server in one go.
+	 *
+	 * Adding is not a draft edit. The phone shows "Přidat píseň do playlistu"
+	 * outside edit mode as well, where nothing would ever save it, so songs
+	 * appeared in the list, said "1 píseň" in the header, and were gone on the
+	 * next visit — with nothing on screen to suggest it.
+	 */
+	const addItemsAndSave = async (packs: BasicVariantPack[]) => {
+		if (!packs.length) return
+		const next = _withAppended(packs)
+		setItems(next)
+		await _persist(state.title, next)
+	}
+
+	const addItem = async (pack: BasicVariantPack) => addItems([pack])
 
 	const addItemWithGuid = async (packGuid: PackGuid) => {
 		const data = await packGettingApi.getBasicPackDataByPackGuid(packGuid)
@@ -347,6 +380,8 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setItemKeyChord,
 		removeItem,
 		addItem,
+		addItems,
+		addItemsAndSave,
 		addItemWithGuid,
 		editItem,
 		data: playlist.playlist,
