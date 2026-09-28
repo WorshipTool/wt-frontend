@@ -34,7 +34,7 @@ import {
 } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { SongDto } from '../../../../../../api/dtos'
 import { routesPaths } from '../../../../../../routes'
@@ -99,7 +99,6 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 
 	const [noteOpen, setNoteOpen] = useState(false)
 	const [playlistAnchor, setPlaylistAnchor] = useState<null | HTMLElement>(null)
-	const dockRef = useRef<HTMLDivElement>(null)
 
 	const { items: favourites, add: addFavourite, remove: removeFavourite } = useFavourites()
 	const isFavourite = Boolean(
@@ -166,7 +165,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				<SmartPortalMenuItem
 					title={tTopPanel('addToPlaylist')}
 					icon={<PlaylistAddRounded />}
-					onClick={() => setPlaylistAnchor(dockRef.current)}
+					// anchored to the row that was tapped, not to the dock: the list of
+					// playlists belongs to the thing you just pressed, wherever that
+					// happens to be
+					onClick={(e) => setPlaylistAnchor(e.currentTarget)}
 				/>
 			)}
 			<SmartPortalMenuItem
@@ -201,7 +203,6 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 			)}
 
 			<Box
-				ref={dockRef}
 				sx={{
 					marginX: 2,
 					marginBottom: `${DOCK_GAP}px`,
