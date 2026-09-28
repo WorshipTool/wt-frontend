@@ -3,9 +3,7 @@
 import { mapBasicVariantPackApiToDto } from '@/api/dtos/song/song.map'
 import { groupByFirstLetter } from '@/app/(layout)/pisne/letterGroups'
 import { useBrowseSongs } from '@/app/(layout)/pisne/useBrowseSongs'
-import CatalogPagination, {
-	MOBILE_PAGINATION_RESERVE,
-} from '@/app/(layout)/pisne/components/CatalogPagination'
+import CatalogPagination from '@/app/(layout)/pisne/components/CatalogPagination'
 import SongSearchResults from '@/app/(layout)/pisne/components/SongSearchResults'
 import {
 	MobileAppHeader,
@@ -100,9 +98,6 @@ export default function SongsMobile({
 			// a new query starts at the top of its own results, and so does a new
 			// page of the browse list
 			scrollResetKey={searching ? query : page}
-			// the paging bar stands above the tab bar; this is its room, so no card
-			// of the list ever scrolls underneath it
-			bottomInset={showPagination ? MOBILE_PAGINATION_RESERVE : undefined}
 		>
 			{/* the title belongs to the page, not to a bar: it scrolls away with the
 			    list, and folds on its own once searching takes the screen */}
