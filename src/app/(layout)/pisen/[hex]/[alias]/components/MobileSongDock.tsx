@@ -262,21 +262,27 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				</Popup>
 			)}
 
-			{/* playlist picker anchored to the dock's playlist button */}
-			<SelectPlaylistMenu
-				openAbove
-				open={Boolean(playlistAnchor)}
-				onClose={() => setPlaylistAnchor(null)}
-				anchor={playlistAnchor}
-				itemComponent={(playlist: PlaylistData) => (
-					<AddToPlaylistMenuItem
-						key={playlist.guid}
-						variant={props.variant}
-						guid={playlist.guid as PlaylistGuid}
-						title={playlist.title}
-					/>
-				)}
-			/>
+			{/* playlist picker anchored to the dock's playlist button. Mounted only
+			    for a signed-in visitor, as on the desktop panel: the menu asks for
+			    the user's playlists as soon as it exists, and its button above is
+			    behind the same guard, so for anyone else it is a question with no
+			    one to answer it. */}
+			{isLoggedIn() && (
+				<SelectPlaylistMenu
+					openAbove
+					open={Boolean(playlistAnchor)}
+					onClose={() => setPlaylistAnchor(null)}
+					anchor={playlistAnchor}
+					itemComponent={(playlist: PlaylistData) => (
+						<AddToPlaylistMenuItem
+							key={playlist.guid}
+							variant={props.variant}
+							guid={playlist.guid as PlaylistGuid}
+							title={playlist.title}
+						/>
+					)}
+				/>
+			)}
 		</>,
 		tabBarSlot
 	)
