@@ -67,6 +67,16 @@ type MobileAppHeaderProps<T extends RoutesKeys> = {
 	collapseTitle?: boolean
 	/** Optional panel pinned above the bottom tab bar (e.g. pagination). */
 	bottomPanel?: ReactNode
+	/**
+	 * Height to keep free below the scrolling content, for something that floats
+	 * there and is not the tab bar — the song page's dock.
+	 *
+	 * It shortens the scroller instead of padding it, and that is the whole
+	 * point: padding only clears the *end* of the content, so the dock still lay
+	 * across whatever line you happened to stop on. Room taken here is room the
+	 * content never occupies.
+	 */
+	bottomInset?: number
 	/** When this value changes, the content scrolls back to the top (e.g. on page change). */
 	scrollResetKey?: string | number
 	/** Surface (and header) background — palette path. Defaults to the grey app
@@ -101,6 +111,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 	controlPanel,
 	collapseTitle = false,
 	bottomPanel,
+	bottomInset,
 	scrollResetKey,
 	surface = 'grey.50',
 	divider = false,
@@ -361,13 +372,28 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					// height, not the clearance, which is deliberately more than that
 					// and would leave a gap at the end of the scroll. A panel of its
 					// own below takes that room instead.
-					paddingBottom: bottomPanel
-						? 2
-						: `calc(env(safe-area-inset-bottom) + ${MOBILE_NAV_BAR_HEIGHT}px)`,
+					paddingBottom:
+						bottomPanel || bottomInset
+							? 2
+							: `calc(env(safe-area-inset-bottom) + ${MOBILE_NAV_BAR_HEIGHT}px)`,
 				}}
 			>
 				{children}
 			</Box>
+
+			{/* room reserved for something that floats above the tab bar without
+			    being part of the shell (the song dock). Empty on purpose: it is
+			    space, not a panel. */}
+			{!bottomPanel && Boolean(bottomInset) && (
+				<Box
+					aria-hidden
+					sx={{
+						flexShrink: 0,
+						height: `${bottomInset}px`,
+						marginBottom: MOBILE_NAV_CLEARANCE,
+					}}
+				/>
+			)}
 
 			{/* optional panel pinned above the bottom tab bar (e.g. pagination).
 			    Must stay BELOW the tab bar so its raised center action (the

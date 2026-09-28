@@ -13,6 +13,7 @@ import { InnerPackProvider } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useI
 import { useSongEditing } from '@/app/(layout)/pisen/[hex]/[alias]/hooks/useSongEditing'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
+import { MOBILE_SONG_DOCK_RESERVE } from '@/app/(layout)/pisen/[hex]/[alias]/components/MobileSongDock'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SmartPortalMenuProvider } from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
 import { Box, Gap, Typography } from '@/common/ui'
@@ -136,6 +137,9 @@ export default function SongContainer({
 						title={editedTitle}
 						backTo="songsList"
 						surface="grey.50"
+						// the dock floats above the tab bar; this is its room, kept free
+						// so no line of the song ever scrolls underneath it
+						bottomInset={MOBILE_SONG_DOCK_RESERVE}
 					>
 						{/* the song sheet lives in a white card floating on the grey app
 						    canvas (matching the rest of the app) — so short songs read as
@@ -161,9 +165,6 @@ export default function SongContainer({
 								showMedia={props.flags.showMedia}
 							/>
 						</Box>
-						{/* clearance so a long song's end scrolls clear of the floating
-						    dock (which hovers ~70px above the tab bar) */}
-						<Box sx={{ height: 76 }} />
 					</MobileAppHeader>
 				</SmartPortalMenuProvider>
 			</InnerPackProvider>

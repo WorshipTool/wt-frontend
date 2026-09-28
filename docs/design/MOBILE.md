@@ -322,6 +322,32 @@ moment still holds the old one, so `_persist(name, items)` takes both. The same
 trap in reverse is `addItem` in a loop: every call read the same `state.items`
 and the last write won, so picking three songs added one.
 
+## Something floating above the tab bar takes `bottomInset`, not padding
+
+`MobileAppHeader` scrolls only its middle content, and anything pinned above the
+tab bar — the song page's dock — floats over that content. Padding at the end of
+the content clears the dock for the *last* line and nothing else: at every other
+scroll position the dock lay across whatever line you had stopped on, cutting it
+in half.
+
+`bottomInset={n}` reserves the room as a sibling of the scroller, so the
+scroller is shorter by that much and no line can pass underneath. The song page
+passes `MOBILE_SONG_DOCK_RESERVE`, which the dock exports from its own height
+and gap so the two cannot drift apart. Measured after: the scroller ends 7px
+above the dock on both a 320 and a 390 wide phone.
+
+## A dock sheds controls before it overflows
+
+Below 360px the song dock keeps the printer, the key and the ⋮, and moves the
+heart and add-to-playlist into the ⋮. Six controls plus the key pill are wider
+than the card, and `justify-content: space-between` does not shrink — it pushes
+the last one out, so on a 320px screen the ⋮ ended 6px past the right edge of
+the display, for signed-in visitors only (a signed-out dock has four controls
+and fits).
+
+The rule the dock follows: **a row that cannot shrink must drop items, and the
+overflow menu is where they go.** Not a smaller gap, not a smaller icon.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element

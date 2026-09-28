@@ -13,7 +13,9 @@ import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPo
 import { Box, IconButton, Typography } from '@/common/ui'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
+import { useMediaQuery } from '@/common/ui/mui'
 import useAuth from '@/hooks/auth/useAuth'
+import { useFavourites } from '@/hooks/favourites/useFavourites'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
 import { printDocumentByUrl } from '@/tech/print.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
@@ -21,6 +23,8 @@ import { ExtendedVariantPack } from '@/types/song'
 import {
 	AddComment,
 	AddRounded,
+	Favorite,
+	FavoriteBorder,
 	FeaturedPlayList,
 	MusicNoteRounded,
 	MusicOffRounded,
@@ -30,7 +34,7 @@ import {
 } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { SongDto } from '../../../../../../api/dtos'
 import { routesPaths } from '../../../../../../routes'
@@ -42,6 +46,12 @@ import { routesPaths } from '../../../../../../routes'
  * `#` a pixel past `b`.
  */
 const WIDEST_NOTE = 'H#'
+
+/** The dock's own height, and the gap it keeps above the tab bar. */
+const DOCK_HEIGHT = 58
+const DOCK_GAP = 12
+/** What the page must keep free below its content so the dock covers none of it. */
+export const MOBILE_SONG_DOCK_RESERVE = DOCK_HEIGHT + DOCK_GAP
 
 type MobileSongDockProps = {
 	variant: ExtendedVariantPack
@@ -75,9 +85,26 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 	const tTopPanel = useTranslations('songPage.topPanel')
 	const tPrint = useTranslations('songPage.print')
 	const tNote = useTranslations('userNote')
+	const tFavourites = useTranslations('favourites')
+
+	/**
+	 * Below this width the dock cannot hold everything a signed-in visitor has.
+	 * Six controls plus the key pill come to more than the card is wide, and the
+	 * one on the end — the ⋮ — was pushed six pixels off the right of a 320px
+	 * screen. So on a narrow phone only the printer, the key and the ⋮ stay in
+	 * the row; the heart and the playlist move into the ⋮ itself, which is what
+	 * it is for.
+	 */
+	const narrow = useMediaQuery('(max-width: 360px)')
 
 	const [noteOpen, setNoteOpen] = useState(false)
 	const [playlistAnchor, setPlaylistAnchor] = useState<null | HTMLElement>(null)
+	const dockRef = useRef<HTMLDivElement>(null)
+
+	const { items: favourites, add: addFavourite, remove: removeFavourite } = useFavourites()
+	const isFavourite = Boolean(
+		favourites?.some((f) => f.packGuid === props.variant.packGuid)
+	)
 
 	const [tabBarSlot, setTabBarSlot] = useState<HTMLElement | null>(null)
 	useEffect(() => {
@@ -119,6 +146,29 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					onClick={() => props.onToggleChords(!props.showChords)}
 				/>
 			)}
+			{/* what the dock gives up on a narrow phone, it keeps here */}
+			{narrow && user && (
+				<SmartPortalMenuItem
+					title={
+						isFavourite
+							? tFavourites('removeFromFavourites')
+							: tFavourites('addToFavourites')
+					}
+					icon={isFavourite ? <Favorite /> : <FavoriteBorder />}
+					onClick={() =>
+						isFavourite
+							? removeFavourite(props.variant.packGuid)
+							: addFavourite(props.variant.packGuid)
+					}
+				/>
+			)}
+			{narrow && isLoggedIn() && (
+				<SmartPortalMenuItem
+					title={tTopPanel('addToPlaylist')}
+					icon={<PlaylistAddRounded />}
+					onClick={() => setPlaylistAnchor(dockRef.current)}
+				/>
+			)}
 			<SmartPortalMenuItem
 				title={tTopPanel('presentationItem.title')}
 				subtitle={tTopPanel('presentationItem.subtitle')}
@@ -151,9 +201,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 			)}
 
 			<Box
+				ref={dockRef}
 				sx={{
 					marginX: 2,
-					marginBottom: 1.5,
+					marginBottom: `${DOCK_GAP}px`,
 					bgcolor: 'background.paper',
 					borderRadius: 3,
 					boxShadow: '0 6px 24px rgba(0,0,0,0.16)',
@@ -164,13 +215,13 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					// device width
 					justifyContent: 'space-between',
 					paddingX: 1.5,
-					height: 58,
+					height: DOCK_HEIGHT,
 				}}
 			>
 				<IconButton tooltip={tPrint('tooltip')} onClick={onPrintClick}>
 					<Print fontSize="small" sx={{ color: 'grey.700' }} />
 				</IconButton>
-				{user && (
+				{user && !narrow && (
 					<HeartLikeButton packGuid={props.variant.packGuid} interactable />
 				)}
 
@@ -242,7 +293,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					</Box>
 				)}
 
-				{isLoggedIn() && (
+				{isLoggedIn() && !narrow && (
 					<IconButton
 						tooltip={tTopPanel('addToPlaylist')}
 						onClick={(e) => setPlaylistAnchor(e.currentTarget)}
