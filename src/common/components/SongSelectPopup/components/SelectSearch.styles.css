@@ -1,0 +1,15 @@
+.song-select-title-box {
+	border-bottom: 1px solid var(--color-grey-200);
+}
+
+.song-select-title-box:focus-within,
+.song-select-title-box:hover {
+	/* outline-style: solid;
+	outline-width: 1px; */
+	/* border-bottom-color: var(--color-grey-300); */
+}
+
+.song-select-title-box:focus-within {
+	/* border-bottom-color: var(--color-grey-400); */
+	/* background-color: var(--color-grey-300); */
+}

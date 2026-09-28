@@ -163,6 +163,12 @@ Two rules keep it one:
 - **`highlighted` is the hero's alone** — the brand gradient around the
   field. Nothing else wears it.
 
+One search is deliberately not the bar: `SongSelectPopup`'s `SelectSearch`,
+which shares a heading row with the popup's title. The bar wants a row; that
+slot is the leftover beside a heading, about a hundred pixels on a phone, and
+the bar put there clips its own placeholder. Widen the slot before reaching for
+the bar again.
+
 ### SongVariantCard / SongGroupCard
 Domain cards for `BasicVariantPack`. Use `properties` flags
 (`SHOW_PRIVATE_LABEL`, …), `toLinkProps` for navigation, selection props for
