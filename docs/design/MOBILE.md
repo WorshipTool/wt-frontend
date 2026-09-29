@@ -500,6 +500,20 @@ toggles. Any overlay whose job is "tap anywhere to dismiss" belongs under the
 bar for the same reason — dismissing is not worth a tap of its own when the tap
 already meant something.
 
+## A backdrop is not a focus stop
+
+Every dialog drew a thin orange frame around the whole screen. It was
+Chromium's own focus ring: `Popup` gives its backdrop `id="popup-content"` and
+focuses it on open, and the backdrop is the size of the viewport, so the ring
+went round the edge of the phone. It was also in the tab order, one stop before
+anything inside the dialog.
+
+The backdrop keeps the focus — the popup wants somewhere to put it — but takes
+`tabIndex={-1}` and `outline: 'none'`: programmatic focus still lands, the tab
+order skips it, and nothing is painted around the screen. Anything that fills
+the viewport to catch taps is scenery: give it `-1` and kill its outline, or
+the browser will draw a border on your behalf.
+
 ## The shell remembers where each screen was left
 
 The browser restores the *document's* scroll, and the shell scrolls a box of

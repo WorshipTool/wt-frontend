@@ -115,9 +115,14 @@ export default function Popup({
 							backdropFilter: 'blur(2px)',
 							backgroundColor: alpha('#000', 0.5),
 							pointerEvents: 'auto',
+							// focused on open so Escape reaches it, but this is the
+							// backdrop: it has no business in the tab order, and the
+							// browser's focus ring around it is a frame around the
+							// whole screen
+							outline: 'none',
 						}}
 						id={POPUP_CONTENT_ID}
-						tabIndex={0}
+						tabIndex={-1}
 						onKeyDown={(e) => e.stopPropagation()}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
