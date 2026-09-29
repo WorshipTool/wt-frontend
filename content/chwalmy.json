@@ -345,7 +345,8 @@
 		}
 	},
 	"songSelect": {
-		"source": "Źródło"
+		"source": "Źródło: {source}",
+		"empty": "Nie ma z czego wybierać..."
 	},
 	"songPage": {
 		"topPanel": {

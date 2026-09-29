@@ -377,11 +377,24 @@ theme, a phone held at an angle). Same colour as the desktop, translated from a
 card into a row; no checkboxes, which the app has nowhere else and which would
 give a song list the look of a form.
 
-**The list scrolls, not the sheet.** A sheet tall enough to hold rows is tall
-enough that scrolling it as a whole pushes its own *Přidat vybrané* off the
-screen. The sheet is a flex column with `overflow: hidden`; the list is the one
-part with `flex: 1; min-height: 0; overflow-y: auto`. Heading, source and
+**The list scrolls, not the sheet, and it stops at four rows.** A sheet tall
+enough to hold rows is tall enough that scrolling it as a whole pushes its own
+*Přidat vybrané* off the screen. The sheet is a flex column with
+`overflow: hidden`; the list is the one part that scrolls
+(`flex: 0 1 auto; min-height: 0; overflow-y: auto`), capped at four rows and a
+slice of the fifth — enough to say there are more without the sheet swallowing
+the screen, which hides what you were adding the song to. Heading, source and
 buttons stay put at any scroll position.
+
+**Build the rows out of `@/common/ui/GroupList`, not by hand.** `GroupCard` +
+`SongVariantCard dense` (+ `GroupDivider`, `GroupRowsSkeleton`,
+`ListStateView`) is the phone's list language, and the first draft of this
+picker re-implemented it — tighter corners, full-bleed hairlines, its own
+padding, no press feedback. One caveat found on the way: the card's own
+`selectable` tints only its text column, which in a row leaves the leading tile
+and the trailing icons outside the fill. For a full-row fill, disable the row's
+link with `toLinkProps={() => null}`, take the click yourself, and put the tint
+in `sx`.
 
 ## A control that is not visible yet has no hit area
 

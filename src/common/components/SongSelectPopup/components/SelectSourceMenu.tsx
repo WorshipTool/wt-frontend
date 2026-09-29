@@ -54,7 +54,7 @@ export default function SelectSourceMenu(props: SelectSourceMenuProps) {
 					endIcon={<KeyboardArrowDown />}
 					onClick={() => setOpen(true)}
 				>
-					{`${t('source')}: ${current?.label ?? ''}`}
+					{t('source', { source: current?.label ?? '' })}
 				</Button>
 			</Box>
 

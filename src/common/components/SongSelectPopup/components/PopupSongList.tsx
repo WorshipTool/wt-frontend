@@ -3,9 +3,18 @@ import { BasicVariantPack, VariantPackGuid } from '@/api/dtos'
 import PopupSongCard from '@/common/components/SongSelectPopup/components/PopupSongCard'
 import PopupSongRow from '@/common/components/SongSelectPopup/components/PopupSongRow'
 import { Box } from '@/common/ui'
+import {
+	GroupCard,
+	GroupDivider,
+	GroupRowsSkeleton,
+	ListStateView,
+} from '@/common/ui/GroupList'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { Typography } from '@/common/ui/Typography'
 import { ApiState } from '@/tech/ApiState'
+import { MusicNoteRounded } from '@mui/icons-material'
+import { useTranslations } from 'next-intl'
+import { Fragment } from 'react'
 import './GlobalSongList.styles.css'
 
 type GlobalSongListProps = {
@@ -20,43 +29,33 @@ type GlobalSongListProps = {
 }
 
 export default function PopupSongList(props: GlobalSongListProps) {
+	const t = useTranslations('songSelect')
 	const empty = !props.apiState.loading && props.items.length === 0
 
 	if (props.asRows) {
+		if (props.apiState.loading) return <GroupRowsSkeleton rows={4} withIcon />
+		if (empty)
+			return (
+				<ListStateView
+					icon={<MusicNoteRounded fontSize="inherit" />}
+					message={t('empty')}
+				/>
+			)
+
 		return (
-			<Box
-				display={'flex'}
-				flexDirection={'column'}
-				width={'100%'}
-				sx={{
-					bgcolor: empty ? 'grey.300' : 'background.paper',
-					borderRadius: 2,
-					overflow: 'hidden',
-				}}
-			>
-				{props.items.map((song) => (
-					<PopupSongRow
-						key={song.packGuid}
-						song={song}
-						onSelect={() => props.onSongSelect(song)}
-						onDeselect={() => props.onSongDeselect(song)}
-						selected={props.selectedSongs.includes(song.packGuid)}
-					/>
+			<GroupCard>
+				{props.items.map((song, i) => (
+					<Fragment key={song.packGuid}>
+						<PopupSongRow
+							song={song}
+							onSelect={() => props.onSongSelect(song)}
+							onDeselect={() => props.onSongDeselect(song)}
+							selected={props.selectedSongs.includes(song.packGuid)}
+						/>
+						{i < props.items.length - 1 && <GroupDivider />}
+					</Fragment>
 				))}
-
-				{empty && (
-					<Box padding={2} sx={{ userSelect: 'none' }}>
-						<Typography color="grey.700">Není z čeho vybírat...</Typography>
-					</Box>
-				)}
-
-				{props.apiState.loading &&
-					Array.from({ length: 5 }).map((_, i) => (
-						<Box key={i} paddingX={2} paddingY={1}>
-							<Skeleton variant="rectangular" height={34} />
-						</Box>
-					))}
-			</Box>
+			</GroupCard>
 		)
 	}
 
@@ -96,7 +95,7 @@ export default function PopupSongList(props: GlobalSongListProps) {
 					}}
 					flex={1}
 				>
-					<Typography color="grey.700">Není z čeho vybírat...</Typography>
+					<Typography color="grey.700">{t('empty')}</Typography>
 				</Box>
 			)}
 

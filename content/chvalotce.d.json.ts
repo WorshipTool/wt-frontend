@@ -348,7 +348,8 @@ declare const messages: {
 		}
 	},
 	"songSelect": {
-		"source": "Zdroj"
+		"source": "Zdroj: {source}",
+		"empty": "Není z čeho vybírat..."
 	},
 	"songPage": {
 		"topPanel": {

@@ -2,6 +2,7 @@
 import { BasicVariantPack } from '@/api/dtos'
 import PopupContainer from '@/common/components/Popup/PopupContainer'
 import PopupSongList from '@/common/components/SongSelectPopup/components/PopupSongList'
+import { POPUP_ROW_HEIGHT } from '@/common/components/SongSelectPopup/components/PopupSongRow'
 import SelectedPanel from '@/common/components/SongSelectPopup/components/SelectedPanel'
 import SelectFromOptions, {
 	SelectOption,
@@ -45,6 +46,14 @@ type PopupProps = {
 	disableMultiselect?: boolean
 	submitLabel?: string
 }
+
+/**
+ * How much of the list a sheet shows before it scrolls: four songs and a slice
+ * of the fifth, which says there are more without the sheet swallowing the
+ * screen. A picker that fills a phone top to bottom hides what you were adding
+ * the song to, and the choice is only ever a few rows of reading anyway.
+ */
+const SHEET_LIST_MAX_HEIGHT = Math.round(POPUP_ROW_HEIGHT * 4.3)
 
 export type ChosenSong = {
 	guid: VariantPackGuid
@@ -290,8 +299,9 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							</Box>
 
 							<Box
-								flex={props.asSheet ? 1 : undefined}
+								flex={props.asSheet ? '0 1 auto' : undefined}
 								minHeight={props.asSheet ? 0 : undefined}
+								maxHeight={props.asSheet ? SHEET_LIST_MAX_HEIGHT : undefined}
 								className={props.asSheet ? 'stylized-scrollbar' : undefined}
 								sx={{
 									overflowY: props.asSheet ? 'auto' : undefined,
