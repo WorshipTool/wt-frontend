@@ -46,6 +46,22 @@ import PlaylistSwipeDeck from './PlaylistSwipeDeck'
 const H_FULL = 210
 const H_SLIM = 54
 const HEADER_TOP = 'calc(env(safe-area-inset-top) + '
+/**
+ * How much room the playlist's name may take, as the header collapses.
+ *
+ * The reserve on its right belongs to the compact bar — the Tisknout circle and
+ * the ⋮ beside it — and to the print pill on its way up to them, which crosses
+ * the title's line a little under halfway through the collapse. Held at that
+ * width the whole time, as it used to be, the name was cut at 180px on a 390px
+ * phone with 114px of empty header beside it: the one thing you opened the
+ * screen to read, clipped to clear a bar that is not there yet.
+ *
+ * So it interpolates with `--collapse-p` like everything else in this header —
+ * the whole line minus its left inset while the header is open, tightening to
+ * the bar's reserve by the time the pill arrives.
+ */
+const TITLE_MAX_WIDTH =
+	'calc(100vw - 104px - min(1, var(--collapse-p, 0) / 0.45) * 100px)'
 // space the floating mode switcher occupies at the bottom, so detail-mode
 // content (the swipe deck's arrows + dots) can sit clear above it
 const SWITCHER_CLEARANCE = 74
@@ -422,7 +438,7 @@ export default function PlaylistMobile({
 					from={{ fontSize: 23 }}
 					to={{ translateX: -40, translateY: -41, fontSize: 17.5 }}
 					onClick={canUserEdit ? openRename : undefined}
-					sx={{ top: `${HEADER_TOP}58px)`, left: 88, maxWidth: 'calc(100vw - 210px)', fontWeight: 800, letterSpacing: '-0.3px', color: 'grey.900', whiteSpace: 'nowrap', overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 0.75, ...(canUserEdit && { pointerEvents: 'auto', cursor: 'pointer' }) }}
+					sx={{ top: `${HEADER_TOP}58px)`, left: 88, maxWidth: TITLE_MAX_WIDTH, fontWeight: 800, letterSpacing: '-0.3px', color: 'grey.900', whiteSpace: 'nowrap', overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 0.75, ...(canUserEdit && { pointerEvents: 'auto', cursor: 'pointer' }) }}
 				>
 					<Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', ...(title ? {} : { color: 'grey.400' }) }}>
 						{title || (canUserEdit ? t('playlistNamePlaceholder') : '')}

@@ -570,6 +570,18 @@ variable), and elements that exist in only one state just fade
 (cover/subtitle/share/print/edit out, `⋮` in). Declare each with `from`/`to`
 style specs; the component interpolates them by scroll progress.
 
+**A reserve for the compact bar interpolates too.** The playlist's title was
+capped at `calc(100vw - 210px)` at every scroll position — room held for the
+Tisknout circle, the `⋮` beside it and the pill travelling up to them. None of
+those are on the title's line while the header is open, so a name was cut at
+180px of a 390px phone with 114px of empty header next to it. Anything sized
+around a control that only exists further into the collapse belongs in
+`var(--collapse-p)` like the rest of the header
+(`calc(100vw - 104px - min(1, var(--collapse-p, 0) / 0.45) * 100px)`): open
+wide, tightening by the time the pill crosses the line. Measure the crossing —
+the pill reaches the title's band around 45% and is the binding neighbour until
+about 75%, not the `⋮`.
+
 Why an overlay + a top spacer rather than a header that shrinks in the flex
 column: shrinking a real header hands its height back to the scroller, which
 shrinks the remaining scroll distance and makes short/medium lists stick
