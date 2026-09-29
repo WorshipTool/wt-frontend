@@ -371,6 +371,13 @@ height query so a tablet on its side keeps the roomy shell): the tab bar drops
 its captions and its padding (73 → 44), the song dock loses its breathing room
 (70 → 52) and the header its top pad (61 → 51). Portrait is untouched.
 
+**And the reserve overshoots on purpose.** `--mobile-nav-bar-height` is what a
+page pads the end of its scroll with, and it read 71 while the bar measured 75
+— its border and the captions' descenders. Four pixels, and the last card of
+the account screen ended under the bar with its bottom corners cut off. It is
+76 now (48 sideways): a sliver of blank at the end of a scroll is invisible,
+four pixels of a card are not.
+
 **A band that shrinks has to take its reserve with it.** The first attempt
 tightened all three and changed nothing: the room pages keep free at the bottom
 is `MOBILE_NAV_CLEARANCE` and the song page's dock reserve, both constants, and

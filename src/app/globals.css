@@ -39,13 +39,17 @@ html {
    tighten with them would just hold the room it saved as empty space. */
 :root {
 	--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 80px);
-	--mobile-nav-bar-height: 71px;
+	/* A few pixels more than the bar measures (71 + its border and the label's
+	   descenders come to 75), because this is what a page pads its scroll with:
+	   overshooting leaves a sliver of blank at the end of a scroll, undershooting
+	   cuts the last card in half. */
+	--mobile-nav-bar-height: 76px;
 	--song-dock-reserve: 70px;
 }
 @media (max-height: 430px) {
 	:root {
 		--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 50px);
-		--mobile-nav-bar-height: 44px;
+		--mobile-nav-bar-height: 48px;
 		--song-dock-reserve: 52px;
 	}
 }
