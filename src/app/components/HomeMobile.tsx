@@ -7,10 +7,7 @@ import {
 	MobileAppHeader,
 	TOOLBAR_SPACER,
 } from '@/common/components/MobileAppHeader'
-import {
-	largeTitleSx,
-	TOUCH_TARGET,
-} from '@/common/constants/layout'
+import { largeTitleSx } from '@/common/constants/layout'
 import { Box, Clickable, Image, Typography, useTheme } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
@@ -107,19 +104,7 @@ export default function HomeMobile() {
 
 	const browseAction = (
 		<Clickable>
-			<Link
-				to="songsList"
-				params={{ s: undefined, hledat: undefined, chytre: undefined }}
-				sx={{
-					// The word is a 20px line, which is not a target. The band around
-					// it is, and the negative margin hands the extra back to the
-					// layout so the heading row keeps the height it had.
-					display: 'inline-flex',
-					alignItems: 'center',
-					minHeight: `${TOUCH_TARGET}px`,
-					marginY: '-12px',
-				}}
-			>
+			<Link to="songsList" params={{ s: undefined, hledat: undefined, chytre: undefined }}>
 				<Typography small strong uppercase color="primary.main">
 					{tHome('allList.browse')}
 				</Typography>

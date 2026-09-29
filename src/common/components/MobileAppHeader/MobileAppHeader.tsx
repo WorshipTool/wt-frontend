@@ -11,7 +11,6 @@ import {
 	LARGE_TITLE_COMPACT_REM,
 	LARGE_TITLE_REM,
 	largeTitleSx,
-	TOUCH_TARGET,
 } from '@/common/constants/layout'
 import { Box, IconButton, Typography, useTheme } from '@/common/ui'
 import { RoutesKeys, SmartAllParams } from '@/routes/routes.types'
@@ -359,16 +358,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 							onClick={goUp}
 							alt={tCommon('back')}
 							color="grey.800"
-							sx={{
-								marginLeft: -0.5,
-								flexShrink: 0,
-								// the house IconButton puts `sx` on the box around the button,
-								// so the size has to be asked for by name
-								'& .MuiIconButton-root': {
-									width: TOUCH_TARGET,
-									height: TOUCH_TARGET,
-								},
-							}}
+							sx={{ marginLeft: -0.5, flexShrink: 0 }}
 						>
 							<ArrowBackRounded />
 						</IconButton>
@@ -378,10 +368,10 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 							flex: 1,
 							minWidth: 0,
 							// keep the header the same height on every page: match the
-							// back-arrow / action buttons even when the title is the only
-							// thing in the row, so a title-only header (Seznam, Účet)
+							// back-arrow / action buttons (40px) even when the title is the
+							// only thing in the row, so a title-only header (Seznam, Účet)
 							// doesn't collapse shorter than pages that have controls
-							minHeight: TOUCH_TARGET,
+							minHeight: 40,
 							[SHORT_VIEWPORT]: { minHeight: 36 },
 							display: 'flex',
 							flexDirection: 'column',
