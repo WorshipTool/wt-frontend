@@ -316,6 +316,21 @@ add control shows outside edit mode too. Anything reached from outside an edit
 mode commits by itself — `addItemsAndSave`, `renameAndSave`. Reordering and
 removing stay behind the ✓, because that is where the user put them.
 
+**An edit mode shows its save and nothing else.** The playlist's hero used to
+keep prezentace / sdílet / ⋮ beside the ✓ while you were reordering, and the
+blue primary still said Tisknout — three actions that each quietly called
+`save()` on your behalf before doing their own thing. In edit mode the row of
+circles stands down and the primary becomes **Uložit**; the one way out of the
+mode is the one button on the screen.
+
+**And the way back out asks.** The reorder and the bin live in local state
+until that save, so the back arrow was the one control left that could throw
+work away without a word. It now raises the same question a browser does when
+you close a tab with unsaved work — *Máte neuložené změny. Opustit playlist?* —
+with Zrušit and Zahodit, and only when `isSaved` is false, so leaving an
+untouched edit mode still costs one tap. (`beforeunload` already covered a real
+page unload; this covers the in-app leave.)
+
 A save that follows a change in the same breath has to be **handed** the new
 value. `save()` reads `state` out of the render it was created in, which at that
 moment still holds the old one, so `_persist(name, items)` takes both. The same

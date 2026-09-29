@@ -135,7 +135,7 @@ export default function PlaylistMobile({
 	const navigate = useSmartNavigate()
 	const router = useRouter()
 	const { enqueueSnackbar } = useSnackbar()
-	const { items, title, loading, canUserEdit, guid, addItemsAndSave, removeItem, setItems, save, renameAndSave } =
+	const { items, title, loading, canUserEdit, guid, addItemsAndSave, removeItem, setItems, save, renameAndSave, isSaved } =
 		useInnerPlaylist()
 	const { deletePlaylist } = usePlaylistsGeneral()
 
@@ -143,6 +143,10 @@ export default function PlaylistMobile({
 	const [detailIndex, setDetailIndex] = useState(0)
 	const [editMode, setEditMode] = useState(false)
 	const [addOpen, setAddOpen] = useState(false)
+	// leaving edit mode by the back arrow used to throw the reorder and the
+	// removals away without a word — the same thing a browser stops you doing
+	// when you close a tab with unsaved work
+	const [leaveOpen, setLeaveOpen] = useState(false)
 	const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
 	// renaming: the phone had no way to name a playlist at all, yet "+ Nový" in
 	// Playlisty creates an untitled one and navigates straight here
@@ -194,7 +198,13 @@ export default function PlaylistMobile({
 		if (idx > 0) router.back()
 		else navigate('account', {})
 	}
-	const onBack = () => (mode === 'detail' ? setMode('list') : leave())
+	const onBack = () => {
+		if (mode === 'detail') return setMode('list')
+		// the reorder and the bin live in local state until the save; going back
+		// on top of them is the one way left to lose work here
+		if (editMode && !isSaved) return setLeaveOpen(true)
+		leave()
+	}
 
 	// there is nothing to present or print in an empty playlist — desktop disables
 	// both buttons for this, the phone used to let you do it anyway
@@ -287,17 +297,13 @@ export default function PlaylistMobile({
 				]
 			: []),
 	]
-	// the header's single trailing control: ⋮ menu, or a ✓ to leave edit mode
-	const renderMore = (small?: boolean) =>
-		editMode ? (
-			<IconButton size={small ? 'small' : undefined} color="primary.main" alt={tCommon('save')} onClick={onToggleEdit}>
-				<CheckRounded sx={small ? { fontSize: 21 } : undefined} />
-			</IconButton>
-		) : (
-			<IconButton size={small ? 'small' : undefined} color="grey.700" alt={t('more')} onClick={(e) => setMenuAnchor(e.currentTarget as HTMLElement)}>
-				<MoreVertRounded sx={small ? { fontSize: 21 } : undefined} />
-			</IconButton>
-		)
+	// the compact bar's trailing control — the ⋮ overflow. Edit mode renders none
+	// of this: there the bar's one button is Uložit.
+	const renderMore = (small?: boolean) => (
+		<IconButton size={small ? 'small' : undefined} color="grey.700" alt={t('more')} onClick={(e) => setMenuAnchor(e.currentTarget as HTMLElement)}>
+			<MoreVertRounded sx={small ? { fontSize: 21 } : undefined} />
+		</IconButton>
+	)
 
 	const subtitle = (
 		<Typography small color="grey.500" noWrap>
@@ -459,16 +465,25 @@ export default function PlaylistMobile({
 				<MorphItem
 					from={{ width: 148, height: 46, borderRadius: 14 }}
 					to={{ translateY: -129, width: 44, height: 44, borderRadius: 22 }}
-					onClick={onPrint}
-					sx={{ top: `${HEADER_TOP}134px)`, right: 16, bgcolor: isEmpty ? 'grey.400' : 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isEmpty ? 'default' : 'pointer', pointerEvents: 'auto', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
+					onClick={editMode ? onToggleEdit : onPrint}
+					sx={{ top: `${HEADER_TOP}134px)`, right: 16, bgcolor: !editMode && isEmpty ? 'grey.400' : 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: !editMode && isEmpty ? 'default' : 'pointer', pointerEvents: 'auto', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
 				>
-					<PrintRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
+					{editMode ? (
+						<CheckRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
+					) : (
+						<PrintRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
+					)}
 					{/* label + its left gap both collapse to 0 so the icon centres exactly in the compact circle */}
-					<Typography strong sx={{ color: 'common.white', whiteSpace: 'nowrap', overflow: 'hidden', opacity: 'calc((0.45 - var(--collapse-p, 0)) / 0.45)', marginLeft: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 8px))', maxWidth: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 180px))' }}>{t('print')}</Typography>
+					<Typography strong sx={{ color: 'common.white', whiteSpace: 'nowrap', overflow: 'hidden', opacity: 'calc((0.45 - var(--collapse-p, 0)) / 0.45)', marginLeft: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 8px))', maxWidth: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 180px))' }}>{editMode ? t('save') : t('print')}</Typography>
 				</MorphItem>
 
 				{/* secondary actions (Prezentace / Sdílet / Upravit) — outlined icon group
-				    on the LEFT, aligned to the content inset; lift + fade out together early */}
+				    on the LEFT, aligned to the content inset; lift + fade out together early.
+				    Edit mode stands them all down: presenting, sharing and printing a
+				    playlist you are in the middle of reordering is not a thing to
+				    offer — they each used to save it behind your back first — and the
+				    mode is left by the one primary button, which now says Uložit. */}
+				{!editMode && (
 				<MorphItem
 					to={{ opacity: 0, translateY: -70 }}
 					range={[0, 0.45]}
@@ -487,11 +502,15 @@ export default function PlaylistMobile({
 					    a control that was transparent but still took the tap. */}
 					<OutlinedAction onClick={(e) => setMenuAnchor(e.currentTarget)} alt={t('more')}><MoreVertRounded /></OutlinedAction>
 				</MorphItem>
+				)}
 
-				{/* ⋮ (or ✓ in edit mode) — compact-only, fades in last, left of the
-				    circle. It grows from nothing rather than only fading in: at zero
-				    size, clipped, there is no square of empty header that silently
-				    swallows a tap while the bar it belongs to does not exist yet. */}
+				{/* ⋮ — compact-only, fades in last, left of the circle. It grows from
+				    nothing rather than only fading in: at zero size, clipped, there is
+				    no square of empty header that silently swallows a tap while the bar
+				    it belongs to does not exist yet. In edit mode there is nothing to
+				    put here: the circle beside it is Uložit, and the overflow's actions
+				    belong to the mode you are not in. */}
+				{!editMode && (
 				<MorphItem
 					from={{ opacity: 0, width: 0, height: 0 }}
 					to={{ opacity: 1, width: 40, height: 40 }}
@@ -500,6 +519,7 @@ export default function PlaylistMobile({
 				>
 					{renderMore(true)}
 				</MorphItem>
+				)}
 			</CollapsingHeader>
 
 			{/* floating mode switcher (subtle grey), above the tab bar */}
@@ -544,6 +564,28 @@ export default function PlaylistMobile({
 					autoFocus
 				/>
 			</Popup>
+
+			<Popup
+				open={leaveOpen}
+				onClose={() => setLeaveOpen(false)}
+				title={t('leaveUnsavedConfirm')}
+				actions={
+					<>
+						<Button variant="outlined" onClick={() => setLeaveOpen(false)}>
+							{tCommon('cancel')}
+						</Button>
+						<Button
+							color="error"
+							onClick={() => {
+								setLeaveOpen(false)
+								leave()
+							}}
+						>
+							{tCommon('discard')}
+						</Button>
+					</>
+				}
+			/>
 
 			<Popup
 				open={deleteOpen}

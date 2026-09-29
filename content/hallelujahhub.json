@@ -302,7 +302,8 @@
 		"search": {
 			"placeholder": "Search songs..."
 		},
-		"deleteConfirm": "Delete this playlist?"
+		"deleteConfirm": "Delete this playlist?",
+		"leaveUnsavedConfirm": "You have unsaved changes. Leave the playlist?"
 	},
 	"song": {
 		"transpose": "Transpose",

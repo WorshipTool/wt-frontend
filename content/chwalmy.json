@@ -302,7 +302,8 @@
 		"search": {
 			"placeholder": "Szukaj pieśni..."
 		},
-		"deleteConfirm": "Na pewno usunąć playlistę?"
+		"deleteConfirm": "Na pewno usunąć playlistę?",
+		"leaveUnsavedConfirm": "Masz niezapisane zmiany. Opuścić playlistę?"
 	},
 	"song": {
 		"transpose": "Transponuj",
