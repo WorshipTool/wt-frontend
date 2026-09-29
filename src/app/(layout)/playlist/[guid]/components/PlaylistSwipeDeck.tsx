@@ -1,18 +1,31 @@
 'use client'
 
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
-import TransposePill from '@/common/components/TransposePill/TransposePill'
 import { Box, IconButton, Typography } from '@/common/ui'
 import { PlaylistItemDto } from '@/interfaces/playlist/playlist.types'
 import { Sheet } from '@pepavlin/sheet-api'
-import { ChevronLeftRounded, ChevronRightRounded } from '@mui/icons-material'
+import {
+	AddRounded,
+	ChevronLeftRounded,
+	ChevronRightRounded,
+	RemoveRounded,
+} from '@mui/icons-material'
 import { CONTENT_CARD_SX as CARD } from '@/common/ui/GroupList'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 // one song slide: the shared SheetDisplay on a white card, with the playlist
-// item's stored key applied (same rendering as the standalone song page)
-function DeckSlide({ item }: { item: PlaylistItemDto }) {
+// item's stored key applied (same rendering as the standalone song page), and
+// — for whoever may edit the playlist — the `−`/`+` that change that key,
+// inside the card above the song, where the desktop keeps them.
+function DeckSlide({
+	item,
+	onTranspose,
+}: {
+	item: PlaylistItemDto
+	onTranspose?: (semitones: number) => void
+}) {
+	const t = useTranslations('songPage.transpose')
 	const sheet = useMemo(() => {
 		const s = new Sheet(item.pack.sheetData)
 		if (item.toneKey) s.setKey(item.toneKey)
@@ -20,6 +33,24 @@ function DeckSlide({ item }: { item: PlaylistItemDto }) {
 	}, [item.pack.sheetData, item.toneKey])
 	return (
 		<Box sx={CARD}>
+			{onTranspose && (
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+					<IconButton
+						color="grey.700"
+						tooltip={t('decrease')}
+						onClick={() => onTranspose(-1)}
+					>
+						<RemoveRounded />
+					</IconButton>
+					<IconButton
+						color="grey.700"
+						tooltip={t('increase')}
+						onClick={() => onTranspose(1)}
+					>
+						<AddRounded />
+					</IconButton>
+				</Box>
+			)}
 			<SheetDisplay
 				sheet={sheet}
 				title={item.pack.title}
@@ -48,9 +79,9 @@ export default function PlaylistSwipeDeck({
 	startIndex?: number
 	/** px the parent's floating switcher occupies; the nav row clears it. */
 	bottomInset?: number
-	/** Given, the song on screen can be transposed — the phone's answer to the
-	 * `+`/`−` a desktop puts above the same sheet. Left out for a playlist the
-	 * visitor cannot edit, which is what a desktop does with them too. */
+	/** Given, each song can be transposed — the same `+`/`−` a desktop puts at
+	 * the top of the same card. Left out for a playlist the visitor cannot
+	 * edit, which is what a desktop does with them too. */
 	onTranspose?: (item: PlaylistItemDto, semitones: number) => void
 }) {
 	const t = useTranslations('playlist')
@@ -82,35 +113,8 @@ export default function PlaylistSwipeDeck({
 		if (el) el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' })
 	}
 
-	const currentItem = items[current]
-	// the key the sheet on screen is written in — the item's own, or the song's
-	const currentKey = useMemo(() => {
-		if (!currentItem) return null
-		const s = new Sheet(currentItem.pack.sheetData)
-		if (currentItem.toneKey) s.setKey(currentItem.toneKey)
-		return s.getKeyNote() || null
-	}, [currentItem])
-
 	return (
 		<Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-			{/* above the sheet, and held there while it scrolls — the same place a
-			    desktop keeps it, and the pill the song page uses */}
-			{onTranspose && currentItem && (
-				<Box
-					sx={{
-						flexShrink: 0,
-						display: 'flex',
-						justifyContent: 'flex-start',
-						paddingX: 2,
-						paddingBottom: 1,
-					}}
-				>
-					<TransposePill
-						keyNote={currentKey}
-						onTranspose={(by) => onTranspose(currentItem, by)}
-					/>
-				</Box>
-			)}
 			<Box
 				ref={scrollerRef}
 				onScroll={onScroll}
@@ -138,7 +142,14 @@ export default function PlaylistSwipeDeck({
 							paddingBottom: 2,
 						}}
 					>
-						{Math.abs(i - current) <= 1 ? <DeckSlide item={item} /> : null}
+						{Math.abs(i - current) <= 1 ? (
+							<DeckSlide
+								item={item}
+								onTranspose={
+									onTranspose ? (by) => onTranspose(item, by) : undefined
+								}
+							/>
+						) : null}
 					</Box>
 				))}
 			</Box>
