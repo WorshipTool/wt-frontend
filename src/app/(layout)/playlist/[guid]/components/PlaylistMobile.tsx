@@ -462,20 +462,49 @@ export default function PlaylistMobile({
 				{/* Tisknout (primary) — anchored to the RIGHT edge; collapsing it lifts it
 				    up and shrinks the rounded rectangle into the compact circle. Its label
 				    fades + collapses over the early window. */}
+				{!editMode && (
 				<MorphItem
 					from={{ width: 148, height: 46, borderRadius: 14 }}
 					to={{ translateY: -129, width: 44, height: 44, borderRadius: 22 }}
-					onClick={editMode ? onToggleEdit : onPrint}
-					sx={{ top: `${HEADER_TOP}134px)`, right: 16, bgcolor: !editMode && isEmpty ? 'grey.400' : 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: !editMode && isEmpty ? 'default' : 'pointer', pointerEvents: 'auto', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
+					onClick={onPrint}
+					sx={{ top: `${HEADER_TOP}134px)`, right: 16, bgcolor: isEmpty ? 'grey.400' : 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isEmpty ? 'default' : 'pointer', pointerEvents: 'auto', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
 				>
-					{editMode ? (
-						<CheckRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
-					) : (
-						<PrintRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
-					)}
+					<PrintRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
 					{/* label + its left gap both collapse to 0 so the icon centres exactly in the compact circle */}
-					<Typography strong sx={{ color: 'common.white', whiteSpace: 'nowrap', overflow: 'hidden', opacity: 'calc((0.45 - var(--collapse-p, 0)) / 0.45)', marginLeft: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 8px))', maxWidth: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 180px))' }}>{editMode ? t('save') : t('print')}</Typography>
+					<Typography strong sx={{ color: 'common.white', whiteSpace: 'nowrap', overflow: 'hidden', opacity: 'calc((0.45 - var(--collapse-p, 0)) / 0.45)', marginLeft: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 8px))', maxWidth: 'max(0px, calc((0.45 - var(--collapse-p, 0)) / 0.45 * 180px))' }}>{t('print')}</Typography>
 				</MorphItem>
+				)}
+
+				{/* Uložit — edit mode's one action, on the left where the row of
+				    circles stands outside it, so the button you are looking for is
+				    where the buttons were. It does not travel to the compact bar the
+				    way Tisknout does: that pill starts on the right and only has to
+				    rise, while this one would have to sweep across the whole header.
+				    It lifts out with the rest of the hero, and the bar gets its own
+				    round ✓ in the primary's place. */}
+				{editMode && (
+					<>
+						<MorphItem
+							to={{ opacity: 0, translateY: -70 }}
+							range={[0, 0.45]}
+							onClick={onToggleEdit}
+							sx={{ top: `${HEADER_TOP}134px)`, left: 16, width: 148, height: 46, borderRadius: 3.5, bgcolor: 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, cursor: 'pointer', pointerEvents: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
+						>
+							<CheckRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
+							<Typography strong sx={{ color: 'common.white', whiteSpace: 'nowrap' }}>{t('save')}</Typography>
+						</MorphItem>
+
+						<MorphItem
+							from={{ opacity: 0, width: 0, height: 0 }}
+							to={{ opacity: 1, width: 44, height: 44 }}
+							range={[0.5, 1]}
+							onClick={onToggleEdit}
+							sx={{ top: `${HEADER_TOP}7px)`, right: 16, borderRadius: '50%', bgcolor: 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', pointerEvents: 'auto', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.14)' }}
+						>
+							<CheckRounded sx={{ color: 'common.white', fontSize: 23, flexShrink: 0 }} />
+						</MorphItem>
+					</>
+				)}
 
 				{/* secondary actions (Prezentace / Sdílet / Upravit) — outlined icon group
 				    on the LEFT, aligned to the content inset; lift + fade out together early.

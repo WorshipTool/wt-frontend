@@ -320,8 +320,16 @@ removing stay behind the ✓, because that is where the user put them.
 keep prezentace / sdílet / ⋮ beside the ✓ while you were reordering, and the
 blue primary still said Tisknout — three actions that each quietly called
 `save()` on your behalf before doing their own thing. In edit mode the row of
-circles stands down and the primary becomes **Uložit**; the one way out of the
-mode is the one button on the screen.
+circles stands down and **Uložit** takes its place on the left, where the
+buttons were: the one way out of the mode is the one button on the screen.
+
+It does not morph into the compact bar the way Tisknout does. Tisknout starts
+at the right and only has to rise; a left-hand button would have to sweep the
+width of the header to reach the same corner, and `MorphItem`'s translations
+are fixed px, so the distance would be wrong on every other screen width.
+Uložit lifts out with the rest of the hero over `[0, 0.45]` and the bar grows
+its own round ✓ in the primary's place over `[0.5, 1]` — the doc's other rule
+(things that exist in one state only just fade) rather than the morph.
 
 **And the way back out asks.** The reorder and the bin live in local state
 until that save, so the back arrow was the one control left that could throw
