@@ -500,6 +500,32 @@ toggles. Any overlay whose job is "tap anywhere to dismiss" belongs under the
 bar for the same reason — dismissing is not worth a tap of its own when the tap
 already meant something.
 
+## The shell remembers where each screen was left
+
+The browser restores the *document's* scroll, and the shell scrolls a box of
+its own, so it restored nothing: reading the catalog 450px down, opening a song
+and coming back put you at the top of a screen you had already read.
+`MobileAppHeader` keeps a position per pathname in module state — as long as
+the tab lives and no longer, which is what a reload should forget.
+
+Two things this needs that are easy to get wrong:
+
+- **Recording and restoring are one effect, because they race.** The list is
+  still arriving when the screen mounts, so the position is re-applied while
+  the content grows under it; each attempt lands at 0 on a page that is still
+  empty and fires a scroll event, which a separate recorder takes for the user
+  scrolling to the top and writes over the very position being restored.
+  Nothing is recorded until the restore is done, and a touch or a wheel ends it
+  early, because from then the position is yours.
+- **Re-apply per frame, not on a resize.** The rows grow deep inside the
+  scroller, where a `ResizeObserver` on the box itself never hears about it —
+  measured, that version reached 277 of 450 and stopped.
+
+`scrollResetKey` now resets only when it *changes*, not when a screen mounts
+holding one: a fresh mount is at the top anyway, and firing on mount wiped the
+restored position a frame after it landed. Measured: back to the catalog
+restores 450; a paginator page change and a search both still land at 0.
+
 ## A back arrow asks the app, not the browser
 
 `←` has two right answers and has to tell them apart: go back where you came

@@ -5,6 +5,7 @@ import {
 	MOBILE_NAV_CLEARANCE,
 	SHORT_VIEWPORT,
 } from '@/common/components/MobileAppTabBar/nav.constants'
+import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { hasInAppHistory } from '@/routes/history/inAppHistory'
 import {
 	LARGE_TITLE_COMPACT_REM,
@@ -17,7 +18,7 @@ import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { ArrowBackRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef } from 'react'
 
 /** Status-bar / notch clearance. Exported so a screen that owns its own top
  * (one with no header row) can inset itself the same way the header does. */
@@ -37,6 +38,20 @@ const TITLE_ROW_MAX_HEIGHT = 96
  * header that is only a control panel uses it on both sides, so the panel sits
  * evenly between the two edges instead of under a large title's roomier top. */
 const HEADER_BOTTOM_PAD = 8
+
+/**
+ * Where each screen was left, so coming back to it does not start at the top.
+ * Module state rather than session storage: it is meant to last as long as the
+ * tab does and no longer, which is exactly what a reload should forget.
+ */
+const scrollMemory = new Map<string, number>()
+
+// useLayoutEffect warns during SSR; this is the standard isomorphic shim
+const useIsoLayoutEffect =
+	typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
+/** How long a restored position keeps re-applying while the list arrives. */
+const RESTORE_WINDOW_MS = 1500
 
 /** The header's top padding on a phone held sideways — see `SHORT_VIEWPORT`. */
 const SHORT_HEADER_PAD = 6
@@ -133,6 +148,9 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 
 	const shownActions = actions?.slice(0, 2) ?? []
 
+	/** Which screen's scroll position this is. */
+	const memoryKey = useClientPathname() ?? ''
+
 	// Continuously shrink the title (and fade the subtitle) as the content
 	// scrolls — imperative so the list underneath never re-renders while scrolling.
 	useEffect(() => {
@@ -171,14 +189,83 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 		}
 	}, [divider])
 
-	// scroll back to the top when the reset key changes (e.g. paginator page change)
+	// Scroll back to the top when the reset key *changes* (e.g. paginator page
+	// change) — not when the screen mounts holding one. A fresh mount is at the
+	// top already, and the screen may be coming back to a remembered position,
+	// which this used to wipe a frame after it was restored.
+	const lastResetKey = useRef(scrollResetKey)
 	useEffect(() => {
+		if (lastResetKey.current === scrollResetKey) return
+		lastResetKey.current = scrollResetKey
 		scrollRef.current?.scrollTo({ top: 0 })
 	}, [scrollResetKey])
 
-	// Back where you came from, or — arriving from outside on a shared link — up
-	// to the screen this one belongs to. See `hasInAppHistory` for why the
-	// browser cannot be asked this directly.
+	/**
+	 * Where this screen was left, put back when it opens again.
+	 *
+	 * The shell scrolls a box of its own rather than the document, so the
+	 * browser's scroll restoration has nothing to restore: reading the catalog
+	 * 450px down, opening a song and coming back put you at the top of a screen
+	 * you had already read.
+	 *
+	 * Recording and restoring are one effect because they race. The list is
+	 * usually still arriving when the screen mounts, so the position has to be
+	 * re-applied while the content grows under it — and each of those attempts
+	 * lands at 0 on an empty page and fires a scroll event, which the recorder
+	 * would take for the user scrolling to the top and write over the very
+	 * position being restored. So nothing is recorded until the restore is done,
+	 * and touching the screen ends it early, because then the position is yours.
+	 */
+	useIsoLayoutEffect(() => {
+		const scroller = scrollRef.current
+		if (!scroller) return
+
+		const wanted = scrollMemory.get(memoryKey) ?? 0
+		let restoring = wanted > 0
+
+		const remember = () => {
+			if (!restoring) scrollMemory.set(memoryKey, scroller.scrollTop)
+		}
+		scroller.addEventListener('scroll', remember, { passive: true })
+
+		let frame = 0
+		let giveUp: ReturnType<typeof setTimeout> | undefined
+
+		const finish = () => {
+			restoring = false
+			if (frame) cancelAnimationFrame(frame)
+			frame = 0
+			if (giveUp) clearTimeout(giveUp)
+			scroller.removeEventListener('touchstart', finish)
+			scroller.removeEventListener('wheel', finish)
+		}
+
+		if (restoring) {
+			// A frame at a time rather than on a resize: the list grows by rows
+			// deep inside the scroller, where an observer on the box itself never
+			// hears about it — the first attempt reached a third of the way down a
+			// page that was still filling.
+			const apply = () => {
+				frame = 0
+				if (!restoring) return
+				scroller.scrollTop = wanted
+				if (Math.abs(scroller.scrollTop - wanted) < 2) return finish()
+				frame = requestAnimationFrame(apply)
+			}
+			apply()
+			giveUp = setTimeout(finish, RESTORE_WINDOW_MS)
+			scroller.addEventListener('touchstart', finish, { passive: true })
+			scroller.addEventListener('wheel', finish, { passive: true })
+		}
+
+		return () => {
+			const keep = !restoring
+			finish()
+			if (keep) scrollMemory.set(memoryKey, scroller.scrollTop)
+			scroller.removeEventListener('scroll', remember)
+		}
+	}, [memoryKey])
+
 	const goUp = () => {
 		if (!backTo) return
 		if (hasInAppHistory()) router.back()
