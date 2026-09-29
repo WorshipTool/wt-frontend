@@ -49,6 +49,9 @@ export const InnerPlaylistProvider = ({
 	)
 }
 
+/** How long the transposition waits for the next tap before it writes. */
+const KEY_WRITE_DELAY = 800
+
 type PlaylistHistoryStateType = {
 	title: string
 	items: PlaylistItemDto[]
@@ -115,6 +118,21 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const title = useMemo(() => state.title, [state.title])
 	const items = useMemo(() => state.items || [], [state.items])
 	const loading = useMemo(() => playlist.loading, [playlist.loading])
+
+	// see `setItemKeyChordAndSave`
+	const keyWriteTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const pendingItemsRef = useRef<PlaylistItemDto[]>([])
+	const titleRef = useRef('')
+	useEffect(() => {
+		pendingItemsRef.current = state.items
+		titleRef.current = state.title
+	}, [state.items, state.title])
+	useEffect(
+		() => () => {
+			if (keyWriteTimer.current) clearTimeout(keyWriteTimer.current)
+		},
+		[]
+	)
 
 	const _change = useCallback(
 		(data: Partial<PlaylistHistoryStateType>) => {
@@ -270,12 +288,43 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	)
 
 	const setItemKeyChord = (itemGuid: PlaylistItemGuid, keyChord: Chord) => {
+		setItems(_withKey(itemGuid, keyChord))
+	}
+
+	/** The list as it would be with this item in that key. */
+	const _withKey = (
+		itemGuid: PlaylistItemGuid,
+		keyChord: Chord
+	): PlaylistItemDto[] => {
 		const toneKey = keyChord.data.rootNote.toString()
-		const newItems: PlaylistItemDto[] = state.items.map((i) =>
+		return state.items.map((i) =>
 			i.guid === itemGuid ? { ...i, toneKey } : i
 		)
+	}
 
-		setItems(newItems)
+	/**
+	 * Transposing where there is no Save to press afterwards — the phone's
+	 * detail view — so it writes itself, the way adding a song and renaming do.
+	 *
+	 * The write waits for the tapping to stop. A key is chosen a semitone at a
+	 * time and each tap rewrites the whole playlist, so five taps meant five
+	 * overlapping writes racing to be last; `KEY_WRITE_DELAY` after the final
+	 * one, a single write goes out with the list as it then stands. The list is
+	 * kept in a ref for it: the timer outlives the render that armed it, and
+	 * `state` in that render is the list before the last tap.
+	 */
+	const setItemKeyChordAndSave = (
+		itemGuid: PlaylistItemGuid,
+		keyChord: Chord
+	) => {
+		const next = _withKey(itemGuid, keyChord)
+		setItems(next)
+		pendingItemsRef.current = next
+		if (keyWriteTimer.current) clearTimeout(keyWriteTimer.current)
+		keyWriteTimer.current = setTimeout(() => {
+			keyWriteTimer.current = null
+			_persist(titleRef.current, pendingItemsRef.current)
+		}, KEY_WRITE_DELAY)
 	}
 
 	const removeItem = (itemGuid: PlaylistItemGuid) => {
@@ -378,6 +427,7 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		renameAndSave,
 		setItems,
 		setItemKeyChord,
+		setItemKeyChordAndSave,
 		removeItem,
 		addItem,
 		addItems,

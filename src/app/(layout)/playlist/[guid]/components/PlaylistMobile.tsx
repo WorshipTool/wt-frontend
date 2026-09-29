@@ -40,6 +40,7 @@ import { useRouter } from 'next/navigation'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import useInnerPlaylist from '../hooks/useInnerPlaylist'
 import PlaylistSwipeDeck from './PlaylistSwipeDeck'
+import { Chord, Sheet } from '@pepavlin/sheet-api'
 
 // header sizes (px, on top of the safe-area inset). The header morphs from the
 // tall expanded hero to the compact bar as the list scrolls (see CollapsingHeader).
@@ -135,7 +136,7 @@ export default function PlaylistMobile({
 	const navigate = useSmartNavigate()
 	const router = useRouter()
 	const { enqueueSnackbar } = useSnackbar()
-	const { items, title, loading, canUserEdit, guid, addItemsAndSave, removeItem, setItems, save, renameAndSave, isSaved } =
+	const { items, title, loading, canUserEdit, guid, addItemsAndSave, removeItem, setItems, save, renameAndSave, isSaved, setItemKeyChordAndSave } =
 		useInnerPlaylist()
 	const { deletePlaylist } = usePlaylistsGeneral()
 
@@ -251,6 +252,21 @@ export default function PlaylistMobile({
 		else if (mode === 'detail') setMode('list') // editing only makes sense on the list
 		setEditMode((e) => !e)
 	}
+	/**
+	 * A song's key, a semitone at a time — the same thing the desktop's `+`/`−`
+	 * above the sheet do. It writes itself after the tapping stops: detail mode
+	 * is not edit mode, so there is no ✓ here to write it down.
+	 */
+	const onTranspose = (item: PlaylistItemDto, semitones: number) => {
+		const sheet = new Sheet(item.pack.sheetData)
+		if (item.toneKey) sheet.setKey(item.toneKey)
+		const current = sheet.getKeyChord()
+		if (!current) return
+		const next = new Chord(current.toString())
+		next.transpose(semitones)
+		setItemKeyChordAndSave(item.guid, next)
+	}
+
 	const openDetail = (i: number) => {
 		setDetailIndex(i)
 		setMode('detail')
@@ -406,7 +422,7 @@ export default function PlaylistMobile({
 				</Box>
 			) : sorted.length > 0 ? (
 				<Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', paddingTop: `${HEADER_TOP}${H_SLIM}px)` }}>
-					<PlaylistSwipeDeck items={sorted} startIndex={Math.min(detailIndex, sorted.length - 1)} bottomInset={SWITCHER_CLEARANCE} />
+					<PlaylistSwipeDeck items={sorted} startIndex={Math.min(detailIndex, sorted.length - 1)} bottomInset={SWITCHER_CLEARANCE} onTranspose={canUserEdit ? onTranspose : undefined} />
 				</Box>
 			) : (
 				<Box sx={{ flex: 1 }} />

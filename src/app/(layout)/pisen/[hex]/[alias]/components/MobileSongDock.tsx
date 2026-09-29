@@ -15,6 +15,7 @@ import { Box, IconButton, Typography } from '@/common/ui'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
 import { useMediaQuery } from '@/common/ui/mui'
+import TransposePill from '@/common/components/TransposePill/TransposePill'
 import useAuth from '@/hooks/auth/useAuth'
 import { useFavourites } from '@/hooks/favourites/useFavourites'
 import { getReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
@@ -31,7 +32,6 @@ import {
 	MusicOffRounded,
 	PlaylistAddRounded,
 	Print,
-	RemoveRounded,
 } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
@@ -46,7 +46,6 @@ import { routesPaths } from '../../../../../../routes'
  * Measured in the dock's own type — `Tónina H` is a pixel past `Tónina C`, and
  * `#` a pixel past `b`.
  */
-const WIDEST_NOTE = 'H#'
 
 /** The dock's own height, and the gap it keeps above the tab bar. */
 const DOCK_HEIGHT = 58
@@ -237,66 +236,11 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					   accepting taps that do nothing: someone pressed it three times
 					   before working out that the app was not broken, the chords were
 					   just turned off. */
-					<Box
-						sx={{
-							display: 'flex',
-							alignItems: 'center',
-							gap: 0.25,
-							bgcolor: 'grey.100',
-							borderRadius: 5,
-							paddingX: 0.5,
-							height: 42,
-						}}
-					>
-						<IconButton
-							tooltip={tTranspose('decrease')}
-							onClick={() => props.transpose(-1)}
-							disabled={!props.showChords}
-						>
-							<RemoveRounded />
-						</IconButton>
-						{/* The label is what used to make the pill breathe: an accidental
-						    is nine pixels of type, so the pill — and every control it
-						    pushes along the dock — shifted a little each time you
-						    transposed, under the thumb doing the transposing. The cell
-						    keeps the width of the widest label this language can print
-						    and the real one is centred in it, so nothing moves. A width
-						    in pixels would not do: the word is `Tónina` here, `Tonacja`
-						    and `Key` in the other two catalogs. */}
-						<Box
-							sx={{
-								display: 'grid',
-								justifyItems: 'center',
-								alignItems: 'center',
-								minWidth: 54,
-							}}
-						>
-							<Typography
-								strong
-								noWrap
-								sx={{ gridArea: '1 / 1', visibility: 'hidden' }}
-							>
-								{tTranspose('keyWithNote', { note: WIDEST_NOTE })}
-							</Typography>
-							<Typography
-								strong
-								noWrap
-								color={props.showChords ? undefined : 'grey.400'}
-								sx={{ gridArea: '1 / 1' }}
-							>
-								{keyNote
-									? tTranspose('keyWithNote', { note: keyNote })
-									: tTranspose('title')}
-							</Typography>
-						</Box>
-						<IconButton
-							tooltip={tTranspose('increase')}
-							onClick={() => props.transpose(1)}
-							disabled={!props.showChords}
-						>
-							<AddRounded />
-						</IconButton>
-					</Box>
+					<TransposePill
+						keyNote={keyNote}
+						onTranspose={props.transpose}
+						disabled={!props.showChords}
+					/>
 				)}
 
 				{isLoggedIn() && !narrow && (

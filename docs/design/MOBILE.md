@@ -331,6 +331,17 @@ Uložit lifts out with the rest of the hero over `[0, 0.45]` and the bar grows
 its own round ✓ in the primary's place over `[0.5, 1]` — the doc's other rule
 (things that exist in one state only just fade) rather than the morph.
 
+**Transposing is the pill, wherever it happens.** `− Tónina C +`
+(`common/components/TransposePill`) is how a phone changes a song's key: the
+song page's dock has it, and the playlist's detail view now has the same one
+above the sheet, which is where a desktop keeps its `+`/`−` too. Detail mode is
+not edit mode, so it writes itself — but not once per tap. A key is chosen a
+semitone at a time and each write rewrites the whole playlist, so the write
+waits 800ms for the tapping to stop and then sends one, with the list read from
+a ref: the timer outlives the render that armed it, and that render's `state`
+is the list before the last tap. Measured: three quick taps, one
+`POST /playlist/complex`.
+
 **And the way back out asks.** The reorder and the bin live in local state
 until that save, so the back arrow was the one control left that could throw
 work away without a word. It now raises the same question a browser does when

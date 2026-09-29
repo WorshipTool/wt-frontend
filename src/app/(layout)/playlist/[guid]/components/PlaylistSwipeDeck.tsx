@@ -1,6 +1,7 @@
 'use client'
 
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
+import TransposePill from '@/common/components/TransposePill/TransposePill'
 import { Box, IconButton, Typography } from '@/common/ui'
 import { PlaylistItemDto } from '@/interfaces/playlist/playlist.types'
 import { Sheet } from '@pepavlin/sheet-api'
@@ -41,11 +42,16 @@ export default function PlaylistSwipeDeck({
 	items,
 	startIndex = 0,
 	bottomInset = 0,
+	onTranspose,
 }: {
 	items: PlaylistItemDto[]
 	startIndex?: number
 	/** px the parent's floating switcher occupies; the nav row clears it. */
 	bottomInset?: number
+	/** Given, the song on screen can be transposed — the phone's answer to the
+	 * `+`/`−` a desktop puts above the same sheet. Left out for a playlist the
+	 * visitor cannot edit, which is what a desktop does with them too. */
+	onTranspose?: (item: PlaylistItemDto, semitones: number) => void
 }) {
 	const t = useTranslations('playlist')
 	const scrollerRef = useRef<HTMLDivElement>(null)
@@ -76,8 +82,35 @@ export default function PlaylistSwipeDeck({
 		if (el) el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' })
 	}
 
+	const currentItem = items[current]
+	// the key the sheet on screen is written in — the item's own, or the song's
+	const currentKey = useMemo(() => {
+		if (!currentItem) return null
+		const s = new Sheet(currentItem.pack.sheetData)
+		if (currentItem.toneKey) s.setKey(currentItem.toneKey)
+		return s.getKeyNote() || null
+	}, [currentItem])
+
 	return (
 		<Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+			{/* above the sheet, and held there while it scrolls — the same place a
+			    desktop keeps it, and the pill the song page uses */}
+			{onTranspose && currentItem && (
+				<Box
+					sx={{
+						flexShrink: 0,
+						display: 'flex',
+						justifyContent: 'flex-start',
+						paddingX: 2,
+						paddingBottom: 1,
+					}}
+				>
+					<TransposePill
+						keyNote={currentKey}
+						onTranspose={(by) => onTranspose(currentItem, by)}
+					/>
+				</Box>
+			)}
 			<Box
 				ref={scrollerRef}
 				onScroll={onScroll}
