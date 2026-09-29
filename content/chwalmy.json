@@ -262,7 +262,8 @@
 			"linkSentMessage": "Teraz idź do swojego emaila i kliknij wygenerowany link.",
 			"emailRequired": "Email musi być wypełniony.",
 			"enterEmail": "Wpisz email"
-		}
+		},
+		"loginToSeeAccount": "Aby zobaczyć konto, musisz się zalogować."
 	},
 	"playlist": {
 		"myPlaylists": "Moje playlisty",
@@ -1049,5 +1050,10 @@
 		"merged": "Połączone",
 		"filterActive": "Aktywne i otwarte PR",
 		"noActiveOrOpenPr": "Brak aktywnych zadań ani otwartych PR"
+	},
+	"pager": {
+		"previous": "Poprzednia strona",
+		"next": "Następna strona",
+		"page": "Strona {page}"
 	}
 }

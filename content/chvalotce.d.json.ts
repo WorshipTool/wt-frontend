@@ -265,7 +265,8 @@ declare const messages: {
 			"linkSentMessage": "Nyní běžte do emailu a klikněte na vygenerovaný odkaz.",
 			"emailRequired": "Email musí být vyplněn.",
 			"enterEmail": "Zadejte email"
-		}
+		},
+		"loginToSeeAccount": "Pro zobrazení účtu se musíte přihlásit."
 	},
 	"playlist": {
 		"myPlaylists": "Moje playlisty",
@@ -299,8 +300,8 @@ declare const messages: {
 		"selectPlaylistFromList": "Vybrat playlist ze seznamu",
 		"close": "Zavřít",
 		"transpose": {
-			"up": "Transpose up",
-			"down": "Transpose down"
+			"up": "Zvýšit o půltón",
+			"down": "Snížit o půltón"
 		},
 		"search": {
 			"placeholder": "Hledat písně..."
@@ -989,7 +990,7 @@ declare const messages: {
 	"errors": {
 		"forbidden": "K zobrazení obsahu nemáte dostatečná oprávnění!",
 		"notFound": "Stránka nenalezena",
-		"notFoundDescription": "Zdá se, že jste se dostali do neprozkouraných oblastí aplikace. Můžete zkusit jít zpět na hlavní stránku.",
+		"notFoundDescription": "Zdá se, že jste se dostali do neprozkoumaných oblastí aplikace. Můžete zkusit jít zpět na hlavní stránku.",
 		"goHome": "DOMŮ",
 		"serverError": "Někde nastala chyba!",
 		"unauthorized": "Neautorizovaný přístup",
@@ -1052,6 +1053,11 @@ declare const messages: {
 		"merged": "Sloučeno",
 		"filterActive": "Aktivní & otevřené PR",
 		"noActiveOrOpenPr": "Žádné aktivní úlohy ani otevřené PR"
+	},
+	"pager": {
+		"previous": "Předchozí stránka",
+		"next": "Další stránka",
+		"page": "Stránka {page}"
 	}
 };
 export default messages;

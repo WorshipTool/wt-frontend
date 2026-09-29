@@ -20,10 +20,15 @@ type TextFieldProps = {
 	inputRef?: React.Ref<HTMLInputElement>
 }
 
-export function TextField({
-	placeholder = 'Zadejte text',
-	...props
-}: TextFieldProps) {
+/**
+ * No default placeholder. There used to be one — "Zadejte text" — and it turned
+ * up wherever a caller did not think to pass its own: all four fields of the
+ * registration form said it at once, under labels that already said Jméno,
+ * Příjmení, Email and Heslo. A field with a label above it and nothing in it
+ * reads better than four identical instructions, and a field that really wants
+ * a hint says its own.
+ */
+export function TextField({ placeholder, ...props }: TextFieldProps) {
 	const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		props.onChange?.(event.target.value)
 	}

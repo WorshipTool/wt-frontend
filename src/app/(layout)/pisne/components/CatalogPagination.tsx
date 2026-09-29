@@ -58,6 +58,16 @@ export default function CatalogPagination({
 	touch?: boolean
 }) {
 	const t = useTranslations('songsList')
+	const tPager = useTranslations('pager')
+
+	// MUI writes these in English ("Go to previous page") and they are the only
+	// name a screen reader has for an arrow; the page numbers get one too.
+	const itemLabel = (type: string, page: number, selected: boolean) =>
+		type === 'previous'
+			? tPager('previous')
+			: type === 'next'
+			? tPager('next')
+			: tPager('page', { page: String(page) })
 	const barRef = useRef<HTMLDivElement>(null)
 	const endRef = useRef<HTMLDivElement>(null)
 
@@ -149,6 +159,7 @@ export default function CatalogPagination({
 					)}
 
 					<Pagination
+						getItemAriaLabel={itemLabel}
 						count={pagesCount}
 						page={current}
 						onChange={(_, next) => onChange(next)}

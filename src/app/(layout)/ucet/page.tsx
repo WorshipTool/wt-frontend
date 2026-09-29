@@ -20,6 +20,7 @@ function Account() {
 	const navigate = useSmartNavigate()
 
 	const t = useTranslations('auth.login')
+	const tAuth = useTranslations('auth')
 	const tNav = useTranslations('navigation')
 	const tAccount = useTranslations('account')
 
@@ -29,7 +30,7 @@ function Account() {
 		if (!isLoggedIn()) {
 			navigate('login', {
 				previousPage: routesPaths.account,
-				message: 'Pro zobrazeni účtu se musíte přihlásit.',
+				message: tAuth('loginToSeeAccount'),
 			})
 		}
 	}, [isLoggedIn()])
