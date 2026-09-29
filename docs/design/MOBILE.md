@@ -500,6 +500,28 @@ toggles. Any overlay whose job is "tap anywhere to dismiss" belongs under the
 bar for the same reason — dismissing is not worth a tap of its own when the tap
 already meant something.
 
+## A back arrow asks the app, not the browser
+
+`←` has two right answers and has to tell them apart: go back where you came
+from, or — arriving from outside on a shared link — go up to the screen this one
+belongs to. Both places that decide this asked `window.history.state.idx`, which
+is a **Pages Router** field. The App Router writes `__NA` and its own tree and no
+`idx` at all, so:
+
+- the playlist read the missing value as 0 and went up to Účet every single
+  time, whatever screen you opened the playlist from;
+- `MobileAppHeader` fell back to `history.length > 1`, which counts the pages of
+  other sites this tab visited, and would walk you out of the app from a shared
+  link (`history.length` is 2 on a cold load in a tab that has been used).
+
+`routes/history/inAppHistory` answers it from what the app knows: it has
+navigated if its own pathname has changed since the first paint, counted once
+app-wide by a tracker in `AppClientProviders` (inside the subdomain-alias
+provider — it reads the pathname through it). `hasInAppHistory()` is what both
+back arrows ask now. Measured: playlist opened from the list → `←` →
+/ucet/playlisty (was /ucet); playlist opened cold → `←` → /ucet; song opened
+cold → `←` → /pisne.
+
 ## Back closes what is open before it leaves
 
 A sheet is state, not a route, so Back — which people reach for to dismiss

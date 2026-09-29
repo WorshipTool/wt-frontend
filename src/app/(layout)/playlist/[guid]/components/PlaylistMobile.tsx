@@ -39,6 +39,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import useInnerPlaylist from '../hooks/useInnerPlaylist'
+import { hasInAppHistory } from '@/routes/history/inAppHistory'
 import PlaylistSwipeDeck from './PlaylistSwipeDeck'
 import { Chord, Sheet } from '@pepavlin/sheet-api'
 
@@ -191,12 +192,11 @@ export default function PlaylistMobile({
 	}, [editMode, orderGuids, sorted, setItems])
 
 	const leave = () => {
-		// `history.length` counts the whole tab session, including pages from other
-		// sites — going "back" from a shared link would leave the app entirely.
-		// `history.state.idx` is Next's own position within our history instead.
-		const idx =
-			typeof window !== 'undefined' ? window.history.state?.idx ?? 0 : 0
-		if (idx > 0) router.back()
+		// Back where you came from — the playlists, a team, wherever — and only up
+		// to the account when you arrived from outside on a shared link. This used
+		// to read `history.state.idx`, which the App Router does not write, so it
+		// was 0 forever and every playlist led to Účet. See `hasInAppHistory`.
+		if (hasInAppHistory()) router.back()
 		else navigate('account', {})
 	}
 	const onBack = () => {

@@ -5,6 +5,7 @@ import {
 	MOBILE_NAV_CLEARANCE,
 	SHORT_VIEWPORT,
 } from '@/common/components/MobileAppTabBar/nav.constants'
+import { hasInAppHistory } from '@/routes/history/inAppHistory'
 import {
 	LARGE_TITLE_COMPACT_REM,
 	LARGE_TITLE_REM,
@@ -175,16 +176,12 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 		scrollRef.current?.scrollTo({ top: 0 })
 	}, [scrollResetKey])
 
+	// Back where you came from, or — arriving from outside on a shared link — up
+	// to the screen this one belongs to. See `hasInAppHistory` for why the
+	// browser cannot be asked this directly.
 	const goUp = () => {
 		if (!backTo) return
-		const idx = (
-			typeof window !== 'undefined' ? window.history.state?.idx : undefined
-		) as number | undefined
-		const cameFromInApp =
-			typeof idx === 'number'
-				? idx > 0
-				: typeof window !== 'undefined' && window.history.length > 1
-		if (cameFromInApp) router.back()
+		if (hasInAppHistory()) router.back()
 		else navigate(backTo, (backParams ?? {}) as SmartAllParams<T>)
 	}
 

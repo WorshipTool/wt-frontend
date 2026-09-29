@@ -26,6 +26,7 @@ import { CommonDataProvider } from '@/hooks/common-data/useCommonData'
 import { FavouritesProvider } from '@/hooks/favourites/useFavourites'
 import { PermissionsProvider } from '@/hooks/permissions/usePermissions'
 import { SubdomainPathnameAliasProvider } from '@/routes/subdomains/SubdomainPathnameAliasProvider'
+import InAppHistoryTracker from '@/routes/history/inAppHistory'
 type AppClientProvidersProps = {
 	initialCommonData: AllCommonData
 	test: string
@@ -47,6 +48,10 @@ export default function AppClientProviders({
 				{/* <BrowserRouter> */}
 				<CommonDataProvider initialData={initialCommonData}>
 					<SubdomainPathnameAliasProvider>
+						{/* records the app's own navigations, so a back arrow can tell
+						    "go back" from "go up" — see inAppHistory. Inside the alias
+						    provider: it reads the pathname through it. */}
+						<InAppHistoryTracker />
 						<AuthProvider>
 							<FeatureFlagsProvider>
 								<NewsProvider>
