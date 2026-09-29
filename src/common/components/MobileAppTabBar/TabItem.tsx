@@ -1,5 +1,6 @@
 'use client'
 
+import { SHORT_VIEWPORT } from '@/common/components/MobileAppTabBar/nav.constants'
 import { Box, Typography } from '@/common/ui'
 import { ReactNode } from 'react'
 
@@ -34,6 +35,9 @@ export function TabItem({ icon, activeIcon, label, active }: TabItemProps) {
 				alignItems: 'center',
 				gap: 0.6,
 				minWidth: 0,
+				// sideways there is no room for a caption under every icon, and the
+				// icons are the app's own — a sheep, a note, a magnifier
+				[SHORT_VIEWPORT]: { gap: 0 },
 			}}
 		>
 			<Box
@@ -52,7 +56,7 @@ export function TabItem({ icon, activeIcon, label, active }: TabItemProps) {
 				size="0.65rem"
 				strong={active ? 700 : 500}
 				color={labelColor}
-				sx={{ lineHeight: 1.2 }}
+				sx={{ lineHeight: 1.2, [SHORT_VIEWPORT]: { display: 'none' } }}
 			>
 				{label}
 			</Typography>

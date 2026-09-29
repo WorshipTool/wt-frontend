@@ -9,6 +9,21 @@ import { urlMatchPatterns } from '@/routes/tech/routes.tech'
 export const MOBILE_NAV_BREAKPOINT = 700
 
 /**
+ * A phone held on its side — 320 to 430px of height for the whole app.
+ *
+ * Portrait gives a screen 664px to spend and the chrome takes 200 of it, which
+ * nobody notices. Turned sideways the same chrome still costs 200 and the
+ * screen is 320, so the song people turned the phone for is read through a
+ * 126px slot — measured, a third of the display. Every band of the shell
+ * tightens under this query: the bar drops its labels, the dock and the header
+ * lose their breathing room. Portrait is not touched.
+ *
+ * A height query rather than `orientation: landscape` on purpose: a tablet on
+ * its side has the room and should keep the roomy shell.
+ */
+export const SHORT_VIEWPORT = '@media (max-height: 430px)'
+
+/**
  * DOM id of the slot the tab bar renders directly above itself. Pages portal
  * their bottom-docked content (e.g. a paginator) into it so it stacks on top of
  * the bar via layout — no hard-coded bar height, and it follows automatically
@@ -18,8 +33,11 @@ export const ABOVE_TABBAR_SLOT_ID = 'mobile-above-tabbar-slot'
 
 /** Bottom clearance pages need so their content isn't hidden by the fixed bar.
  * The bar measures ~71px, so this leaves a little slack for larger text sizes —
- * overshooting is invisible, undershooting hides content. */
-export const MOBILE_NAV_CLEARANCE = 'calc(env(safe-area-inset-bottom) + 80px)'
+ * overshooting is invisible, undershooting hides content. Defined in
+ * `globals.css` because it tightens with `SHORT_VIEWPORT`, which a constant
+ * cannot; a reserve that stayed 80px while the bar shrank to 44 would hold the
+ * saved room as a blank strip. */
+export const MOBILE_NAV_CLEARANCE = 'var(--mobile-nav-clearance)'
 
 /**
  * Height of the dock's bar itself, without the safe-area inset — for the few

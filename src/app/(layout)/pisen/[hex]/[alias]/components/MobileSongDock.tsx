@@ -8,7 +8,10 @@ import SongsOptionsButton from '@/app/(layout)/pisen/[hex]/[alias]/components/co
 import UserNotePanel from '@/app/(layout)/pisen/[hex]/[alias]/components/UserNotePanel'
 import SelectPlaylistMenu from '@/common/components/Menu/SelectPlaylistMenu/SelectPlaylistMenu'
 import Popup from '@/common/components/Popup/Popup'
-import { ABOVE_TABBAR_SLOT_ID } from '@/common/components/MobileAppTabBar/nav.constants'
+import {
+	ABOVE_TABBAR_SLOT_ID,
+	SHORT_VIEWPORT,
+} from '@/common/components/MobileAppTabBar/nav.constants'
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
 import useSmartPortalMenu from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
 import { Box, IconButton, Typography } from '@/common/ui'
@@ -51,8 +54,17 @@ const WIDEST_NOTE = 'H#'
 /** The dock's own height, and the gap it keeps above the tab bar. */
 const DOCK_HEIGHT = 58
 const DOCK_GAP = 12
+/** The same dock on a phone held sideways — see `SHORT_VIEWPORT`. */
+const SHORT_DOCK_HEIGHT = 46
+const SHORT_DOCK_GAP = 6
 /** What the page must keep free below its content so the dock covers none of it. */
-export const MOBILE_SONG_DOCK_RESERVE = DOCK_HEIGHT + DOCK_GAP
+/**
+ * The room the page keeps free under its content for this dock. A CSS length,
+ * not a number: the dock is shorter on a phone held sideways (`SHORT_VIEWPORT`)
+ * and the reserve has to shrink with it, which only a media query can do. The
+ * two values live beside each other in `globals.css`.
+ */
+export const MOBILE_SONG_DOCK_RESERVE = 'var(--song-dock-reserve)'
 
 type MobileSongDockProps = {
 	variant: ExtendedVariantPack
@@ -222,6 +234,10 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					justifyContent: 'space-between',
 					paddingX: 1.5,
 					height: DOCK_HEIGHT,
+					[SHORT_VIEWPORT]: {
+						height: SHORT_DOCK_HEIGHT,
+						marginBottom: `${SHORT_DOCK_GAP}px`,
+					},
 				}}
 			>
 				<IconButton tooltip={tPrint('tooltip')} onClick={onPrintClick}>

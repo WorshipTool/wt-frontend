@@ -2,8 +2,8 @@
 
 import {
 	MOBILE_NAV_BREAKPOINT,
-	MOBILE_NAV_BAR_HEIGHT,
 	MOBILE_NAV_CLEARANCE,
+	SHORT_VIEWPORT,
 } from '@/common/components/MobileAppTabBar/nav.constants'
 import {
 	LARGE_TITLE_COMPACT_REM,
@@ -36,6 +36,9 @@ const TITLE_ROW_MAX_HEIGHT = 96
  * header that is only a control panel uses it on both sides, so the panel sits
  * evenly between the two edges instead of under a large title's roomier top. */
 const HEADER_BOTTOM_PAD = 8
+
+/** The header's top padding on a phone held sideways — see `SHORT_VIEWPORT`. */
+const SHORT_HEADER_PAD = 6
 
 type MobileAppHeaderProps<T extends RoutesKeys> = {
 	/** The page title — large at rest, shrinks to a compact bar on scroll.
@@ -76,7 +79,7 @@ type MobileAppHeaderProps<T extends RoutesKeys> = {
 	 * across whatever line you happened to stop on. Room taken here is room the
 	 * content never occupies.
 	 */
-	bottomInset?: number
+	bottomInset?: number | string
 	/** When this value changes, the content scrolls back to the top (e.g. on page change). */
 	scrollResetKey?: string | number
 	/** Surface (and header) background — palette path. Defaults to the grey app
@@ -238,6 +241,12 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					}px)`,
 					paddingBottom: 1,
 					transition: `padding-top ${COLLAPSE_MS}ms ease`,
+					// sideways the header gives back what it can: the collapse's own
+					// difference is 4px, and there is no room here for either value
+					[SHORT_VIEWPORT]: {
+						paddingTop: `calc(${TOOLBAR_SPACER} + ${SHORT_HEADER_PAD}px)`,
+						paddingBottom: 0.5,
+					},
 					bgcolor: surface,
 					borderBottom: '1px solid',
 					borderColor: divider ? 'grey.200' : 'transparent',
@@ -279,6 +288,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 							// only thing in the row, so a title-only header (Seznam, Účet)
 							// doesn't collapse shorter than pages that have controls
 							minHeight: 40,
+							[SHORT_VIEWPORT]: { minHeight: 36 },
 							display: 'flex',
 							flexDirection: 'column',
 							justifyContent: 'center',
@@ -375,7 +385,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					paddingBottom:
 						bottomPanel || bottomInset
 							? 2
-							: `calc(env(safe-area-inset-bottom) + ${MOBILE_NAV_BAR_HEIGHT}px)`,
+							: 'calc(env(safe-area-inset-bottom) + var(--mobile-nav-bar-height))',
 				}}
 			>
 				{children}
@@ -389,7 +399,10 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 					aria-hidden
 					sx={{
 						flexShrink: 0,
-						height: `${bottomInset}px`,
+						height:
+							typeof bottomInset === 'number'
+								? `${bottomInset}px`
+								: bottomInset,
 						marginBottom: MOBILE_NAV_CLEARANCE,
 					}}
 				/>

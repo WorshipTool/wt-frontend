@@ -32,6 +32,24 @@ html {
 	/* display: none; */
 }
 
+/* How much of the bottom of a phone the app's bar and whatever floats above it
+   take up. They are CSS variables rather than constants in TS because they have
+   to answer a media query: on a phone held sideways every band of the shell
+   tightens (see SHORT_VIEWPORT in nav.constants), and a reserve that did not
+   tighten with them would just hold the room it saved as empty space. */
+:root {
+	--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 80px);
+	--mobile-nav-bar-height: 71px;
+	--song-dock-reserve: 70px;
+}
+@media (max-height: 430px) {
+	:root {
+		--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 50px);
+		--mobile-nav-bar-height: 44px;
+		--song-dock-reserve: 52px;
+	}
+}
+
 :root {
 	--color-primary: #0085ff;
 	--color-primary-dark: #532ee7;

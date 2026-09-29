@@ -359,6 +359,28 @@ moment still holds the old one, so `_persist(name, items)` takes both. The same
 trap in reverse is `addItem` in a loop: every call read the same `state.items`
 and the last write won, so picking three songs added one.
 
+## A phone on its side is a different budget
+
+Portrait hands the app 664px and the shell's three bands — header, dock, tab
+bar — take about 200 of them, which nobody notices. Turned sideways the bands
+still cost 200 and the screen is 320, so the song someone turned the phone *for*
+was read through a 126px slot: a third of the display, measured.
+
+Everything tightens under `SHORT_VIEWPORT` (`@media (max-height: 430px)`, a
+height query so a tablet on its side keeps the roomy shell): the tab bar drops
+its captions and its padding (73 → 44), the song dock loses its breathing room
+(70 → 52) and the header its top pad (61 → 51). Portrait is untouched.
+
+**A band that shrinks has to take its reserve with it.** The first attempt
+tightened all three and changed nothing: the room pages keep free at the bottom
+is `MOBILE_NAV_CLEARANCE` and the song page's dock reserve, both constants, and
+they went on holding 80 and 70px of now-empty strip. They are CSS variables in
+`globals.css` now (`--mobile-nav-clearance`, `--mobile-nav-bar-height`,
+`--song-dock-reserve`), each with its own value under the same query, because a
+reserve that cannot answer a media query is not a reserve, it is a gap. Measured
+after: the song gets 173px of 320 on an iPhone SE (was 116) and 237 of 390 on an
+iPhone 13 (was 113).
+
 ## Something floating above the tab bar takes `bottomInset`, not padding
 
 `MobileAppHeader` scrolls only its middle content, and anything pinned above the

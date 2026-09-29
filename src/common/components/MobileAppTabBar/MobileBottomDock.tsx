@@ -6,6 +6,7 @@ import {
 	ABOVE_TABBAR_SLOT_ID,
 	MOBILE_NAV_BREAKPOINT,
 	MOBILE_NAV_CLEARANCE,
+	SHORT_VIEWPORT,
 } from './nav.constants'
 
 type Props = {
@@ -71,6 +72,10 @@ export default function MobileBottomDock({ children, spacer = true }: Props) {
 						paddingTop: 1.5,
 						paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)',
 						width: '100%',
+						[SHORT_VIEWPORT]: {
+							paddingTop: 0.75,
+							paddingBottom: 'calc(env(safe-area-inset-bottom) + 6px)',
+						},
 					}}
 				>
 					{children}
