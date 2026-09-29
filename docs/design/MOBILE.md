@@ -411,6 +411,13 @@ is the same thing the playlist's rows show in their chips. The full phrase stays
 as the label's `aria-label`. Measured after: every target 44×44, and the gaps
 went 4/8/8/4 → 8/11/12/7 on a 390 phone, 15/15 → 28/28 on a 320 one.
 
+The playlist deck's nav row had the same shape of problem the other way round:
+the `‹` and `›` that step through the playlist are the most pressed controls on
+that screen and were drawn `size="small"`, which is a 34px button. They are 44
+now. The page dots keep their 7px of paint and sit inside a button a thumb
+tall, which also takes the row's gap, so nothing between two dots is dead — 13
+by 44 for a dot, 28 by 44 for the current one.
+
 ## A dock sheds controls before it overflows
 
 Below 360px the song dock keeps the printer, the key and the ⋮, and moves the

@@ -14,6 +14,17 @@ import { CONTENT_CARD_SX as CARD } from '@/common/ui/GroupList'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+/**
+ * The smallest a control may be under a thumb. The arrows here are the most
+ * pressed thing on the screen and used to be the smallest: `size="small"`
+ * draws a 34px button. The dots keep their 7px look and take the same height
+ * — what you aim at is not what you see.
+ */
+const TOUCH = 44
+const TOUCH_SX = {
+	'& .MuiIconButton-root': { width: TOUCH, height: TOUCH },
+} as const
+
 // one song slide: the shared SheetDisplay on a white card, with the playlist
 // item's stored key applied (same rendering as the standalone song page), and
 // — for whoever may edit the playlist — the `−`/`+` that change that key,
@@ -166,7 +177,7 @@ export default function PlaylistSwipeDeck({
 				style={{ paddingBottom: bottomInset }}
 			>
 				<IconButton
-					size="small"
+					sx={TOUCH_SX}
 					color="grey.700"
 					alt={t('prevSong')}
 					disabled={current === 0}
@@ -174,24 +185,43 @@ export default function PlaylistSwipeDeck({
 				>
 					<ChevronLeftRounded />
 				</IconButton>
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					{items.map((item, i) => (
+						// the dot is 7px of paint; the button around it is a thumb tall,
+						// and takes the row's gap with it so nothing between two dots is
+						// dead
 						<Box
 							key={item.guid}
+							component="button"
+							type="button"
+							aria-label={item.pack.title}
+							aria-current={i === current}
 							onClick={() => goTo(i)}
 							sx={{
-								width: i === current ? 22 : 7,
-								height: 7,
-								borderRadius: 999,
+								border: 0,
+								background: 'none',
+								padding: 0,
+								paddingX: 0.375,
+								height: TOUCH,
+								display: 'flex',
+								alignItems: 'center',
 								cursor: 'pointer',
-								bgcolor: i === current ? 'primary.main' : 'grey.300',
-								transition: 'width 0.2s',
 							}}
-						/>
+						>
+							<Box
+								sx={{
+									width: i === current ? 22 : 7,
+									height: 7,
+									borderRadius: 999,
+									bgcolor: i === current ? 'primary.main' : 'grey.300',
+									transition: 'width 0.2s',
+								}}
+							/>
+						</Box>
 					))}
 				</Box>
 				<IconButton
-					size="small"
+					sx={TOUCH_SX}
 					color="grey.700"
 					alt={t('nextSong')}
 					disabled={current === items.length - 1}
