@@ -395,6 +395,22 @@ passes `MOBILE_SONG_DOCK_RESERVE`, which the dock exports from its own height
 and gap so the two cannot drift apart. Measured after: the scroller ends 7px
 above the dock on both a 320 and a 390 wide phone.
 
+## 44px is the control, not the icon
+
+The dock's icons are 20 to 24px, which is what you look at. What you hit is the
+button around them, and MUI sizes that from the icon: a `fontSize="small"` icon
+gave a 36px target, a default one 40, so the printer and the add-to-playlist
+were the two smallest things on a screen otherwise made of 40s, four pixels
+from their neighbours. Every control in the dock now grows its ripple to
+`TOUCH` (44) whatever the icon inside measures.
+
+**What paid for it was a word.** Six controls at 44 plus a key label that
+reserves the width of "Tónina H#" come to more than a 390px phone has, so the
+pill prints the note alone — between a `−` and a `+` it needs no caption, and it
+is the same thing the playlist's rows show in their chips. The full phrase stays
+as the label's `aria-label`. Measured after: every target 44×44, and the gaps
+went 4/8/8/4 → 8/11/12/7 on a 390 phone, 15/15 → 28/28 on a 320 one.
+
 ## A dock sheds controls before it overflows
 
 Below 360px the song dock keeps the printer, the key and the ⋮, and moves the

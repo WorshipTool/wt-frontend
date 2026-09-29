@@ -54,6 +54,17 @@ const WIDEST_NOTE = 'H#'
 /** The dock's own height, and the gap it keeps above the tab bar. */
 const DOCK_HEIGHT = 58
 const DOCK_GAP = 12
+/**
+ * The smallest a control may be under a thumb. The dock's icons are 20–24px,
+ * which is what you look at; this is what you hit — the ripple grows to it
+ * whatever the icon inside measures, so the printer (36px) and the playlist
+ * (36px) stop being the two smallest targets on a screen full of 40s.
+ */
+const TOUCH = 44
+const TOUCH_SX = {
+	'& .MuiIconButton-root': { width: TOUCH, height: TOUCH },
+} as const
+
 /** The same dock on a phone held sideways — see `SHORT_VIEWPORT`. */
 const SHORT_DOCK_HEIGHT = 46
 const SHORT_DOCK_GAP = 6
@@ -117,9 +128,13 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 	const [noteOpen, setNoteOpen] = useState(false)
 	const [playlistAnchor, setPlaylistAnchor] = useState<null | HTMLElement>(null)
 
-	const { items: favourites, add: addFavourite, remove: removeFavourite } = useFavourites()
+	const {
+		items: favourites,
+		add: addFavourite,
+		remove: removeFavourite,
+	} = useFavourites()
 	const isFavourite = Boolean(
-		favourites?.some((f) => f.packGuid === props.variant.packGuid)
+		favourites?.some((f) => f.packGuid === props.variant.packGuid),
 	)
 
 	const [tabBarSlot, setTabBarSlot] = useState<HTMLElement | null>(null)
@@ -140,7 +155,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				hideChords: !props.showChords,
 				key: props.sheet?.getKeyNote() || undefined,
 			},
-			{ returnFormat: 'absolute' }
+			{ returnFormat: 'absolute' },
 		)
 		printDocumentByUrl(url, `${props.editedTitle}.pdf`)
 	}
@@ -240,11 +255,17 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 					},
 				}}
 			>
-				<IconButton tooltip={tPrint('tooltip')} onClick={onPrintClick}>
+				<IconButton
+					sx={TOUCH_SX}
+					tooltip={tPrint('tooltip')}
+					onClick={onPrintClick}
+				>
 					<Print fontSize="small" sx={{ color: 'grey.700' }} />
 				</IconButton>
 				{user && !narrow && (
-					<HeartLikeButton packGuid={props.variant.packGuid} interactable />
+					<Box sx={TOUCH_SX}>
+						<HeartLikeButton packGuid={props.variant.packGuid} interactable />
+					</Box>
 				)}
 
 				{hasChords && (
@@ -261,30 +282,37 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 							bgcolor: 'grey.100',
 							borderRadius: 5,
 							paddingX: 0.5,
-							height: 42,
+							height: TOUCH,
 						}}
 					>
 						<IconButton
+							sx={TOUCH_SX}
 							tooltip={tTranspose('decrease')}
 							onClick={() => props.transpose(-1)}
 							disabled={!props.showChords}
 						>
 							<RemoveRounded />
 						</IconButton>
-						{/* The label is what used to make the pill breathe: an accidental
-						    is nine pixels of type, so the pill — and every control it
-						    pushes along the dock — shifted a little each time you
-						    transposed, under the thumb doing the transposing. The cell
-						    keeps the width of the widest label this language can print
-						    and the real one is centred in it, so nothing moves. A width
-						    in pixels would not do: the word is `Tónina` here, `Tonacja`
-						    and `Key` in the other two catalogs. */}
+						{/* Just the note, not "Tónina C". The word is what left the row
+						    with no room: six controls at a thumb's 44px plus a label
+						    that reserves the width of "Tónina H#" come to more than a
+						    390px phone has, and the two icons that lost the argument
+						    were the printer and the playlist, at 36px each. Between a
+						    `−` and a `+` the note needs no caption, and it is the same
+						    thing the playlist's rows print in their chips.
+
+						    The cell still keeps the width of the widest note the app
+						    can print, with the real one centred in it: an accidental is
+						    nine pixels of type, so without the reservation the pill —
+						    and every control it pushes along the dock — shifted a
+						    little each time you transposed, under the thumb doing the
+						    transposing. */}
 						<Box
 							sx={{
 								display: 'grid',
 								justifyItems: 'center',
 								alignItems: 'center',
-								minWidth: 54,
+								minWidth: 28,
 							}}
 						>
 							<Typography
@@ -292,20 +320,24 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 								noWrap
 								sx={{ gridArea: '1 / 1', visibility: 'hidden' }}
 							>
-								{tTranspose('keyWithNote', { note: WIDEST_NOTE })}
+								{WIDEST_NOTE}
 							</Typography>
 							<Typography
 								strong
 								noWrap
 								color={props.showChords ? undefined : 'grey.400'}
 								sx={{ gridArea: '1 / 1' }}
+								aria-label={
+									keyNote
+										? tTranspose('keyWithNote', { note: keyNote })
+										: tTranspose('title')
+								}
 							>
-								{keyNote
-									? tTranspose('keyWithNote', { note: keyNote })
-									: tTranspose('title')}
+								{keyNote ?? '–'}
 							</Typography>
 						</Box>
 						<IconButton
+							sx={TOUCH_SX}
 							tooltip={tTranspose('increase')}
 							onClick={() => props.transpose(1)}
 							disabled={!props.showChords}
@@ -317,6 +349,7 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 
 				{isLoggedIn() && !narrow && (
 					<IconButton
+						sx={TOUCH_SX}
 						tooltip={tTopPanel('addToPlaylist')}
 						onClick={(e) => setPlaylistAnchor(e.currentTarget)}
 					>
@@ -325,19 +358,21 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				)}
 				{/* the dock is at the bottom of the screen, so its menus open upward
 				    onto their button rather than being slid away from it */}
-				<SongsOptionsButton
-					openAbove
-					reloadSong={props.reloadSong}
-					variant={props.variant}
-					sheet={props.sheet}
-					song={props.song}
-					onEditClick={props.onEditClick}
-					isInEditMode={false}
-					saving={props.saving}
-					editedTitle={props.editedTitle}
-					isOwner={props.isOwner}
-					anyChange={props.anyChange}
-				/>
+				<Box sx={TOUCH_SX}>
+					<SongsOptionsButton
+						openAbove
+						reloadSong={props.reloadSong}
+						variant={props.variant}
+						sheet={props.sheet}
+						song={props.song}
+						onEditClick={props.onEditClick}
+						isInEditMode={false}
+						saving={props.saving}
+						editedTitle={props.editedTitle}
+						isOwner={props.isOwner}
+						anyChange={props.anyChange}
+					/>
+				</Box>
 			</Box>
 
 			{/* private note popup (desktop shows it as a sticky side panel) */}
@@ -369,6 +404,6 @@ export default function MobileSongDock(props: MobileSongDockProps) {
 				/>
 			)}
 		</>,
-		tabBarSlot
+		tabBarSlot,
 	)
 }
