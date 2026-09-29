@@ -500,6 +500,23 @@ toggles. Any overlay whose job is "tap anywhere to dismiss" belongs under the
 bar for the same reason — dismissing is not worth a tap of its own when the tap
 already meant something.
 
+## Back closes what is open before it leaves
+
+A sheet is state, not a route, so Back — which people reach for to dismiss
+things long before they use it to travel — took the whole page with it:
+Nástroje open on the catalog, one Back, and you were on the home screen with
+neither the sheet nor the catalog.
+
+`common/hooks/useCloseOnBack` gives an overlay one history entry at its own URL
+while it is open, carrying the router's own state so its bookkeeping is
+untouched. Back pops that entry and the overlay closes instead. Closing any
+other way takes the entry back out, so Back is never a dead press afterwards;
+closing because the app navigated leaves it alone, since it is then a duplicate
+of the page behind the new one, which is where Back should land anyway. Walked
+through all three: Back on an open sheet stays put and closes it (a second Back
+leaves as usual), a tap outside then Back leaves, a tab tap then Back returns to
+where the sheet was opened.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element

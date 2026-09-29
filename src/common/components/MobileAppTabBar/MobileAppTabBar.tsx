@@ -21,6 +21,7 @@ import {
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { useTranslations } from 'next-intl'
+import { useCloseOnBack } from '@/common/hooks/useCloseOnBack'
 import { useEffect, useState } from 'react'
 import {
 	hasContextualBottomBar,
@@ -51,6 +52,9 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 	const { hledat } = useSmartParams('songsList')
 
 	const [toolsOpen, setToolsOpen] = useState(false)
+
+	// Back closes the sheet rather than leaving the screen it stands on
+	useCloseOnBack(toolsOpen, () => setToolsOpen(false))
 
 	// A tab under this menu is tappable now — its backdrop stops below the bar —
 	// so arriving somewhere closes it on the way. Without this it would be left
