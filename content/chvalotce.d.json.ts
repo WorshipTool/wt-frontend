@@ -347,6 +347,9 @@ declare const messages: {
 			"mediaSection": "Média"
 		}
 	},
+	"songSelect": {
+		"source": "Zdroj"
+	},
 	"songPage": {
 		"topPanel": {
 			"addToPlaylist": "Přidat do playlistu",

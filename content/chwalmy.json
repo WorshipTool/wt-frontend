@@ -344,6 +344,9 @@
 			"mediaSection": "Sekcja mediów"
 		}
 	},
+	"songSelect": {
+		"source": "Źródło"
+	},
 	"songPage": {
 		"topPanel": {
 			"addToPlaylist": "Dodaj do playlisty",

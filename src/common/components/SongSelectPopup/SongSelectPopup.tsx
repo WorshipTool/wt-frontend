@@ -3,7 +3,10 @@ import { BasicVariantPack } from '@/api/dtos'
 import PopupContainer from '@/common/components/Popup/PopupContainer'
 import PopupSongList from '@/common/components/SongSelectPopup/components/PopupSongList'
 import SelectedPanel from '@/common/components/SongSelectPopup/components/SelectedPanel'
-import SelectFromOptions from '@/common/components/SongSelectPopup/components/SelectFromOptions'
+import SelectFromOptions, {
+	SelectOption,
+} from '@/common/components/SongSelectPopup/components/SelectFromOptions'
+import SelectSourceMenu from '@/common/components/SongSelectPopup/components/SelectSourceMenu'
 import { SelectSearch } from '@/common/components/SongSelectPopup/components/SelectSearch'
 import { measureBottomDock } from '@/common/components/MobileAppTabBar/nav.constants'
 import { useSongSelectSpecifier } from '@/common/components/SongSelectPopup/hooks/useSongSelectSpecifier'
@@ -78,6 +81,24 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 			c.onSearch?.(searchString)
 		})
 	}, [searchString])
+
+	/** The sources as the source control wants them — labels the picker filters
+	 * by (`options`) plus what is only ever displayed: the count and whatever
+	 * controls the source brings with it. Kept apart from `options` so a count
+	 * ticking over does not re-run the search. */
+	const sourceOptions: SelectOption[] = useMemo(() => {
+		return selectSpecifier.custom.map((c) => {
+			return {
+				label: c.label,
+				count: !c.showCount
+					? undefined
+					: searchString.length === 0
+					? undefined
+					: c.apiState?.data?.length || 0,
+				optionsComponent: c.optionsComponent,
+			}
+		})
+	}, [selectSpecifier, searchString])
 
 	const [customApiState, reinvalidate] = useApiStateEffect<
 		BasicVariantPack[]
@@ -211,7 +232,13 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							// the bottom dock — a long list scrolls inside the popup rather
 							// than disappearing under the tab bar
 							maxHeight: position.maxHeight,
-							overflowY: 'auto',
+							// A sheet keeps its heading and its buttons where they are and
+							// scrolls the list inside — a phone's list is long enough that
+							// scrolling the whole sheet would put "Přidat vybrané" off the
+							// screen. Anywhere else the popup is short and scrolls as a whole.
+							display: props.asSheet ? 'flex' : undefined,
+							flexDirection: props.asSheet ? 'column' : undefined,
+							overflowY: props.asSheet ? 'hidden' : 'auto',
 							borderRadius: 3,
 							boxShadow: '0px 0px 15px rgba(0,0,0,0.25)',
 							position: 'fixed',
@@ -223,7 +250,14 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 						}}
 						onClick={(e) => e.stopPropagation()}
 					>
-						<Box padding={4} display={'flex'} flexDirection={'column'} gap={3}>
+						<Box
+							padding={props.asSheet ? 2 : 4}
+							display={'flex'}
+							flexDirection={'column'}
+							gap={props.asSheet ? 2 : 3}
+							flex={props.asSheet ? 1 : undefined}
+							minHeight={props.asSheet ? 0 : undefined}
+						>
 							<Box display={'flex'} flexDirection={'column'} gap={1}>
 								<Box
 									display={'flex'}
@@ -240,26 +274,29 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 									/>
 								</Box>
 
-								<SelectFromOptions
-									options={[
-										...selectSpecifier.custom.map((c) => {
-											return {
-												label: c.label,
-												count: !c.showCount
-													? undefined
-													: searchString.length === 0
-													? undefined
-													: c.apiState?.data?.length || 0,
-												optionsComponent: c.optionsComponent,
-											}
-										}),
-									]}
-									initialSelected={optionSelected}
-									onSelect={(item, i) => setOptionSelected(i)}
-								/>
+								{props.asSheet ? (
+									<SelectSourceMenu
+										options={sourceOptions}
+										selected={optionSelected}
+										onSelect={(item, i) => setOptionSelected(i)}
+									/>
+								) : (
+									<SelectFromOptions
+										options={sourceOptions}
+										initialSelected={optionSelected}
+										onSelect={(item, i) => setOptionSelected(i)}
+									/>
+								)}
 							</Box>
 
-							<Box>
+							<Box
+								flex={props.asSheet ? 1 : undefined}
+								minHeight={props.asSheet ? 0 : undefined}
+								className={props.asSheet ? 'stylized-scrollbar' : undefined}
+								sx={{
+									overflowY: props.asSheet ? 'auto' : undefined,
+								}}
+							>
 								{options[optionSelected] && (
 									<>
 										{selectSpecifier.custom.map((c, i) => {
@@ -272,6 +309,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 														selectedSongs={chosen.map((v) => v.guid)}
 														apiState={c.apiState || customApiState}
 														multiselect={multiselect}
+														asRows={props.asSheet}
 														items={
 															(c.apiState || customApiState)?.data
 																?.filter((a) => {

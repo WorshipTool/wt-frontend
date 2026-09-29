@@ -348,6 +348,41 @@ and fits).
 The rule the dock follows: **a row that cannot shrink must drop items, and the
 overflow menu is where they go.** Not a smaller gap, not a smaller icon.
 
+## A sheet lists, it does not shelve — and it scrolls inside
+
+The song picker (`SongSelectPopup` with `asSheet`) is the worked example, and
+the shape is the rule for any sheet that offers a list to choose from.
+
+**A sideways shelf of cards becomes rows.** The picker's cards are 150–180px
+wide, so a phone showed two and a half of them and the rest lived past the right
+edge of the sheet — an offering nobody knew was there, behind a gesture nothing
+asked for. Stacked rows put all of it under each other, which is where a list is
+read. Desktop keeps the cards: it has the width, and it is where the shelf makes
+sense.
+
+**A row of tabs that does not fit becomes a menu.** Three sources —
+`Z globálního zpěvníku`, `Z mých písní`, `Z týmového zpěvníku` — are wider than
+any phone, and a scrolling tab row cut the third one mid-word. One line,
+`Zdroj: <the current one> ▾`, opens the house `Menu` with all three whole. The
+word `Zdroj:` stays in the line on purpose: with no second tab beside it, that
+label is the only thing saying the line can be switched. It costs one tap to
+change source, and it survives a fourth source without a redesign.
+
+**Chosen is a tint and a tick, not a border.** The desktop card marks its choice
+with a 2px blue outline over a 10% blue fill. Rows are joined into one block by
+their dividers and a border around one of them breaks the block apart, so the
+row keeps the same blue at the same tenth, turns the title blue, and adds a tick
+— the tick carrying the choice where the tint is too faint to (sunlight, dark
+theme, a phone held at an angle). Same colour as the desktop, translated from a
+card into a row; no checkboxes, which the app has nowhere else and which would
+give a song list the look of a form.
+
+**The list scrolls, not the sheet.** A sheet tall enough to hold rows is tall
+enough that scrolling it as a whole pushes its own *Přidat vybrané* off the
+screen. The sheet is a flex column with `overflow: hidden`; the list is the one
+part with `flex: 1; min-height: 0; overflow-y: auto`. Heading, source and
+buttons stay put at any scroll position.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element
