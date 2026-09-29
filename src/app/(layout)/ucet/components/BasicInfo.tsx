@@ -1,5 +1,7 @@
 import { useApi } from '@/api/tech-and-hooks/useApi'
-import { Box, Button, Gap, Typography } from '@/common/ui'
+import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
+import { TOUCH_TARGET } from '@/common/constants/layout'
+import { Box, Button, Gap, Typography, useTheme } from '@/common/ui'
 import { Card } from '@/common/ui/Card'
 import { TextField } from '@/common/ui/mui'
 import useAuth from '@/hooks/auth/useAuth'
@@ -23,6 +25,15 @@ export default function BasicInfo() {
 
 	const t = useTranslations('account.basicInfo')
 	const tCommon = useTranslations('common')
+
+	const theme = useTheme()
+	// The card is shared with the desktop account page, where a mouse does
+	// the pointing; only the phone owes these a thumb's worth of height.
+	const phoneTouchSx = {
+		[theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: {
+			minHeight: TOUCH_TARGET,
+		},
+	}
 
 	const onSaveClick = () => {
 		const data = {
@@ -78,6 +89,7 @@ export default function BasicInfo() {
 								startIcon={<Edit />}
 								small
 								onClick={() => setEditMode(true)}
+								sx={phoneTouchSx}
 							>
 								{tCommon('edit')}
 							</Button>
@@ -94,6 +106,7 @@ export default function BasicInfo() {
 								onClick={onSaveClick}
 								startIcon={<Save />}
 								loading={apiState.loading}
+								sx={phoneTouchSx}
 							>
 								{tCommon('save')}
 							</Button>
@@ -102,6 +115,7 @@ export default function BasicInfo() {
 								outlined
 								onClick={onCancelClick}
 								disabled={apiState.loading}
+								sx={phoneTouchSx}
 							>
 								{tCommon('cancel')}
 							</Button>

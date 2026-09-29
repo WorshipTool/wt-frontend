@@ -1,5 +1,6 @@
 'use client'
 
+import { TOUCH_TARGET } from '@/common/constants/layout'
 import { Box, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
 import { useTranslations } from 'next-intl'
@@ -171,8 +172,8 @@ export default function CatalogPagination({
 							'& .MuiPagination-ul': { flexWrap: 'nowrap' },
 							...(touch && {
 								'& .MuiPaginationItem-root': {
-									minWidth: 40,
-									height: 40,
+									minWidth: TOUCH_TARGET,
+									height: TOUCH_TARGET,
 									margin: '0 1px',
 									fontSize: '0.95rem',
 								},

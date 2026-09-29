@@ -11,6 +11,16 @@
  * with no edges of its own.
  */
 
+/**
+ * The smallest a thing you tap may be on a phone — docs/design/MOBILE.md,
+ * "44px is the control, not the icon".
+ *
+ * Where a row cannot afford the height, the control still takes it and pulls it
+ * back with a negative margin: what the rule is about is the area a thumb can
+ * land on, not how much ink the control puts on the screen.
+ */
+export const TOUCH_TARGET = 44
+
 /** How tall the bar across the top of a desktop page is. */
 export const TOOLBAR_HEIGHT = 56
 

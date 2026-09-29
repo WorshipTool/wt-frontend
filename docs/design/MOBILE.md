@@ -425,6 +425,32 @@ now. The page dots keep their 7px of paint and sit inside a button a thumb
 tall, which also takes the row's gap, so nothing between two dots is dead — 13
 by 44 for a dot, 28 by 44 for the current one.
 
+**It is not just the dock.** Swept across the phone app afterwards, six more
+controls were under the rule and all of them were the one thing their screen
+asks you to press: the catalog's paginator (40), the app shell's back arrow
+(40), the header's create/add pill and the account card's Upravit (31, because
+`size="small"` sizes the target as well as the type), the clear cross in the
+search field (30) and home's PROCHÁZET, which was a 20px line of text with
+nothing around it. `TOUCH_TARGET` in `common/constants/layout.ts` is the number
+now, rather than a `TOUCH = 44` per file.
+
+**Two of the house components do not take the size where you write it.**
+`IconButton` puts `sx` on the box *around* the button, so a `width`/`height`
+there sizes the box and leaves a 40px button inside it — ask for it by name
+(`'& .MuiIconButton-root': { width: TOUCH_TARGET, … }`). `Button` does the
+opposite and hands its `sx` to the anchor, the box *and* the button, so a
+`marginTop` there lands three times over: put spacing on a wrapper and keep the
+`sx` for the button's own shape.
+
+**Where the row cannot afford the height, take it and give it back.** Home's
+PROCHÁZET and the field's cross both keep the layout they had — a negative
+`marginY` cancels exactly what the bigger target added. The rule is about the
+area a thumb can land on, not about how much ink the control puts on screen.
+
+The tab bar on a phone held sideways is the one place that stays under 44 (29px
+tall), and deliberately: see the landscape budget above. Each cell is 133px
+wide there, so the target is short rather than small.
+
 ## A dock sheds controls before it overflows
 
 Below 360px the song dock keeps the printer, the key and the ⋮, and moves the

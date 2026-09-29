@@ -1,5 +1,6 @@
 'use client'
 
+import { TOUCH_TARGET } from '@/common/constants/layout'
 import { Button } from '@/common/ui'
 import { CommonLinkProps } from '@/common/ui/Link/Link'
 import { RoutesKeys } from '@/routes/routes.types'
@@ -45,7 +46,14 @@ export default function MobileHeaderPill<T extends RoutesKeys>({
 			alt={alt}
 			startIcon={icon}
 			disableUppercase
-			sx={{ borderRadius: 999, paddingX: 1.5, whiteSpace: 'nowrap' }}
+			sx={{
+				borderRadius: 999,
+				paddingX: 1.5,
+				whiteSpace: 'nowrap',
+				// `small` is the type size, not the target: this pill is the one
+				// thing the screen asks you to press
+				minHeight: TOUCH_TARGET,
+			}}
 		>
 			{children}
 		</Button>

@@ -3,6 +3,7 @@
 import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
 import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
+import { TOUCH_TARGET } from '@/common/constants/layout'
 import { InputBase, SxProps, Theme } from '@/common/ui/mui'
 import { useTheme } from '@/common/ui/tech'
 import { isMobile } from '@/tech/device.tech'
@@ -54,6 +55,25 @@ const fieldSx = (theme: Theme) =>
 		boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
 		transition: 'border-color 0.15s ease',
 		'&:focus-within': { borderColor: 'grey.400' },
+	} as const)
+
+/**
+ * A thumb's worth of target for the buttons inside the field, on a phone only —
+ * a mouse does the pointing on a desktop, and the field is the same height on
+ * both. The extra height is handed straight back with a negative margin, so
+ * what grows is the area a thumb can land on, not the field around it.
+ */
+const inFieldButtonSx = (theme: Theme) =>
+	({
+		[theme.breakpoints.down(DESKTOP)]: {
+			// the house IconButton puts `sx` on the box around the button, so the
+			// size is asked for by name and the box hands the extra back
+			marginY: '-6px',
+			'& .MuiIconButton-root': {
+				width: TOUCH_TARGET,
+				height: TOUCH_TARGET,
+			},
+		},
 	} as const)
 
 /** The gradient frame the home hero wears, and the padding that reveals it. */
@@ -153,6 +173,7 @@ export function SearchBar({
 				<IconButton
 					color="grey.500"
 					size="small"
+					sx={inFieldButtonSx(theme)}
 					onClick={() => {
 						onClear()
 						inputRef.current?.focus()
@@ -166,6 +187,7 @@ export function SearchBar({
 				<IconButton
 					color={props.useSmartSearch ? 'primary.main' : 'grey.400'}
 					size="small"
+					sx={inFieldButtonSx(theme)}
 					onClick={() => props.onSmartSearchChange?.(!props.useSmartSearch)}
 				>
 					<AutoAwesome fontSize="small" />
