@@ -1,6 +1,6 @@
 'use client'
 
-import { Box } from '@/common/ui'
+import { Box, useTheme } from '@/common/ui'
 import {
 	createContext,
 	ReactNode,
@@ -153,6 +153,7 @@ export function CollapsingHeader({
 	snap?: boolean
 	children: ReactNode
 }) {
+	const theme = useTheme()
 	const rootRef = useRef<HTMLDivElement>(null)
 	const bgRef = useRef<HTMLDivElement>(null)
 	const regs = useRef<Set<Registration>>(new Set())
@@ -178,7 +179,16 @@ export function CollapsingHeader({
 		regs.current.forEach((r) => paintItem(r, p, width))
 		if (bgRef.current) {
 			bgRef.current.style.height = `calc(env(safe-area-inset-top) + ${lerp(expandedHeight, compactHeight, p)}px)`
-			bgRef.current.style.boxShadow = p > 0.96 ? '0 2px 8px rgba(0,0,0,0.05)' : 'none'
+			// The hairline and the shadow are the bar's edge, and only the bar needs
+			// one: the expanded hero is read as one block with the list below it,
+			// and a line drawn across right above the first card cuts that block in
+			// half for nothing. They arrive together, when the header has become a
+			// bar with content sliding under it.
+			const asBar = p > 0.96
+			bgRef.current.style.boxShadow = asBar ? '0 2px 8px rgba(0,0,0,0.05)' : 'none'
+			bgRef.current.style.borderBottomColor = asBar
+				? theme.palette.grey[200]
+				: 'transparent'
 		}
 	}
 
@@ -253,8 +263,9 @@ export function CollapsingHeader({
 						left: 0,
 						right: 0,
 						bgcolor: surface,
+						// painted per progress — see `paint`
 						borderBottom: '1px solid',
-						borderColor: 'grey.200',
+						borderColor: 'transparent',
 					}}
 				/>
 				{/* morphing children get pointer events back individually */}

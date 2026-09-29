@@ -593,6 +593,13 @@ variable), and elements that exist in only one state just fade
 (cover/subtitle/share/print/edit out, `⋮` in). Declare each with `from`/`to`
 style specs; the component interpolates them by scroll progress.
 
+**The header's hairline belongs to the bar, not to the hero.** The collapsing
+header drew a 1px line along its bottom edge at every scroll position, which in
+the expanded state lands immediately above the first card of the list and cuts
+the screen in two for nothing — the hero and the list read as one block. It is
+painted with the shadow instead, both only once the header has become a bar
+with content sliding under it (`p > 0.96`).
+
 **A reserve for the compact bar interpolates too.** The playlist's title was
 capped at `calc(100vw - 210px)` at every scroll position — room held for the
 Tisknout circle, the `⋮` beside it and the pill travelling up to them. None of
