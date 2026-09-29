@@ -485,6 +485,21 @@ and the trailing icons outside the fill. For a full-row fill, disable the row's
 link with `toLinkProps={() => null}`, take the click yourself, and put the tint
 in `sx`.
 
+## A backdrop stops below the bar
+
+The Nástroje sheet closed on a tap anywhere, through a full-screen backdrop —
+at a z-index above the tab bar, which is the one thing on the screen you reach
+for next. So a tap on Písně bought nothing but the menu closing, and the tab
+had to be pressed twice. Measured: with the sheet open, the element under the
+middle of the bar was the backdrop (`DIV z=11`).
+
+The backdrop sits at 9 now, under the dock's 10 and over the page, so the first
+tap both closes the sheet and goes where it was aimed; arriving anywhere closes
+the sheet on the way (an effect on the pathname), and the Nástroje tab itself
+toggles. Any overlay whose job is "tap anywhere to dismiss" belongs under the
+bar for the same reason — dismissing is not worth a tap of its own when the tap
+already meant something.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element

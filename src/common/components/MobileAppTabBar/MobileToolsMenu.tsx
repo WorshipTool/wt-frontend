@@ -5,6 +5,9 @@ import useToolsMenuItems from '@/common/components/Toolbar/components/RightAccou
 import { Box, useTheme } from '@/common/ui'
 import { alpha, Fade } from '@/common/ui/mui'
 
+/** Below the bottom dock's 10, above the page. See the backdrop. */
+const BACKDROP_Z = 9
+
 /**
  * Mobile "Nástroje" menu — the phone counterpart of the desktop Apps menu.
  * Rendered as an overlay icon grid anchored just above the tab bar near the
@@ -18,13 +21,17 @@ export default function MobileToolsMenu({ onClose }: { onClose: () => void }) {
 
 	return (
 		<>
-			{/* click-catching backdrop */}
+			{/* Click-catching backdrop, and it stops below the bar on purpose: at a
+			    z-index above it, it covered the very tabs you reach for next, so a
+			    tap on Písně bought you nothing but the menu closing and you had to
+			    press the same tab twice. Under the bar, the first tap both closes
+			    this and goes where you were going. */}
 			<Box
 				onClick={onClose}
 				sx={{
 					position: 'fixed',
 					inset: 0,
-					zIndex: 11,
+					zIndex: BACKDROP_Z,
 					bgcolor: alpha(theme.palette.common.black, 0.12),
 				}}
 			/>

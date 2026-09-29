@@ -21,7 +21,7 @@ import {
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { useSmartParams } from '@/routes/useSmartParams'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	hasContextualBottomBar,
 	isMobileTabBarRoute,
@@ -51,6 +51,13 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 	const { hledat } = useSmartParams('songsList')
 
 	const [toolsOpen, setToolsOpen] = useState(false)
+
+	// A tab under this menu is tappable now — its backdrop stops below the bar —
+	// so arriving somewhere closes it on the way. Without this it would be left
+	// standing over the screen the tap just opened.
+	useEffect(() => {
+		setToolsOpen(false)
+	}, [pathname])
 
 	// `force` is for the screens the router cannot classify — the 404, which has
 	// no route key to put in nav.constants but is very much somewhere you want a
@@ -122,7 +129,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 					<Box
 						component="button"
 						type="button"
-						onClick={() => setToolsOpen(true)}
+						onClick={() => setToolsOpen((o) => !o)}
 						sx={{
 							flex: 1,
 							minWidth: 0,
