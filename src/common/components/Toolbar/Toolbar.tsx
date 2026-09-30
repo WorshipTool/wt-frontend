@@ -12,7 +12,6 @@ import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
 import { Box, useTheme } from '@/common/ui'
 import { grey } from '@/common/ui/mui/colors'
 import { styled, useMediaQuery } from '@mui/system'
-import { motion } from 'framer-motion'
 import { TOOLBAR_HEIGHT } from '@/common/constants/layout'
 import { useClientPathname } from '@/hooks/pathname/useClientPathname'
 import { useEffect, useMemo, useState } from 'react'
@@ -85,8 +84,16 @@ export function Toolbar() {
 					...barHideSx,
 				}}
 			>
-				<motion.div
-					style={{
+				{/* The fade is a plain CSS transition, not a framer-motion animate.
+					    Motion drove the opacity with the Web Animations API while the
+					    element's own inline opacity kept the value it was leaving, and
+					    the hand-off back to that inline style at the end of the fade
+					    showed it for one frame: the bar blinked once, every time the
+					    change came to rest. Measured, on every crossing in both
+					    directions — solid with one frame at 0, transparent with one
+					    frame at 1. A transition has no such hand-off. */}
+				<Box
+					sx={{
 						background:
 							variant === 'dark'
 								? grey[900]
@@ -96,10 +103,9 @@ export function Toolbar() {
 						right: 0,
 						top: 0,
 						bottom: 0,
+						opacity: variant === 'transparent' ? 0 : 1,
+						transition: 'opacity 0.3s ease',
 					}}
-					initial={{ opacity: variant === 'transparent' ? 0 : 1 }}
-					animate={{ opacity: variant === 'transparent' ? 0 : 1 }}
-					transition={{ duration: 0.3 }}
 				/>
 
 				<Box
