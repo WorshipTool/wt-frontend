@@ -625,6 +625,22 @@ all of them optional props so the desktop side is untouched:
 Two sheets on one bar are one sheet: opening either closes the other, and both
 close on arrival.
 
+## A lit tab must not be a bigger tab
+
+Opening the Účet menu nudged the whole bar two pixels up. Nothing about the
+menu did it: the tab lights up while the menu is open, the Účet tab's ring
+thickens from 1px to 2px to show it, and MUI's `Avatar` sizes its *content* —
+so the ring was drawn outside the 25px it was given and the avatar went 27px →
+29px, the row with it. Measured: the tab 48px tall and at y=604 closed, 50px
+and y=602 open.
+
+Give anything in the bar a fixed outer box (`boxSizing: 'border-box'`) and let
+the state thicken inwards. A bar is the one thing on the screen that must be in
+the same place before and after a tap; nothing in it may change size to say
+something. Worth checking whenever an active state adds a border, a ring or a
+weight, since the route-driven version of the same jump is invisible — you only
+see it when the state flips under your thumb.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element
