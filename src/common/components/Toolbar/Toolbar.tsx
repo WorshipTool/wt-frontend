@@ -110,7 +110,16 @@ export function Toolbar() {
 					display={'flex'}
 					flex={1}
 					height={'100%'}
-					color={!white ? 'black' : 'white'}
+					sx={{
+						color: white ? 'white' : 'black',
+						// The gradient behind this fades over 0.3s. A colour that flips in
+						// one frame therefore spends that whole fade being the colour of
+						// what is behind it — white on a bar that is still the page — and
+						// the title and the links blink out and come back. They travel
+						// together now; everything in here takes the colour by `inherit`,
+						// so the one transition carries the lot.
+						transition: 'color 0.3s ease',
+					}}
 				>
 					<LeftWebTitle />
 					{navigationInMiddle && <MiddleNavigationPanel />}
