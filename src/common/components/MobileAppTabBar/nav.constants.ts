@@ -9,6 +9,16 @@ import { urlMatchPatterns } from '@/routes/tech/routes.tech'
 export const MOBILE_NAV_BREAKPOINT = 700
 
 /**
+ * The other side of that line, as a media query.
+ *
+ * For `sx` written in a server component, where a `theme => …` callback cannot
+ * cross the boundary to the client and MUI's own `md` is 900 — a desktop layout
+ * hung on `md` leaves everything between 700 and 900 with neither the phone's
+ * surface nor the desktop's. Spelled the way `theme.breakpoints.up` spells it.
+ */
+export const DESKTOP_VIEWPORT = `@media (min-width:${MOBILE_NAV_BREAKPOINT}px)`
+
+/**
  * A phone held on its side — 320 to 430px of height for the whole app.
  *
  * Portrait gives a screen 664px to spend and the chrome takes 200 of it, which
