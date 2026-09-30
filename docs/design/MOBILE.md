@@ -594,6 +594,37 @@ mind" — the backdrop, the tab that toggles the sheet — go through it and pop
 A press that navigates just closes, and leaves the entry to the page it is on
 its way to. Anything that closes an overlay both ways needs the same two doors.
 
+## A tab can open the desktop's own menu
+
+The Účet tab jumped straight to `/ucet`, where the top bar on a desktop opens a
+menu under the avatar — your name with "Spravovat účet", and "Odhlásit se". Two
+different answers to the same tap, and no way to sign out from the phone at all
+without first landing on a page.
+
+It is the same component now: `AccountMenu`, rendered from the tab bar and
+anchored to the Účet tab. Prefer this over a phone copy wherever the desktop
+already has the menu — one place to change, and the two can't drift.
+
+Three things a menu built for a top bar needs before it works on a bottom one,
+all of them optional props so the desktop side is untouched:
+
+- **`openUpwards`.** Hanging downwards from a tab at the bottom of the screen,
+  the menu has nowhere to go, so MUI shoves it back up *over* the bar and
+  covers the tabs it grew out of. Anchor `top` / transform `bottom` instead.
+- **A backdrop that stops above the bar** (`MOBILE_NAV_CLEARANCE`), with
+  `pointerEvents: 'none'` on the modal root and `'auto'` on the backdrop and the
+  paper. MUI's backdrop covers the viewport, which is the same trap the Nástroje
+  sheet was pulled out of: a tap on Písně would buy nothing but the menu
+  closing. Measured both ways — with the plain backdrop Playwright reports
+  `MuiBackdrop-root … intercepts pointer events` over the tab; with this, the
+  tap lands on the tab.
+- **`onDismiss` apart from `onClose`**, for the same reason the Nástroje sheet
+  needs it: an item that navigates must not pop the overlay's history entry.
+  Without it "Spravovat účet" closed the menu and stayed put.
+
+Two sheets on one bar are one sheet: opening either closes the other, and both
+close on arrival.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element
