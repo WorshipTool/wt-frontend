@@ -136,6 +136,50 @@ function findNormalized(
 	return found
 }
 
+/** How long a piece the search cuts the query into — the backend's
+ * searchTermToTrigramQuery. Keep the two the same. */
+const GRAM = 3
+
+/**
+ * The pieces the search itself matched on: every `GRAM`-letter run of the
+ * normalized query, one occurrence of each.
+ *
+ * Last resort, for a song the search returned although neither the phrase nor
+ * any word of it is anywhere in the text. That happens because the search asks
+ * only that each piece occur *somewhere*: "znas" finds Oceány on "Voláš **nás**"
+ * in the first line and "ne**zná**mých" in the second, 27 letters apart, and
+ * nothing in the song reads as what was typed.
+ *
+ * Marking those pieces is not pretty — they are three letters out of the middle
+ * of a word — but a result that lights up nothing looks like a mistake, and the
+ * reader is owed the reason the song is in the list. One occurrence each, so it
+ * is the reason and not a rash of crumbs; where consecutive pieces land side by
+ * side they merge back into one longer mark.
+ *
+ * All or nothing, because a piece on its own is noise rather than a reason:
+ * "svatebni" has "vat" in "zpívat Tvou" and that says nothing about why the
+ * song is here — it is here for the other five pieces, which are not in this
+ * text at all (the search reads the sheet with its chords in it, and may have
+ * matched another variant of the song). Finding every piece is what the search
+ * claimed; finding only some means this is not the text it matched, and the
+ * song opens where it always did.
+ */
+function findGrams(
+	query: string,
+	{ normalized, chars }: { normalized: string; chars: NormalizedChar[] }
+): Range[] {
+	const needle = normalizeSearchText(query)
+	if (needle.length < GRAM) return []
+
+	const found: Range[] = []
+	for (let i = 0; i + GRAM <= needle.length; i++) {
+		const at = normalized.indexOf(needle.slice(i, i + GRAM))
+		if (at < 0) return []
+		found.push([chars[at].from, chars[at + GRAM - 1].to])
+	}
+	return found
+}
+
 /**
  * Every stretch of the text the query marks.
  *
@@ -150,14 +194,15 @@ function findNormalized(
  * what you typed, but scattered: the three-letter pieces can sit anywhere, so
  * the words are usually all in the song and rarely side by side.
  *
- * Marking the trigrams themselves would be unreadable — three-letter crumbs
- * through the verse — so this marks what a reader recognises instead: the
- * phrase where the song has it, the words where it does not. A song whose
- * trigrams line up without the words ever appearing gets nothing marked, and
- * opens at its first lines.
+ * So three passes, loosest last, and the first that finds anything wins: the
+ * phrase where the song has it, the words where it does not, and failing both
+ * the pieces the search itself ran on (`findGrams`). A result that lights up
+ * nothing reads as a mistake, and something is always there to mark — whatever
+ * put the song in the list did so by being present somewhere.
  *
  * Without the word pass, searching for three words found songs and then
- * underlined nothing in any of them.
+ * underlined nothing in any of them; without the piece pass, "znas" found
+ * Oceány on "Voláš nás" and "neznámých" and underlined neither.
  */
 function rangesFor(text: string, query: string): Range[] {
 	const map = normalizeWithSource(text)
@@ -170,13 +215,18 @@ function rangesFor(text: string, query: string): Range[] {
 	// One letter would mark half the song, so those go. What is left is worth a
 	// pass unless it is the query itself, which has just been tried whole.
 	const words = query.split(/\s+/).filter((word) => word.length > 1)
-	if (words.length === 0) return []
-	if (words.length === 1 && words[0] === query) return []
+	const single = words.length === 1 && words[0] === query
+	const perWord =
+		words.length === 0 || single
+			? []
+			: words.flatMap((word) => {
+					const exact = findExact(text, word)
+					return exact.length > 0 ? exact : findNormalized(word, map)
+			  })
 
-	const found = words.flatMap((word) => {
-		const exact = findExact(text, word)
-		return exact.length > 0 ? exact : findNormalized(word, map)
-	})
+	// …and if even the words are not here, the pieces the search ran on are.
+	const found = perWord.length > 0 ? perWord : findGrams(query, map)
+	if (found.length === 0) return []
 
 	// …in reading order, and never twice over the same letters
 	found.sort((a, b) => a[0] - b[0])

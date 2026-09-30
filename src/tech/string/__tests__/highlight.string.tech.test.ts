@@ -94,6 +94,46 @@ describe('splitByMatch', () => {
 		expect(shape('A ty jsi král', 'a kral')).toBe('A ty jsi [král]')
 	})
 
+	describe('when neither the phrase nor its words are in the text', () => {
+		// The search asks only that each three-letter piece of the query occur
+		// somewhere, so it returns songs that never say what was typed. Marking
+		// those pieces is the only honest answer to "why is this in the list?".
+
+		const OCEANY = 'Voláš nás do mořských hlubin,\ntěch neznámých, dalekých.'
+
+		it('marks the pieces the search ran on', () => {
+			// "nas" from "Voláš nás", "zna" from "neznámých" — 27 letters apart,
+			// and nothing in the song reads as "znas"
+			expect(shape(OCEANY, 'znas')).toBe(
+				'Voláš [nás] do mořských hlubin,\ntěch ne[zná]mých, dalekých.'
+			)
+		})
+
+		it('still prefers the word itself where the song has it', () => {
+			expect(shape('Ty srdce mé znáš', 'znas')).toBe('Ty srdce mé [znáš]')
+		})
+
+		it('marks nothing when only some of the pieces are there', () => {
+			// "vat" is in "zpívat", the rest of "svatebni" is nowhere — one piece
+			// on its own says nothing about why the song is in the list
+			expect(splitByMatch('a je čas zpívat Tvou píseň zas.', 'svatebni')).toEqual([
+				{ text: 'a je čas zpívat Tvou píseň zas.', match: false },
+			])
+		})
+
+		it('marks nothing when not even the pieces are there', () => {
+			expect(splitByMatch('Adonai', 'betlem')).toEqual([
+				{ text: 'Adonai', match: false },
+			])
+		})
+
+		it('leaves a query too short to have pieces alone', () => {
+			expect(splitByMatch('Adonai', 'xy')).toEqual([
+				{ text: 'Adonai', match: false },
+			])
+		})
+	})
+
 	it('returns the text whole when nothing matches', () => {
 		expect(splitByMatch('Adonai', 'amen')).toEqual([
 			{ text: 'Adonai', match: false },
