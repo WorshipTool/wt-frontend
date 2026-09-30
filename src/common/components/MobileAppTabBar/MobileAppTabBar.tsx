@@ -53,8 +53,11 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 
 	const [toolsOpen, setToolsOpen] = useState(false)
 
-	// Back closes the sheet rather than leaving the screen it stands on
-	useCloseOnBack(toolsOpen, () => setToolsOpen(false))
+	// Back closes the sheet rather than leaving the screen it stands on.
+	// `dismissTools` is the way out that means "never mind" — it also takes
+	// the sheet's history entry back out. Closing because a tool was pressed
+	// must not: the navigation that press started is still in flight.
+	const dismissTools = useCloseOnBack(toolsOpen, () => setToolsOpen(false))
 
 	// A tab under this menu is tappable now — its backdrop stops below the bar —
 	// so arriving somewhere closes it on the way. Without this it would be left
@@ -133,7 +136,7 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 					<Box
 						component="button"
 						type="button"
-						onClick={() => setToolsOpen((o) => !o)}
+						onClick={() => (toolsOpen ? dismissTools() : setToolsOpen(true))}
 						sx={{
 							flex: 1,
 							minWidth: 0,
@@ -180,7 +183,12 @@ export default function MobileAppTabBar({ force = false }: { force?: boolean } =
 			</MobileBottomDock>
 
 			{/* lazy-mounted so its data hooks only run when the sheet is opened */}
-			{toolsOpen && <MobileToolsMenu onClose={() => setToolsOpen(false)} />}
+			{toolsOpen && (
+				<MobileToolsMenu
+					onClose={() => setToolsOpen(false)}
+					onDismiss={dismissTools}
+				/>
+			)}
 		</>
 	)
 }

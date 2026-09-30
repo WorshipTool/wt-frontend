@@ -579,6 +579,21 @@ through all three: Back on an open sheet stays put and closes it (a second Back
 leaves as usual), a tap outside then Back leaves, a tab tap then Back returns to
 where the sheet was opened.
 
+**Taking the entry back out is the caller's move, never a cleanup.** The first
+version popped it when the overlay's state went away, "unless we have moved" —
+and every tool in Nástroje stopped working: pressing one closed the sheet and
+stayed on the page it was opened from. The router changes the URL *after* the
+React state has gone, so at cleanup time nothing had moved yet, the pop fired,
+and it cancelled the navigation the press had just started. Measured, with
+`history` instrumented: `push /pisne` on open, then `BACK from /pisne` ·
+`popstate` · `replace /pisne` on the press — and never a push for the tool's
+own route.
+
+So the hook returns a `dismiss` instead. The ways of closing that mean "never
+mind" — the backdrop, the tab that toggles the sheet — go through it and pop.
+A press that navigates just closes, and leaves the entry to the page it is on
+its way to. Anything that closes an overlay both ways needs the same two doors.
+
 ## A control that is not visible yet has no hit area
 
 The collapsing header stages its parts by fading them. Fading leaves the element

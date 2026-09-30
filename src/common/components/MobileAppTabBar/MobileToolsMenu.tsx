@@ -14,7 +14,18 @@ const BACKDROP_Z = 9
  * Nástroje tab (mirroring the desktop overlay), reusing the same grid items
  * (playlists, my songs, favourites, teams…). Taps outside close it.
  */
-export default function MobileToolsMenu({ onClose }: { onClose: () => void }) {
+type MobileToolsMenuProps = {
+	/** A tool was pressed: close, and leave the history entry to the page
+	 * that press is on its way to. */
+	onClose: () => void
+	/** Never mind: close and take the sheet's history entry with it. */
+	onDismiss: () => void
+}
+
+export default function MobileToolsMenu({
+	onClose,
+	onDismiss,
+}: MobileToolsMenuProps) {
 	const theme = useTheme()
 	const { items } = useToolsMenuItems()
 	const visible = items.filter((i) => !i.hidden)
@@ -27,7 +38,7 @@ export default function MobileToolsMenu({ onClose }: { onClose: () => void }) {
 			    press the same tab twice. Under the bar, the first tap both closes
 			    this and goes where you were going. */}
 			<Box
-				onClick={onClose}
+				onClick={onDismiss}
 				sx={{
 					position: 'fixed',
 					inset: 0,
