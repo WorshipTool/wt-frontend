@@ -2,10 +2,21 @@
 import { BasicVariantPack } from '@/api/dtos'
 import PopupContainer from '@/common/components/Popup/PopupContainer'
 import PopupSongList from '@/common/components/SongSelectPopup/components/PopupSongList'
+import { POPUP_ROW_HEIGHT } from '@/common/components/SongSelectPopup/components/PopupSongRow'
 import SelectedPanel from '@/common/components/SongSelectPopup/components/SelectedPanel'
-import SelectFromOptions from '@/common/components/SongSelectPopup/components/SelectFromOptions'
+import SelectFromOptions, {
+	SelectOption,
+} from '@/common/components/SongSelectPopup/components/SelectFromOptions'
+import SelectSourceMenu from '@/common/components/SongSelectPopup/components/SelectSourceMenu'
 import { SelectSearch } from '@/common/components/SongSelectPopup/components/SelectSearch'
+import { measureBottomDock } from '@/common/components/MobileAppTabBar/nav.constants'
 import { useSongSelectSpecifier } from '@/common/components/SongSelectPopup/hooks/useSongSelectSpecifier'
+import {
+	getPopupPosition,
+	MAX_WIDTH,
+	OFFSET,
+	PopupPosition,
+} from '@/common/components/SongSelectPopup/popupPosition'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
@@ -25,12 +36,24 @@ type PopupProps = {
 	anchorRef: React.RefObject<HTMLElement>
 	anchorName?: string
 
+	/** Place it as a bottom sheet rather than a menu on the anchor — see
+	 * `PopupPlacement`. The narrow layouts want this. */
+	asSheet?: boolean
+
 	// Filter function, for example to filter out previously selected songs
 	filterFunc?: (pack: BasicVariantPack) => boolean
 
 	disableMultiselect?: boolean
 	submitLabel?: string
 }
+
+/**
+ * How much of the list a sheet shows before it scrolls: four songs and a slice
+ * of the fifth, which says there are more without the sheet swallowing the
+ * screen. A picker that fills a phone top to bottom hides what you were adding
+ * the song to, and the choice is only ever a few rows of reading anyway.
+ */
+const SHEET_LIST_MAX_HEIGHT = Math.round(POPUP_ROW_HEIGHT * 4.3)
 
 export type ChosenSong = {
 	guid: VariantPackGuid
@@ -68,6 +91,24 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 		})
 	}, [searchString])
 
+	/** The sources as the source control wants them — labels the picker filters
+	 * by (`options`) plus what is only ever displayed: the count and whatever
+	 * controls the source brings with it. Kept apart from `options` so a count
+	 * ticking over does not re-run the search. */
+	const sourceOptions: SelectOption[] = useMemo(() => {
+		return selectSpecifier.custom.map((c) => {
+			return {
+				label: c.label,
+				count: !c.showCount
+					? undefined
+					: searchString.length === 0
+					? undefined
+					: c.apiState?.data?.length || 0,
+				optionsComponent: c.optionsComponent,
+			}
+		})
+	}, [selectSpecifier, searchString])
+
 	const [customApiState, reinvalidate] = useApiStateEffect<
 		BasicVariantPack[]
 	>(async () => {
@@ -103,43 +144,27 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 
 	// Positioning
 	const popupRef = useRef(null)
-	const [position, setPosition] = useState<{
-		top?: number
-		bottom?: number
-		left?: number
-		right?: number
-	}>({ top: 0, left: 0 })
-
-	const MAX_WIDTH = 600
-	const OFFSET = 8
+	const [position, setPosition] = useState<PopupPosition>({
+		top: 0,
+		left: 0,
+		maxHeight: 0,
+	})
 
 	const updatePopupPosition = useCallback(() => {
 		if (props.anchorRef?.current) {
-			const rect = props.anchorRef.current.getBoundingClientRect()
-			const toRightMode = rect.left < window.innerWidth / 2
-			const t = props.upDirection ? undefined : rect.top + OFFSET
-			const b = props.upDirection
-				? window.innerHeight - rect.bottom + OFFSET
-				: undefined
-
-			if (toRightMode) {
-				const l = rect.left + OFFSET
-				setPosition({
-					top: t,
-					bottom: b,
-					left: Math.min(l, window.innerWidth - MAX_WIDTH - OFFSET),
-				})
-			} else {
-				const r = window.innerWidth - rect.right + OFFSET
-
-				setPosition({
-					top: t,
-					bottom: b,
-					right: Math.max(r, OFFSET),
-				})
-			}
+			setPosition(
+				getPopupPosition(
+					props.anchorRef.current.getBoundingClientRect(),
+					{
+						width: window.innerWidth,
+						height: window.innerHeight,
+						bottomInset: measureBottomDock(),
+					},
+					{ upDirection: props.upDirection, asSheet: props.asSheet }
+				)
+			)
 		}
-	}, [props.anchorRef, props.anchorName, props.upDirection])
+	}, [props.anchorRef, props.anchorName, props.upDirection, props.asSheet])
 
 	useEffect(() => {
 		updatePopupPosition() // Initial position
@@ -212,6 +237,17 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							bgcolor: 'grey.200',
 							maxWidth: `min(${MAX_WIDTH}px, calc(100% - ${OFFSET * 2}px))`,
 							width: MAX_WIDTH,
+							// never taller than the room between the top of the screen and
+							// the bottom dock — a long list scrolls inside the popup rather
+							// than disappearing under the tab bar
+							maxHeight: position.maxHeight,
+							// A sheet keeps its heading and its buttons where they are and
+							// scrolls the list inside — a phone's list is long enough that
+							// scrolling the whole sheet would put "Přidat vybrané" off the
+							// screen. Anywhere else the popup is short and scrolls as a whole.
+							display: props.asSheet ? 'flex' : undefined,
+							flexDirection: props.asSheet ? 'column' : undefined,
+							overflowY: props.asSheet ? 'hidden' : 'auto',
 							borderRadius: 3,
 							boxShadow: '0px 0px 15px rgba(0,0,0,0.25)',
 							position: 'fixed',
@@ -223,7 +259,14 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 						}}
 						onClick={(e) => e.stopPropagation()}
 					>
-						<Box padding={4} display={'flex'} flexDirection={'column'} gap={3}>
+						<Box
+							padding={props.asSheet ? 2 : 4}
+							display={'flex'}
+							flexDirection={'column'}
+							gap={props.asSheet ? 2 : 3}
+							flex={props.asSheet ? 1 : undefined}
+							minHeight={props.asSheet ? 0 : undefined}
+						>
 							<Box display={'flex'} flexDirection={'column'} gap={1}>
 								<Box
 									display={'flex'}
@@ -240,26 +283,30 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 									/>
 								</Box>
 
-								<SelectFromOptions
-									options={[
-										...selectSpecifier.custom.map((c) => {
-											return {
-												label: c.label,
-												count: !c.showCount
-													? undefined
-													: searchString.length === 0
-													? undefined
-													: c.apiState?.data?.length || 0,
-												optionsComponent: c.optionsComponent,
-											}
-										}),
-									]}
-									initialSelected={optionSelected}
-									onSelect={(item, i) => setOptionSelected(i)}
-								/>
+								{props.asSheet ? (
+									<SelectSourceMenu
+										options={sourceOptions}
+										selected={optionSelected}
+										onSelect={(item, i) => setOptionSelected(i)}
+									/>
+								) : (
+									<SelectFromOptions
+										options={sourceOptions}
+										initialSelected={optionSelected}
+										onSelect={(item, i) => setOptionSelected(i)}
+									/>
+								)}
 							</Box>
 
-							<Box>
+							<Box
+								flex={props.asSheet ? '0 1 auto' : undefined}
+								minHeight={props.asSheet ? 0 : undefined}
+								maxHeight={props.asSheet ? SHEET_LIST_MAX_HEIGHT : undefined}
+								className={props.asSheet ? 'stylized-scrollbar' : undefined}
+								sx={{
+									overflowY: props.asSheet ? 'auto' : undefined,
+								}}
+							>
 								{options[optionSelected] && (
 									<>
 										{selectSpecifier.custom.map((c, i) => {
@@ -272,6 +319,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 														selectedSongs={chosen.map((v) => v.guid)}
 														apiState={c.apiState || customApiState}
 														multiselect={multiselect}
+														asRows={props.asSheet}
 														items={
 															(c.apiState || customApiState)?.data
 																?.filter((a) => {

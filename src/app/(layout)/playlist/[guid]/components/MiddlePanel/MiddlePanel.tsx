@@ -1,6 +1,5 @@
 import { PlaylistItem } from '@/app/(layout)/playlist/[guid]/components/MiddlePanel/PlaylistItem'
 import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlaylist'
-import CannotEditOnPhone from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/playlist/[guid]/components/CannotEditOnPhone'
 import { Box } from '@/common/ui'
 import { useMemo } from 'react'
 
@@ -27,7 +26,9 @@ export default function MiddlePanel() {
 			position={'relative'}
 			className="playlist-middle-song-list"
 		>
-			<CannotEditOnPhone />
+			{/* no "use a computer" notice here any more: this panel only renders at
+			    widths where the full editor is on screen, and below them the narrow
+			    layout does the editing instead */}
 			{loading || !items ? <>Načítání...</> : <>{itemsArr}</>}
 		</Box>
 	)

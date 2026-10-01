@@ -1,13 +1,14 @@
 'use client'
 
 import SendToApproval from '@/app/(layout)/pisen/[hex]/[alias]/components/components/SendToApproval'
-import Menu from '@/common/components/Menu/Menu'
+import Menu, { ABOVE_ANCHOR } from '@/common/components/Menu/Menu'
 import { Divider, IconButton, Tooltip } from '@/common/ui'
 import ChildrenCounter from '@/tech/portal/ChildrenCounter'
 import { ExtendedVariantPack } from '@/types/song'
 import { MoreVert } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
-import React, { useState } from 'react'
+import useSmartPortalMenu from '@/common/components/SmartPortalMenuItem/SmartPortalMenuProvider'
+import React, { useEffect, useState } from 'react'
 import { SongDto } from '../../../../../../../api/dtos'
 import useAuth from '../../../../../../../hooks/auth/useAuth'
 import DeleteButton from './DeleteButton'
@@ -24,6 +25,9 @@ type SongsOptionsButtonProps = {
 	editedTitle: string
 	isOwner: boolean
 	anyChange: boolean
+	/** For the phone's floating dock, where the button sits at the bottom of the
+	 * screen: the menu opens upward, onto its button (see ABOVE_ANCHOR). */
+	openAbove?: boolean
 }
 
 export const SONG_OPTIONS_BUTTON_ID = 'song-options-button'
@@ -33,15 +37,28 @@ export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 	const tOptions = useTranslations('songPage.optionsMenu')
 
+	// the items are portalled in from above this component, so they cannot reach
+	// this state; the provider lends it to them (see SmartPortalMenuProvider)
+	const { registerClose, setButton } = useSmartPortalMenu()
+
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setOpen(true)
 		setAnchorEl(event.currentTarget)
+		setButton(event.currentTarget)
 	}
 
 	const handleClose = () => {
 		setOpen(false)
 		setAnchorEl(null)
 	}
+
+	useEffect(() => {
+		registerClose(() => {
+			setOpen(false)
+			setAnchorEl(null)
+		})
+		return () => registerClose(null)
+	}, [registerClose])
 
 	const { isAdmin, isLoggedIn, isTrustee } = useAuth()
 	const [childrenCount, setChildrenCount] = useState(0)
@@ -58,6 +75,7 @@ export default function SongsOptionsButton(props: SongsOptionsButtonProps) {
 			<Menu
 				id="basic-menu"
 				anchor={anchorEl}
+				{...(props.openAbove ? ABOVE_ANCHOR : {})}
 				open={open}
 				onClose={handleClose}
 				keepMounted

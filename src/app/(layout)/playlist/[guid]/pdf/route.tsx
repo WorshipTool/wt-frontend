@@ -3,6 +3,7 @@ import { PageParams } from '@/routes'
 import { note, Sheet } from '@pepavlin/sheet-api'
 import { Document, renderToStream } from '@react-pdf/renderer'
 import { PlaylistGettingApi } from '../../../../../api/generated/api'
+import { contentDisposition } from '@/tech/http/contentDisposition.tech'
 
 export async function GET(req: Request, { params }: PageParams<'playlistPdf'>) {
 	const { searchParams } = new URL(req.url)
@@ -43,9 +44,7 @@ export async function GET(req: Request, { params }: PageParams<'playlistPdf'>) {
 	return new Response(pdfBuffer, {
 		headers: {
 			'Content-Type': 'application/pdf',
-			'Content-Disposition': `inline; filename="${encodeURIComponent(
-				playlistTitle
-			)}.pdf"`,
+			'Content-Disposition': contentDisposition('inline', `${playlistTitle}.pdf`),
 		},
 	})
 }

@@ -1,4 +1,6 @@
 'use client'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
+import EmailSignInButton from '@/app/(nolayout)/(background)/prihlaseni/components/EmailSignInButton'
 import GoogleLoginButton from '@/app/(nolayout)/(background)/prihlaseni/components/GoogleLoginButton'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import LogoTitle from '@/common/components/Toolbar/components/LogoTitle'
@@ -13,6 +15,7 @@ import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import useAuth from '../../../../hooks/auth/useAuth'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
+import SignupMobile from './components/SignupMobile'
 
 export default SmartPage(SignUp, {
 	hideFooter: true,
@@ -29,6 +32,12 @@ function SignUp() {
 
 	const [inProgress, setInProgress] = useState(false)
 
+	// keep the e-mail form hidden until chosen, so Google and e-mail read as two
+	// equal sign-up options (mirrors the login screen)
+	const [showEmailForm, setShowEmailForm] = useState(false)
+
+	const phoneVersion = useIsPhone()
+
 	const navigate = useSmartNavigate()
 
 	const { signup, login } = useAuth()
@@ -38,20 +47,49 @@ function SignUp() {
 	const t = useTranslations('auth.signup')
 	const tCommon = useTranslations('common')
 
+	const goPreviousPage = () => {
+		if (params?.previousPage) {
+			navigate({ url: params.previousPage }, {})
+		} else {
+			navigate('home', { hledat: undefined })
+		}
+	}
+
 	const onSignupClick = () => {
 		setInProgress(true)
 
 		signup({ email, password, firstName, lastName }, async (result) => {
 			if (!result) {
 				setErrorMessage(t('emailExists'))
+				setInProgress(false)
 			} else {
 				await login({ email, password })
-				navigate('home', {
-					hledat: undefined,
-				})
+				goPreviousPage()
+				setInProgress(false)
 			}
-			setInProgress(false)
 		})
+	}
+
+	if (phoneVersion) {
+		return (
+			<SignupMobile
+				firstName={firstName}
+				lastName={lastName}
+				email={email}
+				password={password}
+				onFirstNameChange={setFirstName}
+				onLastNameChange={setLastName}
+				onEmailChange={setEmail}
+				onPasswordChange={setPassword}
+				inProgress={inProgress}
+				errorMessage={errorMessage}
+				previousPage={params.previousPage}
+				showEmailForm={showEmailForm}
+				onUseEmail={() => setShowEmailForm(true)}
+				onSubmit={onSignupClick}
+				onGoogleSignup={goPreviousPage}
+			/>
+		)
 	}
 
 	return (
@@ -64,10 +102,7 @@ function SignUp() {
 			gap={3}
 		>
 			<LogoTitle />
-			<StandaloneCard
-				title={t('title')}
-				subtitle={t('subtitle')}
-			>
+			<StandaloneCard title={t('title')} subtitle={t('subtitle')}>
 				<Box
 					display={'flex'}
 					flexDirection={'column'}
@@ -76,7 +111,9 @@ function SignUp() {
 					paddingBottom={2}
 				>
 					<Box display={'flex'} flexDirection={'row'} justifyContent={'center'}>
-						<GoogleLoginButton />
+						{/* without this the button falls back to navigating home, so
+						    desktop signup dropped `previousPage` while the phone honoured it */}
+						<GoogleLoginButton afterLogin={goPreviousPage} />
 					</Box>
 					<Box
 						position={'relative'}
@@ -109,188 +146,100 @@ function SignUp() {
 							<Gap />
 						</>
 					)}
-					<form
-						onSubmit={(e) => {
-							e.preventDefault()
-							onSignupClick()
-						}}
-					>
-						<Box gap={1} display={'flex'} flexDirection={'column'}>
-							<Box display={'flex'} flexDirection={'row'} gap={2}>
+					{/* e-mail/password stays hidden behind a button until chosen, so
+					    Google and e-mail read as two equal sign-up options — the same
+					    shape as the login screen. `showEmailForm` existed here already
+					    but only the phone branch read it. */}
+					{!showEmailForm ? (
+						<EmailSignInButton onClick={() => setShowEmailForm(true)} />
+					) : (
+						<form
+							onSubmit={(e) => {
+								e.preventDefault()
+								onSignupClick()
+							}}
+						>
+							<Box gap={1} display={'flex'} flexDirection={'column'}>
+								<Box display={'flex'} flexDirection={'row'} gap={2}>
+									<TextInput
+										required
+										title={t('firstName')}
+										value={firstName}
+										onChange={(m) => setFirstName(m)}
+										disabled={inProgress}
+									/>
+									<TextInput
+										required
+										title={t('lastName')}
+										value={lastName}
+										onChange={(m) => setLastName(m)}
+										disabled={inProgress}
+									/>
+								</Box>
 								<TextInput
 									required
-									title={t('firstName')}
-									value={firstName}
-									onChange={(m) => setFirstName(m)}
+									title={t('email')}
+									value={email}
+									onChange={(m) => setEmail(m)}
+									type="email"
 									disabled={inProgress}
 								/>
 								<TextInput
 									required
-									title={t('lastName')}
-									value={lastName}
-									onChange={(m) => setLastName(m)}
+									title={t('password')}
+									value={password}
+									onChange={(m) => setPassword(m)}
+									type="password"
 									disabled={inProgress}
 								/>
 							</Box>
-							<TextInput
-								required
-								title={t('email')}
-								value={email}
-								onChange={(m) => setEmail(m)}
-								type="email"
-								disabled={inProgress}
-							/>
-							<TextInput
-								required
-								title={t('password')}
-								value={password}
-								onChange={(m) => setPassword(m)}
-								type="password"
-								disabled={inProgress}
-							/>
-						</Box>
-						<Gap />
-						<Gap />
+							<Gap />
+							<Gap />
 
-						<Box
-							display={'flex'}
-							flexDirection={'row'}
-							justifyContent={'center'}
-						>
-							<Button
-								type="submit"
-								loading={inProgress}
-								sx={{
-									width: 200,
-								}}
-								color={'primarygradient'}
+							<Box
+								display={'flex'}
+								flexDirection={'row'}
+								justifyContent={'center'}
 							>
-								{t('signupButton')}
-							</Button>
-						</Box>
-						<Gap />
-						<Box
-							display={'flex'}
-							flexDirection={'row'}
-							alignItems={'center'}
-							justifyContent={'center'}
+								<Button
+									type="submit"
+									loading={inProgress}
+									sx={{
+										width: 200,
+									}}
+									color={'primarygradient'}
+								>
+									{t('signupButton')}
+								</Button>
+							</Box>
+						</form>
+					)}
+
+					{/* outside the e-mail form: the way to an existing account must stay
+					    reachable whether or not that form has been opened */}
+					<Gap />
+					<Box
+						display={'flex'}
+						flexDirection={'row'}
+						alignItems={'center'}
+						justifyContent={'center'}
+					>
+						<Typography size={'0.9rem'}>{t('haveAccount')}</Typography>
+						<Button
+							size={'small'}
+							variant="text"
+							to="login"
+							color="primary"
+							toParams={{
+								previousPage: params.previousPage,
+							}}
 						>
-							<Typography size={'0.9rem'}>{t('haveAccount')}</Typography>
-							<Button
-								size={'small'}
-								variant="text"
-								to="login"
-								color="primary"
-								toParams={{
-									previousPage: params.previousPage,
-								}}
-							>
-								{t('login')}
-							</Button>
-						</Box>
-					</form>
+							{t('login')}
+						</Button>
+					</Box>
 				</Box>
 			</StandaloneCard>
 			<Gap value={5} />
 		</Box>
 	)
-	// return (
-	// 	<Box>
-	// 		<Box
-	// 			flex={1}
-	// 			display={'flex'}
-	// 			justifyContent={'center'}
-	// 			alignItems={'center'}
-	// 		>
-	// 			<StyledContainer>
-	// 				<Box display={'flex'} flexDirection={'row'}>
-	// 					<Typography variant={'h5'} strong={'bold'} flex={1}>
-	// 						Nová ovce
-	// 					</Typography>
-	// 				</Box>
-	// 				<Gap />
-	// 				{errorMessage != '' && (
-	// 					<>
-	// 						<Typography variant="subtitle2" color={'red'}>
-	// 							{errorMessage}
-	// 						</Typography>
-	// 						<Gap />
-	// 					</>
-	// 				)}
-	// 				<form
-	// 					onSubmit={(e) => {
-	// 						e.preventDefault()
-	// 						onSignupClick()
-	// 					}}
-	// 				>
-	// 					<Typography variant="subtitle2">Křestní jméno</Typography>
-	// 					<TextField
-	// 						size="small"
-	// 						fullWidth
-	// 						value={firstName}
-	// 						onChange={onFirstNameChange}
-	// 						error={!isFirstNameOk}
-	// 						helperText={firstNameMessage}
-	// 					/>
-	// 					<Gap />
-	// 					<Typography variant="subtitle2">Příjmení</Typography>
-	// 					<TextField
-	// 						size="small"
-	// 						fullWidth
-	// 						value={lastName}
-	// 						onChange={onLastNameChange}
-	// 						error={!isLastNameOk}
-	// 						helperText={lastNameMessage}
-	// 					/>
-	// 					<Gap />
-	// 					<Typography variant="subtitle2">Email</Typography>
-	// 					<TextField
-	// 						size="small"
-	// 						fullWidth
-	// 						value={email}
-	// 						onChange={onEmailChange}
-	// 						error={!isEmailOk}
-	// 						helperText={emailMessage}
-	// 						type="email"
-	// 					/>
-	// 					<Gap />
-	// 					<Typography variant="subtitle2">Heslo</Typography>
-	// 					<TextField
-	// 						size="small"
-	// 						fullWidth
-	// 						value={password}
-	// 						onChange={onPasswordChange}
-	// 						error={!isPasswordOk}
-	// 						helperText={passwordMessage}
-	// 						type="password"
-	// 					/>
-	// 					<Gap />
-
-	// 					<Button type="submit">
-	// 						Vytvořit účet
-	// 						{inProgress && (
-	// 							<CircularProgress
-	// 								color={'inherit'}
-	// 								size={16}
-	// 								sx={{ marginLeft: 1 }}
-	// 							/>
-	// 						)}
-	// 					</Button>
-	// 				</form>
-
-	// 				<Gap value={2} />
-	// 				<Box
-	// 					sx={{
-	// 						display: 'flex',
-	// 						flexDirection: 'row',
-	// 						alignItems: 'center',
-	// 						justifyContent: 'end',
-	// 					}}
-	// 				>
-	// 					<GoogleLoginButton />
-	// 				</Box>
-	// 			</StyledContainer>
-	// 		</Box>
-	// 	</Box>
-	// )
 }

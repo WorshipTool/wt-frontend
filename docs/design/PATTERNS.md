@@ -76,9 +76,19 @@ Mobile matters: test every screen mentally at 360px and at 1440px.
 | A JS value (counts, columns) per breakpoint | `useResponsiveValue({ xs: 1, md: 3 })` |
 | Media query inside `styled()` | `theme.breakpoints.down('sm')` |
 
-Common app breakpoints in practice: `md` (900px) is the phone/desktop
-switch used by the Toolbar; song lists use `{xs:1, md:2, lg:4, xl:5}`
-columns.
+**The phone/desktop switch is `MOBILE_NAV_BREAKPOINT` (700px), not `md`.**
+That is where the tab bar appears, the top bar hides and a screen's phone
+layout takes over (`useIsPhone`). A desktop layout hung on MUI's `md` (900)
+therefore leaves a 200px band with neither: the song page's paper card did
+exactly that, and between 700 and 900 the song stood on the bare page with no
+surface and no padding, first letter against the left edge. Whatever the phone
+shell stops doing at 700, the desktop side has to start doing at 700.
+
+In a **server component** a `theme => …` callback cannot cross into `sx`, and
+MUI's breakpoint keys only name `md`. Use `DESKTOP_VIEWPORT` from
+`MobileAppTabBar/nav.constants` — the same width as a plain media-query string.
+
+Song lists use `{xs:1, md:2, lg:4, xl:5}` columns.
 
 ## 4. Texts & i18n (no hardcoded strings)
 

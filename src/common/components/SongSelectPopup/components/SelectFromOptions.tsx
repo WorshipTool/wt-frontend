@@ -3,11 +3,13 @@ import { Typography } from '@/common/ui/Typography'
 import { ChevronLeft } from '@mui/icons-material'
 import { useMemo, useState } from 'react'
 
-type Item = {
+export type SelectOption = {
 	label: string
 	count?: number
 	optionsComponent?: React.ReactNode
 }
+
+type Item = SelectOption
 
 type SelectFromOptionsProps = {
 	options: Item[]

@@ -2,6 +2,22 @@ import MenuItem, { MenuItemObjectType } from '@/common/components/Menu/MenuItem'
 import { Menu as MuiMenu } from '@/common/ui/mui'
 import { ComponentProps, ReactNode } from 'react'
 
+/**
+ * Origins for a menu whose button sits at the bottom of the screen — the song
+ * page's floating dock, a selection panel — so it opens upward, its bottom-right
+ * corner at the button's top-right.
+ *
+ * MUI's Popover does not flip on its own: with no room below the anchor it keeps
+ * the menu below and slides it back into the window, which is how the dock's
+ * menus came to stand 200px from the button they belong to, over the dock
+ * itself. A menu with room below it needs none of this — it already lands on
+ * its button, which is what a desktop looks like.
+ */
+export const ABOVE_ANCHOR = {
+	anchorOrigin: { vertical: 'top', horizontal: 'right' },
+	transformOrigin: { vertical: 'bottom', horizontal: 'right' },
+} as const
+
 type MenuProps = {
 	open: boolean
 	onClose: () => void

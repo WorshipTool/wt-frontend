@@ -1,5 +1,6 @@
 import { Box } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
+import { useTranslations } from 'next-intl'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 export type PagerProps<T> = {
@@ -16,6 +17,16 @@ export default function Pager<T>({
 	take = 10,
 	...props
 }: PagerProps<T>) {
+	const tPager = useTranslations('pager')
+	// MUI writes these in English ("Go to previous page") and they are the only
+	// name a screen reader has for an arrow; the page numbers get one too.
+	const itemLabel = (type: string, page: number, _selected: boolean) =>
+		type === 'previous'
+			? tPager('previous')
+			: type === 'next'
+			? tPager('next')
+			: tPager('page', { page: String(page) })
+
 	const staticMode = Array.isArray(props.data)
 
 	const [page, _setPage] = useState(props.startPage ?? 1)
@@ -65,6 +76,7 @@ export default function Pager<T>({
 			{/*-------footer-pagination------ */}
 			<Box display={'flex'} justifyContent={'center'}>
 				<Pagination
+					getItemAriaLabel={itemLabel}
 					count={pagesCount}
 					page={page}
 					onChange={(e, p) => setPage(p)}

@@ -7,6 +7,7 @@ import SheetPDF from '@/app/components/pdf-renderer/SheetPDF'
 import { PageParams } from '@/routes'
 import { note, Sheet } from '@pepavlin/sheet-api'
 import { renderToStream } from '@react-pdf/renderer'
+import { contentDisposition } from '@/tech/http/contentDisposition.tech'
 
 export async function GET(req: Request, { params }: PageParams<'variantPdf'>) {
 	const { searchParams } = new URL(req.url)
@@ -30,9 +31,7 @@ export async function GET(req: Request, { params }: PageParams<'variantPdf'>) {
 	return new Response(pdfBuffer, {
 		headers: {
 			'Content-Type': 'application/pdf',
-			'Content-Disposition': `inline; filename="${encodeURIComponent(
-				variantData.title
-			)}.pdf"`,
+			'Content-Disposition': contentDisposition('inline', `${variantData.title}.pdf`),
 		},
 	})
 }

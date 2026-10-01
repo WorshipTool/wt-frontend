@@ -2,13 +2,14 @@
 import { useTeamSideBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/SmartTeamPage/hooks/useTeamSideBar'
 import { useTeamTopBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/SmartTeamPage/hooks/useTeamTopBar'
 import TeamPageTitleContainer from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/TopPanel/components/TeamPageTitleContainer'
+import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import RightAccountPanel from '@/common/components/Toolbar/components/RightAccountPanel/RightAccountPanel'
-import { Box } from '@/common/ui'
+import { Box, useTheme } from '@/common/ui'
 
 export default function TeamTopPanel() {
 	const { fixed, sx } = useTeamTopBar()
 	const { collapsed, hidden } = useTeamSideBar()
-	// const theme = useTheme()
+	const theme = useTheme()
 	return (
 		<>
 			<Box
@@ -37,7 +38,20 @@ export default function TeamTopPanel() {
 				gap={4}
 			>
 				<TeamPageTitleContainer />
-				<RightAccountPanel />
+				{/* Global navigation: create, tools, account. On a phone the tab bar
+				    already carries all three, so rendering them here was the same
+				    destinations twice, in two visual languages. The bar is always
+				    there, so this row keeps only what belongs to the page itself. */}
+				<Box
+					sx={{
+						display: 'flex',
+						[theme.breakpoints.down(MOBILE_NAV_BREAKPOINT)]: {
+							display: 'none',
+						},
+					}}
+				>
+					<RightAccountPanel />
+				</Box>
 			</Box>
 			<Box minHeight={fixed ? 92 : 0}></Box>
 		</>

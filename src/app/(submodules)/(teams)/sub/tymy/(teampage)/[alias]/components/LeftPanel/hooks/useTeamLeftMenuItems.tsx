@@ -7,11 +7,17 @@ import {
 import { usePermission } from '@/hooks/permissions/usePermission'
 import {
 	Analytics,
+	AnalyticsOutlined,
 	Dashboard,
+	DashboardOutlined,
 	People,
+	PeopleOutlined,
 	QueueMusic,
+	QueueMusicOutlined,
 	Settings,
+	SettingsOutlined,
 	Subscriptions,
+	SubscriptionsOutlined,
 } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { ComponentProps, useMemo } from 'react'
@@ -46,6 +52,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('overview'),
 				icon: <Dashboard />,
+				iconOutlined: <DashboardOutlined />,
 				to: 'team',
 				toParams: { alias },
 				id: 'overview',
@@ -53,6 +60,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('songlist'),
 				icon: <QueueMusic />,
+				iconOutlined: <QueueMusicOutlined />,
 				to: 'teamSongbook',
 				toParams: { alias },
 				id: 'songlist',
@@ -60,6 +68,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('playlists'),
 				icon: <Subscriptions />,
+				iconOutlined: <SubscriptionsOutlined />,
 				to: 'teamPlaylists',
 				toParams: { alias },
 				id: 'playlists',
@@ -67,6 +76,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('statistics'),
 				icon: <Analytics />,
+				iconOutlined: <AnalyticsOutlined />,
 				to: 'teamStatistics',
 				toParams: { alias },
 				// disabled: true,
@@ -76,6 +86,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('people'),
 				icon: <People />,
+				iconOutlined: <PeopleOutlined />,
 				to: 'teamPeople',
 				toParams: { alias },
 				hidden: !showPeople,
@@ -84,6 +95,7 @@ export const useTeamLeftMenuItems = () => {
 			{
 				title: tTeam('settings'),
 				icon: <Settings />,
+				iconOutlined: <SettingsOutlined />,
 				to: 'teamSettings',
 				toParams: { alias },
 				hidden: !hasPermissionToEdit,
