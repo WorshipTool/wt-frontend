@@ -150,8 +150,16 @@ export default function SongsMobile({
 					// under the status bar, whose scrim the shell draws above it
 					top: TOOLBAR_SPACER,
 					zIndex: 2,
-					marginX: -2,
-					paddingX: 2,
+					// Bleeds to the left edge so a card sliding up under it is covered
+					// all the way out, and stops short of the right one on purpose: a
+					// phone draws the list's scroll indicator *inside* the scroller, at
+					// its very edge, and Chromium lets a positioned child paint over it
+					// — so a band that reached the edge took the indicator under it and
+					// the list lost its place marker every time it passed the field. The
+					// strip left bare is the scroller's own 16px inset, which no card
+					// reaches into and which is the same grey as the band.
+					marginLeft: -2,
+					paddingLeft: 2,
 					paddingY: BAND_PAD,
 					marginTop: BAND_PAD,
 					bgcolor: 'grey.50',

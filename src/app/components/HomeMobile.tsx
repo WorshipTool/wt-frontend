@@ -250,10 +250,13 @@ export default function HomeMobile() {
 					// under the status bar, whose scrim the shell draws above it
 					top: TOOLBAR_SPACER,
 					zIndex: 2,
-					// full width, like a header's: the scroller's inset is added back
-					// inside, so content passes under all of the band
-					marginX: -2,
-					paddingX: 2,
+					// Bleeds to the left edge, like a header's, so content passes under
+					// all of it; the scroller's inset is added back inside. It stops
+					// short of the right edge on purpose — that is the lane a phone
+					// draws the list's scroll indicator in, inside the scroller, and a
+					// positioned child paints over it (see the catalog's band).
+					marginLeft: -2,
+					paddingLeft: 2,
 					paddingY: BAND_PAD,
 					// The strip above the field belongs to the hero until the bar pins,
 					// so the hero can reach the field and tuck the sheep behind it. Sticky

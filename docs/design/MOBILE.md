@@ -485,6 +485,25 @@ and the trailing icons outside the fill. For a full-row fill, disable the row's
 link with `toLinkProps={() => null}`, take the click yourself, and put the tint
 in `sx`.
 
+## A sticky band stops short of the scroll indicator
+
+A phone draws the list's scroll indicator *inside* the scroller, at its very
+edge, and Chromium lets a positioned child paint over it. The catalog's search
+band is sticky with a `z-index`, opaque, and bled to both edges — so the
+indicator slid under it and the list lost its place marker every time it passed
+the field.
+
+Bleed to the left edge (a card sliding up under the band has to be covered all
+the way out), but stop at the content edge on the right. The strip left bare is
+the scroller's own 16px inset: no card reaches into it, and it is the same grey
+as the band, so nothing about it shows. Home's band had the same shape and the
+same fix.
+
+The shell's own header is a sibling of the scroller rather than a child, so it
+covers the top of the indicator too — but that is the top of the screen, where
+a bar belongs. A band floating in the middle of the list is where it reads as
+a fault.
+
 ## A backdrop stops below the bar
 
 The Nástroje sheet closed on a tap anywhere, through a full-screen backdrop —
