@@ -127,6 +127,10 @@ const SectionComponent = ({
 			<div
 				style={{
 					paddingTop: hasChords && hasFirstLineText ? chordHeight : 0,
+					// the gutter is always reserved (even without a section name)
+					// so lyrics start at the same offset in every song
+					width: '2rem',
+					flexShrink: 0,
 				}}
 			>
 				{sectionName && (
@@ -134,9 +138,6 @@ const SectionComponent = ({
 						// fontStyle={'italic'}
 						noWrap
 						strong={section.type === SectionType.CHORUS ? 600 : 400}
-						sx={{
-							width: '2rem',
-						}}
 					>
 						{sectionName}
 					</Typography>

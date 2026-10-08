@@ -1,1 +1,1 @@
-export * as SearchBar from "./SearchBar";
+export * from './SearchBar'

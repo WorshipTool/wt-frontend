@@ -156,7 +156,23 @@ export function Link<T extends RoutesKeys>(props: LinkProps<T>) {
 					{props.children}
 				</StyledLink>
 			) : (
-				<Box onClick={() => setPopupOpen(true)}>{props.children}</Box>
+				// Carries the same styling contract as the link above. Dropping it
+				// here meant a blocked link silently lost every layout style its
+				// caller gave it: the bottom tab bar collapsed to content width on
+				// exactly the screens that happen to register a blocker, because each
+				// tab's `flex: 1` went with it.
+				<Box
+					onClick={() => setPopupOpen(true)}
+					className={props.className}
+					sx={{ cursor: 'pointer', ...props.sx }}
+					style={{
+						color: 'inherit',
+						textDecoration: 'none',
+						...props.style,
+					}}
+				>
+					{props.children}
+				</Box>
 			)}
 			<BlockLinkPopup
 				open={popupOpen}

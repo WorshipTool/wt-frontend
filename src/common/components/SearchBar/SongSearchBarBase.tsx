@@ -1,29 +1,17 @@
 'use client'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
-import { Box } from '@/common/ui'
-import { InputBase } from '@/common/ui/mui'
-import { SearchBar } from '@/common/ui/SearchBar/SearchBar'
+import { SearchBar } from '@/common/ui/SearchBar'
 import { useChangeDelayer } from '@/hooks/changedelay/useChangeDelayer'
-import { styled } from '@mui/system'
 import { ReactNode, useEffect, useState } from 'react'
 
-const SearchContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[100],
-	padding: '0.5rem',
-	paddingLeft: '0.8rem',
-	paddingRight: '0.8rem',
-	borderRadius: '0.5rem',
-	display: 'flex',
-
-	justifyContent: 'center',
-	alignItems: 'center',
-}))
-const SearchInput = styled(InputBase)(({ theme }) => ({
-	flex: 1,
-	marginLeft: '0.5em',
-	zIndex: 100,
-}))
-
+/**
+ * The search field on a page: the bar, plus the two things a page needs around
+ * it — a pause before the query is run (`useChangeDelayer`) and the smart-search
+ * flag. Pass `children` to render your own field and take only the plumbing.
+ *
+ * It used to carry a third copy of the bar's styles, which nothing rendered:
+ * the component returns `SearchBar`, and the copy sat above it going stale.
+ */
 type MainSearchInputProps = {
 	children?: (
 		value: string,

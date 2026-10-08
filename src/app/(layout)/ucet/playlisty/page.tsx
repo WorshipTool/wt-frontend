@@ -1,9 +1,11 @@
 'use client'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import CreateNewPlaylistButton from '@/app/(layout)/ucet/playlisty/components/CreateNewPlaylistButton'
 import PlaylistItemRow from '@/app/(layout)/ucet/playlisty/components/PlaylistItemRow'
 import PlaylistsOrderSelect, {
 	PlaylistOrderOptions,
 } from '@/app/(layout)/ucet/playlisty/components/PlaylistsOrderSelect'
+import PlaylistyMobile from '@/app/(layout)/ucet/playlisty/PlaylistyMobile'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import Pager from '@/common/components/Pager/Pager'
 import { Box, LinearProgress } from '@/common/ui'
@@ -19,6 +21,7 @@ export default SmartPage(Playlists, ['middleWidth'])
 function Playlists() {
 	const { playlists: allPlaylists, loading } = useUsersPlaylists()
 	const [sortType, setSortType] = useUrlState('sortKey', 'updatedAt')
+	const phoneVersion = useIsPhone()
 
 	const playlists = useMemo(() => {
 		const arr =
@@ -61,6 +64,10 @@ function Playlists() {
 	const [selectedPlaylist, setSelectedPlaylist] = useState<PlaylistGuid | null>(
 		null
 	)
+
+	if (phoneVersion) {
+		return <PlaylistyMobile playlists={playlists} loading={loading} />
+	}
 
 	return (
 		<Box>

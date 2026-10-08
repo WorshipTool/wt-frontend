@@ -1,4 +1,5 @@
 import Popup from '@/common/components/Popup/Popup'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box } from '@/common/ui/Box'
 import {
 	SongVariantCard,
@@ -17,6 +18,11 @@ type Props = {
 
 export default function TranslationsSelectPopup(props: Props) {
 	const t = useTranslations('song.translations')
+	// A phone reaches this from a list row now (SongGroupCard's row variant),
+	// not from a card on a wide canvas: four lines of lyric at full width clip
+	// mid-word there, so the choices read as rows, like everything else in the
+	// list they came from.
+	const phone = useIsPhone()
 
 	return (
 		<>
@@ -37,6 +43,8 @@ export default function TranslationsSelectPopup(props: Props) {
 							<SongVariantCard
 								key={d.packGuid}
 								data={d}
+								dense={phone}
+								previewLines={phone ? 2 : undefined}
 								properties={['SHOW_PRIVATE_LABEL', 'ENABLE_TRANSLATION_LIKE']}
 								toLinkProps={props.toLinkProps}
 							/>

@@ -12,7 +12,7 @@ export const OPEN_PLAYLIST_ADD_SONG_POPUP_EVENT_NAME =
 
 export default function AddSongToPlaylistButton() {
 	const t = useTranslations('playlist')
-	const { addItem, items, canUserEdit, ...playlist } = useInnerPlaylist()
+	const { addItems, items, canUserEdit, ...playlist } = useInnerPlaylist()
 
 	const anchorRef = useRef<HTMLButtonElement>(null)
 
@@ -39,10 +39,11 @@ export default function AddSongToPlaylistButton() {
 		setOpen(false)
 	}, [])
 
+	// one call rather than one per song: looping only ever worked here because
+	// this picker is single-select, and the loop kept the trap warm for whoever
+	// turned that off next
 	const onSubmit = async (packs: BasicVariantPack[]) => {
-		for (const pack of packs) {
-			await addItem(pack)
-		}
+		await addItems(packs)
 	}
 
 	const filterFunc = (pack: BasicVariantPack) => {

@@ -17,6 +17,12 @@ export type TeamBarMenuTypes =
 type MenuItemProps<T extends RoutesKeys> = {
 	title: string
 	icon: React.ReactNode
+	/**
+	 * The outlined twin of `icon`. Only the phone's bottom bar uses it — there
+	 * the section reads as an app tab, outlined at rest and filled when it is the
+	 * current one. The left panel always shows `icon`.
+	 */
+	iconOutlined?: React.ReactNode
 	to: T
 	toParams: SmartAllParams<T>
 	disabled?: boolean

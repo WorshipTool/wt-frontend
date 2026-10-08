@@ -14,7 +14,18 @@ export function useUsersPlaylists() {
 	const { fetchApiState, apiState } = useApiState<PlaylistData[]>()
 	const { user } = useAuth()
 
+	/**
+	 * Asking for "the playlists of the user" when there is no user answers 401,
+	 * and a 401 anywhere in the app means the session expired: the global handler
+	 * signs you out and sends you to the login page. A signed-out visitor has not
+	 * expired — they never had a session — so the question is simply not asked.
+	 */
 	const revalidate = async () => {
+		if (!user) {
+			setData([])
+			return
+		}
+
 		fetchApiState(async () => {
 			const data = await getPlaylistsOfUser()
 			return data.playlists

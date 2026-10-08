@@ -13,6 +13,7 @@ export {
 	Fab,
 	Fade,
 	FormControl,
+	FormControlLabel,
 	Input,
 	InputBase,
 	ListItemIcon,
@@ -24,6 +25,8 @@ export {
 	Pagination,
 	Paper,
 	Popper,
+	Radio,
+	RadioGroup,
 	Select,
 	Step,
 	StepContent,
@@ -42,6 +45,7 @@ export type {
 	GridDirection,
 	SelectChangeEvent,
 	SxProps,
+	Theme,
 	ThemeOptions,
 } from '@mui/material'
 

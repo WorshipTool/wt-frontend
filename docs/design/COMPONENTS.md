@@ -141,11 +141,33 @@ placeholder (`/assets/default_image.webp`), supports `fill` or
 width/height (default 100×100).
 
 ### SearchBar (primitive) vs SongSearchBarBase (container)
-- `@/common/ui` `SearchBar` — presentational, controlled `value/onChange`,
-  optional smart-search toggle, i18n placeholder.
+- `@/common/ui/SearchBar` — **the** search field. There is one, and every
+  search in the app is it: controlled `value/onChange`, optional clear and
+  smart-search toggle, i18n placeholder, `onSubmit` for Enter,
+  `containerRef` for the catalog's hand-off.
 - `@/common/components/SearchBar/SongSearchBarBase` — adds debounce
   (`useChangeDelayer`) and the `enable_smart_search` feature flag. Use this
   one on pages.
+
+**Never build another one.** There were four — the bar, a copy in the home
+hero, a copy in `SongSearchBarBase` that nothing rendered, and a hand-rolled
+`<input>` on the phone's home screen — and home's field flies into the
+catalog's across a navigation, so the drift showed as a field that changed
+shape mid-flight.
+
+Two rules keep it one:
+- **`sx` says where the bar goes, never what it looks like** — width, flex,
+  margins. The fill is the component's and follows the *width*: paper under
+  `MOBILE_NAV_BREAKPOINT`, grey above it. A caller that wants a different
+  colour is the start of the fifth copy.
+- **`highlighted` is the hero's alone** — the brand gradient around the
+  field. Nothing else wears it.
+
+One search is deliberately not the bar: `SongSelectPopup`'s `SelectSearch`,
+which shares a heading row with the popup's title. The bar wants a row; that
+slot is the leftover beside a heading, about a hundred pixels on a phone, and
+the bar put there clips its own placeholder. Widen the slot before reaching for
+the bar again.
 
 ### SongVariantCard / SongGroupCard
 Domain cards for `BasicVariantPack`. Use `properties` flags

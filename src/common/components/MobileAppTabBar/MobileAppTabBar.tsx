@@ -1,0 +1,239 @@
+'use client'
+
+import { takeSearchKeyboard } from '@/app/(layout)/pisne/searchHandoff'
+import BrandSheepIcon from '@/assets/icon.svg'
+import { AccountTabAvatar } from '@/common/components/MobileAppTabBar/AccountTabAvatar'
+import MobileBottomDock from '@/common/components/MobileAppTabBar/MobileBottomDock'
+import MobileToolsMenu from '@/common/components/MobileAppTabBar/MobileToolsMenu'
+import AccountMenu from '@/common/components/Toolbar/components/RightAccountPanel/AccountMenu'
+import { TAB_ICON_SIZE, TabItem } from '@/common/components/MobileAppTabBar/TabItem'
+import { Box } from '@/common/ui'
+import { Link } from '@/common/ui/Link/Link'
+import useAuth from '@/hooks/auth/useAuth'
+import {
+	Apps,
+	AppsOutlined,
+	LibraryMusicOutlined,
+	LibraryMusicRounded,
+	LoginRounded,
+	Search,
+	SearchOutlined,
+} from '@mui/icons-material'
+import { useClientPathname } from '@/hooks/pathname/useClientPathname'
+import { useSmartParams } from '@/routes/useSmartParams'
+import { useTranslations } from 'next-intl'
+import { useCloseOnBack } from '@/common/hooks/useCloseOnBack'
+import { useEffect, useRef, useState } from 'react'
+import {
+	hasContextualBottomBar,
+	isMobileTabBarRoute,
+	mobileTabForPath,
+	pageOwnsBottomClearance,
+} from './nav.constants'
+
+/**
+ * The app's mobile bottom navigation — a light (white) tab bar of equally sized
+ * tabs: Domů / Písně / Hledat / Nástroje (signed in only) / Účet (or Přihlásit).
+ * Every tab reads the same — grey at rest, brand blue when it is the current
+ * one, search included. Rendered once, globally, next to the top
+ * bar (see AppLayoutInner) and driven by the route: it shows on the app-shell
+ * routes (where the top bar hides itself) and renders nothing on marketing
+ * pages. Phone-only (CSS-hidden on desktop). Like the top bar, it renders an
+ * in-flow spacer so page content clears the fixed bar.
+ */
+export default function MobileAppTabBar({ force = false }: { force?: boolean } = {}) {
+	const tNav = useTranslations('navigation')
+	const { isLoggedIn } = useAuth()
+	const pathname = useClientPathname()
+	// Písně and Hledat are two doors into the one catalog, so which of them is
+	// lit comes from the catalog's own parameter: present means this screen was
+	// opened to search. Typing writes it with replaceState, which this hook does
+	// not observe — the lit tab is the door you came through, and stays put while
+	// you type.
+	const { hledat } = useSmartParams('songsList')
+
+	const [toolsOpen, setToolsOpen] = useState(false)
+	const [accountOpen, setAccountOpen] = useState(false)
+	// The menu is anchored to the box around the tab, not to the tab's own
+	// node: MUI measures the anchor when it opens, and a node that a render
+	// has replaced measures zero and lands the menu in the screen's corner.
+	const accountAnchor = useRef<HTMLDivElement | null>(null)
+
+	// Back closes the sheet rather than leaving the screen it stands on.
+	// `dismissTools` is the way out that means "never mind" — it also takes
+	// the sheet's history entry back out. Closing because a tool was pressed
+	// must not: the navigation that press started is still in flight.
+	const dismissTools = useCloseOnBack(toolsOpen, () => setToolsOpen(false))
+	const dismissAccount = useCloseOnBack(accountOpen, () =>
+		setAccountOpen(false)
+	)
+
+	// A tab under this menu is tappable now — its backdrop stops below the bar —
+	// so arriving somewhere closes it on the way. Without this it would be left
+	// standing over the screen the tap just opened.
+	useEffect(() => {
+		setToolsOpen(false)
+		setAccountOpen(false)
+	}, [pathname])
+
+	// `force` is for the screens the router cannot classify — the 404, which has
+	// no route key to put in nav.constants but is very much somewhere you want a
+	// way out of.
+	if (!force && !isMobileTabBarRoute(pathname)) return null
+
+	// inside a team the team's own sections are the bar, and they carry the way
+	// out themselves — see hasContextualBottomBar
+	if (!force && hasContextualBottomBar(pathname)) return null
+
+	const active = mobileTabForPath(pathname)
+	const searchActive = active === 'songs' && hledat !== undefined
+	const loggedIn = isLoggedIn()
+
+	return (
+		<>
+			<MobileBottomDock spacer={!pageOwnsBottomClearance(pathname)}>
+				<Link to="home" params={{ hledat: undefined }} style={{ flex: 1, minWidth: 0 }}>
+					{/* the brand sheep instead of a generic house. It paints with
+					    fill="currentColor", so it tints for the active state like the
+					    Material icons beside it — but it has only one weight, so
+					    active is carried by colour alone (no outlined/filled swap). */}
+					<TabItem
+						icon={<BrandSheepIcon width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />}
+						label={tNav('home')}
+						active={active === 'home'}
+					/>
+				</Link>
+				<Link
+					to="songsList"
+					params={{ s: undefined, hledat: undefined, chytre: undefined }}
+					style={{ flex: 1, minWidth: 0 }}
+				>
+					<TabItem
+						icon={<LibraryMusicOutlined />}
+						activeIcon={<LibraryMusicRounded />}
+						label={tNav('songs')}
+						active={active === 'songs' && !searchActive}
+					/>
+				</Link>
+
+				{/* Hledat is the catalog with its field asking for the caret — the
+				    same screen Písně opens, which is why the two share a tab's worth
+				    of highlighting between them. Searching used to be a layer over
+				    home, so this tab went to a different screen than Písně did. */}
+				<Link
+					to="songsList"
+					params={{ hledat: '', s: undefined, chytre: undefined }}
+					style={{ flex: 1, minWidth: 0 }}
+				>
+					{/* The keyboard belongs to the tap: a phone opens it for a field
+					    focused inside the gesture and for nothing else, and the
+					    catalog's field is focused a navigation later. So the tap takes
+					    a field of its own — see searchHandoff. */}
+					<Box onClick={takeSearchKeyboard}>
+						<TabItem
+							icon={<SearchOutlined />}
+							activeIcon={<Search />}
+							label={tNav('search')}
+							active={searchActive}
+						/>
+					</Box>
+				</Link>
+
+				{/* Nástroje opens the signed-in user's own stuff, so there is nothing
+				    behind it while signed out — the bar is four tabs then, rather than
+				    padded out with a marketing link that isn't navigation. */}
+				{loggedIn && (
+					<Box
+						component="button"
+						type="button"
+						onClick={() => {
+						if (toolsOpen) return dismissTools()
+						setAccountOpen(false)
+						setToolsOpen(true)
+					}}
+						sx={{
+							flex: 1,
+							minWidth: 0,
+							border: 'none',
+							background: 'transparent',
+							padding: 0,
+							cursor: 'pointer',
+							font: 'inherit',
+						}}
+					>
+						<TabItem
+							icon={<AppsOutlined />}
+							activeIcon={<Apps />}
+							label={tNav('tools')}
+							active={toolsOpen || active === 'tools'}
+						/>
+					</Box>
+				)}
+
+				{loggedIn ? (
+					<Box ref={accountAnchor} sx={{ flex: 1, minWidth: 0, display: 'flex' }}>
+						<Box
+							component="button"
+							type="button"
+							onClick={() => {
+								if (accountOpen) return dismissAccount()
+								setToolsOpen(false)
+								setAccountOpen(true)
+							}}
+							sx={{
+								flex: 1,
+								minWidth: 0,
+								border: 'none',
+								background: 'transparent',
+								padding: 0,
+								cursor: 'pointer',
+								font: 'inherit',
+							}}
+						>
+							{/* your own face rather than a silhouette — the same picture the
+							    desktop top bar shows, from the same hook */}
+							<TabItem
+								icon={<AccountTabAvatar />}
+								activeIcon={<AccountTabAvatar active />}
+								label={tNav('account')}
+								active={accountOpen || active === 'account'}
+							/>
+						</Box>
+					</Box>
+				) : (
+					<Link
+						to="login"
+						params={{ previousPage: '', message: '' }}
+						style={{ flex: 1, minWidth: 0 }}
+					>
+						<TabItem
+							icon={<LoginRounded />}
+							label={tNav('login')}
+							active={active === 'account'}
+						/>
+					</Link>
+				)}
+			</MobileBottomDock>
+
+			{/* lazy-mounted so its data hooks only run when the sheet is opened */}
+			{toolsOpen && (
+				<MobileToolsMenu
+					onClose={() => setToolsOpen(false)}
+					onDismiss={dismissTools}
+				/>
+			)}
+
+			{/* the very menu the desktop top bar opens under the avatar — one
+			    component, so the two can never drift apart */}
+			{loggedIn && (
+				<AccountMenu
+					anchor={accountAnchor.current}
+					open={accountOpen}
+					onClose={() => setAccountOpen(false)}
+					onDismiss={dismissAccount}
+					openUpwards
+				/>
+			)}
+		</>
+	)
+}

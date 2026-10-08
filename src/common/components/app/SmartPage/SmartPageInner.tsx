@@ -55,6 +55,7 @@ export const SmartPageInnerProvider = ({
 
 	const toolbar = useToolbar()
 	const footer = useFooter()
+	const theme = useTheme()
 
 	useEffect(() => {
 		if (options.transparentToolbar !== null)
@@ -74,7 +75,6 @@ export const SmartPageInnerProvider = ({
 
 		if (options.hideFooter !== null) footer.setShow(!options.hideFooter)
 	}, [options])
-	const theme = useTheme()
 
 	return (
 		<Box
