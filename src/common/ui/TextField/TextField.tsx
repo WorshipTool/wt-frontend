@@ -18,6 +18,12 @@ type TextFieldProps = {
 	autoFocus?: boolean
 	/** Ref to the underlying input, e.g. to focus it from elsewhere. */
 	inputRef?: React.Ref<HTMLInputElement>
+	/**
+	 * What a screen reader calls this field. It lands on the `<input>`
+	 * itself, not on the box around it, which is the only place an
+	 * accessible name counts.
+	 */
+	'aria-label'?: string
 }
 
 /**
@@ -47,6 +53,7 @@ export function TextField({ placeholder, ...props }: TextFieldProps) {
 			disabled={props.disabled}
 			autoFocus={props.autoFocus}
 			inputRef={props.inputRef}
+			inputProps={{ 'aria-label': props['aria-label'] }}
 		/>
 	)
 }

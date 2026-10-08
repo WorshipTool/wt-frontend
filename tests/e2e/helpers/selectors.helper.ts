@@ -26,11 +26,27 @@ export class Selectors {
 	}
 
 	loginPage = {
+		/** Sign in and sign up offer Google and e-mail as two equal ways in, and
+		 * the e-mail form waits behind this until it is chosen. */
+		continueWithEmail: () =>
+			this.page.getByRole('button', { name: 'Pokračovat e-mailem' }),
 		loginButton: () => this.page.getByRole('button', { name: 'Přihlásit se' }),
 		emailInput: () =>
 			this.page.getByRole('textbox', { name: 'Zadejte e-mail' }),
 		passwordInput: () =>
 			this.page.getByRole('textbox', { name: 'Zadejte heslo' }),
+	}
+
+	signupPage = {
+		continueWithEmail: () =>
+			this.page.getByRole('button', { name: 'Pokračovat e-mailem' }),
+		// named by the label above them, which is what a screen reader reads
+		firstNameInput: () =>
+			this.page.getByRole('textbox', { name: 'Jméno', exact: true }),
+		lastNameInput: () =>
+			this.page.getByRole('textbox', { name: 'Příjmení', exact: true }),
+		signupButton: () =>
+			this.page.getByRole('button', { name: 'Vytvořit účet' }),
 	}
 
 	toolbar = {

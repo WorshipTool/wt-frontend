@@ -44,6 +44,19 @@ export async function login(
 	return loginUI(page, email, password)
 }
 
+/**
+ * Reveal the e-mail form on the sign-in or sign-up screen.
+ *
+ * Both screens lead with Google and e-mail as two equal choices, so the form
+ * is one click in. Deliberately strict rather than best-effort: if the step
+ * ever goes away, a test should say so rather than quietly carry on.
+ */
+export async function openEmailForm(page: Page): Promise<void> {
+	const button = new Selectors(page).loginPage.continueWithEmail()
+	await button.waitFor({ state: 'visible' })
+	await button.click()
+}
+
 async function loginUI(
 	page: Page,
 	email: string,
@@ -52,6 +65,8 @@ async function loginUI(
 	const sel = new Selectors(page)
 	await expect(sel.toolbar.loginButton()).toBeVisible()
 	await sel.toolbar.loginButton().click()
+
+	await openEmailForm(page)
 
 	await sel.loginPage.emailInput().fill(email)
 	await sel.loginPage.passwordInput().fill(password)
