@@ -8,10 +8,49 @@ import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { PlaylistItemGuid } from '@/interfaces/playlist/playlist.types'
 import { Add } from '@mui/icons-material'
-import { Reorder } from 'framer-motion'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Reorder, useDragControls } from 'framer-motion'
+import { PointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 type PlaylistMenuListProps = {}
+
+// Framer's own drag listener puts `touch-action: pan-x` on the whole item, so
+// a finger landing on a song started a reorder instead of scrolling the list
+// (on a tablet you could only scroll from the gaps between songs). A mouse
+// still drags by the whole item; touch drags by the handle PanelItem shows.
+function ReorderablePanelItem({
+	itemGuid,
+	itemIndex,
+}: {
+	itemGuid: PlaylistItemGuid
+	itemIndex: number
+}) {
+	const controls = useDragControls()
+	return (
+		<Reorder.Item
+			value={itemGuid}
+			as="div"
+			dragListener={false}
+			dragControls={controls}
+			onPointerDown={(e: PointerEvent<HTMLDivElement>) => {
+				if (e.pointerType === 'mouse') controls.start(e)
+			}}
+			style={{
+				paddingLeft: 5,
+				paddingRight: 5,
+				// framer only adds this itself when it owns the drag listener
+				userSelect: 'none',
+			}}
+		>
+			<PanelItem
+				itemGuid={itemGuid}
+				itemIndex={itemIndex}
+				onDragHandlePointerDown={(e) => {
+					if (e.pointerType !== 'mouse') controls.start(e)
+				}}
+			/>
+		</Reorder.Item>
+	)
+}
 
 export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 	const { items, loading, setItems, canUserEdit } = useInnerPlaylist()
@@ -29,7 +68,7 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 	}, [items])
 
 	useEffect(() => {
-		const handleMouseUp = () => {
+		const handlePointerUp = () => {
 			if (startReordering.current) {
 				const itemsCopy = [...items]
 				const newItems = innerGuids.map((guid, i) => {
@@ -46,10 +85,12 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 			}
 		}
 
-		document.addEventListener('mouseup', handleMouseUp)
+		// pointerup, not mouseup: a touch drag fires no mouseup, so a reorder
+		// done on a tablet was never committed
+		document.addEventListener('pointerup', handlePointerUp)
 
 		return () => {
-			document.removeEventListener('mouseup', handleMouseUp)
+			document.removeEventListener('pointerup', handlePointerUp)
 		}
 	}, [innerGuids, items, setItems, startReordering])
 
@@ -113,21 +154,11 @@ export default function PlaylistMenuList(props: PlaylistMenuListProps) {
 								>
 									{innerGuids?.map((item, index) => {
 										return (
-											<Reorder.Item
+											<ReorderablePanelItem
 												key={item}
-												value={item}
-												as="div"
-												style={{
-													paddingLeft: 5,
-													paddingRight: 5,
-												}}
-											>
-												<PanelItem
-													itemGuid={item}
-													key={item}
-													itemIndex={index}
-												/>
-											</Reorder.Item>
+												itemGuid={item}
+												itemIndex={index}
+											/>
 										)
 									})}
 								</Reorder.Group>

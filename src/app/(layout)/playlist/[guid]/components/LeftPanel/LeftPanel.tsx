@@ -38,6 +38,11 @@ export default function LeftPanel(props: LeftPanelProps) {
 					position: 'fixed',
 					top: 127,
 					bottom: 0,
+					// the list takes whatever height the panel has left — it used to
+					// be sized off 100vh, which on iPad Safari is the viewport with
+					// the toolbar hidden, so the last songs sat under the screen edge
+					display: 'flex',
+					flexDirection: 'column',
 					backgroundColor: grey[100],
 					...props.sx,
 				}}
@@ -64,7 +69,8 @@ export default function LeftPanel(props: LeftPanelProps) {
 						position: 'relative',
 						paddingBottom: 8,
 						overflowY: 'auto',
-						height: `calc(100vh - 160px - ${theme.spacing(2)})`,
+						flex: 1,
+						minHeight: 0,
 					}}
 					className={'song-menu-list'}
 				>
