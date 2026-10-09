@@ -88,7 +88,7 @@ export default function SongGroupCard({
 
 	const calculatedHeight = getYOffset(restSliced.length, restSliced.length + 1)
 
-	const BORDER_COLOR = 'grey.300'
+	const BORDER_COLOR = 'surface.border'
 	const BORDER_WIDTH = '1px'
 
 	// one chooser, whichever way the pile is drawn
@@ -238,7 +238,7 @@ export default function SongGroupCard({
 				{original && (
 					<Box
 						sx={{
-							bgcolor: 'grey.200',
+							bgcolor: 'surface.sunken',
 							borderTopLeftRadius: 8,
 							borderTopRightRadius: 8,
 							borderWidth: `${BORDER_WIDTH} ${BORDER_WIDTH} 0px ${BORDER_WIDTH}`,

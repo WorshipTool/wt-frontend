@@ -1,6 +1,7 @@
 import { FavouriteItem } from '@/app/(layout)/ucet/oblibene/page'
 import Menu from '@/common/components/Menu/Menu'
 import { Box, Chip, IconButton, Tooltip, Typography } from '@/common/ui'
+import { SURFACE_CARD_SX, SURFACE_SHADOW } from '@/common/constants/surfaces'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { useFavourites } from '@/hooks/favourites/useFavourites'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
@@ -63,14 +64,15 @@ export default function FavouritesRowItem(props: FavouritesRowItemProps) {
 			>
 				<Box
 					sx={{
-						bgcolor: 'grey.100',
+						...SURFACE_CARD_SX,
 						borderRadius: 2,
 						gap: 1,
 						'&:hover': {
-							bgcolor: 'grey.200',
+							borderColor: 'grey.300',
+							boxShadow: SURFACE_SHADOW.raised,
 						},
 						'&:active': {
-							bgcolor: 'grey.300',
+							bgcolor: 'surface.sunken',
 						},
 						transition: 'all 0.2s',
 						userSelect: 'none',

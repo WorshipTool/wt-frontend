@@ -2,6 +2,7 @@
 import { TeamEventData } from '@/api/generated'
 import TeamEventPopup from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/EventPopup/TeamEventPopup'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box, Chip, useTheme } from '@/common/ui'
 import { Clickable } from '@/common/ui/Clickable'
 import { IconButton } from '@/common/ui/IconButton'
@@ -61,8 +62,10 @@ export default function PreviousItem(props: PreviousItemProps) {
 
 					transition: 'all 0.3s ease',
 
+					// a row on the canvas lifts into a card under the pointer
 					'&:hover': {
-						bgcolor: 'grey.300',
+						bgcolor: 'surface.card',
+						boxShadow: SURFACE_SHADOW.raised,
 						// paddingLeft: 1,
 					},
 				}}

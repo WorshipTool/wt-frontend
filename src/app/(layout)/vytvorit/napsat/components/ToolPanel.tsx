@@ -5,8 +5,9 @@ import { AutofpsSelect } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 
 const Container = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[200],
-	boxShadow: `0px 0px 2px ${theme.palette.grey[500]}`,
+	// an inset tool strip inside the editor card
+	backgroundColor: theme.palette.surface.sunken,
+	border: `1px solid ${theme.palette.surface.border}`,
 	borderRadius: 6,
 	padding: theme.spacing(1),
 	display: 'flex',

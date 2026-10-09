@@ -13,6 +13,7 @@ import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/u
 import { TeamPermissions } from '@/app/(submodules)/(teams)/sub/tymy/tech'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import SmartPortalMenuItem from '@/common/components/SmartPortalMenuItem/SmartPortalMenuItem'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
@@ -128,8 +129,8 @@ export default function SongPreview({ variant }: SongPreviewProps) {
 	return (
 		<Box
 			sx={{
+				...SURFACE_CARD_SX,
 				padding: 4,
-				bgcolor: 'grey.100',
 				borderRadius: 2,
 				position: 'relative',
 				display: 'flex',

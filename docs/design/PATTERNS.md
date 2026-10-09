@@ -43,7 +43,9 @@ looks good in isolation.
 1. **`sx` prop on house components** — the default for ~everything.
    - Spacing in theme units: `padding: 2` (=16px), `gap: 1`. No raw
      `margin: '17px'` style magic numbers.
-   - Colors as palette paths: `bgcolor: 'grey.100'`, `color: 'primary.main'`.
+   - Colors as palette paths: `bgcolor: 'surface.card'`, `color: 'primary.main'`.
+     Backgrounds come from the surface ladder (`surface.canvas/card/sunken/border`,
+     DESIGN-SYSTEM §2.1); a card on the page is `...SURFACE_CARD_SX`.
    - Responsive values as breakpoint objects:
      `sx={{ flexDirection: { xs: 'column', md: 'row' } }}`.
 2. **`styled()`** (import from `@/common/ui/mui`) — only for reusable chrome
@@ -51,12 +53,13 @@ looks good in isolation.
    many times). Always use the theme callback:
    ```tsx
    const Panel = styled(Box)(({ theme }) => ({
-     backgroundColor: theme.palette.grey[100],
+     backgroundColor: theme.palette.surface.card,
      [theme.breakpoints.down('sm')]: { padding: theme.spacing(1) },
    }))
    ```
 3. **Plain `.css` files** — legacy/special cases only (global scrollbar,
-   keyframes). Use the `--color-*`/`--spacing-*` CSS vars there, never hex.
+   keyframes). Use the generated `--surface-*`/`--color-*`/`--spacing-*` CSS
+   vars there, never hex.
 4. **Inline `style={}`** — avoid; only for truly dynamic values that `sx`
    can't express cheaply.
 

@@ -9,14 +9,15 @@ import { PlaylistItemGuid } from '../../../../../../interfaces/playlist/playlist
 import useInnerPlaylist from '../../hooks/useInnerPlaylist'
 
 const PanelItemContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[50],
-	boxShadow: `0px 0px 5px ${theme.palette.grey[400]}`,
+	// a row inside the white sidebar: outlined, tinted on hover
+	backgroundColor: theme.palette.surface.card,
+	border: `1px solid ${theme.palette.surface.border}`,
 	borderRadius: 8,
 	display: 'flex',
 	flexDirection: 'row',
 	'&:hover': {
-		backgroundColor: theme.palette.grey[200],
-		boxShadow: `0px 0px 9px ${theme.palette.grey[400]}`,
+		backgroundColor: theme.palette.surface.canvas,
+		borderColor: theme.palette.grey[300],
 	},
 	cursor: 'pointer',
 	justifyContent: 'center',

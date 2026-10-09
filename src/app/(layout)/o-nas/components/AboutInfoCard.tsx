@@ -1,4 +1,5 @@
 import { Box } from '@/common/ui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { cloneElement } from 'react'
@@ -17,7 +18,7 @@ export default function AboutInfoDatabase(props: AboutInfoDatabaseProps) {
 				flexDirection: 'column',
 				alignItems: 'start',
 
-				bgcolor: 'grey.100',
+				...SURFACE_CARD_SX,
 				padding: 3,
 				borderRadius: 4,
 			}}

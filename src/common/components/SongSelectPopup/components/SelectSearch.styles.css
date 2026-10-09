@@ -1,5 +1,5 @@
 .song-select-title-box {
-	border-bottom: 1px solid var(--color-grey-200);
+	border-bottom: 1px solid var(--surface-border);
 }
 
 .song-select-title-box:focus-within,

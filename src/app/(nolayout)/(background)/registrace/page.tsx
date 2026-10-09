@@ -125,13 +125,13 @@ function SignUp() {
 							sx={{
 								height: '2px',
 								width: '100%',
-								bgcolor: 'grey.200',
+								bgcolor: 'surface.border',
 								position: 'absolute',
 							}}
 						/>
 						<Typography
 							sx={{
-								bgcolor: 'white',
+								bgcolor: 'surface.card',
 								zIndex: 1,
 								padding: 1,
 							}}

@@ -17,6 +17,7 @@ import {
 	OFFSET,
 	PopupPosition,
 } from '@/common/components/SongSelectPopup/popupPosition'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
@@ -234,7 +235,9 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 						ref={popupRef}
 						// className={'song-select-popup '}
 						sx={{
-							bgcolor: 'grey.200',
+							// As a sheet it holds GroupCards, so it is their canvas, like
+							// the mobile shell; as a popup its rows sit flat on the card.
+							bgcolor: props.asSheet ? 'surface.canvas' : 'surface.card',
 							maxWidth: `min(${MAX_WIDTH}px, calc(100% - ${OFFSET * 2}px))`,
 							width: MAX_WIDTH,
 							// never taller than the room between the top of the screen and
@@ -249,7 +252,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 							flexDirection: props.asSheet ? 'column' : undefined,
 							overflowY: props.asSheet ? 'hidden' : 'auto',
 							borderRadius: 3,
-							boxShadow: '0px 0px 15px rgba(0,0,0,0.25)',
+							boxShadow: SURFACE_SHADOW.floating,
 							position: 'fixed',
 							left: position.left,
 							right: position.right,

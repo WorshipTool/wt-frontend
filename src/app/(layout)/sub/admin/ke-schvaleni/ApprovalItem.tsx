@@ -1,4 +1,5 @@
 'use client'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { useApi } from '@/api/tech-and-hooks/useApi'
 import { Box, Button, Typography } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
@@ -30,7 +31,7 @@ export default function ApprovalItem({ pack }: Props) {
 	return (
 		<Box
 			sx={{
-				bgcolor: 'grey.100',
+				...SURFACE_CARD_SX,
 				padding: 2,
 				display: 'flex',
 				flexDirection: 'row',

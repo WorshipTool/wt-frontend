@@ -1,4 +1,14 @@
+import { SURFACE } from '@/common/constants/surfaces'
 import { ThemeOptions } from '@/common/ui/mui'
+
+declare module '@mui/material/styles' {
+	interface Palette {
+		surface: typeof SURFACE
+	}
+	interface PaletteOptions {
+		surface?: typeof SURFACE
+	}
+}
 
 export const theme = {
 	palette: {
@@ -11,6 +21,11 @@ export const theme = {
 		},
 		success: {
 			main: '#43a047',
+		},
+		surface: SURFACE,
+		background: {
+			default: SURFACE.canvas,
+			paper: SURFACE.card,
 		},
 	},
 }

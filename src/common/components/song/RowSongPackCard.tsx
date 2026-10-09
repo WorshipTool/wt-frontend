@@ -1,6 +1,5 @@
 import { Box, Chip, Clickable, Typography } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
-import { grey } from '@/common/ui/mui/colors'
 import { getSmartDateAgoString } from '@/tech/date/date.tech'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import { BasicVariantPack } from '@/types/song'
@@ -17,9 +16,11 @@ export default function RowSongPackCard({ data: s }: Props) {
 					sx={{
 						padding: 1,
 						paddingX: 1.5,
-						bgcolor: 'grey.100',
+						// a tile inside the "last added" card
+						bgcolor: 'surface.sunken',
 						borderRadius: 2,
-						border: `2px solid ${grey[300]}`,
+						border: '2px solid',
+						borderColor: 'surface.border',
 						display: 'flex',
 						justifyContent: 'space-between',
 					}}

@@ -6,6 +6,7 @@ import {
 	Divider,
 } from '@mui/material'
 import React from 'react'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 
 type CardProps = {
 	children?: React.ReactNode
@@ -17,7 +18,14 @@ type CardProps = {
 
 export function Card(props: CardProps) {
 	return (
-		<CardContainer {...props}>
+		<CardContainer
+			elevation={0}
+			{...props}
+			sx={[
+				SURFACE_CARD_SX,
+				...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+			]}
+		>
 			{(props.title || props.subtitle) && (
 				<CardHeader
 					title={props.title}

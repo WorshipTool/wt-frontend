@@ -20,7 +20,7 @@ export default function AdminSongPreview(props: Props) {
 		<Link to={'variant'} params={params}>
 			<Box
 				sx={{
-					bgcolor: 'grey.100',
+					bgcolor: 'surface.card',
 					borderRadius: 3,
 					display: 'flex',
 					position: 'relative',

@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@/common/ui'
 import { Paper } from '@/common/ui/mui'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { CloudUpload } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import React, { useRef } from 'react'
@@ -47,8 +48,10 @@ export default function UploadPanel(props: UploadPanelProps) {
 					justifyContent: 'center',
 					alignItems: 'center',
 					userSelect: 'none',
-					bgcolor: draggingOver ? 'grey.500' : 'grey.100',
+					bgcolor: draggingOver ? 'grey.500' : 'surface.card',
+					boxShadow: SURFACE_SHADOW.card,
 					border: draggingOver ? '0px solid' : '2px dashed',
+					borderColor: 'grey.400',
 				}}
 			>
 				<Box
@@ -122,7 +125,7 @@ export default function UploadPanel(props: UploadPanelProps) {
 
 				<Box
 					sx={{
-						bgcolor: 'grey.200',
+						bgcolor: 'surface.sunken',
 						padding: 1,
 						borderRadius: 1,
 						display: draggingOver ? 'none' : 'flex',

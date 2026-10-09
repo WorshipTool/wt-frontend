@@ -5,6 +5,7 @@ import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import { Box, Image, Typography } from '@/common/ui'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 
 type Props = {
 	mobileVersion: boolean
@@ -44,9 +45,8 @@ export default function RightSheepPanel(props: Props) {
 			) : (
 				<Box
 					sx={{
-						bgcolor: 'grey.100',
+						...SURFACE_CARD_SX,
 						padding: 2,
-						borderRadius: 2,
 						maxWidth: 300,
 					}}
 				>

@@ -1,4 +1,5 @@
 'use client'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import PopupContainer from '@/common/components/Popup/PopupContainer'
 import { POPUP_DIV_CONTAINER_ID } from '@/common/components/Popup/PopupProvider'
 import { Box } from '@/common/ui'
@@ -136,8 +137,8 @@ export default function Popup({
 									pointerEvents: 'auto',
 									padding: 3,
 									borderRadius: 3,
-									bgcolor: 'white',
-									boxShadow: '0px 0px 2px  rgba(0,0,0,0.1)',
+									bgcolor: 'surface.card',
+									boxShadow: SURFACE_SHADOW.floating,
 									position: 'relative',
 									...props.sx,
 								}}

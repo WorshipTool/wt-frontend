@@ -131,7 +131,7 @@ function ContactPage() {
 									value={name}
 									disabled={loading}
 									sx={{
-										backgroundColor: 'grey.100',
+										backgroundColor: 'surface.sunken',
 										minWidth: 140,
 										maxWidth: '100%',
 									}}
@@ -144,7 +144,7 @@ function ContactPage() {
 									onChange={(e) => setEmail(e)}
 									value={email}
 									sx={{
-										backgroundColor: 'grey.100',
+										backgroundColor: 'surface.sunken',
 										minWidth: 140,
 										maxWidth: '100%',
 									}}
@@ -159,7 +159,7 @@ function ContactPage() {
 								sx={{
 									height: '100px',
 									overflowY: 'auto',
-									backgroundColor: 'grey.100',
+									backgroundColor: 'surface.sunken',
 									paddingLeft: '10px',
 								}}
 								onChange={(e) => setMessage(e)}

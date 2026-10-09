@@ -13,18 +13,22 @@ subtle hover micro-interactions** (scale + drop shadow via `Clickable`).
 
 ## 1. Where tokens live (source of truth)
 
-Design tokens currently exist in **three places**. They MUST stay in sync —
-if you change a token, change it everywhere:
+The **MUI theme is the one place a colour is written down**:
 
 | Location | Contains | Used by |
 |---|---|---|
-| `src/common/constants/theme.ts` + `src/app/theme.tsx` | **Canonical source.** MUI palette + typography scale | Everything rendered through MUI (`sx`, `color` props, `useTheme`) |
-| `src/app/globals.css` (`:root`) | Mirror of palette as CSS vars + grey scale + spacing vars | Plain CSS files (e.g. `InfoButton.styles.css`) |
-| `src/tech/theme/theme.tech.ts` | `getColorHex()` resolver, `breakpoints` helper for non-MUI contexts (styled, plain CSS-in-JS) | Components that need a raw hex or a media query string outside `sx` |
+| `src/common/constants/theme.ts` + `src/app/theme.tsx` | **Canonical source.** MUI palette (incl. `surface.*`) + typography scale | Everything rendered through MUI (`sx`, `color` props, `useTheme`) |
+| `src/common/constants/surfaces.ts` | The surface ladder (`SURFACE`), shadows (`SURFACE_SHADOW`), the house card (`SURFACE_CARD_SX`) — fed into the theme palette | See §2.1 |
+| CSS variables on `:root` | **Generated** from the theme by `ThemeCssVariables` (`src/app/providers`): `--color-primary…`, `--color-grey-50…900`, `--surface-*`, `--shadow-*`, `--spacing-1…6` | Plain `.css` files only |
+| `src/tech/theme/theme.tech.ts` | `getColorHex()` resolver, `breakpoints` helper for non-MUI contexts | Components that need a raw hex or a media query string outside `sx` |
+
+`globals.css` holds only layout variables that answer media queries
+(`--mobile-nav-*`); never hand-copy a hex into it again — add the token to the
+theme and it appears as a CSS variable automatically.
 
 **Rule for new code:** reference tokens through the MUI theme (`sx` with
-palette paths like `'primary.main'`, `theme.spacing(n)`), never hardcode hex
-values or raw pixel spacing. CSS vars are a fallback for `.css` files only.
+palette paths like `'surface.card'`, `'primary.main'`, `theme.spacing(n)`),
+never hardcode hex values or raw pixel spacing. CSS vars are for `.css` files.
 
 ## 2. Color palette
 
@@ -35,7 +39,29 @@ values or raw pixel spacing. CSS vars are a fallback for `.css` files only.
 | `secondary.main` | `#EBBC1E` | Yellow accent. Never use as text/foreground on white (contrast fails) — backgrounds, chips, highlights only. |
 | `success.main` | `#43a047` | Success states |
 | `error`, `warning`, `info` | MUI defaults | Not customized — use MUI defaults via palette names |
-| `grey.100`–`grey.900` | MUI default grey scale (`#f5f5f5` … `#212121`) | Surfaces, borders, secondary text. Mirrored as `--color-grey-100..900` in globals.css |
+| `surface.*` | see §2.1 | Backgrounds of everything — prefer these over raw greys for surfaces |
+| `grey.50`–`grey.900` | MUI default grey scale (`#fafafa` … `#212121`) | Text shades, control outlines, skeletons. Exposed as `--color-grey-50..900` |
+
+### 2.1 Surfaces — what things sit on
+
+One ladder, **the same on a phone and on a desktop**:
+
+| Token (`sx` path) | CSS var | Value | Use |
+|---|---|---|---|
+| `surface.canvas` | `--surface-canvas` | grey.50 | The page ground (`Background`, mobile shell, `html/body`). Hover tint of a row inside a card. |
+| `surface.card` | `--surface-card` | white | Anything floating on the canvas: cards, panels, list groups, sidebars, popups, menus, footer. |
+| `surface.sunken` | `--surface-sunken` | grey.100 | An inset area **inside** a card: tiles, wells, quiet inputs, a pressed/selected row. |
+| `surface.border` | `--surface-border` | grey.200 | Hairline outlining a card and dividing its rows. |
+
+Shadows: `SURFACE_SHADOW.card` (rest), `.raised` (card under the pointer),
+`.floating` (popups, menus). The house card is `SURFACE_CARD_SX`
+(card + 1px border + radius 3 + card shadow) — spread it, don't rebuild it.
+
+**The contrast rule:** a surface only sits on the step directly above it — a
+card on the canvas, a sunken well in a card. A grey panel straight on the
+canvas (or a grey.200 canvas under grey.100 cards, which is what the desktop
+used to have) is the bug. Hover lifts a card (`raised` shadow), it doesn't
+darken it.
 
 **Brand gradient** (hero CTAs, decorative accents):
 `linear-gradient(115deg, primary.main, primary.dark)` — available as
@@ -43,7 +69,7 @@ values or raw pixel spacing. CSS vars are a fallback for `.css` files only.
 CSS; use that prop.
 
 **Rules:**
-- In `sx`/props use palette paths: `color: 'primary.main'`, `bgcolor: 'grey.100'`.
+- In `sx`/props use palette paths: `color: 'primary.main'`, `bgcolor: 'surface.card'`.
 - No new hardcoded hex values or `rgb()/rgba()` in TSX. (Legacy code has some — don't copy that pattern; reduce it when touching those files.)
 - Outside MUI context, resolve hexes with `getColorHex('primary.main')` from `@/tech/theme/theme.tech`.
 - There is **no dark mode** at theme level. Don't invent one locally; the team sidebar has a legacy local `darkMode` boolean — do not extend that pattern.
@@ -76,7 +102,7 @@ or ad-hoc `fontWeight` in `sx`.
 - MUI spacing unit: **1 = 8px** (`theme.spacing(1)`), used by numeric values
   in `sx` (`padding: 2` → 16px, `gap: 1` → 8px).
 - Prefer `sx` numeric spacing and flex `gap` for layout rhythm.
-- `--spacing-1..6` CSS vars (8/16/24/32/40/48px) exist for `.css` files only.
+- `--spacing-1..6` CSS vars (8/16/24/32/40/48px, generated from the theme) exist for `.css` files only.
 - ⚠️ The `Gap` primitive uses its **own unit: `value × 10px`** (default 10px),
   not theme spacing. Prefer flex/`gap` in new layouts; use `Gap` mainly to
   match surrounding code that already uses it.
@@ -122,9 +148,10 @@ Low values (−100…100) for local "above the sibling" tweaks stay inline.
 
 - Buttons: `borderRadius: 2` (theme units → 16px) — baked into the `Button`
   primitive, don't restyle it.
-- Cards/pills: rounded (`0.5rem`+); `CustomChip` is the bordered-pill idiom.
-- Elevation is used sparingly — prefer borders (`1px solid` + `grey.300`-ish)
-  and the `Clickable` hover drop-shadow over heavy MUI shadows.
+- Cards: `SURFACE_CARD_SX` (radius 3, hairline `surface.border`, `SURFACE_SHADOW.card`).
+  Pills: `CustomChip` is the bordered-pill idiom.
+- Elevation comes only from `SURFACE_SHADOW` — no ad-hoc `rgba()` shadows or
+  grey glows, no heavy MUI elevations.
 
 ## 8. Motion
 
@@ -136,7 +163,8 @@ Low values (−100…100) for local "above the sibling" tweaks stay inline.
 
 ## 9. Known token debt (do not "fix" casually)
 
-`docs/DESIGN-REVIEW.md` documents the debt: triple token source, violet
+`docs/DESIGN-REVIEW.md` documents the debt: token source (now: theme →
+generated CSS vars; `theme.tech.ts` breakpoints still duplicated), violet
 `primary.dark`, missing `theme.components` overrides. If a task is about
 consolidating tokens, that review is the roadmap. For any other task: follow
 the rules above and **do not** introduce a fourth pattern.

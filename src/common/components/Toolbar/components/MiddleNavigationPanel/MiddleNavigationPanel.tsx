@@ -4,6 +4,7 @@ import NavigationItem, {
 } from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationItem'
 import { MOBILE_NAVIGATION_PANEL_ID } from '@/common/components/Toolbar/components/MiddleNavigationPanel/NavigationMobilePanel'
 import { useToolbar } from '@/common/components/Toolbar/hooks/useToolbar'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box, Divider } from '@/common/ui'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
@@ -124,9 +125,12 @@ export default function MiddleNavigationPanel() {
 						left={0}
 						right={0}
 						zIndex={2}
-						boxShadow={2}
-						bgcolor={'grey.200'}
+						bgcolor={'surface.card'}
 						sx={{
+							// a dropdown floating over the page
+							boxShadow: SURFACE_SHADOW.floating,
+							borderBottom: '1px solid',
+							borderColor: 'surface.border',
 							opacity: hideMiddleNavigation ? 0 : 1,
 							transition: 'all 0.3s ease',
 						}}

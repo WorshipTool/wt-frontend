@@ -11,5 +11,5 @@
 
 .playlist-title-box:focus-within {
 	outline-color: var(--color-primary);
-	background-color: var(--color-grey-200);
+	background-color: var(--surface-sunken);
 }

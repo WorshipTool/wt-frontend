@@ -50,8 +50,8 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 					  }
 					: {
 							// Not selected
-							bgcolor: 'grey.100',
-							borderColor: 'grey.200',
+							bgcolor: 'surface.sunken',
+							borderColor: 'surface.border',
 							borderWidth: 1,
 					  }),
 			}}
@@ -76,7 +76,7 @@ const PopupSongCard = memo(function PopupSongCard(props: PopupSongCardProps) {
 						top: 0,
 						right: 0,
 						borderRadius: 3,
-						bgcolor: 'grey.100',
+						bgcolor: 'surface.sunken',
 						padding: 1,
 						pointerEvents: 'none',
 					}}

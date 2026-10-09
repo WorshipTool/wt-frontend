@@ -1,5 +1,6 @@
 'use server'
 import { getLayoutTeamInfo } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/tech/layout.tech'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { PageProps } from '@/common/types'
 import { Box } from '@/common/ui/Box'
 import { Gap } from '@/common/ui/Gap'
@@ -30,12 +31,11 @@ export default async function BezPristupuPage(
 		>
 			<Box
 				sx={{
-					backgroundColor: 'white',
+					...SURFACE_CARD_SX,
 					borderRadius: 4,
 					padding: { xs: 4, sm: 6 },
 					maxWidth: 560,
 					width: '100%',
-					boxShadow: '0px 2px 16px rgba(0, 0, 0, 0.10)',
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',

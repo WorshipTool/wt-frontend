@@ -3,6 +3,7 @@ import { MySongsOrderOptions } from '@/app/(layout)/ucet/pisne/components/MySong
 import Menu from '@/common/components/Menu/Menu'
 import Popup from '@/common/components/Popup/Popup'
 import { Box } from '@/common/ui'
+import { SURFACE_CARD_SX, SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import HeartLikeButton from '@/common/ui/SongCard/components/HeartLikeButton'
@@ -90,14 +91,15 @@ export default function MySongItem(props: MySongItemProps) {
 						paddingRight: 2,
 						alignItems: 'center',
 						// backgroundColor: props.index % 2 == 0 ? '#e0e0e0' : '#e6e6e6',
-						bgcolor: 'grey.100',
+						...SURFACE_CARD_SX,
 						borderRadius: 2,
 						// cursor: 'pointer',
 						'&:hover': {
-							bgcolor: 'grey.200',
+							borderColor: 'grey.300',
+							boxShadow: SURFACE_SHADOW.raised,
 						},
 						'&:active': {
-							bgcolor: 'grey.300',
+							bgcolor: 'surface.sunken',
 						},
 						transition: 'all 0.2s',
 					}}

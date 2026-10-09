@@ -17,7 +17,7 @@ export default async function Layout(props: LayoutProps<'admin'>) {
 		<>
 			<Box
 				sx={{
-					bgcolor: 'grey.300',
+					bgcolor: 'surface.canvas',
 					position: 'fixed',
 					top: 0,
 					left: 0,

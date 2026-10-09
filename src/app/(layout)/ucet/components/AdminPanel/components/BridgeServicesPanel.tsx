@@ -85,7 +85,7 @@ export default function BridgeServicesPanel() {
 								alignItems: 'center',
 								gap: 1,
 								justifyContent: 'space-between',
-								bgcolor: 'grey.100',
+								bgcolor: 'surface.sunken',
 								padding: 1,
 								borderRadius: 1,
 								opacity: s.active ? 1 : 0.6,

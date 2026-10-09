@@ -136,7 +136,6 @@ export default function SongContainer({
 					<MobileAppHeader
 						title={editedTitle}
 						backTo="songsList"
-						surface="grey.50"
 						// the dock floats above the tab bar; this is its room, kept free
 						// so no line of the song ever scrolls underneath it
 						bottomInset={MOBILE_SONG_DOCK_RESERVE}

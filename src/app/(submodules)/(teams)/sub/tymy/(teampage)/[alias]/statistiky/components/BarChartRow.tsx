@@ -21,7 +21,7 @@ export default function BarChartRow(props: BarChartRowProps) {
 				sx={{
 					borderRadius: 1,
 					'&: hover': {
-						bgcolor: 'grey.200',
+						bgcolor: 'surface.sunken',
 						paddingX: 0.5,
 					},
 					transition: '0.3s',

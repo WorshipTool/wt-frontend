@@ -26,7 +26,7 @@ export default function MobileNavigationItem<T extends RoutesKeys>(
 		<Box
 			sx={{
 				pointerEvents: 'auto',
-				bgcolor: enabled ? 'grey.300' : 'transparent',
+				bgcolor: enabled ? 'surface.sunken' : 'transparent',
 				// bgcolor: 'grey.300',
 				transition: 'background-color 0.2s',
 				minWidth: 130,

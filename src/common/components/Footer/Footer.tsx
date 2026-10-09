@@ -80,9 +80,9 @@ export default function Footer() {
 		<footer className={footer.show ? 'footer footer-open ' : 'footer'}>
 			<Box
 				sx={{
-					bgcolor: 'grey.200',
-					borderTop: '2px solid',
-					borderColor: 'grey.300',
+					bgcolor: 'surface.card',
+					borderTop: '1px solid',
+					borderColor: 'surface.border',
 					marginTop: 1,
 					padding: 1,
 					display: 'flex',

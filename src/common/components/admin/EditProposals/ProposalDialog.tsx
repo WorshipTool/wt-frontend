@@ -141,7 +141,7 @@ export default function ProposalDialog() {
 				zIndex: Z_INDEX.DIALOG,
 				borderRadius: 2.5,
 				overflow: 'hidden',
-				bgcolor: 'white',
+				bgcolor: 'surface.card',
 				border: '1px solid',
 				borderColor: alpha(ACCENT, 0.18),
 				boxShadow: `0 8px 32px ${alpha(ACCENT, 0.14)}, 0 2px 8px rgba(0,0,0,0.12)`,

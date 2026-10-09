@@ -9,6 +9,7 @@ import SheetEditor from '@/common/components/SheetEditor/SheetEditor'
 import { useDownSize } from '@/common/hooks/useDownSize'
 import { Box, Button, Tooltip, useTheme } from '@/common/ui'
 import { styled } from '@/common/ui/mui'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
@@ -25,8 +26,10 @@ import WriteSongMobile from './components/WriteSongMobile'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
 	padding: theme.spacing(3),
-	backgroundColor: theme.palette.grey[100],
-	boxShadow: `0px 0px 5px ${theme.palette.grey[400]}`,
+	backgroundColor: theme.palette.surface.card,
+	border: `1px solid ${theme.palette.surface.border}`,
+	borderRadius: theme.shape.borderRadius * 3,
+	boxShadow: SURFACE_SHADOW.card,
 	display: 'flex',
 }))
 
@@ -143,7 +146,7 @@ function Create() {
 							<Box
 								flex={1}
 								sx={{
-									bgcolor: 'grey.200',
+									bgcolor: 'surface.sunken',
 									padding: 3,
 									borderRadius: 2,
 								}}

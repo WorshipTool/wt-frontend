@@ -19,8 +19,8 @@
 }
 
 .info-button:hover .info-button-text-box {
-	background-color: var(--color-grey-100);
-	outline: 1px solid #e0e0e0;
+	background-color: var(--surface-card);
+	outline: 1px solid var(--surface-border);
 
 	display: block;
 
@@ -32,7 +32,7 @@
 	border-radius: 15px;
 
 	outline-width: 0px;
-	outline-color: var(--color-grey-200);
+	outline-color: var(--surface-border);
 
 	width: 30px;
 	height: 30px;

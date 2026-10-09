@@ -3,6 +3,7 @@ import { PlaylistOrderOptions } from '@/app/(layout)/ucet/playlisty/components/P
 import Menu from '@/common/components/Menu/Menu'
 import Popup from '@/common/components/Popup/Popup'
 import { Box, Tooltip, useTheme } from '@/common/ui'
+import { SURFACE_CARD_SX, SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Button } from '@/common/ui/Button'
 import { IconButton } from '@/common/ui/IconButton'
 import { Link } from '@/common/ui/Link/Link'
@@ -71,27 +72,28 @@ export default function PlaylistItemRow({
 					// alignItems: 'center',
 					position: 'relative',
 					justifyContent: 'space-between',
-					bgcolor: 'grey.100',
+					...SURFACE_CARD_SX,
 					outline: '1px solid',
 					outlineColor: 'transparent',
 					borderRadius: 2,
 					gap: 2,
 
 					'&:hover': {
-						bgcolor: 'grey.200',
+						borderColor: 'grey.300',
+						boxShadow: SURFACE_SHADOW.raised,
 					},
 					...(props.selectable &&
 						props.selected && {
 							// outlineColor: theme.palette.primary.main,
 
-							bgcolor: 'grey.300',
+							bgcolor: 'surface.sunken',
 							'&:hover': {
-								bgcolor: 'grey.300',
+								bgcolor: 'surface.sunken',
 							},
 						}),
 
 					'&:active': {
-						bgcolor: 'grey.300',
+						bgcolor: 'surface.sunken',
 					},
 					transition: 'all 0.2s',
 				}}

@@ -27,7 +27,7 @@ function LetterHeader({ letter }: { letter: string }) {
 			<Typography variant="h6" strong={800} color="grey.700">
 				{letter}
 			</Typography>
-			<Box sx={{ flex: 1, height: '1px', bgcolor: 'grey.300' }} />
+			<Box sx={{ flex: 1, height: '1px', bgcolor: 'surface.border' }} />
 		</Box>
 	)
 }

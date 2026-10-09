@@ -137,7 +137,7 @@ export default function TeamNotePanel() {
 					<Box
 						display={'flex'}
 						sx={{
-							bgcolor: 'grey.200',
+							bgcolor: 'surface.sunken',
 							borderRadius: 3,
 							padding: 2,
 							// border: '1px inset solid  rgba(0,0,0,1)',
@@ -193,7 +193,8 @@ export default function TeamNotePanel() {
 										value={content}
 										onChange={(e) => setContent(e)}
 										sx={{
-											bgcolor: 'grey.300',
+											// the field inside the sunken note: a step back up
+											bgcolor: 'surface.card',
 											borderRadius: 1,
 											paddingLeft: 1,
 											width: '100%',

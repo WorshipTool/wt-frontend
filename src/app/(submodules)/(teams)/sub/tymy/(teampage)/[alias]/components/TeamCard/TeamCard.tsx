@@ -1,3 +1,4 @@
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui'
 import { SxProps } from '@/common/ui/mui'
 import { Typography } from '@/common/ui/Typography'
@@ -13,10 +14,8 @@ export default function TeamCard(props: TeamCardProps) {
 	return (
 		<Box
 			sx={{
+				...SURFACE_CARD_SX,
 				padding: 3,
-				borderRadius: 3,
-				bgcolor: 'grey.100',
-				// boxShadow: 1,
 				...props.sx,
 			}}
 		>

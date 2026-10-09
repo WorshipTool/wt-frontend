@@ -5,6 +5,7 @@ import SongAnalyze from '@/app/(layout)/pisen/[hex]/[alias]/components/SongAnaly
 import SongContainer from '@/app/(layout)/pisen/[hex]/[alias]/SongContainer'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { DESKTOP_VIEWPORT } from '@/common/components/MobileAppTabBar/nav.constants'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import ContainerGrid from '@/common/components/ContainerGrid'
 import { checkFlag } from '@/common/providers/FeatureFlags/flags.tech'
 import { Box } from '@/common/ui'
@@ -58,7 +59,7 @@ async function SongRoutePage({ params }: SongRoutePageProps) {
 					sx={{
 						// phone: the collapsing MobileAppHeader (in SongContainer) owns the
 						// full-bleed white app-shell + scroll, so this wrapper stays neutral.
-						// Above it, the grey "paper" card.
+						// Above it, the white surface card on the canvas.
 						//
 						// The two meet at MOBILE_NAV_BREAKPOINT and must: this card hung on
 						// MUI's `md` (900) while the phone shell stops at 700, so a window
@@ -71,15 +72,15 @@ async function SongRoutePage({ params }: SongRoutePageProps) {
 						backgroundColor: 'transparent',
 						borderStyle: 'solid',
 						borderWidth: 0,
-						borderColor: 'grey.300',
+						borderColor: 'surface.border',
 						boxShadow: 'none',
 						borderRadius: 0,
 						[DESKTOP_VIEWPORT]: {
 							padding: 3,
-							backgroundColor: 'grey.200',
+							backgroundColor: 'surface.card',
 							borderWidth: 1,
-							boxShadow: '0px 2px 3px 1px rgba(0, 0, 0, 0.1)',
-							borderRadius: 1,
+							boxShadow: SURFACE_SHADOW.card,
+							borderRadius: 3,
 						},
 						flex: 1,
 						display: 'flex',

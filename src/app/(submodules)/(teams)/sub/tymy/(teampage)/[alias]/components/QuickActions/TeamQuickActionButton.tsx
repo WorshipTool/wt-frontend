@@ -76,14 +76,17 @@ export default function TeamQuickActionButton({
 									? {
 											background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
 											color: 'white',
+											// no card hairline around a coloured tile
+											borderColor: 'transparent',
 									  }
 									: color === 'secondary'
 									? {
 											background: theme.palette.secondary.main,
 											color: 'black',
+											borderColor: 'transparent',
 									  }
 									: {
-											background: 'white',
+											bgcolor: 'surface.card',
 											color: 'black',
 									  }),
 							}}

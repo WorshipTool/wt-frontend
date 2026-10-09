@@ -1,3 +1,4 @@
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui/Box'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
@@ -24,7 +25,7 @@ export function StandaloneCard(props: StandaloneCardProps) {
 		>
 			<Box
 				sx={{
-					backgroundColor: defaultVariant ? 'white' : 'grey.200',
+					...SURFACE_CARD_SX,
 					borderRadius: 5,
 					padding: 2,
 					paddingX: 8,
@@ -32,8 +33,6 @@ export function StandaloneCard(props: StandaloneCardProps) {
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: defaultVariant ? 'center' : 'start',
-
-					boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.1)',
 
 					[breakpoints.down('sm')]: {
 						paddingX: 4,

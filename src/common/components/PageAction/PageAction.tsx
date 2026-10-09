@@ -43,9 +43,9 @@ export default function PageAction({ children }: PageActionProps) {
 	return createPortal(
 		<Box
 			sx={{
-				bgcolor: 'background.paper',
+				bgcolor: 'surface.card',
 				borderTop: '1px solid',
-				borderColor: 'grey.200',
+				borderColor: 'surface.border',
 				paddingX: 2,
 				paddingY: 1.5,
 				display: 'flex',

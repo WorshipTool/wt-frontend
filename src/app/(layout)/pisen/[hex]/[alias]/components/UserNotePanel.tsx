@@ -128,7 +128,7 @@ export default function UserNotePanel({ forceOpen }: { forceOpen?: boolean }) {
 				<Box
 					display={'flex'}
 					sx={{
-						bgcolor: 'grey.300',
+						bgcolor: 'surface.sunken',
 						borderRadius: 3,
 						padding: 2,
 					}}
@@ -169,7 +169,8 @@ export default function UserNotePanel({ forceOpen }: { forceOpen?: boolean }) {
 									value={content}
 									onChange={(e) => setContent(e)}
 									sx={{
-										bgcolor: 'grey.200',
+										// a white field inside the sunken note well
+										bgcolor: 'surface.card',
 										borderRadius: 1,
 										paddingLeft: 1,
 										width: '100%',
