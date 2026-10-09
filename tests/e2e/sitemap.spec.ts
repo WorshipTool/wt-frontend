@@ -31,7 +31,7 @@ smartTest(
 
 		// Check that BASE_URL is correctly set
 		expect(content).toContain(`${expectedBaseUrl}/`)
-		expect(content).toContain(`${expectedBaseUrl}/seznam`)
+		expect(content).toContain(`${expectedBaseUrl}/pisne`)
 		expect(content).toContain(`${expectedBaseUrl}/o-nas`)
 		expect(content).toContain(`${expectedBaseUrl}/prihlaseni`)
 		expect(content).toContain(`${expectedBaseUrl}/registrace`)
