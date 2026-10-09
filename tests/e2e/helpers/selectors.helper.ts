@@ -11,8 +11,6 @@ export class Selectors {
 		input: () => this.page.getByTestId('main-search-input'),
 		songResult: (songName: string) =>
 			this.page.getByRole('link', { name: new RegExp(songName, 'i') }).first(),
-		loadMoreButton: () =>
-			this.page.getByRole('button', { name: 'Načíst další' }),
 	}
 
 	// Write Song Page
@@ -69,10 +67,12 @@ export class Selectors {
 			this.page.locator('.playlist-middle-song-list > div').nth(index),
 		removeButton: (index: number = 0) =>
 			this.page.getByRole('button', { name: 'Odebrat z playlistu' }).nth(index),
+		// the same names the song page's own transpose controls carry; they were
+		// English placeholders in the Czech catalog until they got translated
 		transposeUpButton: (index: number = 0) =>
-			this.page.getByRole('button', { name: 'Transpose up' }).nth(index),
+			this.page.getByRole('button', { name: 'Zvýšit o půltón' }).nth(index),
 		transposeDownButton: (index: number = 0) =>
-			this.page.getByRole('button', { name: 'Transpose down' }).nth(index),
+			this.page.getByRole('button', { name: 'Snížit o půltón' }).nth(index),
 		presentationButton: () =>
 			this.page.getByRole('button', { name: 'Prezentace' }),
 		chordElements: () => this.page.locator('.chord'),
