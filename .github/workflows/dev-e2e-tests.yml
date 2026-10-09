@@ -7,9 +7,19 @@ on:
   push:
     branches: [develop, dev]
   workflow_dispatch:
+    inputs:
+      skip_wait:
+        description: Test what is deployed right now, without waiting for a new build
+        type: boolean
+        default: false
 
 jobs:
   wait-for-deploy:
+    # A run started by hand usually means "test what is up there now", and the
+    # wait is then twenty minutes of nothing — Creator may not be building at
+    # all. A push still waits: there the whole point is to test what was just
+    # pushed, so the wait is not optional.
+    if: ${{ !inputs.skip_wait }}
     runs-on: ubuntu-latest
     steps:
       # Dev is deployed by Creator (outside GitHub Actions), so we poll
@@ -31,6 +41,11 @@ jobs:
 
   run-smoke-tests:
     needs: wait-for-deploy
+    # Turned off, the wait is *skipped* rather than failed, and a job that needs
+    # a skipped job is skipped with it unless it says otherwise. This runs
+    # whether the wait ran or not, and stands down only if the wait actually
+    # failed.
+    if: ${{ !cancelled() && needs.wait-for-deploy.result != 'failure' }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-jammy
