@@ -3,15 +3,26 @@
 html,
 body {
 	margin: 0;
+	/* Never allow a horizontal scrollbar — content must fit the device width.
+	   `clip` (unlike `hidden`) doesn't create a scroll container, so
+	   position: sticky keeps working; `hidden` stays as a fallback for
+	   browsers without clip support. */
+	overflow-x: hidden;
+	overflow-x: clip;
 }
 
-body {
+/* The always-present scrollbar gutter belongs to the element that actually
+   scrolls, which is <html>. It used to sit on <body>: body then became a
+   scroll container of its own that never scrolls (its height is its content),
+   and every `position: sticky` on the page stuck to *that* instead of to the
+   viewport — which is to say, not at all. */
+html {
 	overflow-y: scroll;
 }
 
 /*If its phone, set overflow to auto*/
 @media (max-width: 768px) {
-	body {
+	html {
 		overflow-y: auto;
 	}
 }
@@ -19,6 +30,28 @@ body {
 ::-webkit-scrollbar {
 	/* width: 0; */
 	/* display: none; */
+}
+
+/* How much of the bottom of a phone the app's bar and whatever floats above it
+   take up. They are CSS variables rather than constants in TS because they have
+   to answer a media query: on a phone held sideways every band of the shell
+   tightens (see SHORT_VIEWPORT in nav.constants), and a reserve that did not
+   tighten with them would just hold the room it saved as empty space. */
+:root {
+	--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 80px);
+	/* A few pixels more than the bar measures (71 + its border and the label's
+	   descenders come to 75), because this is what a page pads its scroll with:
+	   overshooting leaves a sliver of blank at the end of a scroll, undershooting
+	   cuts the last card in half. */
+	--mobile-nav-bar-height: 76px;
+	--song-dock-reserve: 70px;
+}
+@media (max-height: 430px) {
+	:root {
+		--mobile-nav-clearance: calc(env(safe-area-inset-bottom) + 50px);
+		--mobile-nav-bar-height: 48px;
+		--song-dock-reserve: 52px;
+	}
 }
 
 :root {

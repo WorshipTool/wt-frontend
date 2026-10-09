@@ -1,22 +1,20 @@
 import AppProviders from '@/app/components/AppProviders'
+import AppUpdater from '@/app/components/AppUpdater'
 import LazyAdminComponents from '@/app/components/LazyAdminComponents'
+import RegisterServiceWorker from '@/app/components/RegisterServiceWorker'
 import UnavailableMessage from '@/app/components/UnavailableMessage'
 import { DragTemplatesContainer } from '@/common/components/DragTemplate/DragTemplateContainer'
 import PopupProvider from '@/common/components/Popup/PopupProvider'
 import { CornerStackProvider } from '@/common/components/CornerStack'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { Roboto } from 'next/font/google'
-import { getMessages } from '../../i18n-config'
+import { getLocale, getMessages } from '../../i18n-config'
 
 import HeadersProviders from '@/app/providers/HeadersProviders'
-import dynamic from 'next/dynamic'
 
-const Analytics = dynamic(
-	() => import('@/app/components/components/analytics/Analytics'),
-	{ ssr: false }
-)
+import Analytics from '@/app/components/components/analytics/Analytics'
 import './globals.classes.css'
 import './globals.css'
 
@@ -44,10 +42,27 @@ export async function generateMetadata(): Promise<Metadata> {
 			'music',
 		],
 		manifest: '/manifest.webmanifest',
+		appleWebApp: {
+			capable: true,
+			statusBarStyle: 'default',
+			title: messages.config.branding.shortName,
+		},
 		verification: {
 			google: 'yvbr9ieSeuhugyZcK93MS5Mm3DgYMXqK1EUHYXEHEWs',
 		},
 	}
+}
+
+// theme_color for the browser/OS chrome (matches the manifest) + sensible
+// mobile viewport defaults for the installed app.
+// `viewportFit: 'cover'` is what makes `env(safe-area-inset-*)` resolve to the
+// real notch/home-indicator sizes — without it iOS reports 0 for all of them and
+// the app shell's safe-area padding silently does nothing.
+export const viewport: Viewport = {
+	themeColor: '#0085FF',
+	width: 'device-width',
+	initialScale: 1,
+	viewportFit: 'cover',
 }
 
 export default async function RootLayout({
@@ -56,14 +71,15 @@ export default async function RootLayout({
 	children: React.ReactNode
 }>) {
 	const messages = await getMessages()
+	const locale = getLocale()
 
 	return (
-		<html lang="en" className={`${roboto.variable} ${roboto.className}`}>
+		<html lang={locale} className={`${roboto.variable} ${roboto.className}`}>
 			<HeadersProviders />
 			<Analytics />
 			<body>
 				<AppRouterCacheProvider>
-					<NextIntlClientProvider messages={messages} locale="en">
+					<NextIntlClientProvider messages={messages} locale={locale}>
 						<AppProviders>
 							{children}
 							<PopupProvider />
@@ -71,6 +87,8 @@ export default async function RootLayout({
 							<DragTemplatesContainer />
 							<LazyAdminComponents />
 							<UnavailableMessage />
+							<AppUpdater />
+							<RegisterServiceWorker />
 						</AppProviders>
 					</NextIntlClientProvider>
 				</AppRouterCacheProvider>

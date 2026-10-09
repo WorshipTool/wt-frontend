@@ -16,12 +16,25 @@ type TextFieldProps = {
 	disabled?: boolean
 
 	autoFocus?: boolean
+	/** Ref to the underlying input, e.g. to focus it from elsewhere. */
+	inputRef?: React.Ref<HTMLInputElement>
+	/**
+	 * What a screen reader calls this field. It lands on the `<input>`
+	 * itself, not on the box around it, which is the only place an
+	 * accessible name counts.
+	 */
+	'aria-label'?: string
 }
 
-export function TextField({
-	placeholder = 'Zadejte text',
-	...props
-}: TextFieldProps) {
+/**
+ * No default placeholder. There used to be one — "Zadejte text" — and it turned
+ * up wherever a caller did not think to pass its own: all four fields of the
+ * registration form said it at once, under labels that already said Jméno,
+ * Příjmení, Email and Heslo. A field with a label above it and nothing in it
+ * reads better than four identical instructions, and a field that really wants
+ * a hint says its own.
+ */
+export function TextField({ placeholder, ...props }: TextFieldProps) {
 	const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		props.onChange?.(event.target.value)
 	}
@@ -39,6 +52,8 @@ export function TextField({
 			multiline={props.multiline}
 			disabled={props.disabled}
 			autoFocus={props.autoFocus}
+			inputRef={props.inputRef}
+			inputProps={{ 'aria-label': props['aria-label'] }}
 		/>
 	)
 }

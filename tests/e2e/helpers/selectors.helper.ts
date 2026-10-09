@@ -11,8 +11,6 @@ export class Selectors {
 		input: () => this.page.getByTestId('main-search-input'),
 		songResult: (songName: string) =>
 			this.page.getByRole('link', { name: new RegExp(songName, 'i') }).first(),
-		loadMoreButton: () =>
-			this.page.getByRole('button', { name: 'Načíst další' }),
 	}
 
 	// Write Song Page
@@ -26,11 +24,27 @@ export class Selectors {
 	}
 
 	loginPage = {
+		/** Sign in and sign up offer Google and e-mail as two equal ways in, and
+		 * the e-mail form waits behind this until it is chosen. */
+		continueWithEmail: () =>
+			this.page.getByRole('button', { name: 'Pokračovat e-mailem' }),
 		loginButton: () => this.page.getByRole('button', { name: 'Přihlásit se' }),
 		emailInput: () =>
 			this.page.getByRole('textbox', { name: 'Zadejte e-mail' }),
 		passwordInput: () =>
 			this.page.getByRole('textbox', { name: 'Zadejte heslo' }),
+	}
+
+	signupPage = {
+		continueWithEmail: () =>
+			this.page.getByRole('button', { name: 'Pokračovat e-mailem' }),
+		// named by the label above them, which is what a screen reader reads
+		firstNameInput: () =>
+			this.page.getByRole('textbox', { name: 'Jméno', exact: true }),
+		lastNameInput: () =>
+			this.page.getByRole('textbox', { name: 'Příjmení', exact: true }),
+		signupButton: () =>
+			this.page.getByRole('button', { name: 'Vytvořit účet' }),
 	}
 
 	toolbar = {
@@ -53,10 +67,12 @@ export class Selectors {
 			this.page.locator('.playlist-middle-song-list > div').nth(index),
 		removeButton: (index: number = 0) =>
 			this.page.getByRole('button', { name: 'Odebrat z playlistu' }).nth(index),
+		// the same names the song page's own transpose controls carry; they were
+		// English placeholders in the Czech catalog until they got translated
 		transposeUpButton: (index: number = 0) =>
-			this.page.getByRole('button', { name: 'Transpose up' }).nth(index),
+			this.page.getByRole('button', { name: 'Zvýšit o půltón' }).nth(index),
 		transposeDownButton: (index: number = 0) =>
-			this.page.getByRole('button', { name: 'Transpose down' }).nth(index),
+			this.page.getByRole('button', { name: 'Snížit o půltón' }).nth(index),
 		presentationButton: () =>
 			this.page.getByRole('button', { name: 'Prezentace' }),
 		chordElements: () => this.page.locator('.chord'),

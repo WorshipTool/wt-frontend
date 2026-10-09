@@ -8,6 +8,13 @@ type SongCardAdditionalProps = {
 	isOver?: boolean
 	data: BasicVariantPack
 	icons: ComponentProps<typeof SongVariantCard>['icons']
+	/**
+	 * Centre the column instead of hanging it from the bottom. A card is tall
+	 * enough to have a bottom worth aligning to; a row is two lines, and
+	 * everything else in it — the leading icon, the chevron — is centred, so a
+	 * heart pinned to the bottom sat 20px below the line they all share.
+	 */
+	dense?: boolean
 }
 
 export default function SongCardAdditional(props: SongCardAdditionalProps) {
@@ -21,7 +28,7 @@ export default function SongCardAdditional(props: SongCardAdditionalProps) {
 		<Box
 			display={'flex'}
 			flexDirection={'column'}
-			justifyContent={'end'}
+			justifyContent={props.dense ? 'center' : 'end'}
 			gap={0.5}
 		>
 			{icons.map((icon, i) => (

@@ -5,7 +5,7 @@ import { useTeamSideBar } from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[
 import TeamTopPanel from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/TopPanel/TeamTopPanel'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
 import AdminOption from '@/common/components/admin/AdminOption'
-import { useDownSize } from '@/common/hooks/useDownSize'
+import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { Box } from '@/common/ui'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { Analytics, DarkMode, LightMode } from '@mui/icons-material'
@@ -17,7 +17,11 @@ type Props = {
 }
 
 export default function TeamClientLayout(props: Props) {
-	const isSmall = useDownSize('sm')
+	// the same switch the rest of the mobile shell uses: below it the team is a
+	// phone app with a bottom bar, above it a desktop app with a left panel. It
+	// used to flip at `sm` (600), which left a 100px-wide band where the team had
+	// neither panel nor bar.
+	const isSmall = useIsPhone()
 	const t = useTranslations('teams.layout')
 
 	const { darkMode, setDarkMode } = useTeamSideBar()

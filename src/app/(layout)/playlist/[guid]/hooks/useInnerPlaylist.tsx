@@ -49,6 +49,9 @@ export const InnerPlaylistProvider = ({
 	)
 }
 
+/** How long the transposition waits for the next tap before it writes. */
+const KEY_WRITE_DELAY = 800
+
 type PlaylistHistoryStateType = {
 	title: string
 	items: PlaylistItemDto[]
@@ -116,6 +119,21 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	const items = useMemo(() => state.items || [], [state.items])
 	const loading = useMemo(() => playlist.loading, [playlist.loading])
 
+	// see `setItemKeyChordAndSave`
+	const keyWriteTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const pendingItemsRef = useRef<PlaylistItemDto[]>([])
+	const titleRef = useRef('')
+	useEffect(() => {
+		pendingItemsRef.current = state.items
+		titleRef.current = state.title
+	}, [state.items, state.title])
+	useEffect(
+		() => () => {
+			if (keyWriteTimer.current) clearTimeout(keyWriteTimer.current)
+		},
+		[]
+	)
+
 	const _change = useCallback(
 		(data: Partial<PlaylistHistoryStateType>) => {
 			if (!canUserEdit) return
@@ -142,22 +160,26 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setIsSaved(false)
 	}, [_undo])
 
-	const save = async () => {
+	/**
+	 * Writes the playlist to the server.
+	 *
+	 * Takes what to write rather than reading it out of `state`, because every
+	 * caller that changes something and saves in the same breath would otherwise
+	 * send the state of the render it was created in — the one before the change.
+	 */
+	const _persist = async (name: string, items: PlaylistItemDto[]) => {
 		if (!canUserEdit) return
 
 		setIsSaving(true)
 
 		// Only genuinely changed items carry newData; unchanged items omit it so
 		// the backend skips the heavy per-song copy/version path.
-		const complexEditItems = buildComplexEditItems(
-			state.items,
-			playlist.items
-		)
+		const complexEditItems = buildComplexEditItems(items, playlist.items)
 
 		await editingApi.complexPlaylistEdit({
 			playlistGuid: guid,
 			items: complexEditItems,
-			name: state.title,
+			name,
 		})
 
 		setIsSaved(true)
@@ -166,6 +188,8 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 
 		setIsSaving(false)
 	}
+
+	const save = async () => _persist(state.title, state.items)
 
 	// Shortcuts
 	useEffect(() => {
@@ -242,6 +266,20 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		[_change]
 	)
 
+	/**
+	 * Renames and commits in one call.
+	 *
+	 * The desktop types the name into the header and presses Save afterwards, so
+	 * `rename` alone is enough there. The phone renames in a dialog that closes on
+	 * submit, with no Save left to press — and `save` would read the title out of
+	 * the render it was created in, which at that moment still holds the old one.
+	 * So the new name travels with the call instead of being looked up.
+	 */
+	const renameAndSave = async (nextTitle: string) => {
+		rename(nextTitle)
+		await _persist(nextTitle, state.items)
+	}
+
 	const setItems = useCallback(
 		(items: PlaylistItemDto[]) => {
 			_change({ items: [...items] })
@@ -250,12 +288,43 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 	)
 
 	const setItemKeyChord = (itemGuid: PlaylistItemGuid, keyChord: Chord) => {
+		setItems(_withKey(itemGuid, keyChord))
+	}
+
+	/** The list as it would be with this item in that key. */
+	const _withKey = (
+		itemGuid: PlaylistItemGuid,
+		keyChord: Chord
+	): PlaylistItemDto[] => {
 		const toneKey = keyChord.data.rootNote.toString()
-		const newItems: PlaylistItemDto[] = state.items.map((i) =>
+		return state.items.map((i) =>
 			i.guid === itemGuid ? { ...i, toneKey } : i
 		)
+	}
 
-		setItems(newItems)
+	/**
+	 * Transposing where there is no Save to press afterwards — the phone's
+	 * detail view — so it writes itself, the way adding a song and renaming do.
+	 *
+	 * The write waits for the tapping to stop. A key is chosen a semitone at a
+	 * time and each tap rewrites the whole playlist, so five taps meant five
+	 * overlapping writes racing to be last; `KEY_WRITE_DELAY` after the final
+	 * one, a single write goes out with the list as it then stands. The list is
+	 * kept in a ref for it: the timer outlives the render that armed it, and
+	 * `state` in that render is the list before the last tap.
+	 */
+	const setItemKeyChordAndSave = (
+		itemGuid: PlaylistItemGuid,
+		keyChord: Chord
+	) => {
+		const next = _withKey(itemGuid, keyChord)
+		setItems(next)
+		pendingItemsRef.current = next
+		if (keyWriteTimer.current) clearTimeout(keyWriteTimer.current)
+		keyWriteTimer.current = setTimeout(() => {
+			keyWriteTimer.current = null
+			_persist(titleRef.current, pendingItemsRef.current)
+		}, KEY_WRITE_DELAY)
 	}
 
 	const removeItem = (itemGuid: PlaylistItemGuid) => {
@@ -267,18 +336,47 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		setItems(newItems)
 	}
 
-	const addItem = async (pack: BasicVariantPack) => {
-		const item: PlaylistItemDto = {
+	/** The list as it would be with these packs appended, in the order given. */
+	const _withAppended = (packs: BasicVariantPack[]): PlaylistItemDto[] => {
+		const appended: PlaylistItemDto[] = packs.map((pack, i) => ({
 			guid: v4() as PlaylistItemGuid,
-			pack: pack,
+			pack,
 			toneKey: 'C',
-			order: state.items.length,
-		}
-		if (!item) return
-
-		const newItems = [...state.items, item].sort((a, b) => a.order - b.order)
-		setItems(newItems)
+			order: state.items.length + i,
+		}))
+		return [...state.items, ...appended].sort((a, b) => a.order - b.order)
 	}
+
+	/**
+	 * Appends several songs at once.
+	 *
+	 * Calling `addItem` in a loop looked like it would do this and did not: each
+	 * call read `state.items` out of the same render, so every one of them built
+	 * its list from the state before the loop started and the last write won —
+	 * pick three songs, get one. The desktop never saw it because its picker
+	 * passes `disableMultiselect` and adds one at a time.
+	 */
+	const addItems = async (packs: BasicVariantPack[]) => {
+		if (!packs.length) return
+		setItems(_withAppended(packs))
+	}
+
+	/**
+	 * Appends and writes to the server in one go.
+	 *
+	 * Adding is not a draft edit. The phone shows "Přidat píseň do playlistu"
+	 * outside edit mode as well, where nothing would ever save it, so songs
+	 * appeared in the list, said "1 píseň" in the header, and were gone on the
+	 * next visit — with nothing on screen to suggest it.
+	 */
+	const addItemsAndSave = async (packs: BasicVariantPack[]) => {
+		if (!packs.length) return
+		const next = _withAppended(packs)
+		setItems(next)
+		await _persist(state.title, next)
+	}
+
+	const addItem = async (pack: BasicVariantPack) => addItems([pack])
 
 	const addItemWithGuid = async (packGuid: PackGuid) => {
 		const data = await packGettingApi.getBasicPackDataByPackGuid(packGuid)
@@ -326,10 +424,14 @@ const useProvideInnerPlaylist = (guid: PlaylistGuid) => {
 		isSaving,
 
 		rename,
+		renameAndSave,
 		setItems,
 		setItemKeyChord,
+		setItemKeyChordAndSave,
 		removeItem,
 		addItem,
+		addItems,
+		addItemsAndSave,
 		addItemWithGuid,
 		editItem,
 		data: playlist.playlist,

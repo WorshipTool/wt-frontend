@@ -64,7 +64,7 @@ smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
 	// Open homepage
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	// Search by title
 	await searchWithSearchBar('Vira', page)
@@ -86,7 +86,7 @@ smartTest('Vyhledávání podle názvu', 'critical', async ({ page }) => {
 smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	await searchWithSearchBar('Jsi darcem života', page)
 
@@ -100,7 +100,7 @@ smartTest('Vyhledávání podle textu', 'critical', async ({ page }) => {
 smartTest('Vyhledávání podle jednoho písmene', 'critical', async ({ page }) => {
 	const sel = selectors(page)
 
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	await searchWithSearchBar('A', page)
 
@@ -112,23 +112,36 @@ smartTest('Vyhledávání podle jednoho písmene', 'critical', async ({ page }) 
 })
 
 smartTest('Načíst další', 'critical', async ({ page }) => {
-	const sel = selectors(page)
-
-	await page.goto('/')
+	await page.goto('/pisne')
 	await page.waitForLoadState('domcontentloaded')
+
+	// The catalog has no "Načíst další" button any more — reaching the end of
+	// the results asks for the next page by itself. Same promise, different
+	// gesture, so what is checked is the promise: a second page really is
+	// fetched, and the list it lands in still stands afterwards.
+	const secondPage = page.waitForResponse(
+		(resp) =>
+			resp.url().includes('searching/search') &&
+			resp.url().includes('page=1') &&
+			resp.status() === 200,
+		{ timeout: 60_000 }
+	)
 
 	await searchWithSearchBar('Pokoj', page)
 
-	const loadMoreButton = sel.search.loadMoreButton()
-	await expect(loadMoreButton).toBeVisible({ timeout: 10000 })
-	await loadMoreButton.click()
+	const results = page.locator('a[href*="/pisen/"]')
+	await expect(results.first()).toBeVisible({ timeout: 10000 })
 
-	// Verify button is still visible after loading more results
-	await expect(loadMoreButton).toBeVisible()
+	// short results leave the end of the list already in view, which asks on its
+	// own; a full first page needs the gesture
+	await results.last().scrollIntoViewIfNeeded()
+	await secondPage
+
+	await expect(results.first()).toBeVisible()
 })
 
 smartTest('Neobsahuje cizí soukromé písně', 'critical', async ({ page }) => {
-	await page.goto('/')
+	await page.goto('/pisne')
 
 	const api = new SongSearchingApi()
 	const searchStrings = [
@@ -170,7 +183,7 @@ smartTest(
 	'Při přihlášení obsahuje uživatelovy soukromé písně',
 	'critical',
 	async ({ page }) => {
-		await page.goto('/')
+		await page.goto('/pisne')
 
 		const user = await login(page)
 

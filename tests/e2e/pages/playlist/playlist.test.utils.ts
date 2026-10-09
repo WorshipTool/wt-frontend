@@ -224,6 +224,15 @@ export const pagePlaylistReload = async (page: Page) => {
 	await waitUntilPopupAndClose(page)
 }
 
+/**
+ * Match a title and only that title. The songbook is full of families —
+ * "U Tvých nohou", "U Tvých nohou 2", "U Tvých nohou 3" — and a substring
+ * match on the first of them claims the whole family, which Playwright
+ * rightly refuses to act on.
+ */
+const exactly = (text: string) =>
+	new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
+
 export const move = async (
 	page: Page,
 	songs: string[],
@@ -232,10 +241,10 @@ export const move = async (
 ) => {
 	const songToMove = songs[fromIndex]
 	const fromElement = page.locator('.song-menu-list p', {
-		hasText: songToMove,
+		hasText: exactly(songToMove),
 	})
 	const toElement = page.locator('.song-menu-list p', {
-		hasText: songs[toIndex],
+		hasText: exactly(songs[toIndex]),
 	})
 
 	const fromBox = await fromElement.boundingBox()

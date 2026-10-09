@@ -1,5 +1,29 @@
+/**
+ * The language each brand's catalogue is written in.
+ *
+ * This is not decoration. It is the locale ICU uses to pick a plural form, and
+ * Czech has one English does not: `few`, for two to four. Pinned to `en`, every
+ * Czech count above one fell through to `other` — "4 playlistů" where the
+ * catalogue plainly says `few {# playlisty}`, on every screen that counts
+ * anything. It is also what a screen reader pronounces the page in, and what a
+ * browser offers to translate from.
+ */
+const LOCALE_BY_BRAND: Record<string, string> = {
+  chvalotce: 'cs',
+  chwalmy: 'pl',
+  hallelujahhub: 'en',
+}
+
+export function getContentVersion() {
+  return process.env.CONTENT_VERSION || 'chvalotce'
+}
+
+export function getLocale() {
+  return LOCALE_BY_BRAND[getContentVersion()] ?? 'en'
+}
+
 export async function getMessages() {
-  const contentVersion = process.env.CONTENT_VERSION || 'chvalotce'
+  const contentVersion = getContentVersion()
   return (await import(`./content/${contentVersion}.json`)).default
 }
 

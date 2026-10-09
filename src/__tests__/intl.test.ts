@@ -1,6 +1,25 @@
 import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 
+// next-intl supports ICU messages (e.g. `{count, plural, one {# song} other {# songs}}`).
+// Their plural/select branches are locale-specific — languages have different
+// plural categories and translated text — so a naive `{...}` scan both
+// mis-parses them and reports false cross-file mismatches. For ICU messages we
+// compare only the argument name (e.g. `{count}`); other strings keep their
+// literal `{variable}` placeholders.
+function extractPlaceholders(str: string): string[] {
+	const icuArgs: string[] = []
+	const icuRe = /\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*,\s*(?:plural|select|selectordinal)\s*,/g
+	let match: RegExpExecArray | null
+	while ((match = icuRe.exec(str)) !== null) {
+		icuArgs.push(`{${match[1]}}`)
+	}
+	if (icuArgs.length > 0) {
+		return icuArgs.sort()
+	}
+	return (str.match(/\{[^}]+\}/g) || []).sort()
+}
+
 describe('Internationalization Tests', () => {
 	const contentPath = join(process.cwd(), 'content')
 	
@@ -293,10 +312,10 @@ describe('Internationalization Tests', () => {
 					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
 						Object.assign(interpolations, getInterpolationKeys(obj[key], currentPath))
 					} else if (typeof obj[key] === 'string') {
-						// Extract interpolation placeholders {variable}
-						const matches = obj[key].match(/\{[^}]+\}/g) || []
+						// Extract interpolation placeholders {variable} (ICU-aware)
+						const matches = extractPlaceholders(obj[key])
 						if (matches.length > 0) {
-							interpolations[currentPath] = matches.sort()
+							interpolations[currentPath] = matches
 						}
 					}
 				}
@@ -362,16 +381,14 @@ describe('Internationalization Tests', () => {
 					if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
 						invalidInterpolations.push(...checkInterpolations(obj[key], currentPath))
 					} else if (typeof obj[key] === 'string') {
-						// Check for next-intl interpolation format {variable}
-						const interpolationMatches = obj[key].match(/\{[^}]+\}/g)
-						if (interpolationMatches) {
-							interpolationMatches.forEach((match: string) => {
-								// Check if interpolation has valid format
-								if (!/^\{[a-zA-Z][a-zA-Z0-9_]*\}$/.test(match)) {
-									invalidInterpolations.push(`${currentPath}: ${match}`)
-								}
-							})
-						}
+						// Check for next-intl interpolation format {variable} (ICU-aware)
+						const interpolationMatches = extractPlaceholders(obj[key])
+						interpolationMatches.forEach((match: string) => {
+							// Check if interpolation has valid format
+							if (!/^\{[a-zA-Z][a-zA-Z0-9_]*\}$/.test(match)) {
+								invalidInterpolations.push(`${currentPath}: ${match}`)
+							}
+						})
 					}
 				}
 				return invalidInterpolations
