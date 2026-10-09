@@ -79,6 +79,10 @@ jobs:
 
   run-critical-tests:
     needs: run-smoke-tests
+    # The skip travels down the chain: a job that *transitively* needs the
+    # skipped wait is skipped too, however well its own dependency did. Said
+    # outright, this runs on a green smoke run and nothing else.
+    if: ${{ !cancelled() && needs.run-smoke-tests.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-jammy
@@ -109,6 +113,7 @@ jobs:
 
   run-full-tests:
     needs: run-critical-tests
+    if: ${{ !cancelled() && needs.run-critical-tests.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-jammy
