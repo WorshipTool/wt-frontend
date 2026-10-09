@@ -51,7 +51,7 @@ export const FLAT_ROW_SX = {
 	boxShadow: 'none',
 	borderRadius: 0,
 	outlineColor: 'transparent',
-	'&:hover': { bgcolor: 'surface.canvas', boxShadow: 'none' },
+	'&:hover': { bgcolor: 'surface.shell', boxShadow: 'none' },
 	'&:active': { bgcolor: 'surface.sunken' },
 } as const
 

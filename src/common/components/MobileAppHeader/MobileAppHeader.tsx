@@ -132,7 +132,7 @@ export default function MobileAppHeader<T extends RoutesKeys>({
 	bottomPanel,
 	bottomInset,
 	scrollResetKey,
-	surface = 'surface.canvas',
+	surface = 'surface.shell',
 	divider = false,
 	children,
 }: MobileAppHeaderProps<T>) {

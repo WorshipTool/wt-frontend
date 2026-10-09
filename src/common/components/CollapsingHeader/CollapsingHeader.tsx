@@ -134,7 +134,7 @@ export function CollapsingHeader({
 	expandedHeight,
 	compactHeight,
 	distance,
-	surface = 'surface.canvas',
+	surface = 'surface.shell',
 	forceCompact = false,
 	snap = false,
 	children,

@@ -16,7 +16,7 @@ const PanelItemContainer = styled(Box)(({ theme }) => ({
 	display: 'flex',
 	flexDirection: 'row',
 	'&:hover': {
-		backgroundColor: theme.palette.surface.canvas,
+		backgroundColor: theme.palette.surface.shell,
 		borderColor: theme.palette.grey[300],
 	},
 	cursor: 'pointer',

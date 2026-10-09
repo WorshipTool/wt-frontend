@@ -44,7 +44,7 @@ looks good in isolation.
    - Spacing in theme units: `padding: 2` (=16px), `gap: 1`. No raw
      `margin: '17px'` style magic numbers.
    - Colors as palette paths: `bgcolor: 'surface.card'`, `color: 'primary.main'`.
-     Backgrounds come from the surface ladder (`surface.canvas/card/sunken/border`,
+     Backgrounds come from the surface ladder (`surface.canvas/shell/card/sunken/border`,
      DESIGN-SYSTEM §2.1); a card on the page is `...SURFACE_CARD_SX`.
    - Responsive values as breakpoint objects:
      `sx={{ flexDirection: { xs: 'column', md: 'row' } }}`.

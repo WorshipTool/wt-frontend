@@ -44,11 +44,12 @@ never hardcode hex values or raw pixel spacing. CSS vars are for `.css` files.
 
 ### 2.1 Surfaces — what things sit on
 
-One ladder, **the same on a phone and on a desktop**:
+One ladder for both layouts — only the ground differs:
 
 | Token (`sx` path) | CSS var | Value | Use |
 |---|---|---|---|
-| `surface.canvas` | `--surface-canvas` | grey.50 | The page ground (`Background`, mobile shell, `html/body`). Hover tint of a row inside a card. |
+| `surface.canvas` | `--surface-canvas` | grey.100 | The page ground (`Background` fades it into grey.200, `html`). Light grey on purpose: a desktop is mostly ground, and on near-white the white cards looked flat and empty. |
+| `surface.shell` | `--surface-shell` | grey.50 | The phone app-shell's ground (`MobileAppHeader`, `CollapsingHeader`, sheets holding `GroupCard`s). A phone is nearly all card, so its ground only shows as a rim. Also the faintest tint: hover of a row inside a card. |
 | `surface.card` | `--surface-card` | white | Anything floating on the canvas: cards, panels, list groups, sidebars, popups, menus, footer. |
 | `surface.sunken` | `--surface-sunken` | grey.100 | An inset area **inside** a card: tiles, wells, quiet inputs, a pressed/selected row. |
 | `surface.border` | `--surface-border` | grey.200 | Hairline outlining a card and dividing its rows. |
@@ -59,7 +60,7 @@ Shadows: `SURFACE_SHADOW.card` (rest), `.raised` (card under the pointer),
 
 **The contrast rule:** a surface only sits on the step directly above it — a
 card on the canvas, a sunken well in a card. A grey panel straight on the
-canvas (or a grey.200 canvas under grey.100 cards, which is what the desktop
+canvas (or grey.100 cards on a grey.200 canvas, which is what the desktop
 used to have) is the bug. Hover lifts a card (`raised` shadow), it doesn't
 darken it.
 

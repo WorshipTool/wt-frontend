@@ -5,9 +5,9 @@ import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
 
 const Bg = styled(Box)(({ theme }) => ({
-	// The app's canvas — the same ground on a phone and on a desktop. Cards
-	// (surface.card) sit on it; see common/constants/surfaces.
-	background: theme.palette.surface.canvas,
+	// The app's canvas: a light grey with a soft fall-off, so the white cards
+	// (surface.card) on it read as cards. See common/constants/surfaces.
+	background: `linear-gradient(160deg, ${theme.palette.surface.canvas}, ${theme.palette.grey[200]})`,
 	position: 'fixed',
 	width: '100%',
 	top: 0,

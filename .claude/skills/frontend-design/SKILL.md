@@ -39,7 +39,7 @@ Hard rules (full list in CLAUDE.md):
 - New primitive → barrel export + `.story.tsx` + register in `src/common/ui/index.story.tsx`
 
 Design intent, when improving visuals: keep it light and airy — the surface
-ladder (`surface.canvas` ground, `surface.card` cards via `SURFACE_CARD_SX`,
+ladder (`surface.canvas` desktop ground, `surface.shell` phone ground, `surface.card` cards via `SURFACE_CARD_SX`,
 `surface.sunken` wells inside cards, `surface.border` hairlines; never a grey
 panel straight on the canvas), rounded corners,
 generous whitespace (theme spacing ≥2 between blocks), blue `primary` accents,

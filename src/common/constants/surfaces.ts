@@ -4,7 +4,11 @@ import { grey } from '@/common/ui/mui/colors'
  * The app's surfaces — what everything on screen sits on. One ladder, the same
  * on a phone and on a desktop:
  *
- *   canvas  the page ground, behind everything
+ *   canvas  the page ground behind everything on a desktop — a light grey,
+ *           so the white cards on it have something to stand out from
+ *   shell   the phone app-shell's ground. A phone is nearly all card, so its
+ *           ground is lighter and only shows as a rim; also the faintest
+ *           tint there is (hover of a row inside a card)
  *   card    anything that floats on the canvas: cards, panels, list groups,
  *           popups, sidebars
  *   sunken  an inset area *inside* a card: tiles, wells, quiet input fields,
@@ -22,7 +26,8 @@ import { grey } from '@/common/ui/mui/colors'
  * ThemeCssVariables). Never copy the hexes.
  */
 export const SURFACE = {
-	canvas: grey[50],
+	canvas: grey[100],
+	shell: grey[50],
 	card: '#FFFFFF',
 	sunken: grey[100],
 	border: grey[200],

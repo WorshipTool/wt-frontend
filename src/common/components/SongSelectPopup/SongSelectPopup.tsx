@@ -237,7 +237,7 @@ export default function SongSelectPopup({ ...props }: PopupProps) {
 						sx={{
 							// As a sheet it holds GroupCards, so it is their canvas, like
 							// the mobile shell; as a popup its rows sit flat on the card.
-							bgcolor: props.asSheet ? 'surface.canvas' : 'surface.card',
+							bgcolor: props.asSheet ? 'surface.shell' : 'surface.card',
 							maxWidth: `min(${MAX_WIDTH}px, calc(100% - ${OFFSET * 2}px))`,
 							width: MAX_WIDTH,
 							// never taller than the room between the top of the screen and
