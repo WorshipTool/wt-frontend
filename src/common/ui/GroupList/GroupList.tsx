@@ -1,6 +1,7 @@
 'use client'
 
 import { BasicVariantPack } from '@/api/dtos'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui/Box'
 import { SxProps } from '@/common/ui/mui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
@@ -19,12 +20,8 @@ import { Fragment, ReactNode } from 'react'
  * the insets had already drifted apart. Everything lives here now.
  */
 
-/** The raised white surface every mobile card sits on. */
-const CARD_SURFACE = {
-	bgcolor: 'background.paper',
-	borderRadius: 3,
-	boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-} as const
+/** The raised white surface every card sits on. */
+const CARD_SURFACE = SURFACE_CARD_SX
 
 /**
  * A list group: rows are flush to the edges and clip to the radius, so the
@@ -50,10 +47,12 @@ export const CONTENT_CARD_SX = {
  */
 export const FLAT_ROW_SX = {
 	bgcolor: 'transparent',
+	border: 'none',
+	boxShadow: 'none',
 	borderRadius: 0,
 	outlineColor: 'transparent',
-	'&:hover': { bgcolor: 'grey.50', boxShadow: 'none' },
-	'&:active': { bgcolor: 'grey.100' },
+	'&:hover': { bgcolor: 'surface.shell', boxShadow: 'none' },
+	'&:active': { bgcolor: 'surface.sunken' },
 } as const
 
 /** How far a hairline starts from the left edge, by what the row leads with. */
@@ -81,7 +80,7 @@ export function GroupCard({
 export function GroupDivider({ inset = 'icon' }: { inset?: GroupDividerInset }) {
 	return (
 		<Box
-			sx={{ height: '1px', bgcolor: 'grey.200', marginLeft: DIVIDER_INSETS[inset] }}
+			sx={{ height: '1px', bgcolor: 'surface.border', marginLeft: DIVIDER_INSETS[inset] }}
 		/>
 	)
 }

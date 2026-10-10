@@ -5,6 +5,7 @@ import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.c
 import { Box, Typography } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
 import { alpha } from '@/common/ui/mui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { RoutesKeys } from '@/routes'
 import { ChevronRightRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
@@ -32,12 +33,9 @@ export default function CreateOptionItem({ option }: { option: CreateOption }) {
 					alignItems: 'center',
 					gap: 2,
 					padding: 2,
-					bgcolor: 'background.paper',
-					border: '1px solid',
-					borderColor: 'grey.200',
-					borderRadius: 3,
+					...SURFACE_CARD_SX,
 					transition: 'background-color 0.15s, transform 0.2s ease-in-out',
-					'&:active': { bgcolor: 'grey.100' },
+					'&:active': { bgcolor: 'surface.sunken' },
 					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
 						width: 200,
 						height: 200,

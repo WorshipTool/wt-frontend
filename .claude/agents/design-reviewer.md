@@ -35,7 +35,7 @@ changed files (`git diff` / files the caller names), not the whole repo.
    - Deprecated alias props: `small`, `outlined`, `contained` on Button/IconButton (use `size`/`variant`)
 4. **i18n**: hardcoded user-facing strings (incl. fallbacks, aria-labels, empty states); keys missing from any of `content/chvalotce.json`, `content/chwalmy.json`, `content/hallelujahhub.json`
 5. **Accessibility**: `IconButton`/icon-only `Button` without `alt`/`tooltip`; `Image` without meaningful `alt`; `secondary` yellow or `grey.500/600` as essential text color on white
-6. **Consistency**: does the change match neighboring screens (spacing rhythm, border style `1px solid grey.300`, rounded corners, white/grey.100 surfaces)? New primitives without a `.story.tsx` + registration in `src/common/ui/index.story.tsx`?
+6. **Consistency**: does the change match neighboring screens (spacing rhythm, rounded corners, surfaces from the `surface.*` ladder — a card on the canvas is `SURFACE_CARD_SX`, grey wells only inside cards, no raw grey.100–300 panel backgrounds or ad-hoc shadows)? New primitives without a `.story.tsx` + registration in `src/common/ui/index.story.tsx`?
 
 ## Output format
 

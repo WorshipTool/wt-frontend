@@ -48,7 +48,7 @@ export default function UsersSongList(props: UsersSongListProps) {
 
 				{!props.apiState.loading && items.length === 0 && (
 					<Box
-						bgcolor={'grey.300'}
+						bgcolor={'surface.sunken'}
 						padding={1}
 						sx={{
 							userSelect: 'none',

@@ -1,5 +1,6 @@
 'use client'
 
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box, useTheme } from '@/common/ui'
 import {
 	createContext,
@@ -133,7 +134,7 @@ export function CollapsingHeader({
 	expandedHeight,
 	compactHeight,
 	distance,
-	surface = 'grey.50',
+	surface = 'surface.shell',
 	forceCompact = false,
 	snap = false,
 	children,
@@ -185,9 +186,9 @@ export function CollapsingHeader({
 			// half for nothing. They arrive together, when the header has become a
 			// bar with content sliding under it.
 			const asBar = p > 0.96
-			bgRef.current.style.boxShadow = asBar ? '0 2px 8px rgba(0,0,0,0.05)' : 'none'
+			bgRef.current.style.boxShadow = asBar ? SURFACE_SHADOW.card : 'none'
 			bgRef.current.style.borderBottomColor = asBar
-				? theme.palette.grey[200]
+				? theme.palette.surface.border
 				: 'transparent'
 		}
 	}

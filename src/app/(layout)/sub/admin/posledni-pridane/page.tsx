@@ -1,3 +1,4 @@
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { mapBasicVariantPackApiToDto } from '@/api/dtos'
 import { useServerApi } from '@/api/tech-and-hooks/useServerApi'
 import AdminBreadItem from '@/app/(layout)/sub/admin/components/AdminBreadItem'
@@ -31,7 +32,7 @@ async function Page() {
 							<Box
 								key={pack.packGuid}
 								sx={{
-									bgcolor: 'grey.200',
+									...SURFACE_CARD_SX,
 									display: 'flex',
 									gap: 2,
 									padding: 2,

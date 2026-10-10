@@ -2,6 +2,7 @@
 import SectionLabelPill from '@/app/(layout)/o-nas/components/SectionLabelPill'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { Box } from '@/common/ui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Gap } from '@/common/ui/Gap'
 import { Typography } from '@/common/ui/Typography'
 import { useTranslations } from 'next-intl'
@@ -347,10 +348,8 @@ function Page() {
 						alignItems={'center'}
 						gap={2}
 						flexWrap={'wrap'}
-						bgcolor={'grey.300'}
-						boxShadow={'0px 2px 4px  rgba(0,0,0,0.2)'}
 						padding={4}
-						borderRadius={4}
+						sx={{ ...SURFACE_CARD_SX, borderRadius: 4 }}
 						flex={1}
 					>
 						<Box

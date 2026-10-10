@@ -36,12 +36,16 @@ export default function TeamLeftPanel(props: TeamLeftPanelProps) {
 
 					position: 'fixed',
 					height: '100%',
-					bgcolor: darkMode ? 'grey.900' : 'grey.100',
+					// light: a full-height card flush to the viewport edge, so only
+					// the edge facing the content gets the hairline
+					bgcolor: darkMode ? 'grey.900' : 'surface.card',
+					borderRight: darkMode ? undefined : '1px solid',
+					borderColor: 'surface.border',
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
 					transition: TRANSITION,
-					boxShadow: '0px 0px 4px 0px rgba(0,0,0,0.1)',
+					boxShadow: darkMode ? '0px 0px 4px 0px rgba(0,0,0,0.1)' : undefined,
 					zIndex: 2,
 					color: darkMode ? 'grey.100' : 'grey.800',
 					overflow: 'hidden',

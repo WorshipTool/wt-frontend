@@ -3,6 +3,7 @@ import ListTopPanelPeople from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[
 import PeopleListItem from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/lide/components/PeopleListItem'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
 import { TeamMemberRole } from '@/app/(submodules)/(teams)/sub/tymy/tech'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, LinearProgress, Tooltip, useTheme } from '@/common/ui'
 import { Checkbox, useMediaQuery } from '@/common/ui/mui'
 import { Typography } from '@/common/ui/Typography'
@@ -133,7 +134,9 @@ export default function PeopleList(props: PeopleListDto) {
 
 			<Box
 				sx={{
+					...SURFACE_CARD_SX,
 					borderRadius: 2,
+					overflow: 'hidden',
 					// boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
 				}}
 			>
@@ -141,7 +144,7 @@ export default function PeopleList(props: PeopleListDto) {
 					display={'grid'}
 					sx={{
 						...gridStyle,
-						bgcolor: 'grey.100',
+						bgcolor: 'surface.card',
 						borderRadius: 2,
 						borderBottomLeftRadius: 0,
 						borderBottomRightRadius: 0,
@@ -188,10 +191,10 @@ export default function PeopleList(props: PeopleListDto) {
 						display={'grid'}
 						sx={{
 							...gridStyle,
-							bgcolor: 'grey.200',
+							// your own row: the pressed/selected row of the card
+							bgcolor: 'surface.sunken',
 							paddingY: 1,
 							// transform: 'scale(1.01)',
-							boxShadow: '0px 0px 2px rgba(0,0,0,0.2)',
 						}}
 					>
 						{me && (
@@ -221,7 +224,7 @@ export default function PeopleList(props: PeopleListDto) {
 					display={'grid'}
 					sx={{
 						...gridStyle,
-						bgcolor: 'grey.100',
+						bgcolor: 'surface.card',
 						borderRadius: 2,
 						borderTopLeftRadius: 0,
 						borderTopRightRadius: 0,

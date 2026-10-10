@@ -70,6 +70,21 @@ collapses to exactly the same height as one with controls (Písně, Moje písně
 Oblíbené). The back arrow appears only when `backTo` is set — tab-roots (Domů /
 Písně / Účet) have none by design; you switch to them via the tab bar.
 
+## Surfaces are the desktop's surfaces
+
+The shell paints `surface.shell` (grey.50, its `surface` default; the song page
+used to pass the same grey by hand) — lighter than the desktop's
+`surface.canvas`, because a phone is nearly all card. Every card on it — `GroupCard`,
+`CONTENT_CARD_SX`, popups — is the house card `SURFACE_CARD_SX`: white, a 1px
+`surface.border` hairline and `SURFACE_SHADOW.card`. That is exactly what a
+desktop card is; the two layouts used to differ (desktop sat grey cards on a
+grey.200–300 canvas) and now share one card, see DESIGN-SYSTEM §2.1. The
+hairline is the one visible change it brought to phones: on a near-white canvas
+the shadow alone left the card's edge to guesswork.
+
+A sheet that holds `GroupCard`s is their ground, not another card — paint it
+`surface.shell` (the song picker does), or the group reads as a card in a card.
+
 ## The shell is fixed — never in flow
 
 `MobileAppHeader` is `position: fixed` (top 0 → `MOBILE_NAV_CLEARANCE`), and

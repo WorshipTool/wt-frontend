@@ -7,6 +7,7 @@ import { useMediaQuery } from '@/common/ui/mui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 
 type Props = {
 	mobileVersion: boolean
@@ -42,10 +43,8 @@ export default function LastAddedPanel(props: Props) {
 		<Box position={'relative'}>
 			<Box
 				sx={{
-					bgcolor: 'grey.100',
-					borderRadius: 2,
+					...SURFACE_CARD_SX,
 					padding: 2,
-					boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.2)',
 					display: 'flex',
 					flexDirection: 'column',
 					gap: 1,

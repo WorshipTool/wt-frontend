@@ -1,5 +1,6 @@
 'use client'
 import { Box, Image, Typography } from '@/common/ui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Link } from '@/common/ui/Link/Link'
 import { getAssetUrl } from '@/tech/paths.tech'
 import { useTranslations } from 'next-intl'
@@ -24,9 +25,7 @@ export default function CollaborationWithWorshipkoCard() {
 			flex={1}
 			paddingY={2}
 			sx={{
-				bgcolor: 'grey.300',
-				border: '1px solid',
-				borderColor: 'grey.400',
+				...SURFACE_CARD_SX,
 				borderRadius: 5,
 			}}
 		>

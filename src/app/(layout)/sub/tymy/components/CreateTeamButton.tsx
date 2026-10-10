@@ -87,7 +87,7 @@ export default function CreateTeamButton() {
 						onChange={setTeamName}
 						autoFocus
 						sx={{
-							bgcolor: 'grey.100',
+							bgcolor: 'surface.sunken',
 							padding: 1,
 							borderRadius: 1,
 							border: `1px solid ${grey[300]}`,

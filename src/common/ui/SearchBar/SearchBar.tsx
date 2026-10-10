@@ -1,9 +1,9 @@
 'use client'
 
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
-import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
-import { InputBase, SxProps, Theme } from '@/common/ui/mui'
+import { InputBase, SxProps } from '@/common/ui/mui'
 import { useTheme } from '@/common/ui/tech'
 import { isMobile } from '@/tech/device.tech'
 import { AutoAwesome, CloseRounded, SearchRounded } from '@mui/icons-material'
@@ -27,34 +27,28 @@ import {
  * a trip that changed the field's colour, radius and shadow halfway was the
  * clearest sign the copies had drifted.
  *
- * One shape on both widths — hairline, radius, shadow — and one fill each. A
- * phone's field is paper: it stands on the grey app canvas and inside white
- * surfaces alike, and a filled one disappears into the second. A desktop keeps
- * the grey it has always had, which is the fill the hero's gradient frame was
- * drawn around. The hero wears that frame (`highlighted`); nothing else does.
+ * One shape and one fill on both widths — hairline, radius, shadow, and the
+ * card surface: the field stands on the app canvas and inside white surfaces
+ * alike, and a filled one disappears into the second. The hero wears a
+ * gradient frame around it (`highlighted`); nothing else does.
  */
 
-/** Where the fill changes — the width at which the desktop layout appears. */
-const DESKTOP = MOBILE_NAV_BREAKPOINT
-
 /** The resting shape: a hairline and just enough shadow to lift it. */
-const fieldSx = (theme: Theme) =>
-	({
-		display: 'flex',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 1.5,
-		bgcolor: 'background.paper',
-		[theme.breakpoints.up(DESKTOP)]: { bgcolor: 'grey.100' },
-		border: '1px solid',
-		borderColor: 'grey.300',
-		borderRadius: 2.5,
-		paddingX: 2,
-		paddingY: 1.5,
-		boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-		transition: 'border-color 0.15s ease',
-		'&:focus-within': { borderColor: 'grey.400' },
-	} as const)
+const fieldSx = {
+	display: 'flex',
+	flexDirection: 'row',
+	alignItems: 'center',
+	gap: 1.5,
+	bgcolor: 'surface.card',
+	border: '1px solid',
+	borderColor: 'grey.300',
+	borderRadius: 2.5,
+	paddingX: 2,
+	paddingY: 1.5,
+	boxShadow: SURFACE_SHADOW.card,
+	transition: 'border-color 0.15s ease',
+	'&:focus-within': { borderColor: 'grey.400' },
+} as const
 
 /** The gradient frame the home hero wears, and the padding that reveals it. */
 const HIGHLIGHT_PADDING = 2
@@ -122,7 +116,7 @@ export function SearchBar({
 	)
 
 	const field = (
-		<Box sx={fieldSx(theme)}>
+		<Box sx={fieldSx}>
 			<SearchRounded sx={{ color: 'grey.500' }} />
 			<InputBase
 				placeholder={placeholder ?? t('searchByTitleOrText')}

@@ -49,4 +49,5 @@ export type {
 	ThemeOptions,
 } from '@mui/material'
 
+export { default as GlobalStyles } from '@mui/material/GlobalStyles'
 export { styled } from '@mui/material/styles'

@@ -340,7 +340,7 @@ export default function TeamEventPopup({
 						display: 'flex',
 						flexDirection: 'column',
 						justifyContent: 'space-between',
-						bgcolor: 'grey.100',
+						bgcolor: 'surface.sunken',
 						borderTopLeftRadius: theme.spacing(2),
 						borderTopRightRadius: theme.spacing(2),
 					}}
@@ -453,10 +453,10 @@ export default function TeamEventPopup({
 											borderRadius: 1,
 											'&:hover': editable
 												? {
-														bgcolor: 'grey.100',
+														bgcolor: 'surface.sunken',
 												  }
 												: {},
-											'&:focus-within': editable ? { bgcolor: 'grey.100' } : {},
+											'&:focus-within': editable ? { bgcolor: 'surface.sunken' } : {},
 											paddingX: 1,
 											paddingY: 0.5,
 											userSelect: 'none',

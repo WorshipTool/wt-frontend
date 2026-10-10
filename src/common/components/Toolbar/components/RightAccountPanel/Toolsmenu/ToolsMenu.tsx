@@ -1,3 +1,4 @@
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import PopupContainer from '@/common/components/Popup/PopupContainer'
 import ToolsMenuItem from '@/common/components/Toolbar/components/RightAccountPanel/Toolsmenu/components/MenuItem'
 import { Box } from '@/common/ui'
@@ -10,13 +11,11 @@ const Container = styled(Box)(({ theme }) => ({
 	position: 'absolute',
 	top: 50,
 	right: theme.spacing(2),
-	backgroundColor: 'white',
-	borderWidth: 2,
-	borderColor: '#ccc',
-	// borderStyle: "solid",
+	backgroundColor: theme.palette.surface.card,
+	border: `1px solid ${theme.palette.surface.border}`,
 	borderRadius: theme.spacing(1),
 	color: 'black',
-	boxShadow: '0px 1px 6px 2px #00000044',
+	boxShadow: SURFACE_SHADOW.floating,
 	gap: theme.spacing(0),
 	padding: theme.spacing(2),
 }))

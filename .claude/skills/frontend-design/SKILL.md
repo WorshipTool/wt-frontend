@@ -38,8 +38,10 @@ Hard rules (full list in CLAUDE.md):
 - Typed navigation (`to`/`toParams`); modals via `Popup`; `alt`/`tooltip` on icon buttons
 - New primitive → barrel export + `.story.tsx` + register in `src/common/ui/index.story.tsx`
 
-Design intent, when improving visuals: keep it light and airy (white
-surfaces, `grey.100/200` panels, 1px `grey.300` borders), rounded corners,
+Design intent, when improving visuals: keep it light and airy — the surface
+ladder (`surface.canvas` desktop ground, `surface.shell` phone ground, `surface.card` cards via `SURFACE_CARD_SX`,
+`surface.sunken` wells inside cards, `surface.border` hairlines; never a grey
+panel straight on the canvas), rounded corners,
 generous whitespace (theme spacing ≥2 between blocks), blue `primary` accents,
 gradient (`primarygradient`) only for hero CTAs, subtle motion via
 `Clickable`. Small, consistent improvements beat dramatic restyling.

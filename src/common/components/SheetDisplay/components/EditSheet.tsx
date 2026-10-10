@@ -12,7 +12,7 @@ interface EditSheetProps {
 }
 
 const StyledInput = styled(InputBase)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[300],
+	backgroundColor: theme.palette.surface.sunken,
 	padding: 5,
 }))
 

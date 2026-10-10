@@ -156,38 +156,37 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 		return () => window.removeEventListener('resize', updateSize)
 	}, [])
 
-	// Last section ref
-	const lastSectionRef = useRef<HTMLDivElement>()
+	// The slide's text box. Fit is measured against it rather than against the
+	// window: its height is 100dvh, and on iPad Safari 100vh (what both used to
+	// be built from) is taller than the visible screen, so the last line of a
+	// song sat under the bottom edge.
+	const containerRef = useRef<HTMLDivElement>(null)
 
 	// Make loop for changing size
 	const [lastWasOkey, setLastWasOkey] = useState(true)
 	const sizeIsOkey = useCallback((): boolean => {
-		if (!lastSectionRef?.current) return false
-		// Get box position (x,y) and size
-		// @ts-ignore
-		const boxX: number = lastSectionRef.current.offsetLeft
-		// @ts-ignore
-		const boxY: number = lastSectionRef.current.offsetTope
+		const container = containerRef.current
+		if (!container || container.children.length === 0) return false
+		const box = container.getBoundingClientRect()
+		const minX = box.left + padding
+		const maxX = box.right - padding
+		const minY = box.top + padding
+		const maxY = box.bottom - padding
 
-		// @ts-ignore
-		const boxWidth: number = lastSectionRef.current.offsetWidth
-		// @ts-ignore
-		const boxHeight: number = lastSectionRef.current.offsetHeight
-
-		// Calculate corner position
-		const cornerX: number = boxX + boxWidth
-		const cornerY: number = boxY + boxHeight
-
-		const maxX = windowWidth - padding * 2
-		const maxY = windowHeight - padding * 2
-
-		const xIsOut = cornerX > maxX
-		const yIsOut = cornerY > maxY
-
-		const cornerIsOut: boolean = xIsOut || yIsOut
-
-		return !cornerIsOut
-	}, [windowWidth, windowHeight, lastSectionRef, padding])
+		// Every block, not just the last section: with the sections wrapping
+		// into columns, the last one can fit while a tall one before it runs
+		// off the bottom.
+		const TOLERANCE = 0.5
+		return Array.from(container.children).every((child) => {
+			const r = child.getBoundingClientRect()
+			return (
+				r.left >= minX - TOLERANCE &&
+				r.right <= maxX + TOLERANCE &&
+				r.top >= minY - TOLERANCE &&
+				r.bottom <= maxY + TOLERANCE
+			)
+		})
+	}, [padding])
 	const step = useCallback(() => {
 		if (isSizeSet) {
 			if (!sizeIsOkey()) setSize((s) => s - 0.5)
@@ -225,13 +224,15 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 			<Box
 				display={'flex'}
 				flexDirection={'column'}
-				height={`calc(100vh - ${padding * 2}px)`}
+				ref={containerRef}
+				height={'100dvh'}
 				width={'100%'}
 				flexWrap={'wrap'}
 				alignContent={'center'}
 				alignItems={'stretch'}
 				justifyContent={'center'}
 				sx={{
+					boxSizing: 'border-box',
 					paddingTop: padding + 'px',
 					paddingBottom: padding + 'px',
 				}}
@@ -255,11 +256,6 @@ export default function SlideCard({ item, order }: SlideCardProps) {
 								paddingTop: 4,
 								marginRight: 3,
 							}}
-							ref={
-								index === displaySections.length - 1
-									? lastSectionRef
-									: undefined
-							}
 						>
 							{sectionPart(section, size, (key: string) =>
 								t(`sections.${key}` as any)

@@ -1,4 +1,5 @@
 import DragTemplate from '@/common/components/DragTemplate/DragTemplate'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box, Typography } from '@/common/ui'
 import { forwardRef } from 'react'
 
@@ -14,7 +15,13 @@ const SongCardDragTemplate = forwardRef<
 	return (
 		<DragTemplate>
 			<Box display={'flex'}>
-				<Box bgcolor={'grey.100'} borderRadius={'0.5rem'} padding={1} ref={ref}>
+				<Box
+					bgcolor={'surface.card'}
+					boxShadow={SURFACE_SHADOW.floating}
+					borderRadius={'0.5rem'}
+					padding={1}
+					ref={ref}
+				>
 					<Typography variant="h6">{props.title}</Typography>
 				</Box>
 			</Box>

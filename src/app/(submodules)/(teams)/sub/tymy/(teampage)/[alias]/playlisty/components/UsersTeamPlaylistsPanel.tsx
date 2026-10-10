@@ -3,6 +3,7 @@
 import useUsersTeamPlaylists from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/hooks/useUsersTeamPlaylists'
 import UsersTeamPlaylistsAddButton from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/playlisty/components/UsersTeamPlaylistsAddButton'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, useTheme } from '@/common/ui'
 import { Clickable } from '@/common/ui/Clickable'
 import { Tooltip } from '@/common/ui/CustomTooltip/Tooltip'
@@ -58,10 +59,7 @@ export default function UsersTeamPlaylistsPanel() {
 								key={playlist.guid}
 								sx={{
 									// padding: 2,
-									borderRadius: 3,
-									bgcolor: 'grey.100',
-									border: '1px solid',
-									borderColor: 'grey.400',
+									...SURFACE_CARD_SX,
 									width: theme.spacing(22),
 									height: theme.spacing(10),
 									display: 'flex',

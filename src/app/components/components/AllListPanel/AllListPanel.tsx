@@ -1,6 +1,7 @@
 'use client'
 import { Box, Button, Typography } from '@/common/ui'
 import { useTranslations } from 'next-intl'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 
 export default function AllListPanel() {
 	const tHome = useTranslations('home')
@@ -11,8 +12,7 @@ export default function AllListPanel() {
 			alignItems={'center'}
 			flexWrap={'wrap'}
 			sx={{
-				bgcolor: 'grey.100',
-				borderRadius: 2,
+				...SURFACE_CARD_SX,
 				// padding: 2,
 				overflow: 'hidden',
 			}}

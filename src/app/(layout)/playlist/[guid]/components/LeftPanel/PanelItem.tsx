@@ -1,21 +1,23 @@
 import { Box, Typography } from '@/common/ui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
+import { DragIndicatorRounded } from '@mui/icons-material'
 import { styled } from '@mui/system'
-import { useMemo } from 'react'
+import { PointerEvent, useMemo } from 'react'
 import { Link } from '../../../../../../common/ui/Link/Link'
 import { PlaylistItemGuid } from '../../../../../../interfaces/playlist/playlist.types'
 import useInnerPlaylist from '../../hooks/useInnerPlaylist'
 
 const PanelItemContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[50],
-	boxShadow: `0px 0px 5px ${theme.palette.grey[400]}`,
+	// a row inside the white sidebar: outlined, tinted on hover
+	backgroundColor: theme.palette.surface.card,
+	border: `1px solid ${theme.palette.surface.border}`,
 	borderRadius: 8,
 	display: 'flex',
 	flexDirection: 'row',
 	'&:hover': {
-		backgroundColor: theme.palette.grey[200],
-		boxShadow: `0px 0px 9px ${theme.palette.grey[400]}`,
+		backgroundColor: theme.palette.surface.shell,
+		borderColor: theme.palette.grey[300],
 	},
 	cursor: 'pointer',
 	justifyContent: 'center',
@@ -35,9 +37,15 @@ const StyledPanelButton = styled(Typography)(({ theme }) => ({
 interface PanelItemProps {
 	itemGuid: PlaylistItemGuid
 	itemIndex: number
+	/** Makes the item reorderable by touch: shows a drag handle on devices without hover. */
+	onDragHandlePointerDown?: (e: PointerEvent<HTMLElement>) => void
 }
 
-export default function PanelItem({ itemGuid, itemIndex }: PanelItemProps) {
+export default function PanelItem({
+	itemGuid,
+	itemIndex,
+	onDragHandlePointerDown,
+}: PanelItemProps) {
 	const { loading, items } = useInnerPlaylist()
 
 	const item = useMemo(() => {
@@ -65,6 +73,23 @@ export default function PanelItem({ itemGuid, itemIndex }: PanelItemProps) {
 			<PanelItemContainer id={'panelItem_' + item.guid}>
 				{!loading ? (
 					<>
+						{onDragHandlePointerDown && (
+							<Box
+								onPointerDown={onDragHandlePointerDown}
+								sx={{
+									display: 'none',
+									'@media (hover: none)': { display: 'flex' },
+									alignSelf: 'stretch',
+									alignItems: 'center',
+									paddingLeft: 1,
+									color: 'grey.400',
+									cursor: 'grab',
+									touchAction: 'none',
+								}}
+							>
+								<DragIndicatorRounded fontSize="small" />
+							</Box>
+						)}
 						<Typography
 							sx={{
 								padding: '9px',

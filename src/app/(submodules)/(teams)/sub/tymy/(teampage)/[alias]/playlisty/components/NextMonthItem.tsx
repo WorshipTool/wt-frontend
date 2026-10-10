@@ -2,6 +2,7 @@
 import { TeamEventData } from '@/api/generated'
 import TeamEventPopup from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/[alias]/components/EventPopup/TeamEventPopup'
 import useInnerTeam from '@/app/(submodules)/(teams)/sub/tymy/(teampage)/hooks/useInnerTeam'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, useTheme } from '@/common/ui'
 import { Clickable } from '@/common/ui/Clickable'
 import { IconButton } from '@/common/ui/IconButton'
@@ -72,12 +73,9 @@ export default function NextMonthItem(props: NextMonthItemProps) {
 					sx={{
 						width: theme.spacing(22),
 						aspectRatio: '3/2',
-						bgcolor: 'grey.100',
-						borderRadius: 3,
+						...SURFACE_CARD_SX,
 						position: 'relative',
 						overflow: 'hidden',
-						border: '1px solid',
-						borderColor: 'grey.400',
 					}}
 				>
 					<Box

@@ -87,7 +87,7 @@ export default function PopupSongList(props: GlobalSongListProps) {
 
 			{empty && (
 				<Box
-					bgcolor={'grey.300'}
+					bgcolor={'surface.sunken'}
 					padding={2}
 					sx={{
 						userSelect: 'none',

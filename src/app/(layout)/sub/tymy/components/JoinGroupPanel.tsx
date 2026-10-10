@@ -1,6 +1,7 @@
 'use client'
 import JoinTeamPopup from '@/app/(layout)/sub/tymy/components/JoinTeamPopup'
 import { Box } from '@/common/ui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Button } from '@/common/ui/Button'
 import { Typography } from '@/common/ui/Typography'
 import { useTranslations } from 'next-intl'
@@ -14,10 +15,9 @@ export default function JoinGroupPanel() {
 		<>
 			<Box
 				sx={{
-					bgcolor: 'grey.300',
+					...SURFACE_CARD_SX,
 					padding: 2,
 					borderRadius: 2,
-					boxShadow: '0px 1px 4px rgba(0,0,0,0.3)',
 				}}
 			>
 				<Box

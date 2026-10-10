@@ -123,7 +123,7 @@ function ReviewPanel({
 				maxWidth: 'calc(100vw - 4rem)',
 				borderRadius: 3,
 				overflow: 'hidden',
-				bgcolor: 'white',
+				bgcolor: 'surface.card',
 			}}
 		>
 			{/* Header */}

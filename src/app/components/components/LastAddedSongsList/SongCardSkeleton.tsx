@@ -1,12 +1,14 @@
 import { Box } from '@/common/ui'
 import { Skeleton } from '@/common/ui/mui/Skeleton'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 
 export default function SongCardSkeleton() {
 	return (
 		<Box
 			sx={{
 				height: 200,
-				backgroundColor: 'grey.200',
+				...SURFACE_CARD_SX,
+				// matches SongVariantCard's radius
 				borderRadius: 2,
 				padding: 2,
 			}}

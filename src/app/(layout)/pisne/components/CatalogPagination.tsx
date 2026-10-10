@@ -2,6 +2,7 @@
 
 import { Box, Typography } from '@/common/ui'
 import { Pagination } from '@/common/ui/mui'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef } from 'react'
 
@@ -143,8 +144,8 @@ export default function CatalogPagination({
 						paddingRight: touch ? 0.5 : 1.5,
 						paddingY: touch ? 0.5 : 1,
 						borderRadius: 2.5,
-						bgcolor: 'background.paper',
-						boxShadow: '0 4px 16px rgba(0, 0, 0, 0.18)',
+						bgcolor: 'surface.card',
+						boxShadow: SURFACE_SHADOW.floating,
 					}}
 				>
 					{/* on a phone the bar is only as wide as the screen, and the

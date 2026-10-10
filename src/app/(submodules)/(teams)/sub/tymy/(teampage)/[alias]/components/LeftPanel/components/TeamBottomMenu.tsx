@@ -35,7 +35,7 @@ export default function TeamBottomMenu() {
 				/>
 			</Link>
 
-			<Box sx={{ alignSelf: 'stretch', width: '1px', bgcolor: 'grey.200' }} />
+			<Box sx={{ alignSelf: 'stretch', width: '1px', bgcolor: 'surface.border' }} />
 
 			<TeamBottomMenuItem item="overview" />
 			<TeamBottomMenuItem item="songlist" title={tTeam('songs')} />

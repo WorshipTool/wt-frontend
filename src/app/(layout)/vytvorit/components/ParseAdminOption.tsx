@@ -247,11 +247,11 @@ export default function ParseAdminOption() {
 									<Box
 										key={index}
 										sx={{
-											bgcolor: 'grey.100',
+											bgcolor: 'surface.sunken',
 											padding: 2,
 											borderRadius: 2,
 											border: '1px solid',
-											borderColor: 'grey.200',
+											borderColor: 'surface.border',
 											display: 'flex',
 											flexDirection: 'column',
 											gap: 1,

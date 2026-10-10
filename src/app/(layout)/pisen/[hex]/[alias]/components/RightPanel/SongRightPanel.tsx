@@ -4,7 +4,7 @@ import { useCloudConfig } from '@/common/providers/FeatureFlags/cloud-config/use
 import { Box, Button, Gap, Typography } from '@/common/ui'
 import { Link } from '@/common/ui/Link/Link'
 import { styled } from '@/common/ui/mui'
-import { grey } from '@/common/ui/mui/colors'
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import TranslationsSelectPopup from '@/common/ui/SongCard/components/TranslationsSelectPopup'
 import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
@@ -13,13 +13,13 @@ import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
 const Container = styled(Box)(({ theme }) => ({
-	backgroundColor: grey[200],
+	backgroundColor: theme.palette.surface.card,
 	borderStyle: 'solid',
 	borderWidth: 1,
-	borderColor: grey[300],
-	borderRadius: theme.spacing(1),
+	borderColor: theme.palette.surface.border,
+	borderRadius: theme.shape.borderRadius * 3,
 	padding: theme.spacing(2),
-	boxShadow: '0px 1px 2px 1px rgba(0, 0, 0, 0.05)',
+	boxShadow: SURFACE_SHADOW.card,
 }))
 
 type Props = {
@@ -114,8 +114,6 @@ export default function SongRightPanel(props: Props) {
 			{showSupport && (
 				<Container
 					sx={{
-						bgcolor: 'grey.100',
-						boxShadow: '0px 1px 10px 1px rgba(0, 0, 0, 0.1)',
 						gap: 1,
 						display: 'flex',
 						flexDirection: 'column',

@@ -6,6 +6,7 @@ import useInnerPlaylist from '@/app/(layout)/playlist/[guid]/hooks/useInnerPlayl
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import DefaultStyle from '@/common/components/SheetDisplay/styles/DefaultStyle'
 import { Paper } from '@/common/ui/mui'
+import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { PlaylistItemGuid } from '@/interfaces/playlist/playlist.types'
 import { Sheet } from '@pepavlin/sheet-api'
 
@@ -89,7 +90,9 @@ export const PlaylistItem = memo(function A({
 	return (
 		<>
 			<Paper
+				elevation={0}
 				sx={{
+					...SURFACE_CARD_SX,
 					padding: 2,
 					marginBottom: 1,
 					displayPrint: 'none',

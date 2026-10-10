@@ -7,11 +7,12 @@ type PanelProps = {
 } & React.ComponentProps<typeof Box>
 
 const Container = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[200],
+	// the editor's top bar and sidebar: white surfaces edged by a hairline
+	backgroundColor: theme.palette.surface.card,
 	padding: theme.spacing(2),
-	borderColor: theme.palette.grey[400],
-	borderRight: `1px inset ${theme.palette.grey[400]}`,
-	borderBottom: `1px inset ${theme.palette.grey[400]}`,
+	borderColor: theme.palette.surface.border,
+	borderRight: `1px solid ${theme.palette.surface.border}`,
+	borderBottom: `1px solid ${theme.palette.surface.border}`,
 }))
 
 export default function Panel(props: PanelProps) {

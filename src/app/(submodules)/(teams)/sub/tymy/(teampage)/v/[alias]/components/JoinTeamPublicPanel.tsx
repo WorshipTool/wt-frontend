@@ -1,7 +1,7 @@
 'use client'
 import JoinTeamPopup from '@/app/(layout)/sub/tymy/components/JoinTeamPopup'
+import { SURFACE_CARD_SX, SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box, Button, Typography, useTheme } from '@/common/ui'
-import { grey } from '@/common/ui/mui/colors'
 import useAuth from '@/hooks/auth/useAuth'
 import { useState } from 'react'
 
@@ -19,11 +19,10 @@ export default function JoinTeamPublicPanel() {
 			gap={2}
 			zIndex={1}
 			sx={{
-				bgcolor: grey[300],
+				...SURFACE_CARD_SX,
 				padding: 1.5,
 				paddingX: 3,
-				borderRadius: 3,
-				boxShadow: '0px 0px 10px 0px rgba(0,2px,0,0.1)',
+				boxShadow: SURFACE_SHADOW.raised,
 				// width: 500,
 
 				[theme.breakpoints.up('md')]: {

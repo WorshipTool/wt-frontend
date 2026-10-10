@@ -1,5 +1,6 @@
 'use client'
 
+import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { Box } from '@/common/ui/Box'
 import { IconButton } from '@/common/ui/IconButton'
 import { SxProps } from '@/common/ui/mui'
@@ -27,15 +28,17 @@ import { CustomChip } from '../CustomChip/CustomChip'
 import { CommonLinkProps, Link } from '../Link/Link'
 
 const StyledContainer = styled(Box)(({ theme }) => ({
-	backgroundColor: theme.palette.grey[100],
+	// A card on the canvas (see common/constants/surfaces) — the same white
+	// surface as every other card, lifted a little under the pointer.
+	backgroundColor: theme.palette.surface.card,
+	border: `1px solid ${theme.palette.surface.border}`,
+	boxShadow: SURFACE_SHADOW.card,
+	transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
 
 	borderRadius: '0.5rem',
 	'&:hover': {
-		backgroundColor: theme.palette.grey[200],
-		boxShadow: `0px 0px 10px ${theme.palette.grey[400]}`,
-		'& .songcardgradient': {
-			background: `linear-gradient(0deg, ${theme.palette.grey[200]} 50%, transparent)`,
-		},
+		borderColor: theme.palette.grey[300],
+		boxShadow: SURFACE_SHADOW.raised,
 	},
 	cursor: 'pointer',
 	outlineWidth: 1.4,
