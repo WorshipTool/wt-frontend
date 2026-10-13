@@ -175,6 +175,9 @@ export default function SongSearchResults({
 									song={song}
 									previewLines={PREVIEW_LINES_PHONE}
 									highlight={query}
+									// the desktop's cards say which of the results are only
+									// yours; a row has to say it too
+									properties={['SHOW_PRIVATE_LABEL']}
 								/>
 							</GroupCard>
 						)

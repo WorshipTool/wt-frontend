@@ -8,7 +8,7 @@ import { Skeleton } from '@/common/ui/mui/Skeleton'
 import { SongVariantCard } from '@/common/ui/SongCard'
 import { Typography } from '@/common/ui/Typography'
 import { ChevronRightRounded, MusicNoteRounded } from '@mui/icons-material'
-import { Fragment, ReactNode } from 'react'
+import { ComponentProps, Fragment, ReactNode } from 'react'
 
 /**
  * The iOS-style grouped list: rows sit on one white surface floating on the grey
@@ -118,12 +118,16 @@ export function SongRow({
 	withIcon = true,
 	highlight,
 	trailing,
+	properties,
 }: {
 	song: BasicVariantPack
 	previewLines?: number
 	withIcon?: boolean
 	highlight?: string
 	trailing?: ReactNode
+	/** The card's labels — e.g. `SHOW_PRIVATE_LABEL` where your own unpublished
+	 * songs sit among everyone else's (search), not where they are all yours. */
+	properties?: ComponentProps<typeof SongVariantCard>['properties']
 }) {
 	return (
 		<SongVariantCard
@@ -131,6 +135,7 @@ export function SongRow({
 			dense
 			previewLines={previewLines}
 			highlight={highlight}
+			properties={properties}
 			leadingIcon={withIcon ? <SongLeadingIcon /> : undefined}
 			trailingIcon={trailing ?? <ChevronRightRounded sx={{ color: 'grey.400' }} />}
 			sx={FLAT_ROW_SX}
