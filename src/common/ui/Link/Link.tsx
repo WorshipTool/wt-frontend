@@ -5,6 +5,7 @@ import {
 	LinkBlockerPopupData,
 	useOutsideBlockerLinkCheck,
 } from '@/common/ui/Link/useOutsideBlocker'
+import { useIsStandalonePwa } from '@/hooks/pwa/useIsStandalonePwa'
 import useSubdomainPathnameAlias from '@/routes/subdomains/SubdomainPathnameAliasProvider'
 import { getComplexReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
 import { styled, SxProps } from '@mui/material'
@@ -40,6 +41,10 @@ const StyledLink = styled(NextLink)({})
 
 export function Link<T extends RoutesKeys>(props: LinkProps<T>) {
 	const { aliases } = useSubdomainPathnameAlias()
+	// An installed app only stays inside its window on its own origin. A team
+	// link turned into a subdomain is another origin, so the phone opened it in
+	// a browser instead (#532). There, keep every link on the path form.
+	const standalone = useIsStandalonePwa()
 
 	const { url, relativeUrl } = useMemo(() => {
 		if (props.external) {
@@ -52,10 +57,12 @@ export function Link<T extends RoutesKeys>(props: LinkProps<T>) {
 		const absoluteUrl = getComplexReplacedUrlWithParams(
 			routesPaths[props.to] || '/',
 			(props.params as Record<string, string>) || {},
-			{
-				returnFormat: 'absolute',
-				subdomainAliases: aliases,
-			}
+			standalone
+				? { returnFormat: 'absolute', returnSubdomains: 'never' }
+				: {
+						returnFormat: 'absolute',
+						subdomainAliases: aliases,
+				  }
 		)
 		const relativeUrl = getComplexReplacedUrlWithParams(
 			routesPaths[props.to] || '/',
@@ -76,6 +83,7 @@ export function Link<T extends RoutesKeys>(props: LinkProps<T>) {
 		(props as CommonLinkProps<T>).to,
 		(props as CommonLinkProps<T>).params,
 		aliases,
+		standalone,
 	])
 
 	const [shiftOn, setShiftOn] = React.useState(false)

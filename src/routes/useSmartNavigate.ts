@@ -1,5 +1,6 @@
 'use client'
 // import { useNavigate } from "react-router-dom";
+import { useIsStandalonePwa } from '@/hooks/pwa/useIsStandalonePwa'
 import useSubdomainPathnameAlias from '@/routes/subdomains/SubdomainPathnameAliasProvider'
 import { getComplexReplacedUrlWithParams } from '@/routes/tech/transformer.tech'
 import { NavigateOptions as NO } from 'next/dist/shared/lib/app-router-context.shared-runtime'
@@ -15,6 +16,8 @@ type NavigateOptions = NO & {
 export const useSmartNavigate = () => {
 	const router = useRouter()
 	const { aliases } = useSubdomainPathnameAlias()
+	// Same as in Link: an installed app must not leave its own origin.
+	const standalone = useIsStandalonePwa()
 	const navigate = <T extends RoutesKeys>(
 		to:
 			| T
@@ -27,10 +30,13 @@ export const useSmartNavigate = () => {
 		const toUrl = typeof to === 'string' ? routesPaths[to] : to.url
 		const urlWithAliases =
 			Object.keys(params).length > 0
-				? getComplexReplacedUrlWithParams(toUrl, params, {
-						returnFormat: 'absolute',
-						subdomainAliases: aliases,
-				  })
+				? getComplexReplacedUrlWithParams(
+						toUrl,
+						params,
+						standalone
+							? { returnFormat: 'absolute', returnSubdomains: 'never' }
+							: { returnFormat: 'absolute', subdomainAliases: aliases }
+				  )
 				: toUrl
 
 		if (options.replace) {
