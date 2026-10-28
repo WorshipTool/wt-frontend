@@ -28,7 +28,6 @@ import { Divider } from '@/common/ui'
 import { getStripeSupportUrl } from '@/common/utils/getStripeSupportUrl'
 import { getAssetUrl } from '@/tech/paths.tech'
 import breakpoints from '@/tech/theme/theme.tech'
-import './styles.css'
 
 export default SmartPage(Page, ['transparentToolbar', 'containLayout'])
 
