@@ -18,6 +18,10 @@ type WriteSongMobileProps = {
 	/** Show the "content isn't valid yet" hint (non-empty but invalid). */
 	showInvalidWarning: boolean
 	onCreate: () => void
+	startTitle?: string
+	startSheetData?: string
+	/** A note above the editor (e.g. "imported — check it"). */
+	notice?: React.ReactNode
 }
 
 /**
@@ -50,9 +54,12 @@ export default function WriteSongMobile(props: WriteSongMobileProps) {
 				</MobileHeaderPill>,
 			]}
 		>
+			{props.notice}
 			<MobileSongEditor
 				onTitleChange={props.onTitleChange}
 				onSheetDataChange={props.onSheetDataChange}
+				startTitle={props.startTitle}
+				startSheetData={props.startSheetData}
 			/>
 			{props.showInvalidWarning && <NotValidWarning />}
 		</MobileAppHeader>

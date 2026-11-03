@@ -2,6 +2,12 @@
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { CreatedType, VariantPackAlias } from '@/api/dtos'
 import { PostCreateVariantOutDto } from '@/api/generated'
+import {
+	consumeEditorHandoff,
+	EditorHandoff,
+	markImportedSongSaved,
+} from '@/app/(layout)/nahrat/nacist/tech/importStorage'
+import ImportedNotice from '@/app/(layout)/vytvorit/napsat/components/ImportedNotice'
 import WrittenPreview from '@/app/(layout)/vytvorit/napsat/components/WrittenPreview'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
@@ -12,7 +18,10 @@ import { styled } from '@/common/ui/mui'
 import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
+import { hasInAppHistory } from '@/routes/history/inAppHistory'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
+import { useSnackbar } from 'notistack'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApi } from '../../../../api/tech-and-hooks/useApi'
@@ -50,6 +59,21 @@ function Create() {
 	const [title, setTitle] = useState('')
 	const [sheetData, setSheetData] = useState('')
 
+	// A song handed over from "Načíst píseň" (link / file import). Read after
+	// mount — session storage does not exist on the server — and the editors are
+	// keyed on it, so they remount with the imported text as their start value.
+	const [imported, setImported] = useState<EditorHandoff | null>(null)
+	useEffect(() => {
+		const handoff = consumeEditorHandoff()
+		if (!handoff) return
+		setImported(handoff)
+		setTitle(handoff.title)
+		setSheetData(handoff.sheetData)
+	}, [])
+	const editorKey = imported ? 'imported' : 'blank'
+	const router = useRouter()
+	const { enqueueSnackbar } = useSnackbar()
+
 	// an auto-update reload here would throw away whatever they've written
 	useBlockAppReload(title !== '' || sheetData !== '', 'writing a song')
 
@@ -78,6 +102,21 @@ function Create() {
 			},
 			(result) => {
 				const a = parseVariantAlias(result.alias as VariantPackAlias)
+				if (imported) {
+					// back to the import's result list, where the card now says
+					// "Uloženo" — a file can hold several songs still to save
+					markImportedSongSaved(
+						imported.origin.resultId,
+						imported.origin.index,
+						{ hex: a.hex, alias: a.alias }
+					)
+					setTitle('')
+					setSheetData('')
+					enqueueSnackbar(t('import.editor.saved'), { variant: 'success' })
+					if (hasInAppHistory()) router.back()
+					else navigate('importSong', {}, { replace: true })
+					return
+				}
 				navigate(
 					'variant',
 					{
@@ -102,6 +141,16 @@ function Create() {
 	if (phoneVersion) {
 		return (
 			<WriteSongMobile
+				key={editorKey}
+				startTitle={imported?.title}
+				startSheetData={imported?.sheetData}
+				notice={
+					imported && (
+						<Box sx={{ paddingBottom: 1 }}>
+							<ImportedNotice kind={imported.sourceKind} />
+						</Box>
+					)
+				}
 				onTitleChange={setTitle}
 				onSheetDataChange={setSheetData}
 				canCreate={
@@ -132,6 +181,11 @@ function Create() {
 							marginTop: 4,
 						}}
 					>
+						{imported && (
+							<Box sx={{ marginBottom: 2 }}>
+								<ImportedNotice kind={imported.sourceKind} />
+							</Box>
+						)}
 						<StyledContainer
 							sx={{
 								display: 'flex',
@@ -140,6 +194,9 @@ function Create() {
 							}}
 						>
 							<SheetEditor
+								key={editorKey}
+								startTitle={imported?.title}
+								startSheetData={imported?.sheetData}
 								onTitleChange={setTitle}
 								onSheetDataChange={setSheetData}
 							/>

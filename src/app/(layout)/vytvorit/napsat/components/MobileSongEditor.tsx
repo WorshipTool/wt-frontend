@@ -172,6 +172,9 @@ function renderHighlight(
 type MobileSongEditorProps = {
 	onTitleChange?: (title: string) => void
 	onSheetDataChange?: (sheetData: string) => void
+	/** Prefill (a song imported from a link or file). Read on mount only. */
+	startTitle?: string
+	startSheetData?: string
 }
 
 /**
@@ -188,8 +191,10 @@ export default function MobileSongEditor(props: MobileSongEditorProps) {
 	const theme = useTheme()
 
 	const { title: tempTitle, sheetData: tempSheet } = useSheetEditorTempData(true)
-	const [title, setTitleState] = useState(tempTitle)
-	const [sheetData, setSheetDataState] = useState(tempSheet)
+	const [title, setTitleState] = useState(props.startTitle || tempTitle)
+	const [sheetData, setSheetDataState] = useState(
+		props.startSheetData || tempSheet
+	)
 
 	const sheetRef = useRef<HTMLTextAreaElement | null>(null)
 	const highlightRef = useRef<HTMLDivElement | null>(null)

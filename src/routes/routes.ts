@@ -16,6 +16,8 @@ export const routesPaths = {
 	addMenu: '/vytvorit',
 	upload: '/nahrat',
 	uploadParse: '/nahrat/hledani',
+	// link or file → songs (general parser, flag enable_general_parser)
+	importSong: '/nahrat/nacist',
 	writeSong: '/vytvorit/napsat',
 	login: '/prihlaseni',
 	signup: '/registrace',
