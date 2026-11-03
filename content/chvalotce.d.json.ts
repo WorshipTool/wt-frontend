@@ -889,7 +889,9 @@ declare const messages: {
 			},
 			"steps": {
 				"detect": "Zjišťuji, co je na odkazu",
+				"detectFile": "Zjišťuji, co je v souboru",
 				"fetch": "Stahuji obsah",
+				"fetchFile": "Nahrávám soubor",
 				"extract": "Hledám písně",
 				"ocr": "Čtu text z obrázku",
 				"score": "Kontroluji výsledek",

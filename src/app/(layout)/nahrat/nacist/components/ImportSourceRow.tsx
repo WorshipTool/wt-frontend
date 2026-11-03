@@ -15,8 +15,8 @@ export default function ImportSourceRow({ source }: { source: ImportSource }) {
 		source.kind === 'link'
 			? LinkRounded
 			: /\.pdf$/i.test(source.label)
-			? PictureAsPdfRounded
-			: ImageRounded
+				? PictureAsPdfRounded
+				: ImageRounded
 
 	return (
 		<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>

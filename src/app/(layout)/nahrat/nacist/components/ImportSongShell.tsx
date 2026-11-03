@@ -10,7 +10,11 @@ import { useTranslations } from 'next-intl'
  * desktop page title otherwise (the same shape as Moje písně). The content
  * beneath is shared.
  */
-export default function ImportSongShell({ children }: { children: React.ReactNode }) {
+export default function ImportSongShell({
+	children,
+}: {
+	children: React.ReactNode
+}) {
 	const t = useTranslations('upload.import')
 	const phone = useIsPhone()
 
@@ -23,7 +27,15 @@ export default function ImportSongShell({ children }: { children: React.ReactNod
 	}
 
 	return (
-		<Box sx={{ paddingTop: 7, paddingBottom: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+		<Box
+			sx={{
+				paddingTop: 7,
+				paddingBottom: 4,
+				display: 'flex',
+				flexDirection: 'column',
+				gap: 3,
+			}}
+		>
 			<Typography variant="h4" strong={600}>
 				{t('title')}
 			</Typography>

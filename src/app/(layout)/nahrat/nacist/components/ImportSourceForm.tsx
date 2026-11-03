@@ -64,6 +64,10 @@ export default function ImportSourceForm(props: ImportSourceFormProps) {
 							borderRadius: 2,
 							paddingX: 1.5,
 							minHeight: 44,
+							'&.Mui-focused': {
+								outline: '2px solid',
+								outlineColor: 'primary.main',
+							},
 						}}
 					/>
 					<Button type="submit" disabled={!props.url.trim()}>

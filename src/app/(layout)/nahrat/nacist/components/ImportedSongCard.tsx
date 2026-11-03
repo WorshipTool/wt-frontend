@@ -1,6 +1,7 @@
 'use client'
 
 import { GeneralParserSong } from '@/api/general-parser/generalParser'
+import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, Button, Typography } from '@/common/ui'
@@ -36,7 +37,10 @@ type ImportedSongCardProps = {
  */
 export default function ImportedSongCard(props: ImportedSongCardProps) {
 	const t = useTranslations('upload.import.result')
-	const sheet = useMemo(() => new Sheet(props.song.sheetData), [props.song.sheetData])
+	const sheet = useMemo(
+		() => new Sheet(props.song.sheetData),
+		[props.song.sheetData],
+	)
 	const needsCheck = props.song.confidence < NEEDS_CHECK_BELOW
 
 	const [expanded, setExpanded] = useState(false)
@@ -84,7 +88,11 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 			</Box>
 
 			{needsCheck && !props.saved && (
-				<Typography small color="grey.700" sx={{ paddingX: 2, paddingBottom: 1 }}>
+				<Typography
+					small
+					color="grey.700"
+					sx={{ paddingX: 2, paddingBottom: 1 }}
+				>
 					{t('needsCheckHint')}
 				</Typography>
 			)}
@@ -105,7 +113,7 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 								bottom: 0,
 								height: theme.spacing(6),
 								background: `linear-gradient(transparent, ${theme.palette.surface.card})`,
-						  }
+							}
 						: undefined,
 				})}
 			>
@@ -126,14 +134,19 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 			)}
 
 			<Box
-				sx={{
+				sx={(theme) => ({
 					display: 'flex',
 					flexWrap: 'wrap',
 					gap: 1,
 					padding: 2,
 					paddingTop: 1,
 					'& > *': { flex: 1 },
-				}}
+					// a desktop card is wide: buttons keep their own width, at the end
+					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
+						justifyContent: 'flex-end',
+						'& > *': { flex: '0 0 auto' },
+					},
+				})}
 			>
 				<Button
 					variant="outlined"

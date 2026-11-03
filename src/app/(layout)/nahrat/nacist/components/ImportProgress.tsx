@@ -21,6 +21,13 @@ import ImportSourceRow from './ImportSourceRow'
 /** Steps that can take long enough to deserve a word of explanation. */
 const SLOW_STEPS: GeneralParserStep[] = ['extract', 'ocr']
 
+/** Detecting and fetching read differently for an uploaded file. */
+function stepLabelKey(step: GeneralParserStep, kind: ImportSource['kind']) {
+	if (kind === 'file' && step === 'detect') return 'detectFile'
+	if (kind === 'file' && step === 'fetch') return 'fetchFile'
+	return step
+}
+
 type ImportProgressProps = {
 	source: ImportSource
 	seen: GeneralParserStep[]
@@ -41,7 +48,9 @@ export default function ImportProgress(props: ImportProgressProps) {
 	return (
 		<Box sx={{ ...SURFACE_CARD_SX, overflow: 'hidden' }}>
 			<LinearProgress />
-			<Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+			<Box
+				sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}
+			>
 				<ImportSourceRow source={props.source} />
 
 				<Box
@@ -59,7 +68,7 @@ export default function ImportProgress(props: ImportProgressProps) {
 						<StepRow
 							key={s.step}
 							view={s}
-							label={t(s.step)}
+							label={t(stepLabelKey(s.step, props.source.kind))}
 							hint={
 								s.state === 'active' && SLOW_STEPS.includes(s.step)
 									? t('slowHint')

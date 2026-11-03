@@ -42,7 +42,10 @@ describe('buildStepList', () => {
 
 describe('addSeenStep', () => {
 	it('ignores a repeated step', () => {
-		expect(addSeenStep(['detect', 'fetch'], 'fetch')).toEqual(['detect', 'fetch'])
+		expect(addSeenStep(['detect', 'fetch'], 'fetch')).toEqual([
+			'detect',
+			'fetch',
+		])
 		expect(addSeenStep(['detect'], 'fetch')).toEqual(['detect', 'fetch'])
 	})
 })

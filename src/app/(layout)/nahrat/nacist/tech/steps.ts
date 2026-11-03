@@ -22,7 +22,7 @@ const EXPECTED: Record<ImportSourceKind, GeneralParserStep[]> = {
  */
 export function buildStepList(
 	seen: GeneralParserStep[],
-	kind: ImportSourceKind
+	kind: ImportSourceKind,
 ): StepView[] {
 	const expected = EXPECTED[kind]
 	if (seen.length === 0) {
@@ -53,7 +53,7 @@ export function buildStepList(
 /** Adds a reported step, ignoring repeats (a step can report more than once). */
 export function addSeenStep(
 	seen: GeneralParserStep[],
-	step: GeneralParserStep
+	step: GeneralParserStep,
 ): GeneralParserStep[] {
 	return seen.includes(step) ? seen : [...seen, step]
 }

@@ -625,7 +625,9 @@
 			},
 			"steps": {
 				"detect": "Checking what the link points to",
+				"detectFile": "Checking what's in the file",
 				"fetch": "Downloading",
+				"fetchFile": "Uploading the file",
 				"extract": "Looking for songs",
 				"ocr": "Reading text from the image",
 				"score": "Checking the result",

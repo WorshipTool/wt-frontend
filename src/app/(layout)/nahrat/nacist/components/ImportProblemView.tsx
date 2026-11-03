@@ -85,12 +85,12 @@ export default function ImportProblemView(props: ImportProblemViewProps) {
 					</Button>
 				) : (
 					pickFile(t('actions.otherFile'))
-				)
+				),
 			)
 			break
 		case 'unavailable':
 			actions.push(
-				pickFile(isLink ? t('actions.uploadInstead') : t('actions.otherFile'))
+				pickFile(isLink ? t('actions.uploadInstead') : t('actions.otherFile')),
 			)
 			break
 		case 'failed':
@@ -102,7 +102,7 @@ export default function ImportProblemView(props: ImportProblemViewProps) {
 					</Button>
 				) : (
 					pickFile(t('actions.otherFile'))
-				)
+				),
 			)
 			if (problem === 'failed') actions.push(retry)
 			break
@@ -118,7 +118,7 @@ export default function ImportProblemView(props: ImportProblemViewProps) {
 					toParams={{ previousPage: routesPaths.importSong }}
 				>
 					{t('actions.login')}
-				</Button>
+				</Button>,
 			)
 			break
 		default:

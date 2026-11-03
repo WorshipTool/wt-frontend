@@ -21,7 +21,11 @@ export const GENERAL_PARSER_ACCEPT = 'application/pdf,image/*'
 
 export type GeneralParserStep = 'detect' | 'fetch' | 'extract' | 'ocr' | 'score'
 
-export type GeneralParserStatus = 'done' | 'not-found' | 'unavailable' | 'failed'
+export type GeneralParserStatus =
+	| 'done'
+	| 'not-found'
+	| 'unavailable'
+	| 'failed'
 
 export type GeneralParserSourceType =
 	| 'page'
@@ -136,7 +140,7 @@ type StreamOptions = {
  */
 export async function streamGeneralParse(
 	input: GeneralParserInput,
-	{ token, signal, onEvent }: StreamOptions
+	{ token, signal, onEvent }: StreamOptions,
 ): Promise<void> {
 	const form = new FormData()
 	if ('url' in input) form.append('url', input.url)

@@ -24,7 +24,7 @@ describe('createNdjsonParser', () => {
 	it('reads several lines delivered in one chunk', () => {
 		const p = createNdjsonParser()
 		const events = p.push(
-			`${progress('detect')}\n${progress('fetch')}\n${result}\n`
+			`${progress('detect')}\n${progress('fetch')}\n${result}\n`,
 		)
 		expect(kinds(events)).toEqual(['detect', 'fetch', 'result'])
 		expect(p.flush()).toEqual([])
@@ -54,13 +54,16 @@ describe('createNdjsonParser', () => {
 		expect(kinds(p.push(`${progress('score')}\n${result}`))).toEqual(['score'])
 		const rest = p.flush()
 		expect(kinds(rest)).toEqual(['result'])
-		expect(rest[0]).toMatchObject({ status: 'done', songs: [{ title: 'Ráno' }] })
+		expect(rest[0]).toMatchObject({
+			status: 'done',
+			songs: [{ title: 'Ráno' }],
+		})
 	})
 
 	it('skips blank, malformed and unknown lines without losing the rest', () => {
 		const p = createNdjsonParser()
 		const events = p.push(
-			`\n   \nnot json\n{"foo":1}\n${result}\r\n{"event":"error","message":"lost"}\n`
+			`\n   \nnot json\n{"foo":1}\n${result}\r\n{"event":"error","message":"lost"}\n`,
 		)
 		expect(kinds(events)).toEqual(['result', 'error'])
 	})

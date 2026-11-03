@@ -34,7 +34,8 @@ function ImportSong() {
 	const navigate = useSmartNavigate()
 	const { enqueueSnackbar } = useSnackbar()
 
-	const { state, setState, importUrl, importFile, retry, reset } = useSongImport()
+	const { state, setState, importUrl, importFile, retry, reset } =
+		useSongImport()
 	const [url, setUrl] = useState('')
 	const urlInputRef = useRef<HTMLInputElement>(null)
 	const [wantsUrlFocus, setWantsUrlFocus] = useState(false)
@@ -45,7 +46,8 @@ function ImportSong() {
 	// the effect repeats the same arrival instead of losing it
 	const intentRef = useRef<ImportIntent | null | undefined>(undefined)
 	useEffect(() => {
-		if (intentRef.current === undefined) intentRef.current = consumeImportIntent()
+		if (intentRef.current === undefined)
+			intentRef.current = consumeImportIntent()
 		const intent = intentRef.current
 		if (intent?.kind === 'file') importFile(intent.file)
 		else if (intent?.kind === 'link') setWantsUrlFocus(true)

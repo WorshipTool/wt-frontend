@@ -23,7 +23,10 @@ export default function ImportedNotice({ kind }: { kind: ImportSourceKind }) {
 				bgcolor: alpha(theme.palette.primary.main, 0.1),
 			})}
 		>
-			<InfoRounded fontSize="small" sx={{ color: 'primary.main', marginTop: 0.25 }} />
+			<InfoRounded
+				fontSize="small"
+				sx={{ color: 'primary.main', marginTop: 0.25 }}
+			/>
 			<Typography small>
 				{t.rich(kind === 'link' ? 'fromLink' : 'fromFile', {
 					strong: (chunks) => <strong>{chunks}</strong>,

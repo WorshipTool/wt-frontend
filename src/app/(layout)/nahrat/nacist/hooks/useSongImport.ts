@@ -43,7 +43,9 @@ export function normaliseUrl(value: string): string {
 	return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
 }
 
-function problemForResult(event: GeneralParserResultEvent): ImportProblem | null {
+function problemForResult(
+	event: GeneralParserResultEvent,
+): ImportProblem | null {
 	switch (event.status) {
 		case 'done':
 			return event.songs.length > 0 ? null : 'notFound'
@@ -64,7 +66,8 @@ function problemForHttp(status: number, source: ImportSource): ImportProblem {
 	return 'service'
 }
 
-const newId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+const newId = () =>
+	`${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
 
 /**
  * The import flow's state machine: idle → running (step by step, from the
@@ -75,9 +78,10 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 	const { user } = useAuth()
 	const [state, setState] = useState<ImportState>(initial)
 	const abortRef = useRef<AbortController | null>(null)
-	const lastInputRef = useRef<{ input: GeneralParserInput; source: ImportSource } | null>(
-		null
-	)
+	const lastInputRef = useRef<{
+		input: GeneralParserInput
+		source: ImportSource
+	} | null>(null)
 
 	// a reload mid-parse loses the request — the result only arrives on the stream
 	useBlockAppReload(state.phase === 'running', 'importing a song')
@@ -109,7 +113,7 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 					setState((s) =>
 						s.phase === 'running' && !s.seen.includes(event.step)
 							? { ...s, seen: [...s.seen, event.step] }
-							: s
+							: s,
 					)
 				} else {
 					outcome = event
@@ -151,7 +155,7 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 			// an `error` line, or a stream that ended without a result
 			setState({ phase: 'problem', source, problem: problem ?? 'stream' })
 		},
-		[user?.token]
+		[user?.token],
 	)
 
 	const importUrl = useCallback(
@@ -159,12 +163,12 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 			const url = normaliseUrl(value)
 			if (url) run({ url }, { kind: 'link', label: url })
 		},
-		[run]
+		[run],
 	)
 
 	const importFile = useCallback(
 		(file: File) => run({ file }, { kind: 'file', label: file.name }),
-		[run]
+		[run],
 	)
 
 	const retry = useCallback(() => {

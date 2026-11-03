@@ -886,7 +886,9 @@
 			},
 			"steps": {
 				"detect": "Sprawdzam, co jest pod linkiem",
+				"detectFile": "Sprawdzam, co jest w pliku",
 				"fetch": "Pobieram zawartość",
+				"fetchFile": "Przesyłam plik",
 				"extract": "Szukam pieśni",
 				"ocr": "Odczytuję tekst ze zdjęcia",
 				"score": "Sprawdzam wynik",

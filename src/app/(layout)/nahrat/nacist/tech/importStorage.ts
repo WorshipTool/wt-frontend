@@ -65,7 +65,7 @@ export const saveImportResult = (result: StoredImportResult | null) =>
 export function markImportedSongSaved(
 	resultId: string,
 	index: number,
-	song: SavedSong
+	song: SavedSong,
 ) {
 	const result = loadImportResult()
 	if (!result || result.id !== resultId) return
