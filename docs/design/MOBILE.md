@@ -311,6 +311,33 @@ This is the rule that was broken for a long time: search was a *mode of the home
 page*, so the songs list had no search at all, two tabs pointed at one route, and
 "Hledat" on any other screen meant leaving that screen for home.
 
+## A file picker opens from the tap, and the file travels in memory
+
+The create menu's **Nahrát soubor** (behind `enable_general_parser`) opens the
+system file picker directly — no intermediate screen with a second "choose"
+button. A browser opens the picker only inside the gesture that asked for it,
+so the hidden `<input type="file">` is clicked synchronously from the tile's
+click handler (`useFilePicker`). Cancelling the picker changes nothing: you
+are still on the menu. Only a picked file navigates.
+
+The `File` cannot ride in a URL and should not: it waits in module state
+(`nahrat/nacist/tech/importHandoff`) for exactly as long as the navigation, the
+same idea as `searchHandoff`. A reload or a shared link finds nothing and
+opens the import screen empty.
+
+**Vložit odkaz** wants the caret in the link field on arrival, which is the
+keyboard problem from "The keyboard belongs to the tap": the tile calls
+`takeSearchKeyboard()` during its tap and the import screen's field takes the
+caret over and calls `releaseSearchKeyboard()`. Reuse that pair for any "go
+there and type" door rather than focusing from an effect.
+
+**Work happens on the screen, not in a popup.** Parsing shows inline as a step
+list (done ✓ / active spinner / still to come) with Zrušit; results and every
+"no songs" outcome replace the form on the same screen, and each outcome
+offers *Napsat ručně* so none of them is a dead end. The result list lives in
+`sessionStorage`, so returning from the editor shows it again with the saved
+song marked *Uloženo*.
+
 ## Screens that hold unsaved work
 
 A screen keeping user work in local state (a song being written, a playlist
