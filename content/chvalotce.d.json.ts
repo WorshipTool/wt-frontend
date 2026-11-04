@@ -904,7 +904,7 @@ declare const messages: {
 				"needsCheck": "Zkontroluj",
 				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
 				"continue": "Pokračovat s touto písní",
-				"loadAnother": "Načíst něco jiného"
+				"loadAnother": "Zkusit jiný odkaz nebo soubor"
 			},
 			"problem": {
 				"notFound": {

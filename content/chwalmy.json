@@ -901,7 +901,7 @@
 				"needsCheck": "Sprawdź",
 				"needsCheckHint": "Niektóre akordy lub wersy mogą się nie zgadzać – przejrzyj je w edytorze.",
 				"continue": "Kontynuuj z tą pieśnią",
-				"loadAnother": "Wczytaj coś innego"
+				"loadAnother": "Spróbuj inny link lub plik"
 			},
 			"problem": {
 				"notFound": {

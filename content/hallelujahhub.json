@@ -640,7 +640,7 @@
 				"needsCheck": "Check it",
 				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
 				"continue": "Continue with this song",
-				"loadAnother": "Import something else"
+				"loadAnother": "Try another link or file"
 			},
 			"problem": {
 				"notFound": {

@@ -45,11 +45,16 @@ export default function ImportResults(props: ImportResultsProps) {
 		)
 	}
 
-	const loadAnother = (
-		<Button variant="text" onClick={props.onReset} disableUppercase>
+	const loadAnotherButton = (fullWidth: boolean) => (
+		<Button
+			variant="outlined"
+			onClick={props.onReset}
+			sx={fullWidth ? { width: '100%' } : undefined}
+		>
 			{t('loadAnother')}
 		</Button>
 	)
+	const loadAnother = loadAnotherButton(false)
 
 	const header = (
 		<Box sx={{ minWidth: 0 }}>
@@ -162,7 +167,7 @@ export default function ImportResults(props: ImportResultsProps) {
 							},
 						})}
 					>
-						{loadAnother}
+						{loadAnotherButton(true)}
 					</Box>
 				</Box>
 
