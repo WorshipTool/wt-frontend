@@ -901,7 +901,12 @@
 				"needsCheck": "Sprawdź",
 				"needsCheckHint": "Niektóre akordy lub wersy mogą się nie zgadzać – przejrzyj je w edytorze.",
 				"continue": "Kontynuuj z tą pieśnią",
-				"loadAnother": "Spróbuj inny link lub plik"
+				"loadAnother": "Spróbuj inny link lub plik",
+				"resetConfirm": {
+					"title": "Odrzucić znalezione pieśni?",
+					"text": "Znalezione pieśni zostaną odrzucone i zaczniesz od nowa z innym linkiem lub plikiem.",
+					"confirm": "Odrzuć i zacznij od nowa"
+				}
 			},
 			"problem": {
 				"notFound": {

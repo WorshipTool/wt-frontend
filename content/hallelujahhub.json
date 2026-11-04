@@ -640,7 +640,12 @@
 				"needsCheck": "Check it",
 				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
 				"continue": "Continue with this song",
-				"loadAnother": "Try another link or file"
+				"loadAnother": "Try another link or file",
+				"resetConfirm": {
+					"title": "Discard the found songs?",
+					"text": "The found songs will be discarded and you'll start again with another link or file.",
+					"confirm": "Discard and start again"
+				}
 			},
 			"problem": {
 				"notFound": {

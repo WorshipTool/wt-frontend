@@ -2,6 +2,7 @@
 
 import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import PageAction from '@/common/components/PageAction/PageAction'
+import Popup from '@/common/components/Popup/Popup'
 import { Box, Button, Typography } from '@/common/ui'
 import { ArrowForwardRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
@@ -29,6 +30,8 @@ type ImportResultsProps = {
  */
 export default function ImportResults(props: ImportResultsProps) {
 	const t = useTranslations('upload.import.result')
+	const tCommon = useTranslations('common')
+	const [confirmReset, setConfirmReset] = useState(false)
 	const { songs } = props.result
 	const count = songs.length
 	const [selected, setSelected] = useState(0)
@@ -48,13 +51,38 @@ export default function ImportResults(props: ImportResultsProps) {
 	const loadAnotherButton = (fullWidth: boolean) => (
 		<Button
 			variant="outlined"
-			onClick={props.onReset}
+			onClick={() => setConfirmReset(true)}
 			sx={fullWidth ? { width: '100%' } : undefined}
 		>
 			{t('loadAnother')}
 		</Button>
 	)
 	const loadAnother = loadAnotherButton(false)
+
+	// Starting again throws the found songs away — ask first
+	const resetPopup = (
+		<Popup
+			open={confirmReset}
+			onClose={() => setConfirmReset(false)}
+			title={t('resetConfirm.title')}
+			subtitle={t('resetConfirm.text')}
+			width={400}
+			actions={[
+				<Button type="reset" variant="outlined" key="cancel">
+					{tCommon('cancel')}
+				</Button>,
+				<Button
+					key="reset"
+					onClick={() => {
+						setConfirmReset(false)
+						props.onReset()
+					}}
+				>
+					{t('resetConfirm.confirm')}
+				</Button>,
+			]}
+		/>
+	)
 
 	const header = (
 		<Box sx={{ minWidth: 0 }}>
@@ -85,6 +113,7 @@ export default function ImportResults(props: ImportResultsProps) {
 	if (count === 1)
 		return (
 			<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+				{resetPopup}
 				<Box
 					sx={{
 						display: 'flex',
@@ -126,6 +155,7 @@ export default function ImportResults(props: ImportResultsProps) {
 
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+			{resetPopup}
 			{header}
 
 			<Box

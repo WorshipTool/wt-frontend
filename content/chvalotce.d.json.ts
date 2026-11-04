@@ -904,7 +904,12 @@ declare const messages: {
 				"needsCheck": "Zkontroluj",
 				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
 				"continue": "Pokračovat s touto písní",
-				"loadAnother": "Zkusit jiný odkaz nebo soubor"
+				"loadAnother": "Zkusit jiný odkaz nebo soubor",
+				"resetConfirm": {
+					"title": "Zahodit nalezené písně?",
+					"text": "Nalezené písně se zahodí a začneš znovu s jiným odkazem nebo souborem.",
+					"confirm": "Zahodit a začít znovu"
+				}
 			},
 			"problem": {
 				"notFound": {
