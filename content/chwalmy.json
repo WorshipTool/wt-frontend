@@ -867,6 +867,7 @@
 		},
 		"import": {
 			"title": "Wczytaj pieśń",
+			"subtitle": "Ze strony ze śpiewnikiem, PDF, zdjęcia lub filmu na YouTube — przed zapisaniem ją sprawdzisz.",
 			"tiles": {
 				"uploadFile": "Prześlij plik",
 				"uploadFileSubtitle": "PDF lub zdjęcie",

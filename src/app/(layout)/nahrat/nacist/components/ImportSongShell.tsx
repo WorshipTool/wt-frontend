@@ -36,9 +36,12 @@ export default function ImportSongShell({
 				gap: 3,
 			}}
 		>
-			<Typography variant="h4" strong={600}>
-				{t('title')}
-			</Typography>
+			<Box>
+				<Typography variant="h4" strong={600}>
+					{t('title')}
+				</Typography>
+				<Typography color="grey.600">{t('subtitle')}</Typography>
+			</Box>
 			{children}
 		</Box>
 	)
