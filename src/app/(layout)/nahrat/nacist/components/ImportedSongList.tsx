@@ -105,14 +105,12 @@ export default function ImportedSongList(props: ImportedSongListProps) {
 											{firstLyricLine(song.sheetData)}
 										</Typography>
 									</Box>
-									<CheckRounded
-										aria-hidden
-										sx={{
-											color: 'primary.main',
-											flexShrink: 0,
-											visibility: chosen ? 'visible' : 'hidden',
-										}}
-									/>
+									{chosen && (
+										<CheckRounded
+											aria-hidden
+											sx={{ color: 'primary.main', flexShrink: 0 }}
+										/>
+									)}
 								</Box>
 							</Box>
 						</Fragment>
