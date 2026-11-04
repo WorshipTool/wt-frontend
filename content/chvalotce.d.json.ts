@@ -903,8 +903,6 @@ declare const messages: {
 				"untitled": "Bez názvu",
 				"needsCheck": "Zkontroluj",
 				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
-				"expand": "rozbalit",
-				"collapse": "sbalit",
 				"continue": "Pokračovat s touto písní",
 				"loadAnother": "Načíst něco jiného"
 			},

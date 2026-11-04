@@ -639,8 +639,6 @@
 				"untitled": "Untitled",
 				"needsCheck": "Check it",
 				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
-				"expand": "expand",
-				"collapse": "collapse",
 				"continue": "Continue with this song",
 				"loadAnother": "Import something else"
 			},

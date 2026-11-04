@@ -3,27 +3,23 @@
 import { GeneralParserSong } from '@/api/general-parser/generalParser'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
-import { Box, Button, Typography } from '@/common/ui'
+import { Box, Typography } from '@/common/ui'
 import { CustomChip } from '@/common/ui/CustomChip/CustomChip'
 import { WarningAmberRounded } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useMemo } from 'react'
 
 /** Below this the song gets a "check it" chip. The number itself is never shown. */
 export const NEEDS_CHECK_BELOW = 0.7
-
-/** How much of the sheet the collapsed preview shows — a verse or so. */
-const PREVIEW_HEIGHT = 220
 
 type ImportedSongCardProps = {
 	song: GeneralParserSong
 }
 
 /**
- * The chosen song's preview: its title, the first lines rendered the way the
- * song page renders a sheet (chords above the words) and "rozbalit" for the
- * rest. It has no buttons — the one way on, "Pokračovat s touto písní", sits
+ * The chosen song's preview: its title and the whole sheet, rendered the way
+ * the song page renders it (chords above the words), always in full. It has no buttons — the one way on, "Pokračovat s touto písní", sits
  * outside it (see ImportResults) and always means the song shown here. The
  * raw sheet text is never offered: the editor is where it gets touched.
  */
@@ -35,19 +31,8 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 	)
 	const needsCheck = props.song.confidence < NEEDS_CHECK_BELOW
 
-	const [expanded, setExpanded] = useState(false)
-	const [overflows, setOverflows] = useState(false)
-	const previewRef = useRef<HTMLDivElement>(null)
-
-	useLayoutEffect(() => {
-		const el = previewRef.current
-		if (el) setOverflows(el.scrollHeight > PREVIEW_HEIGHT + 1)
-	}, [sheet])
-
-	const collapsed = overflows && !expanded
-
 	return (
-		<Box sx={{ ...SURFACE_CARD_SX, overflow: 'hidden' }}>
+		<Box sx={SURFACE_CARD_SX}>
 			<Box
 				sx={{
 					display: 'flex',
@@ -81,41 +66,9 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 				</Typography>
 			)}
 
-			<Box
-				ref={previewRef}
-				sx={(theme) => ({
-					position: 'relative',
-					paddingX: 2,
-					maxHeight: collapsed ? PREVIEW_HEIGHT : 'none',
-					overflow: 'hidden',
-					'&::after': collapsed
-						? {
-								content: '""',
-								position: 'absolute',
-								left: 0,
-								right: 0,
-								bottom: 0,
-								height: theme.spacing(6),
-								background: `linear-gradient(transparent, ${theme.palette.surface.card})`,
-							}
-						: undefined,
-				})}
-			>
+			<Box sx={{ paddingX: 2, paddingBottom: 2 }}>
 				<SheetDisplay sheet={sheet} hideChords={false} variant="default" />
 			</Box>
-
-			{overflows && (
-				<Box sx={{ paddingX: 1, display: 'flex' }}>
-					<Button
-						variant="text"
-						size="small"
-						onClick={() => setExpanded((e) => !e)}
-						disableUppercase
-					>
-						{expanded ? t('collapse') : t('expand')}
-					</Button>
-				</Box>
-			)}
 		</Box>
 	)
 }
