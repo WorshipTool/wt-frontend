@@ -23,8 +23,9 @@ type ImportResultsProps = {
  * One button, outside the cards, always meaning the song in the preview:
  * on a desktop under the list in the left column (the preview on the right
  * has no buttons), on a phone docked above the tab bar through `PageAction`,
- * so it is reachable without scrolling past the preview. One song has the same
- * shape without the list. The first song starts chosen.
+ * so it is reachable without scrolling past the preview. One song has no list
+ * and no columns: the song across the page, the button under it on the right.
+ * The first song starts chosen.
  */
 export default function ImportResults(props: ImportResultsProps) {
 	const t = useTranslations('upload.import.result')
@@ -50,16 +51,56 @@ export default function ImportResults(props: ImportResultsProps) {
 		</Button>
 	)
 
+	const header = (
+		<Box sx={{ minWidth: 0 }}>
+			<Typography variant="h5" strong={600}>
+				{t('found', { count })}
+			</Typography>
+			<Typography small color="grey.600" noWrap>
+				{t('foundFrom', { count, source: props.result.source.label })}
+			</Typography>
+		</Box>
+	)
+
+	const continueButton = (fullWidth: boolean) => (
+		<PageAction>
+			<Button
+				endIcon={<ArrowForwardRounded />}
+				onClick={() => props.onContinue(selected)}
+				sx={fullWidth ? { width: '100%' } : undefined}
+			>
+				{t('continue')}
+			</Button>
+		</PageAction>
+	)
+
+	// One song: nothing to pick, so no two columns — the song across the page and
+	// under it the way on (right) and the quiet way out (left). On a phone the
+	// button docks above the tab bar as with more songs.
+	if (count === 1)
+		return (
+			<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+				{header}
+				<ImportedSongCard song={songs[0]} />
+				<Box
+					sx={(theme) => ({
+						display: 'flex',
+						justifyContent: 'center',
+						[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						},
+					})}
+				>
+					{loadAnother}
+					{continueButton(false)}
+				</Box>
+			</Box>
+		)
+
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-			<Box sx={{ minWidth: 0 }}>
-				<Typography variant="h5" strong={600}>
-					{t('found', { count })}
-				</Typography>
-				<Typography small color="grey.600" noWrap>
-					{t('foundFrom', { count, source: props.result.source.label })}
-				</Typography>
-			</Box>
+			{header}
 
 			<Box
 				sx={(theme) => ({
@@ -85,22 +126,12 @@ export default function ImportResults(props: ImportResultsProps) {
 						},
 					})}
 				>
-					{count > 1 && (
-						<ImportedSongList
-							songs={songs}
-							selected={selected}
-							onSelect={select}
-						/>
-					)}
-					<PageAction>
-						<Button
-							endIcon={<ArrowForwardRounded />}
-							onClick={() => props.onContinue(selected)}
-							sx={{ width: '100%' }}
-						>
-							{t('continue')}
-						</Button>
-					</PageAction>
+					<ImportedSongList
+						songs={songs}
+						selected={selected}
+						onSelect={select}
+					/>
+					{continueButton(true)}
 					<Box
 						sx={(theme) => ({
 							display: 'none',
