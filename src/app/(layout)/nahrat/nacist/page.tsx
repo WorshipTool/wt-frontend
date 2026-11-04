@@ -4,6 +4,7 @@ import {
 	releaseSearchKeyboard,
 	takeSearchKeyboard,
 } from '@/app/(layout)/pisne/searchHandoff'
+import { PAGE_ACTION_RESERVE } from '@/common/components/PageAction/PageAction'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
 import { useEffect, useRef, useState } from 'react'
@@ -12,7 +13,11 @@ import ImportSongShell from './components/ImportSongShell'
 import { useFilePicker } from './components/useFilePicker'
 import { useSongImport } from './hooks/useSongImport'
 import { consumeImportIntent, ImportIntent } from './tech/importHandoff'
-import { handOffToEditor, loadImportResult } from './tech/importStorage'
+import {
+	handOffToEditor,
+	loadImportResult,
+	saveImportResult,
+} from './tech/importStorage'
 
 export default SmartPage(ImportSong, ['middleWidth'])
 
@@ -77,7 +82,9 @@ function ImportSong() {
 		state.phase === 'done' ? state.result.songs[index] : undefined
 
 	return (
-		<ImportSongShell>
+		<ImportSongShell
+			bottomInset={state.phase === 'done' ? PAGE_ACTION_RESERVE : undefined}
+		>
 			{picker.input}
 			<ImportSongBody
 				state={state}
@@ -108,8 +115,10 @@ function ImportSong() {
 						title: song.title ?? '',
 						sheetData: song.sheetData,
 						sourceKind: state.result.source.kind,
-						origin: { resultId: state.result.id, index },
 					})
+					// Final: the user goes on with this one song. Forget the list,
+					// so Back from the editor lands on an empty import page.
+					saveImportResult(null)
 					navigate('writeSong', {})
 				}}
 				urlInputRef={urlInputRef}

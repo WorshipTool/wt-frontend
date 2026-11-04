@@ -6,6 +6,14 @@ import { Box } from '@/common/ui'
 import { ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+/**
+ * How tall the docked strip is on a phone: its padding (1.5u above and below),
+ * a medium Button (36.5px) and the 1px hairline on top. A page whose shell
+ * scrolls under the strip passes this as `MobileAppHeader`'s `bottomInset`, so
+ * no line of content ends up hidden behind the action.
+ */
+export const PAGE_ACTION_RESERVE = 63
+
 type PageActionProps = {
 	/** The action itself — a Button, or whatever the page already had. */
 	children: ReactNode

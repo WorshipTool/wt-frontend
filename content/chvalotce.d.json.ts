@@ -905,9 +905,7 @@ declare const messages: {
 				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
 				"expand": "rozbalit",
 				"collapse": "sbalit",
-				"checkAndSave": "Zkontrolovat a uložit",
-				"saved": "Uloženo",
-				"open": "Otevřít",
+				"continue": "Pokračovat s touto písní",
 				"loadAnother": "Načíst něco jiného"
 			},
 			"problem": {
@@ -961,8 +959,7 @@ declare const messages: {
 			},
 			"editor": {
 				"fromLink": "<strong>Načteno z odkazu</strong> — zkontroluj text a akordy.",
-				"fromFile": "<strong>Načteno ze souboru</strong> — zkontroluj text a akordy.",
-				"saved": "Píseň uložena."
+				"fromFile": "<strong>Načteno ze souboru</strong> — zkontroluj text a akordy."
 			}
 		}
 	},

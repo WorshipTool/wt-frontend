@@ -1,17 +1,18 @@
 'use client'
 
 import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
+import PageAction from '@/common/components/PageAction/PageAction'
 import { Box, Button, Typography } from '@/common/ui'
+import { ArrowForwardRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
 import { StoredImportResult } from '../tech/importStorage'
-import { defaultSongIndex } from '../tech/sheetPreview'
 import ImportedSongCard from './ImportedSongCard'
 import ImportedSongList from './ImportedSongList'
 
 type ImportResultsProps = {
 	result: StoredImportResult
-	/** Continue with this song — into the editor. */
+	/** Continue with this song — into the editor. Final: the list is dropped. */
 	onContinue: (index: number) => void
 	onReset: () => void
 }
@@ -19,15 +20,17 @@ type ImportResultsProps = {
 /**
  * The found songs; the user picks one and continues with it.
  *
- * One song is shown straight away. Several are a list to choose from with
- * the chosen one's preview: beside the list on a desktop (master–detail),
- * under it on a phone. The first song not saved yet starts chosen.
+ * One button, outside the cards, always meaning the song in the preview:
+ * on a desktop under the list in the left column (the preview on the right
+ * has no buttons), on a phone docked above the tab bar through `PageAction`,
+ * so it is reachable without scrolling past the preview. One song has the same
+ * shape without the list. The first song starts chosen.
  */
 export default function ImportResults(props: ImportResultsProps) {
 	const t = useTranslations('upload.import.result')
-	const { songs, saved } = props.result
+	const { songs } = props.result
 	const count = songs.length
-	const [selected, setSelected] = useState(() => defaultSongIndex(count, saved))
+	const [selected, setSelected] = useState(0)
 	const previewRef = useRef<HTMLDivElement>(null)
 
 	const select = (index: number) => {
@@ -41,15 +44,10 @@ export default function ImportResults(props: ImportResultsProps) {
 		)
 	}
 
-	const preview = (
-		<Box ref={previewRef} sx={{ minWidth: 0 }}>
-			<ImportedSongCard
-				key={selected}
-				song={songs[selected]}
-				saved={saved[selected]}
-				onContinue={() => props.onContinue(selected)}
-			/>
-		</Box>
+	const loadAnother = (
+		<Button variant="text" onClick={props.onReset} disableUppercase>
+			{t('loadAnother')}
+		</Button>
 	)
 
 	return (
@@ -63,39 +61,74 @@ export default function ImportResults(props: ImportResultsProps) {
 				</Typography>
 			</Box>
 
-			{count > 1 ? (
+			<Box
+				sx={(theme) => ({
+					display: 'flex',
+					flexDirection: 'column',
+					gap: 2,
+					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
+						display: 'grid',
+						gridTemplateColumns: 'minmax(240px, 2fr) minmax(0, 3fr)',
+						alignItems: 'start',
+					},
+				})}
+			>
+				{/* the left column on a desktop; on a phone its parts join the page's
+				    column (the button docks, so it leaves no empty slot behind) */}
 				<Box
 					sx={(theme) => ({
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 2,
+						display: 'contents',
 						[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-							display: 'grid',
-							gridTemplateColumns: 'minmax(240px, 2fr) minmax(0, 3fr)',
-							alignItems: 'start',
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 2,
 						},
 					})}
 				>
-					<ImportedSongList
-						songs={songs}
-						saved={saved}
-						selected={selected}
-						onSelect={select}
-					/>
-					{preview}
+					{count > 1 && (
+						<ImportedSongList
+							songs={songs}
+							selected={selected}
+							onSelect={select}
+						/>
+					)}
+					<PageAction>
+						<Button
+							endIcon={<ArrowForwardRounded />}
+							onClick={() => props.onContinue(selected)}
+							sx={{ width: '100%' }}
+						>
+							{t('continue')}
+						</Button>
+					</PageAction>
+					<Box
+						sx={(theme) => ({
+							display: 'none',
+							justifyContent: 'center',
+							[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
+								display: 'flex',
+							},
+						})}
+					>
+						{loadAnother}
+					</Box>
 				</Box>
-			) : (
-				preview
-			)}
 
-			<Button
-				variant="text"
-				onClick={props.onReset}
-				disableUppercase
-				sx={{ alignSelf: 'center' }}
+				<Box ref={previewRef} sx={{ minWidth: 0 }}>
+					<ImportedSongCard key={selected} song={songs[selected]} />
+				</Box>
+			</Box>
+
+			{/* phone: the quiet way out under the preview; the button is docked */}
+			<Box
+				sx={(theme) => ({
+					display: 'flex',
+					justifyContent: 'center',
+					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: { display: 'none' },
+				})}
 			>
-				{t('loadAnother')}
-			</Button>
+				{loadAnother}
+			</Box>
 		</Box>
 	)
 }

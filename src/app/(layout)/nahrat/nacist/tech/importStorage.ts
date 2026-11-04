@@ -21,22 +21,16 @@ export type ImportSource = {
 	label: string
 }
 
-export type SavedSong = { hex: string; alias: string }
-
 export type StoredImportResult = {
 	id: string
 	source: ImportSource
 	songs: GeneralParserSong[]
-	/** Songs already saved from this result, by index. */
-	saved: Record<number, SavedSong>
 }
 
 export type EditorHandoff = {
 	title: string
 	sheetData: string
 	sourceKind: ImportSourceKind
-	/** Which result card it came from, so a save can mark it. */
-	origin: { resultId: string; index: number }
 }
 
 function read<T>(key: string): T | null {
@@ -61,16 +55,6 @@ export const loadImportResult = () => read<StoredImportResult>(RESULT_KEY)
 
 export const saveImportResult = (result: StoredImportResult | null) =>
 	write(RESULT_KEY, result)
-
-export function markImportedSongSaved(
-	resultId: string,
-	index: number,
-	song: SavedSong,
-) {
-	const result = loadImportResult()
-	if (!result || result.id !== resultId) return
-	saveImportResult({ ...result, saved: { ...result.saved, [index]: song } })
-}
 
 export const handOffToEditor = (handoff: EditorHandoff) =>
 	write(EDITOR_KEY, handoff)

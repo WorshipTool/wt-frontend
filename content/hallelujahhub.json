@@ -641,9 +641,7 @@
 				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
 				"expand": "expand",
 				"collapse": "collapse",
-				"checkAndSave": "Check and save",
-				"saved": "Saved",
-				"open": "Open",
+				"continue": "Continue with this song",
 				"loadAnother": "Import something else"
 			},
 			"problem": {
@@ -697,8 +695,7 @@
 			},
 			"editor": {
 				"fromLink": "<strong>Imported from a link</strong> — check the lyrics and chords.",
-				"fromFile": "<strong>Imported from a file</strong> — check the lyrics and chords.",
-				"saved": "Song saved."
+				"fromFile": "<strong>Imported from a file</strong> — check the lyrics and chords."
 			}
 		}
 	},

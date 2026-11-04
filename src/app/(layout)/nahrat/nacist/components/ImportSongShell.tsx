@@ -12,15 +12,22 @@ import { useTranslations } from 'next-intl'
  */
 export default function ImportSongShell({
 	children,
+	bottomInset,
 }: {
 	children: React.ReactNode
+	/** Room kept free above the tab bar for a docked action (phone only). */
+	bottomInset?: number
 }) {
 	const t = useTranslations('upload.import')
 	const phone = useIsPhone()
 
 	if (phone) {
 		return (
-			<MobileAppHeader title={t('title')} backTo="addMenu">
+			<MobileAppHeader
+				title={t('title')}
+				backTo="addMenu"
+				bottomInset={bottomInset}
+			>
 				<Box sx={{ paddingTop: 1, paddingBottom: 2 }}>{children}</Box>
 			</MobileAppHeader>
 		)

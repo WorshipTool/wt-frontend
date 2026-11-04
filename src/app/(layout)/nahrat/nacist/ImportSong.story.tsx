@@ -40,12 +40,9 @@ const SONGS = [
 	},
 ]
 
-const done = (
-	songs: typeof SONGS,
-	saved: Record<number, { hex: string; alias: string }> = {},
-): ImportState => ({
+const done = (songs: typeof SONGS): ImportState => ({
 	phase: 'done',
-	result: { id: 'story', source: file, songs, saved },
+	result: { id: 'story', source: file, songs },
 })
 
 const noop = () => {}
@@ -83,7 +80,6 @@ const STATES: [string, ImportState][] = [
 	],
 	['1 song', done(SONGS.slice(0, 1))],
 	['3 songs (one needs a check)', done(SONGS)],
-	['3 songs, first saved', done(SONGS, { 0: { hex: 'abc', alias: 'rano' } })],
 	...PROBLEMS.map<[string, ImportState]>(([problem, source, seen]) => [
 		problem,
 		{ phase: 'problem', source, problem, seen },

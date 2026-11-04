@@ -902,9 +902,7 @@
 				"needsCheckHint": "Niektóre akordy lub wersy mogą się nie zgadzać – przejrzyj je w edytorze.",
 				"expand": "rozwiń",
 				"collapse": "zwiń",
-				"checkAndSave": "Sprawdź i zapisz",
-				"saved": "Zapisano",
-				"open": "Otwórz",
+				"continue": "Kontynuuj z tą pieśnią",
 				"loadAnother": "Wczytaj coś innego"
 			},
 			"problem": {
@@ -958,8 +956,7 @@
 			},
 			"editor": {
 				"fromLink": "<strong>Wczytano z linku</strong> — sprawdź tekst i akordy.",
-				"fromFile": "<strong>Wczytano z pliku</strong> — sprawdź tekst i akordy.",
-				"saved": "Pieśń zapisana."
+				"fromFile": "<strong>Wczytano z pliku</strong> — sprawdź tekst i akordy."
 			}
 		}
 	},

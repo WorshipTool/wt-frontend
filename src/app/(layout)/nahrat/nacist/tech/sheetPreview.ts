@@ -13,15 +13,3 @@ export function firstLyricLine(sheetData: string): string {
 	}
 	return ''
 }
-
-/**
- * Which found song is chosen when the list opens: the first one not saved yet,
- * so coming back from saving one moves on to the next; the first when all are.
- */
-export function defaultSongIndex(
-	count: number,
-	saved: Record<number, unknown>,
-): number {
-	for (let i = 0; i < count; i++) if (!saved[i]) return i
-	return 0
-}

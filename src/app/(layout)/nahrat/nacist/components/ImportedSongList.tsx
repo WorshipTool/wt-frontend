@@ -13,13 +13,11 @@ import { alpha } from '@/common/ui/mui'
 import { CheckRounded, WarningAmberRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { Fragment } from 'react'
-import { SavedSong } from '../tech/importStorage'
 import { firstLyricLine } from '../tech/sheetPreview'
 import { NEEDS_CHECK_BELOW } from './ImportedSongCard'
 
 type ImportedSongListProps = {
 	songs: GeneralParserSong[]
-	saved: Record<number, SavedSong>
 	selected: number
 	onSelect: (index: number) => void
 }
@@ -27,8 +25,9 @@ type ImportedSongListProps = {
 /**
  * The found songs as one group of rows — the app's list language (GroupCard,
  * the note tile, inset hairlines), so it reads like a song list anywhere else.
- * Each row: title, the first lyric line, and a chip when it was saved or needs
- * a check. The chosen row is a tint and a tick, as in the song picker.
+ * Each row: title, a "Zkontroluj" chip under it when the song needs a check
+ * (under, not beside, so it never squeezes the lyric line), and the first
+ * lyric line. The chosen row is a tint and a tick, as in the song picker.
  */
 export default function ImportedSongList(props: ImportedSongListProps) {
 	const t = useTranslations('upload.import.result')
@@ -38,7 +37,6 @@ export default function ImportedSongList(props: ImportedSongListProps) {
 			<Box component="ul" sx={{ listStyle: 'none', margin: 0, padding: 0 }}>
 				{props.songs.map((song, index) => {
 					const chosen = index === props.selected
-					const saved = props.saved[index]
 					return (
 						<Fragment key={`${song.source.index}-${index}`}>
 							{index > 0 && <GroupDivider />}
@@ -84,25 +82,21 @@ export default function ImportedSongList(props: ImportedSongListProps) {
 										>
 											{song.title || t('untitled')}
 										</Typography>
+										{song.confidence < NEEDS_CHECK_BELOW && (
+											<Box
+												sx={{ display: 'flex', marginY: 0.5, paddingLeft: 0.5 }}
+											>
+												<CustomChip
+													color="warning.dark"
+													icon={<WarningAmberRounded />}
+													label={t('needsCheck')}
+												/>
+											</Box>
+										)}
 										<Typography small color="grey.600" noWrap>
 											{firstLyricLine(song.sheetData)}
 										</Typography>
 									</Box>
-									{saved ? (
-										<CustomChip
-											color="success.dark"
-											icon={<CheckRounded />}
-											label={t('saved')}
-										/>
-									) : (
-										song.confidence < NEEDS_CHECK_BELOW && (
-											<CustomChip
-												color="warning.dark"
-												icon={<WarningAmberRounded />}
-												label={t('needsCheck')}
-											/>
-										)
-									)}
 									<CheckRounded
 										aria-hidden
 										sx={{

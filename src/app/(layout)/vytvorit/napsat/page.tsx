@@ -5,7 +5,6 @@ import { PostCreateVariantOutDto } from '@/api/generated'
 import {
 	consumeEditorHandoff,
 	EditorHandoff,
-	markImportedSongSaved,
 } from '@/app/(layout)/nahrat/nacist/tech/importStorage'
 import WrittenPreview from '@/app/(layout)/vytvorit/napsat/components/WrittenPreview'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
@@ -17,9 +16,7 @@ import { styled } from '@/common/ui/mui'
 import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
-import { hasInAppHistory } from '@/routes/history/inAppHistory'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
 import { useSnackbar } from 'notistack'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -62,7 +59,6 @@ function Create() {
 	// mount — session storage does not exist on the server — and the editors are
 	// keyed on it, so they remount with the imported text as their start value.
 	const [imported, setImported] = useState<EditorHandoff | null>(null)
-	const router = useRouter()
 	const { enqueueSnackbar } = useSnackbar()
 	useEffect(() => {
 		const handoff = consumeEditorHandoff()
@@ -113,21 +109,6 @@ function Create() {
 			},
 			(result) => {
 				const a = parseVariantAlias(result.alias as VariantPackAlias)
-				if (imported) {
-					// back to the import's result list, where the card now says
-					// "Uloženo" — a file can hold several songs still to save
-					markImportedSongSaved(
-						imported.origin.resultId,
-						imported.origin.index,
-						{ hex: a.hex, alias: a.alias }
-					)
-					setTitle('')
-					setSheetData('')
-					enqueueSnackbar(t('import.editor.saved'), { variant: 'success' })
-					if (hasInAppHistory()) router.back()
-					else navigate('importSong', {}, { replace: true })
-					return
-				}
 				navigate(
 					'variant',
 					{

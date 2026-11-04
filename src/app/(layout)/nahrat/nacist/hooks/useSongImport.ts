@@ -152,7 +152,6 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 						id: newId(),
 						source,
 						songs: final.songs,
-						saved: {},
 					}
 					saveImportResult(result)
 					setState({ phase: 'done', result })

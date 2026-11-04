@@ -1,16 +1,14 @@
 'use client'
 
 import { GeneralParserSong } from '@/api/general-parser/generalParser'
-import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, Button, Typography } from '@/common/ui'
 import { CustomChip } from '@/common/ui/CustomChip/CustomChip'
-import { CheckRounded, WarningAmberRounded } from '@mui/icons-material'
+import { WarningAmberRounded } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { SavedSong } from '../tech/importStorage'
 
 /** Below this the song gets a "check it" chip. The number itself is never shown. */
 export const NEEDS_CHECK_BELOW = 0.7
@@ -20,16 +18,14 @@ const PREVIEW_HEIGHT = 220
 
 type ImportedSongCardProps = {
 	song: GeneralParserSong
-	saved?: SavedSong
-	onContinue: () => void
 }
 
 /**
- * The chosen song: its title, the first lines rendered the way the song page
- * renders a sheet (chords above the words), "rozbalit" for the rest, and one
- * way on — "Zkontrolovat a uložit", into the editor. The raw sheet text is
- * never offered (no copy): the editor is where it gets touched. A saved song
- * trades the button for a link to the saved song.
+ * The chosen song's preview: its title, the first lines rendered the way the
+ * song page renders a sheet (chords above the words) and "rozbalit" for the
+ * rest. It has no buttons — the one way on, "Pokračovat s touto písní", sits
+ * outside it (see ImportResults) and always means the song shown here. The
+ * raw sheet text is never offered: the editor is where it gets touched.
  */
 export default function ImportedSongCard(props: ImportedSongCardProps) {
 	const t = useTranslations('upload.import.result')
@@ -66,24 +62,16 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 				<Typography variant="h6" strong={600} sx={{ flex: 1, minWidth: 0 }}>
 					{props.song.title || t('untitled')}
 				</Typography>
-				{props.saved ? (
+				{needsCheck && (
 					<CustomChip
-						color="success.dark"
-						icon={<CheckRounded />}
-						label={t('saved')}
+						color="warning.dark"
+						icon={<WarningAmberRounded />}
+						label={t('needsCheck')}
 					/>
-				) : (
-					needsCheck && (
-						<CustomChip
-							color="warning.dark"
-							icon={<WarningAmberRounded />}
-							label={t('needsCheck')}
-						/>
-					)
 				)}
 			</Box>
 
-			{needsCheck && !props.saved && (
+			{needsCheck && (
 				<Typography
 					small
 					color="grey.700"
@@ -128,34 +116,6 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 					</Button>
 				</Box>
 			)}
-
-			<Box
-				sx={(theme) => ({
-					display: 'flex',
-					flexWrap: 'wrap',
-					gap: 1,
-					padding: 2,
-					paddingTop: 1,
-					'& > *': { flex: 1 },
-					// a desktop card is wide: buttons keep their own width, at the end
-					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-						justifyContent: 'flex-end',
-						'& > *': { flex: '0 0 auto' },
-					},
-				})}
-			>
-				{props.saved ? (
-					<Button
-						variant="outlined"
-						to="variant"
-						toParams={{ hex: props.saved.hex, alias: props.saved.alias }}
-					>
-						{t('open')}
-					</Button>
-				) : (
-					<Button onClick={props.onContinue}>{t('checkAndSave')}</Button>
-				)}
-			</Box>
 		</Box>
 	)
 }
