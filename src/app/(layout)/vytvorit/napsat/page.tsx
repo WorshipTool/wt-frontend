@@ -7,7 +7,6 @@ import {
 	EditorHandoff,
 	markImportedSongSaved,
 } from '@/app/(layout)/nahrat/nacist/tech/importStorage'
-import ImportedNotice from '@/app/(layout)/vytvorit/napsat/components/ImportedNotice'
 import WrittenPreview from '@/app/(layout)/vytvorit/napsat/components/WrittenPreview'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
@@ -63,16 +62,28 @@ function Create() {
 	// mount — session storage does not exist on the server — and the editors are
 	// keyed on it, so they remount with the imported text as their start value.
 	const [imported, setImported] = useState<EditorHandoff | null>(null)
+	const router = useRouter()
+	const { enqueueSnackbar } = useSnackbar()
 	useEffect(() => {
 		const handoff = consumeEditorHandoff()
 		if (!handoff) return
 		setImported(handoff)
 		setTitle(handoff.title)
 		setSheetData(handoff.sheetData)
+		// A snackbar, not a banner: the editor's layout stays exactly as when
+		// writing by hand (a banner pushed the phone toolbar under the tab bar).
+		enqueueSnackbar(
+			t.rich(
+				handoff.sourceKind === 'link'
+					? 'import.editor.fromLink'
+					: 'import.editor.fromFile',
+				{ strong: (chunks) => <strong>{chunks}</strong> }
+			),
+			{ variant: 'info' }
+		)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 	const editorKey = imported ? 'imported' : 'blank'
-	const router = useRouter()
-	const { enqueueSnackbar } = useSnackbar()
 
 	// an auto-update reload here would throw away whatever they've written
 	useBlockAppReload(title !== '' || sheetData !== '', 'writing a song')
@@ -144,13 +155,6 @@ function Create() {
 				key={editorKey}
 				startTitle={imported?.title}
 				startSheetData={imported?.sheetData}
-				notice={
-					imported && (
-						<Box sx={{ paddingBottom: 1 }}>
-							<ImportedNotice kind={imported.sourceKind} />
-						</Box>
-					)
-				}
 				onTitleChange={setTitle}
 				onSheetDataChange={setSheetData}
 				canCreate={
@@ -181,11 +185,6 @@ function Create() {
 							marginTop: 4,
 						}}
 					>
-						{imported && (
-							<Box sx={{ marginBottom: 2 }}>
-								<ImportedNotice kind={imported.sourceKind} />
-							</Box>
-						)}
 						<StyledContainer
 							sx={{
 								display: 'flex',

@@ -20,8 +20,6 @@ type WriteSongMobileProps = {
 	onCreate: () => void
 	startTitle?: string
 	startSheetData?: string
-	/** A note above the editor (e.g. "imported — check it"). */
-	notice?: React.ReactNode
 }
 
 /**
@@ -54,7 +52,6 @@ export default function WriteSongMobile(props: WriteSongMobileProps) {
 				</MobileHeaderPill>,
 			]}
 		>
-			{props.notice}
 			<MobileSongEditor
 				onTitleChange={props.onTitleChange}
 				onSheetDataChange={props.onSheetDataChange}
