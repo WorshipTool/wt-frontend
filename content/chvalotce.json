@@ -912,27 +912,27 @@
 			"problem": {
 				"notFound": {
 					"title": "Na stránce jsme píseň nenašli",
-					"text": "Stránka se otevřela, ale text s akordy na ní není. Zkus odkaz přímo na konkrétní píseň."
+					"text": "Zkus odkaz přímo na konkrétní píseň."
 				},
 				"notFoundFile": {
 					"title": "V souboru jsme píseň nenašli",
-					"text": "Soubor se otevřel, ale text s akordy v něm není."
+					"text": "Text s akordy v něm není."
 				},
 				"unavailable": {
 					"title": "Tohle zatím neumíme přečíst",
 					"text": "Tento typ stránky nebo souboru zatím nepodporujeme."
 				},
 				"failed": {
-					"title": "Stránku se nepodařilo otevřít — zkontroluj odkaz",
-					"text": "Odkaz nefunguje nebo stránka nepustila návštěvu. Ověř, že se ti otevře v prohlížeči."
+					"title": "Stránku se nepodařilo otevřít",
+					"text": "Ověř, že se ti odkaz otevře v prohlížeči."
 				},
 				"failedFile": {
 					"title": "Soubor se nepodařilo přečíst",
-					"text": "Soubor může být poškozený nebo zaheslovaný. Zkus jiný."
+					"text": "Může být poškozený nebo zaheslovaný."
 				},
 				"badInput": {
 					"title": "Tohle nevypadá jako odkaz",
-					"text": "Zkontroluj, že odkaz začíná https:// a vede na stránku s písní."
+					"text": "Odkaz má začínat https://."
 				},
 				"tooLarge": {
 					"title": "Soubor je moc velký",
@@ -940,19 +940,19 @@
 				},
 				"service": {
 					"title": "Načítání je teď nedostupné",
-					"text": "Problém je na naší straně. Zkus to prosím za pár minut."
+					"text": "Zkus to prosím za pár minut."
 				},
 				"stream": {
 					"title": "Spojení se přerušilo",
-					"text": "Načítání se nedokončilo. Zkus to prosím znovu."
+					"text": "Načítání se nedokončilo."
 				},
 				"login": {
-					"title": "Pro načtení písně se přihlas",
+					"title": "Pro načtení se přihlas",
 					"text": "Načítat z odkazu nebo souboru mohou jen přihlášení."
 				}
 			},
 			"actions": {
-				"otherLink": "Zkusit jiný odkaz",
+				"otherLink": "Vložit jiný odkaz",
 				"uploadInstead": "Nahrát PDF nebo fotku",
 				"editLink": "Upravit odkaz",
 				"otherFile": "Vybrat jiný soubor",

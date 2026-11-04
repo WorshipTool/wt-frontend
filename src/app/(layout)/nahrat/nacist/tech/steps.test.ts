@@ -40,6 +40,19 @@ describe('buildStepList', () => {
 	})
 })
 
+describe('buildStepList with a failure', () => {
+	it('fails the step where it stopped and promises nothing after it', () => {
+		expect(show(buildStepList(['detect', 'fetch'], 'link', true))).toEqual([
+			'detect:done',
+			'fetch:failed',
+		])
+	})
+
+	it('fails the first step when nothing was reported', () => {
+		expect(show(buildStepList([], 'file', true))).toEqual(['detect:failed'])
+	})
+})
+
 describe('addSeenStep', () => {
 	it('ignores a repeated step', () => {
 		expect(addSeenStep(['detect', 'fetch'], 'fetch')).toEqual([

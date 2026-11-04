@@ -18,6 +18,7 @@ import {
 	saveImportResult,
 	StoredImportResult,
 } from '../tech/importStorage'
+import { addSeenStep } from '../tech/steps'
 
 /** Why there are no songs to show. Each one has its own text and actions. */
 export type ImportProblem =
@@ -34,7 +35,13 @@ export type ImportState =
 	| { phase: 'idle' }
 	| { phase: 'running'; source: ImportSource; seen: GeneralParserStep[] }
 	| { phase: 'done'; result: StoredImportResult }
-	| { phase: 'problem'; source: ImportSource; problem: ImportProblem }
+	| {
+			phase: 'problem'
+			source: ImportSource
+			problem: ImportProblem
+			/** Steps the parser reported before it stopped; the next one failed. */
+			seen: GeneralParserStep[]
+	  }
 
 /** Accepts a pasted "zpevnik.cz/…" as well as a full https:// link. */
 export function normaliseUrl(value: string): string {
@@ -94,11 +101,11 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 			lastInputRef.current = { input, source }
 
 			if (!user?.token) {
-				setState({ phase: 'problem', source, problem: 'login' })
+				setState({ phase: 'problem', source, problem: 'login', seen: [] })
 				return
 			}
 			if ('file' in input && input.file.size > GENERAL_PARSER_MAX_FILE_BYTES) {
-				setState({ phase: 'problem', source, problem: 'tooLarge' })
+				setState({ phase: 'problem', source, problem: 'tooLarge', seen: [] })
 				return
 			}
 
@@ -107,14 +114,14 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 			setState({ phase: 'running', source, seen: [] })
 
 			let outcome: GeneralParserEvent | null = null
+			// kept here as well as in state: a problem carries where it stopped
+			let seen: GeneralParserStep[] = []
 			const onEvent = (event: GeneralParserEvent) => {
 				if (controller.signal.aborted) return
 				if (event.event === 'progress') {
-					setState((s) =>
-						s.phase === 'running' && !s.seen.includes(event.step)
-							? { ...s, seen: [...s.seen, event.step] }
-							: s,
-					)
+					seen = addSeenStep(seen, event.step)
+					const next = seen
+					setState((s) => (s.phase === 'running' ? { ...s, seen: next } : s))
 				} else {
 					outcome = event
 				}
@@ -153,7 +160,7 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 				}
 			}
 			// an `error` line, or a stream that ended without a result
-			setState({ phase: 'problem', source, problem: problem ?? 'stream' })
+			setState({ phase: 'problem', source, problem: problem ?? 'stream', seen })
 		},
 		[user?.token],
 	)

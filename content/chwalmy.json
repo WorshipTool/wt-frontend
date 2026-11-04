@@ -912,27 +912,27 @@
 			"problem": {
 				"notFound": {
 					"title": "Na stronie nie znaleźliśmy pieśni",
-					"text": "Strona się otworzyła, ale nie ma na niej tekstu z akordami. Spróbuj linku bezpośrednio do pieśni."
+					"text": "Spróbuj linku bezpośrednio do pieśni."
 				},
 				"notFoundFile": {
 					"title": "W pliku nie znaleźliśmy pieśni",
-					"text": "Plik się otworzył, ale nie ma w nim tekstu z akordami."
+					"text": "Nie ma w nim tekstu z akordami."
 				},
 				"unavailable": {
 					"title": "Tego jeszcze nie umiemy odczytać",
 					"text": "Ten rodzaj strony lub pliku nie jest jeszcze obsługiwany."
 				},
 				"failed": {
-					"title": "Nie udało się otworzyć strony — sprawdź link",
-					"text": "Link nie działa lub strona nas nie wpuściła. Sprawdź, czy otwiera się w przeglądarce."
+					"title": "Nie udało się otworzyć strony",
+					"text": "Sprawdź, czy link otwiera się w przeglądarce."
 				},
 				"failedFile": {
 					"title": "Nie udało się odczytać pliku",
-					"text": "Plik może być uszkodzony lub zabezpieczony hasłem. Spróbuj innego."
+					"text": "Może być uszkodzony lub zabezpieczony hasłem."
 				},
 				"badInput": {
 					"title": "To nie wygląda na link",
-					"text": "Sprawdź, czy link zaczyna się od https:// i prowadzi do strony z pieśnią."
+					"text": "Link powinien zaczynać się od https://."
 				},
 				"tooLarge": {
 					"title": "Plik jest za duży",
@@ -940,19 +940,19 @@
 				},
 				"service": {
 					"title": "Wczytywanie jest teraz niedostępne",
-					"text": "Problem leży po naszej stronie. Spróbuj ponownie za kilka minut."
+					"text": "Spróbuj ponownie za kilka minut."
 				},
 				"stream": {
 					"title": "Połączenie zostało przerwane",
-					"text": "Wczytywanie się nie dokończyło. Spróbuj ponownie."
+					"text": "Wczytywanie się nie dokończyło."
 				},
 				"login": {
-					"title": "Zaloguj się, aby wczytać pieśń",
-					"text": "Wczytywanie z linku lub pliku jest dostępne tylko dla zalogowanych."
+					"title": "Zaloguj się, aby wczytać",
+					"text": "Wczytywanie z linku lub pliku jest tylko dla zalogowanych."
 				}
 			},
 			"actions": {
-				"otherLink": "Spróbuj innego linku",
+				"otherLink": "Wklej inny link",
 				"uploadInstead": "Prześlij PDF lub zdjęcie",
 				"editLink": "Popraw link",
 				"otherFile": "Wybierz inny plik",

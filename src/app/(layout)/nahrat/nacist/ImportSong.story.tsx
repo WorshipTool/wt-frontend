@@ -1,5 +1,6 @@
 'use client'
 
+import { GeneralParserStep } from '@/api/general-parser/generalParser'
 import ParserCreateTiles from '@/app/(layout)/vytvorit/components/ParserCreateTiles'
 import { Box, Typography } from '@/common/ui'
 import { createStory } from '../../storybook/createStory'
@@ -48,13 +49,15 @@ const base: Omit<ImportSongBodyProps, 'state'> = {
 	onEdit: noop,
 }
 
-const PROBLEMS: [ImportProblem, ImportSource][] = [
-	['notFound', link],
-	['unavailable', link],
-	['failed', link],
-	['service', file],
-	['stream', file],
-	['login', link],
+const PROBLEMS: [ImportProblem, ImportSource, GeneralParserStep[]][] = [
+	['notFound', link, ['detect', 'fetch', 'extract', 'score']],
+	['unavailable', link, ['detect']],
+	['failed', link, ['detect', 'fetch']],
+	['badInput', link, []],
+	['tooLarge', file, []],
+	['login', link, []],
+	['service', file, []],
+	['stream', file, ['detect', 'extract', 'ocr']],
 ]
 
 const STATES: [string, ImportState][] = [
@@ -75,9 +78,9 @@ const STATES: [string, ImportState][] = [
 			},
 		},
 	],
-	...PROBLEMS.map<[string, ImportState]>(([problem, source]) => [
+	...PROBLEMS.map<[string, ImportState]>(([problem, source, seen]) => [
 		problem,
-		{ phase: 'problem', source, problem },
+		{ phase: 'problem', source, problem, seen },
 	]),
 ]
 

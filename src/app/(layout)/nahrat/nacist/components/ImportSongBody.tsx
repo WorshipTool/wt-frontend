@@ -2,7 +2,6 @@
 
 import { Box } from '@/common/ui'
 import { ImportState } from '../hooks/useSongImport'
-import ImportProblemView from './ImportProblemView'
 import ImportProgress from './ImportProgress'
 import ImportResults from './ImportResults'
 import ImportSourceForm from './ImportSourceForm'
@@ -44,11 +43,16 @@ export default function ImportSongBody(props: ImportSongBodyProps) {
 					urlInputRef={props.urlInputRef}
 				/>
 			)}
-			{state.phase === 'running' && (
+			{(state.phase === 'running' || state.phase === 'problem') && (
 				<ImportProgress
 					source={state.source}
 					seen={state.seen}
+					problem={state.phase === 'problem' ? state.problem : undefined}
 					onCancel={props.onCancel}
+					onRetry={props.onRetry}
+					onEditLink={props.onEditLink}
+					onOtherLink={props.onOtherLink}
+					onPickFile={props.onPickFile}
 				/>
 			)}
 			{state.phase === 'done' && (
@@ -57,16 +61,6 @@ export default function ImportSongBody(props: ImportSongBodyProps) {
 					onCopy={props.onCopy}
 					onEdit={props.onEdit}
 					onReset={props.onReset}
-				/>
-			)}
-			{state.phase === 'problem' && (
-				<ImportProblemView
-					source={state.source}
-					problem={state.problem}
-					onRetry={props.onRetry}
-					onEditLink={props.onEditLink}
-					onOtherLink={props.onOtherLink}
-					onPickFile={props.onPickFile}
 				/>
 			)}
 		</Box>

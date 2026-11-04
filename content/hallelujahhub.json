@@ -651,27 +651,27 @@
 			"problem": {
 				"notFound": {
 					"title": "We found no song on that page",
-					"text": "The page opened, but there are no lyrics with chords on it. Try a link straight to one song."
+					"text": "Try a link straight to one song."
 				},
 				"notFoundFile": {
 					"title": "We found no song in that file",
-					"text": "The file opened, but there are no lyrics with chords in it."
+					"text": "There are no lyrics with chords in it."
 				},
 				"unavailable": {
 					"title": "We can't read this yet",
 					"text": "This kind of page or file isn't supported yet."
 				},
 				"failed": {
-					"title": "The page couldn't be opened — check the link",
-					"text": "The link doesn't work or the site refused us. Check that it opens in your browser."
+					"title": "The page couldn't be opened",
+					"text": "Check that the link opens in your browser."
 				},
 				"failedFile": {
 					"title": "The file couldn't be read",
-					"text": "It may be damaged or password-protected. Try another one."
+					"text": "It may be damaged or password-protected."
 				},
 				"badInput": {
 					"title": "That doesn't look like a link",
-					"text": "Check that it starts with https:// and leads to a page with a song."
+					"text": "A link should start with https://."
 				},
 				"tooLarge": {
 					"title": "The file is too large",
@@ -679,19 +679,19 @@
 				},
 				"service": {
 					"title": "Importing is unavailable right now",
-					"text": "The problem is on our side. Please try again in a few minutes."
+					"text": "Please try again in a few minutes."
 				},
 				"stream": {
 					"title": "The connection dropped",
-					"text": "Importing didn't finish. Please try again."
+					"text": "Importing didn't finish."
 				},
 				"login": {
-					"title": "Sign in to import a song",
+					"title": "Sign in to import",
 					"text": "Importing from a link or file is for signed-in users only."
 				}
 			},
 			"actions": {
-				"otherLink": "Try another link",
+				"otherLink": "Paste another link",
 				"uploadInstead": "Upload a PDF or photo",
 				"editLink": "Edit the link",
 				"otherFile": "Choose another file",

@@ -1,7 +1,7 @@
 import { GeneralParserStep } from '@/api/general-parser/generalParser'
 import { ImportSourceKind } from './importStorage'
 
-export type StepState = 'done' | 'active' | 'pending'
+export type StepState = 'done' | 'active' | 'pending' | 'failed'
 export type StepView = { step: GeneralParserStep; state: StepState }
 
 /**
@@ -19,13 +19,20 @@ const EXPECTED: Record<ImportSourceKind, GeneralParserStep[]> = {
  * the order it reported them (the last one active, the rest done), followed by
  * the expected steps it has not reached yet. Before the first event the first
  * expected step is the active one, so the list never starts empty.
+ *
+ * With `failed`, the step where it stopped is marked failed instead of active
+ * and nothing after it is promised any more. An error before the first
+ * progress line (bad input, a refused request) fails the first step, so the
+ * same list is on screen whatever went wrong.
  */
 export function buildStepList(
 	seen: GeneralParserStep[],
 	kind: ImportSourceKind,
+	failed = false,
 ): StepView[] {
 	const expected = EXPECTED[kind]
 	if (seen.length === 0) {
+		if (failed) return [{ step: expected[0], state: 'failed' }]
 		return expected.map((step, i) => ({
 			step,
 			state: i === 0 ? 'active' : 'pending',
@@ -35,8 +42,9 @@ export function buildStepList(
 	const current = seen[seen.length - 1]
 	const reached = seen.map<StepView>((step) => ({
 		step,
-		state: step === current ? 'active' : 'done',
+		state: step !== current ? 'done' : failed ? 'failed' : 'active',
 	}))
+	if (failed) return reached
 	const currentAt = expected.indexOf(current)
 	// an unexpected step (ocr) sits between extract and score
 	const after =
