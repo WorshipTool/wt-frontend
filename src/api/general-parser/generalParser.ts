@@ -1,4 +1,5 @@
 import { getUrl } from '@/api/urls'
+import { serviceUnavailableEvent } from '@/tech/fetch/handleApiCall'
 
 /**
  * Client for the backend's general parser: a link or a file in, songs out.
@@ -156,7 +157,13 @@ export async function streamGeneralParse(
 		signal,
 	})
 
-	if (!response.ok) throw new GeneralParserHttpError(response.status)
+	if (!response.ok) {
+		// The same app-wide "Služba je dočasně nedostupná" snackbar every other API
+		// call shows through handleApiCall (this one is plain fetch, so say it here)
+		if (response.status === 503 && typeof window !== 'undefined')
+			window.dispatchEvent(new CustomEvent(serviceUnavailableEvent))
+		throw new GeneralParserHttpError(response.status)
+	}
 	if (!response.body) throw new GeneralParserHttpError(502)
 
 	const reader = response.body.getReader()

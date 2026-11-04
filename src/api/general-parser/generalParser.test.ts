@@ -1,5 +1,11 @@
 import { TextDecoder, TextEncoder } from 'util'
-import { createNdjsonParser, GeneralParserEvent } from './generalParser'
+import { serviceUnavailableEvent } from '@/tech/fetch/handleApiCall'
+import {
+	createNdjsonParser,
+	GeneralParserEvent,
+	GeneralParserHttpError,
+	streamGeneralParse,
+} from './generalParser'
 
 const progress = (step: string) =>
 	JSON.stringify({ event: 'progress', step, message: 'x', ms: 1 })
@@ -82,4 +88,31 @@ describe('createNdjsonParser', () => {
 		expect(events).toHaveLength(1)
 		expect(events[0]).toMatchObject({ songs: [{ title: 'Ráno' }] })
 	})
+})
+
+describe('streamGeneralParse errors', () => {
+	const realFetch = global.fetch
+	afterEach(() => {
+		global.fetch = realFetch
+	})
+
+	it.each([
+		[503, 1],
+		[400, 0],
+	])(
+		'HTTP %i → app-wide service-unavailable event fired %i×',
+		async (status, times) => {
+			global.fetch = jest.fn().mockResolvedValue({ ok: false, status }) as any
+			const listener = jest.fn()
+			window.addEventListener(serviceUnavailableEvent, listener)
+			await expect(
+				streamGeneralParse(
+					{ url: 'https://a.cz' },
+					{ token: 't', onEvent: () => {} },
+				),
+			).rejects.toBeInstanceOf(GeneralParserHttpError)
+			window.removeEventListener(serviceUnavailableEvent, listener)
+			expect(listener).toHaveBeenCalledTimes(times)
+		},
+	)
 })
