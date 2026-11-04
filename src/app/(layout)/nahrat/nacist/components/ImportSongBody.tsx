@@ -18,8 +18,8 @@ export type ImportSongBodyProps = {
 	onEditLink: () => void
 	onOtherLink: () => void
 	onReset: () => void
-	onCopy: (index: number) => void
-	onEdit: (index: number) => void
+	/** Continue with the chosen song — into the editor. */
+	onContinue: (index: number) => void
 	urlInputRef?: React.Ref<HTMLInputElement>
 }
 
@@ -58,8 +58,7 @@ export default function ImportSongBody(props: ImportSongBodyProps) {
 			{state.phase === 'done' && (
 				<ImportResults
 					result={state.result}
-					onCopy={props.onCopy}
-					onEdit={props.onEdit}
+					onContinue={props.onContinue}
 					onReset={props.onReset}
 				/>
 			)}

@@ -6,11 +6,7 @@ import SheetDisplay from '@/common/components/SheetDisplay/SheetDisplay'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, Button, Typography } from '@/common/ui'
 import { CustomChip } from '@/common/ui/CustomChip/CustomChip'
-import {
-	CheckRounded,
-	ContentCopyRounded,
-	WarningAmberRounded,
-} from '@mui/icons-material'
+import { CheckRounded, WarningAmberRounded } from '@mui/icons-material'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useTranslations } from 'next-intl'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -25,15 +21,15 @@ const PREVIEW_HEIGHT = 220
 type ImportedSongCardProps = {
 	song: GeneralParserSong
 	saved?: SavedSong
-	onCopy: () => void
-	onEdit: () => void
+	onContinue: () => void
 }
 
 /**
- * One found song: its title, the first lines rendered the way the song page
- * renders a sheet (chords above the words), "rozbalit" for the rest, and the
- * two things to do with it. Saved songs trade "Upravit a uložit" for a link
- * to the saved song.
+ * The chosen song: its title, the first lines rendered the way the song page
+ * renders a sheet (chords above the words), "rozbalit" for the rest, and one
+ * way on — "Zkontrolovat a uložit", into the editor. The raw sheet text is
+ * never offered (no copy): the editor is where it gets touched. A saved song
+ * trades the button for a link to the saved song.
  */
 export default function ImportedSongCard(props: ImportedSongCardProps) {
 	const t = useTranslations('upload.import.result')
@@ -148,13 +144,6 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 					},
 				})}
 			>
-				<Button
-					variant="outlined"
-					startIcon={<ContentCopyRounded />}
-					onClick={props.onCopy}
-				>
-					{t('copy')}
-				</Button>
 				{props.saved ? (
 					<Button
 						variant="outlined"
@@ -164,7 +153,7 @@ export default function ImportedSongCard(props: ImportedSongCardProps) {
 						{t('open')}
 					</Button>
 				) : (
-					<Button onClick={props.onEdit}>{t('editAndSave')}</Button>
+					<Button onClick={props.onContinue}>{t('checkAndSave')}</Button>
 				)}
 			</Box>
 		</Box>

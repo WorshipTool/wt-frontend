@@ -6,9 +6,6 @@ import {
 } from '@/app/(layout)/pisne/searchHandoff'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useSmartNavigate } from '@/routes/useSmartNavigate'
-import { copyToClipboard } from '@/tech/string/copy.tech'
-import { useTranslations } from 'next-intl'
-import { useSnackbar } from 'notistack'
 import { useEffect, useRef, useState } from 'react'
 import ImportSongBody from './components/ImportSongBody'
 import ImportSongShell from './components/ImportSongShell'
@@ -30,9 +27,7 @@ export default SmartPage(ImportSong, ['middleWidth'])
  * link field. Otherwise the last result list comes back (from the editor, say).
  */
 function ImportSong() {
-	const t = useTranslations('upload.import.result')
 	const navigate = useSmartNavigate()
-	const { enqueueSnackbar } = useSnackbar()
 
 	const { state, setState, importUrl, importFile, retry, reset } =
 		useSongImport()
@@ -106,13 +101,7 @@ function ImportSong() {
 					reset()
 					setUrl('')
 				}}
-				onCopy={(index) => {
-					const song = songAt(index)
-					if (!song) return
-					copyToClipboard(song.sheetData)
-					enqueueSnackbar(t('copied'))
-				}}
-				onEdit={(index) => {
+				onContinue={(index) => {
 					const song = songAt(index)
 					if (!song || state.phase !== 'done') return
 					handOffToEditor({

@@ -896,15 +896,13 @@
 			},
 			"result": {
 				"found": "{count, plural, one {Našli jsme # píseň} few {Našli jsme # písně} other {Našli jsme # písní}}",
-				"foundFrom": "{count, plural, one {z {source}} other {z {source} · uložit můžeš každou zvlášť}}",
+				"foundFrom": "{count, plural, one {z {source}} other {z {source} · vyber jednu a pokračuj}}",
 				"untitled": "Bez názvu",
 				"needsCheck": "Zkontroluj",
 				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
 				"expand": "rozbalit",
 				"collapse": "sbalit",
-				"copy": "Kopírovat",
-				"copied": "Text písně zkopírován.",
-				"editAndSave": "Upravit a uložit",
+				"checkAndSave": "Zkontrolovat a uložit",
 				"saved": "Uloženo",
 				"open": "Otevřít",
 				"loadAnother": "Načíst něco jiného"

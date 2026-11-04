@@ -635,15 +635,13 @@
 			},
 			"result": {
 				"found": "{count, plural, one {We found # song} other {We found # songs}}",
-				"foundFrom": "{count, plural, one {from {source}} other {from {source} · save each one separately}}",
+				"foundFrom": "{count, plural, one {from {source}} other {from {source} · pick one to continue}}",
 				"untitled": "Untitled",
 				"needsCheck": "Check it",
 				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
 				"expand": "expand",
 				"collapse": "collapse",
-				"copy": "Copy",
-				"copied": "Song text copied.",
-				"editAndSave": "Edit and save",
+				"checkAndSave": "Check and save",
 				"saved": "Saved",
 				"open": "Open",
 				"loadAnother": "Import something else"

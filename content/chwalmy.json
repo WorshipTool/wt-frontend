@@ -896,15 +896,13 @@
 			},
 			"result": {
 				"found": "{count, plural, one {Znaleźliśmy # pieśń} few {Znaleźliśmy # pieśni} other {Znaleźliśmy # pieśni}}",
-				"foundFrom": "{count, plural, one {z {source}} other {z {source} · każdą możesz zapisać osobno}}",
+				"foundFrom": "{count, plural, one {z {source}} other {z {source} · wybierz jedną i kontynuuj}}",
 				"untitled": "Bez tytułu",
 				"needsCheck": "Sprawdź",
 				"needsCheckHint": "Niektóre akordy lub wersy mogą się nie zgadzać – przejrzyj je w edytorze.",
 				"expand": "rozwiń",
 				"collapse": "zwiń",
-				"copy": "Kopiuj",
-				"copied": "Tekst pieśni skopiowany.",
-				"editAndSave": "Edytuj i zapisz",
+				"checkAndSave": "Sprawdź i zapisz",
 				"saved": "Zapisano",
 				"open": "Otwórz",
 				"loadAnother": "Wczytaj coś innego"

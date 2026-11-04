@@ -31,7 +31,22 @@ const SONGS = [
 		confidence: 0.55,
 		source: { url: null, file: 'ranni-pisne.pdf', index: 1 },
 	},
+	{
+		title: 'Světlo světa',
+		sheetData:
+			'{V1}[C]Světlo světa [F]přišlo k nám,\n[Am]v temnotě [G]svítí sám.\n{R}[F]Sláva, [C]sláva [G]tobě',
+		confidence: 0.88,
+		source: { url: null, file: 'ranni-pisne.pdf', index: 2 },
+	},
 ]
+
+const done = (
+	songs: typeof SONGS,
+	saved: Record<number, { hex: string; alias: string }> = {},
+): ImportState => ({
+	phase: 'done',
+	result: { id: 'story', source: file, songs, saved },
+})
 
 const noop = () => {}
 const base: Omit<ImportSongBodyProps, 'state'> = {
@@ -45,11 +60,11 @@ const base: Omit<ImportSongBodyProps, 'state'> = {
 	onEditLink: noop,
 	onOtherLink: noop,
 	onReset: noop,
-	onCopy: noop,
-	onEdit: noop,
+	onContinue: noop,
 }
 
 const PROBLEMS: [ImportProblem, ImportSource, GeneralParserStep[]][] = [
+	// 0 songs: the not-found state of the step list
 	['notFound', link, ['detect', 'fetch', 'extract', 'score']],
 	['unavailable', link, ['detect']],
 	['failed', link, ['detect', 'fetch']],
@@ -66,18 +81,9 @@ const STATES: [string, ImportState][] = [
 		'running',
 		{ phase: 'running', source: file, seen: ['detect', 'extract', 'ocr'] },
 	],
-	[
-		'done',
-		{
-			phase: 'done',
-			result: {
-				id: 'story',
-				source: file,
-				songs: SONGS,
-				saved: { 0: { hex: 'abc', alias: 'rano-ti-zpivam' } },
-			},
-		},
-	],
+	['1 song', done(SONGS.slice(0, 1))],
+	['3 songs (one needs a check)', done(SONGS)],
+	['3 songs, first saved', done(SONGS, { 0: { hex: 'abc', alias: 'rano' } })],
 	...PROBLEMS.map<[string, ImportState]>(([problem, source, seen]) => [
 		problem,
 		{ phase: 'problem', source, problem, seen },
