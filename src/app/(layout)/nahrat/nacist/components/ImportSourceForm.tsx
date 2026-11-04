@@ -1,6 +1,5 @@
 'use client'
 
-import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { Box, Button, TextField, Typography } from '@/common/ui'
 import { alpha } from '@/common/ui/mui'
@@ -35,52 +34,22 @@ export default function ImportSourceForm(props: ImportSourceFormProps) {
 		if (file) props.onDropFile(file)
 	}
 
-	// Phone: two cards, the link card and the drop tile under it. Desktop: one
-	// card holding both — a labelled link field, and the drop zone as a sunken
-	// well inside it — the way the desktop editor is one white card.
 	return (
-		<Box
-			sx={(theme) => ({
-				display: 'flex',
-				flexDirection: 'column',
-				gap: 2,
-				[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-					...SURFACE_CARD_SX,
-					padding: 3,
-					gap: 3,
-				},
-			})}
-		>
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 			<Box
 				component="form"
 				onSubmit={(e: React.FormEvent) => {
 					e.preventDefault()
 					props.onSubmitUrl()
 				}}
-				sx={(theme) => ({
+				sx={{
 					...SURFACE_CARD_SX,
 					padding: 2,
 					display: 'flex',
 					flexDirection: 'column',
 					gap: 1,
-					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-						bgcolor: 'transparent',
-						border: 'none',
-						boxShadow: 'none',
-						borderRadius: 0,
-						padding: 0,
-					},
-				})}
+				}}
 			>
-				<Box
-					aria-hidden
-					sx={(theme) => ({
-						display: 'none',
-						[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: { display: 'block' },
-					})}
-				>
-					<Typography strong={600}>{t('urlLabel')}</Typography>
-				</Box>
 				<Box sx={{ display: 'flex', gap: 1, alignItems: 'stretch' }}>
 					<TextField
 						value={props.url}
@@ -130,13 +99,6 @@ export default function ImportSourceForm(props: ImportSourceFormProps) {
 						? alpha(theme.palette.primary.main, 0.06)
 						: 'surface.card',
 					transition: 'border-color 0.15s, background-color 0.15s',
-					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-						bgcolor: dragging
-							? alpha(theme.palette.primary.main, 0.06)
-							: 'surface.sunken',
-						borderColor: dragging ? 'primary.main' : 'grey.300',
-						paddingX: 3,
-					},
 				})}
 			>
 				<FileUploadRounded

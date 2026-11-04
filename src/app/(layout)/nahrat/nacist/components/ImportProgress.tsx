@@ -1,7 +1,6 @@
 'use client'
 
 import { GeneralParserStep } from '@/api/general-parser/generalParser'
-import { MOBILE_NAV_BREAKPOINT } from '@/common/components/MobileAppTabBar/nav.constants'
 import { SURFACE_CARD_SX } from '@/common/constants/surfaces'
 import { routesPaths } from '@/routes/routes'
 import {
@@ -90,15 +89,7 @@ export default function ImportProgress(props: ImportProgressProps) {
 		<Box sx={{ ...SURFACE_CARD_SX, overflow: 'hidden' }}>
 			{!problem && <LinearProgress />}
 			<Box
-				sx={(theme) => ({
-					padding: 2,
-					display: 'flex',
-					flexDirection: 'column',
-					gap: 2,
-					// the same inset as the desktop's idle card, so the list takes
-					// the form's place without the content jumping
-					[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: { padding: 3 },
-				})}
+				sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 2 }}
 			>
 				<ImportSourceRow source={source} />
 

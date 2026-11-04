@@ -870,7 +870,6 @@ declare const messages: {
 		},
 		"import": {
 			"title": "Načíst píseň",
-			"subtitle": "Z webu se zpěvníkem, PDF, fotky nebo YouTube videa — před uložením ji zkontroluješ.",
 			"tiles": {
 				"uploadFile": "Nahrát soubor",
 				"uploadFileSubtitle": "PDF nebo fotka",

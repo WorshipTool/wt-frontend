@@ -606,7 +606,6 @@
 		},
 		"import": {
 			"title": "Import a song",
-			"subtitle": "From a songbook website, PDF, photo or YouTube video — you check it before saving.",
 			"tiles": {
 				"uploadFile": "Upload a file",
 				"uploadFileSubtitle": "PDF or photo",
