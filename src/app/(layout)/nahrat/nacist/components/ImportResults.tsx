@@ -24,7 +24,7 @@ type ImportResultsProps = {
  * on a desktop under the list in the left column (the preview on the right
  * has no buttons), on a phone docked above the tab bar through `PageAction`,
  * so it is reachable without scrolling past the preview. One song has no list
- * and no columns: the song across the page, the button under it on the right.
+ * and no columns: the song across the page, the button at the top right.
  * The first song starts chosen.
  */
 export default function ImportResults(props: ImportResultsProps) {
@@ -74,26 +74,47 @@ export default function ImportResults(props: ImportResultsProps) {
 		</PageAction>
 	)
 
-	// One song: nothing to pick, so no two columns — the song across the page and
-	// under it the way on (right) and the quiet way out (left). On a phone the
-	// button docks above the tab bar as with more songs.
+	// One song: nothing to pick, so no two columns — the song across the page with
+	// the way on at the top right next to the heading, visible however long the
+	// song is. On a phone the button docks above the tab bar as with more songs.
 	if (count === 1)
 		return (
 			<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-				{header}
+				<Box
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						flexWrap: 'wrap',
+						gap: 2,
+					}}
+				>
+					{header}
+					<Box
+						sx={(theme) => ({
+							display: 'none',
+							alignItems: 'center',
+							gap: 1,
+							[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
+								display: 'flex',
+							},
+						})}
+					>
+						{loadAnother}
+						{continueButton(false)}
+					</Box>
+				</Box>
 				<ImportedSongCard song={songs[0]} />
+				{/* phone: the button above (PageAction) docks over the tab bar even inside the
+				    hidden desktop row — a portal; the quiet way out stays under the song */}
 				<Box
 					sx={(theme) => ({
 						display: 'flex',
 						justifyContent: 'center',
-						[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: {
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						},
+						[theme.breakpoints.up(MOBILE_NAV_BREAKPOINT)]: { display: 'none' },
 					})}
 				>
 					{loadAnother}
-					{continueButton(false)}
 				</Box>
 			</Box>
 		)
