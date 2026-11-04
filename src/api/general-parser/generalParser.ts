@@ -1,13 +1,16 @@
 import { getUrl } from '@/api/urls'
-import { serviceUnavailableEvent } from '@/tech/fetch/handleApiCall'
+import { handleApiCall } from '@/tech/fetch/handleApiCall'
+import axios, { isAxiosError, isCancel } from 'axios'
 
 /**
  * Client for the backend's general parser: a link or a file in, songs out.
  *
  * Not in the generated client because the endpoint streams NDJSON — one JSON
  * object per line, progress first and the result last — which the generated
- * axios wrapper would buffer into one string at the end. So it is read here
- * with fetch and a stream reader, line by line, as it arrives.
+ * client would buffer into one string at the end. So it is axios with the
+ * fetch adapter and `responseType: 'stream'`, read line by line as it arrives,
+ * and the request goes through `handleApiCall` like every other API call (the
+ * app-wide snackbars for 503 / 403 / network errors, 401 handling, Sentry).
  *
  *   POST {backend}/general-parser/parse   multipart: `url` OR `file` (≤ 40 MB)
  */
@@ -136,8 +139,9 @@ type StreamOptions = {
  * Sends the link or file and calls `onEvent` for every line as it arrives.
  *
  * Resolves when the stream ends. Rejects with `GeneralParserHttpError` for a
- * non-2xx response, with an `AbortError` when `signal` aborts, and with a plain
- * `TypeError` when the network fails.
+ * non-2xx response (after `handleApiCall` has done its app-wide handling), with
+ * a cancel error when `signal` aborts (see `isAbortError`), and with the
+ * original error when the network fails.
  */
 export async function streamGeneralParse(
 	input: GeneralParserInput,
@@ -147,26 +151,31 @@ export async function streamGeneralParse(
 	if ('url' in input) form.append('url', input.url)
 	else form.append('file', input.file, input.file.name)
 
-	const response = await fetch(getUrl(GENERAL_PARSER_PATH), {
-		method: 'POST',
-		body: form,
-		headers: {
-			Accept: 'application/x-ndjson',
-			...(token ? { Authorization: `Bearer ${token}` } : {}),
-		},
-		signal,
-	})
-
-	if (!response.ok) {
-		// The same app-wide "Služba je dočasně nedostupná" snackbar every other API
-		// call shows through handleApiCall (this one is plain fetch, so say it here)
-		if (response.status === 503 && typeof window !== 'undefined')
-			window.dispatchEvent(new CustomEvent(serviceUnavailableEvent))
-		throw new GeneralParserHttpError(response.status)
+	let body: ReadableStream<Uint8Array>
+	try {
+		body = await handleApiCall(
+			axios.post<ReadableStream<Uint8Array>>(
+				getUrl(GENERAL_PARSER_PATH),
+				form,
+				{
+					adapter: 'fetch',
+					responseType: 'stream',
+					headers: {
+						Accept: 'application/x-ndjson',
+						...(token ? { Authorization: `Bearer ${token}` } : {}),
+					},
+					signal,
+				},
+			),
+		)
+	} catch (error) {
+		const status = isAxiosError(error) ? error.response?.status : undefined
+		if (status) throw new GeneralParserHttpError(status)
+		throw error
 	}
-	if (!response.body) throw new GeneralParserHttpError(502)
+	if (!body?.getReader) throw new GeneralParserHttpError(502)
 
-	const reader = response.body.getReader()
+	const reader = body.getReader()
 	const decoder = new TextDecoder()
 	const parser = createNdjsonParser()
 
@@ -185,8 +194,9 @@ export async function streamGeneralParse(
 
 export function isAbortError(error: unknown): boolean {
 	return (
-		typeof error === 'object' &&
-		error !== null &&
-		(error as { name?: unknown }).name === 'AbortError'
+		isCancel(error) ||
+		(typeof error === 'object' &&
+			error !== null &&
+			(error as { name?: unknown }).name === 'AbortError')
 	)
 }

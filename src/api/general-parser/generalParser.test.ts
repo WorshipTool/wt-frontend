@@ -1,9 +1,11 @@
 import { TextDecoder, TextEncoder } from 'util'
 import { serviceUnavailableEvent } from '@/tech/fetch/handleApiCall'
+import axios, { AxiosError, CanceledError } from 'axios'
 import {
 	createNdjsonParser,
 	GeneralParserEvent,
 	GeneralParserHttpError,
+	isAbortError,
 	streamGeneralParse,
 } from './generalParser'
 
@@ -90,29 +92,44 @@ describe('createNdjsonParser', () => {
 	})
 })
 
-describe('streamGeneralParse errors', () => {
-	const realFetch = global.fetch
-	afterEach(() => {
-		global.fetch = realFetch
-	})
+describe('streamGeneralParse errors go through handleApiCall', () => {
+	afterEach(() => jest.restoreAllMocks())
+
+	const axiosError = (status: number) =>
+		new AxiosError('x', 'ERR', undefined, undefined, {
+			status,
+			data: null,
+			statusText: '',
+			headers: {},
+			config: {} as any,
+		})
 
 	it.each([
 		[503, 1],
 		[400, 0],
 	])(
-		'HTTP %i → app-wide service-unavailable event fired %i×',
+		'HTTP %i → app-wide service-unavailable event fired %i×, GeneralParserHttpError thrown',
 		async (status, times) => {
-			global.fetch = jest.fn().mockResolvedValue({ ok: false, status }) as any
+			jest.spyOn(axios, 'post').mockRejectedValue(axiosError(status))
 			const listener = jest.fn()
 			window.addEventListener(serviceUnavailableEvent, listener)
-			await expect(
-				streamGeneralParse(
-					{ url: 'https://a.cz' },
-					{ token: 't', onEvent: () => {} },
-				),
-			).rejects.toBeInstanceOf(GeneralParserHttpError)
+			const error = await streamGeneralParse(
+				{ url: 'https://a.cz' },
+				{ token: 't', onEvent: () => {} },
+			).catch((e) => e)
 			window.removeEventListener(serviceUnavailableEvent, listener)
+			expect(error).toBeInstanceOf(GeneralParserHttpError)
+			expect(error.status).toBe(status)
 			expect(listener).toHaveBeenCalledTimes(times)
 		},
 	)
+
+	it('a cancelled request counts as an abort', async () => {
+		jest.spyOn(axios, 'post').mockRejectedValue(new CanceledError())
+		const error = await streamGeneralParse(
+			{ url: 'https://a.cz' },
+			{ onEvent: () => {} },
+		).catch((e) => e)
+		expect(isAbortError(error)).toBe(true)
+	})
 })
