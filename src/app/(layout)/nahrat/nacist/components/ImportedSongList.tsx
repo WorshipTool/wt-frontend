@@ -25,9 +25,9 @@ type ImportedSongListProps = {
 /**
  * The found songs as one group of rows — the app's list language (GroupCard,
  * the note tile, inset hairlines), so it reads like a song list anywhere else.
- * Each row: title, a "Zkontroluj" chip under it when the song needs a check
- * (under, not beside, so it never squeezes the lyric line), and the first
- * lyric line. The chosen row is a tint and a tick, as in the song picker.
+ * Each row: title with a "Zkontroluj" chip at its right when the song needs a
+ * check (on the title line, so the lyric line below keeps its full width), and
+ * the first lyric line. The chosen row is a tint and a tick, as in the song picker.
  */
 export default function ImportedSongList(props: ImportedSongListProps) {
 	const t = useTranslations('upload.import.result')
@@ -75,24 +75,32 @@ export default function ImportedSongList(props: ImportedSongListProps) {
 								>
 									<SongLeadingIcon />
 									<Box sx={{ flex: 1, minWidth: 0 }}>
-										<Typography
-											strong
-											noWrap
-											color={chosen ? 'primary.main' : undefined}
+										<Box
+											sx={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: 1,
+												width: '100%',
+											}}
 										>
-											{song.title || t('untitled')}
-										</Typography>
-										{song.confidence < NEEDS_CHECK_BELOW && (
-											<Box
-												sx={{ display: 'flex', marginY: 0.5, paddingLeft: 0.5 }}
+											<Typography
+												strong
+												noWrap
+												color={chosen ? 'primary.main' : undefined}
+												sx={{ flex: 1, minWidth: 0 }}
 											>
-												<CustomChip
-													color="warning.dark"
-													icon={<WarningAmberRounded />}
-													label={t('needsCheck')}
-												/>
-											</Box>
-										)}
+												{song.title || t('untitled')}
+											</Typography>
+											{song.confidence < NEEDS_CHECK_BELOW && (
+												<Box sx={{ marginLeft: 'auto', flexShrink: 0 }}>
+													<CustomChip
+														color="warning.dark"
+														icon={<WarningAmberRounded />}
+														label={t('needsCheck')}
+													/>
+												</Box>
+											)}
+										</Box>
 										<Typography small color="grey.600" noWrap>
 											{firstLyricLine(song.sheetData)}
 										</Typography>
