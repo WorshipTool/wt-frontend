@@ -2,10 +2,13 @@
 import CreateOptionItem from '@/app/(layout)/vytvorit/components/CreateOptionItem'
 import { CREATE_OPTIONS } from '@/app/(layout)/vytvorit/components/createOptions'
 import ParseAdminOption from '@/app/(layout)/vytvorit/components/ParseAdminOption'
+import ParserCreateTiles from '@/app/(layout)/vytvorit/components/ParserCreateTiles'
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import FlagProtected from '@/common/providers/FeatureFlags/FlagProtected'
+import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
+import useAuth from '@/hooks/auth/useAuth'
 import { Box } from '@/common/ui'
 import { useTranslations } from 'next-intl'
 import { Fragment } from 'react'
@@ -17,20 +20,29 @@ function AddMenu() {
 
 	const phoneVersion = useIsPhone()
 
+	// The general parser replaces the option list with three tiles. Signed-out
+	// users keep the old list: the parser endpoint is for signed-in users only.
+	const { isLoggedIn } = useAuth()
+	const parserTiles = useFlag('enable_general_parser') && isLoggedIn()
+
 	// The options are one responsive component (row on phones, card on desktop),
 	// so only the surrounding shell differs — this is the page's single branch.
-	const options = CREATE_OPTIONS.map((option) => {
-		const item = <CreateOptionItem option={option} />
-		return (
-			<Fragment key={option.to}>
-				{'flag' in option ? (
-					<FlagProtected flag={option.flag}>{item}</FlagProtected>
-				) : (
-					item
-				)}
-			</Fragment>
-		)
-	})
+	const options = parserTiles ? (
+		<ParserCreateTiles />
+	) : (
+		CREATE_OPTIONS.map((option) => {
+			const item = <CreateOptionItem option={option} />
+			return (
+				<Fragment key={option.to}>
+					{'flag' in option ? (
+						<FlagProtected flag={option.flag}>{item}</FlagProtected>
+					) : (
+						item
+					)}
+				</Fragment>
+			)
+		})
+	)
 
 	if (phoneVersion) {
 		return (

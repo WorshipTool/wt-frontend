@@ -867,6 +867,107 @@ declare const messages: {
 			"foundIn": "Nalezeno v <strong>{fileName}</strong>",
 			"titlePlaceholder": "Zadejte název písně",
 			"contentPlaceholder": "Zde je místo pro obsah písně"
+		},
+		"import": {
+			"title": "Načíst píseň",
+			"tiles": {
+				"uploadFile": "Nahrát soubor",
+				"uploadFileSubtitle": "PDF nebo fotka",
+				"pasteLink": "Vložit odkaz",
+				"pasteLinkSubtitle": "Web nebo YouTube video",
+				"writeManually": "Napsat ručně",
+				"writeManuallySubtitle": "Vlastní text s akordy"
+			},
+			"form": {
+				"urlLabel": "Odkaz na píseň",
+				"urlPlaceholder": "https://…",
+				"load": "Načíst",
+				"urlHint": "Web se zpěvníkem, PDF nebo YouTube video",
+				"dropTitle": "Přetáhni sem PDF nebo fotku",
+				"dropActive": "Pusť soubor sem",
+				"chooseFile": "Vybrat soubor"
+			},
+			"steps": {
+				"detect": "Zjišťuji, co je na odkazu",
+				"detectFile": "Zjišťuji, co je v souboru",
+				"fetch": "Stahuji obsah",
+				"fetchFile": "Nahrávám soubor",
+				"extract": "Hledám písně",
+				"ocr": "Čtu text z obrázku",
+				"score": "Kontroluji výsledek",
+				"slowHint": "může to chvíli trvat"
+			},
+			"result": {
+				"found": "{count, plural, one {Našli jsme # píseň} few {Našli jsme # písně} other {Našli jsme # písní}}",
+				"foundFrom": "{count, plural, one {z {source}} other {z {source} · vyber jednu a pokračuj}}",
+				"untitled": "Bez názvu",
+				"needsCheck": "Zkontroluj",
+				"needsCheckHint": "Některé akordy nebo řádky nemusí sedět – projdi je prosím v editoru.",
+				"continue": "Pokračovat s touto písní",
+				"loadAnother": "Zkusit jiný odkaz nebo soubor",
+				"resetConfirm": {
+					"title": "Zahodit nalezené písně?",
+					"text": "Nalezené písně se zahodí a začneš znovu s jiným odkazem nebo souborem.",
+					"confirm": "Zahodit a začít znovu"
+				}
+			},
+			"problem": {
+				"notFound": {
+					"title": "Na stránce jsme píseň nenašli",
+					"text": "Zkus odkaz přímo na konkrétní píseň."
+				},
+				"notFoundFile": {
+					"title": "V souboru jsme píseň nenašli",
+					"text": "Text s akordy v něm není."
+				},
+				"unavailable": {
+					"title": "Tohle zatím neumíme přečíst",
+					"text": "Tento typ stránky nebo souboru zatím nepodporujeme."
+				},
+				"failed": {
+					"title": "Stránku se nepodařilo otevřít",
+					"text": "Ověř, že se ti odkaz otevře v prohlížeči."
+				},
+				"failedFile": {
+					"title": "Soubor se nepodařilo přečíst",
+					"text": "Může být poškozený nebo zaheslovaný."
+				},
+				"badInput": {
+					"title": "Tohle nevypadá jako odkaz",
+					"text": "Odkaz má začínat https://."
+				},
+				"tooLarge": {
+					"title": "Soubor je moc velký",
+					"text": "Nahrát jde soubor do 40 MB."
+				},
+				"unsupportedFile": {
+					"title": "Tenhle soubor neumíme přečíst",
+					"text": "Nahraj PDF nebo fotku (JPG, PNG, HEIC…)."
+				},
+				"service": {
+					"title": "Načítání je teď nedostupné",
+					"text": "Zkus to prosím za pár minut."
+				},
+				"stream": {
+					"title": "Spojení se přerušilo",
+					"text": "Načítání se nedokončilo."
+				},
+				"login": {
+					"title": "Pro načtení se přihlas",
+					"text": "Načítat z odkazu nebo souboru mohou jen přihlášení."
+				}
+			},
+			"actions": {
+				"otherLink": "Vložit jiný odkaz",
+				"uploadInstead": "Nahrát PDF nebo fotku",
+				"editLink": "Upravit odkaz",
+				"otherFile": "Vybrat jiný soubor",
+				"login": "Přihlásit se"
+			},
+			"editor": {
+				"fromLink": "<strong>Načteno z odkazu</strong> — zkontroluj text a akordy.",
+				"fromFile": "<strong>Načteno ze souboru</strong> — zkontroluj text a akordy."
+			}
 		}
 	},
 	"songsList": {

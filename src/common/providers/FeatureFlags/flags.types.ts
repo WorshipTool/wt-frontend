@@ -1,5 +1,6 @@
 type ExistingFlags =
 	| 'enable_file_parser'
+	| 'enable_general_parser'
 	| 'enable_url_parser'
 	| 'enable_smart_search'
 	| 'show_loading_screen'

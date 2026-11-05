@@ -16,6 +16,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/kontakt">
     | StaticRoute<"/nahrat">
     | StaticRoute<"/nahrat/hledani">
+    | StaticRoute<"/nahrat/nacist">
     | StaticRoute<"/o-nas">
     | DynamicRoute<"/pisen/[hex]/[alias]", { "hex": string; "alias": string }>
     | DynamicRoute<"/pisen/[hex]/[alias]/pdf", { "hex": string; "alias": string }>

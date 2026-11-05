@@ -864,6 +864,107 @@
 			"foundIn": "Znalezione w <strong>{fileName}</strong>",
 			"titlePlaceholder": "Wpisz tytuł pieśni",
 			"contentPlaceholder": "Tutaj jest miejsce na zawartość pieśni"
+		},
+		"import": {
+			"title": "Wczytaj pieśń",
+			"tiles": {
+				"uploadFile": "Prześlij plik",
+				"uploadFileSubtitle": "PDF lub zdjęcie",
+				"pasteLink": "Wklej link",
+				"pasteLinkSubtitle": "Strona lub film na YouTube",
+				"writeManually": "Napisz ręcznie",
+				"writeManuallySubtitle": "Własny tekst z akordami"
+			},
+			"form": {
+				"urlLabel": "Link do pieśni",
+				"urlPlaceholder": "https://…",
+				"load": "Wczytaj",
+				"urlHint": "Strona ze śpiewnikiem, PDF lub film na YouTube",
+				"dropTitle": "Przeciągnij tutaj PDF lub zdjęcie",
+				"dropActive": "Upuść plik tutaj",
+				"chooseFile": "Wybierz plik"
+			},
+			"steps": {
+				"detect": "Sprawdzam, co jest pod linkiem",
+				"detectFile": "Sprawdzam, co jest w pliku",
+				"fetch": "Pobieram zawartość",
+				"fetchFile": "Przesyłam plik",
+				"extract": "Szukam pieśni",
+				"ocr": "Odczytuję tekst ze zdjęcia",
+				"score": "Sprawdzam wynik",
+				"slowHint": "to może chwilę potrwać"
+			},
+			"result": {
+				"found": "{count, plural, one {Znaleźliśmy # pieśń} few {Znaleźliśmy # pieśni} other {Znaleźliśmy # pieśni}}",
+				"foundFrom": "{count, plural, one {z {source}} other {z {source} · wybierz jedną i kontynuuj}}",
+				"untitled": "Bez tytułu",
+				"needsCheck": "Sprawdź",
+				"needsCheckHint": "Niektóre akordy lub wersy mogą się nie zgadzać – przejrzyj je w edytorze.",
+				"continue": "Kontynuuj z tą pieśnią",
+				"loadAnother": "Spróbuj inny link lub plik",
+				"resetConfirm": {
+					"title": "Odrzucić znalezione pieśni?",
+					"text": "Znalezione pieśni zostaną odrzucone i zaczniesz od nowa z innym linkiem lub plikiem.",
+					"confirm": "Odrzuć i zacznij od nowa"
+				}
+			},
+			"problem": {
+				"notFound": {
+					"title": "Na stronie nie znaleźliśmy pieśni",
+					"text": "Spróbuj linku bezpośrednio do pieśni."
+				},
+				"notFoundFile": {
+					"title": "W pliku nie znaleźliśmy pieśni",
+					"text": "Nie ma w nim tekstu z akordami."
+				},
+				"unavailable": {
+					"title": "Tego jeszcze nie umiemy odczytać",
+					"text": "Ten rodzaj strony lub pliku nie jest jeszcze obsługiwany."
+				},
+				"failed": {
+					"title": "Nie udało się otworzyć strony",
+					"text": "Sprawdź, czy link otwiera się w przeglądarce."
+				},
+				"failedFile": {
+					"title": "Nie udało się odczytać pliku",
+					"text": "Może być uszkodzony lub zabezpieczony hasłem."
+				},
+				"badInput": {
+					"title": "To nie wygląda na link",
+					"text": "Link powinien zaczynać się od https://."
+				},
+				"tooLarge": {
+					"title": "Plik jest za duży",
+					"text": "Można przesłać plik do 40 MB."
+				},
+				"unsupportedFile": {
+					"title": "Tego pliku nie umiemy odczytać",
+					"text": "Prześlij PDF albo zdjęcie (JPG, PNG, HEIC…)."
+				},
+				"service": {
+					"title": "Wczytywanie jest teraz niedostępne",
+					"text": "Spróbuj ponownie za kilka minut."
+				},
+				"stream": {
+					"title": "Połączenie zostało przerwane",
+					"text": "Wczytywanie się nie dokończyło."
+				},
+				"login": {
+					"title": "Zaloguj się, aby wczytać",
+					"text": "Wczytywanie z linku lub pliku jest tylko dla zalogowanych."
+				}
+			},
+			"actions": {
+				"otherLink": "Wklej inny link",
+				"uploadInstead": "Prześlij PDF lub zdjęcie",
+				"editLink": "Popraw link",
+				"otherFile": "Wybierz inny plik",
+				"login": "Zaloguj się"
+			},
+			"editor": {
+				"fromLink": "<strong>Wczytano z linku</strong> — sprawdź tekst i akordy.",
+				"fromFile": "<strong>Wczytano z pliku</strong> — sprawdź tekst i akordy."
+			}
 		}
 	},
 	"songsList": {
