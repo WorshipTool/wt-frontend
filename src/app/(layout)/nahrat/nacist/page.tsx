@@ -13,11 +13,7 @@ import ImportSongShell from './components/ImportSongShell'
 import { useFilePicker } from './components/useFilePicker'
 import { useSongImport } from './hooks/useSongImport'
 import { consumeImportIntent, ImportIntent } from './tech/importHandoff'
-import {
-	handOffToEditor,
-	loadImportResult,
-	saveImportResult,
-} from './tech/importStorage'
+import { chooseImportedSong, loadImportResult } from './tech/importStorage'
 
 export default SmartPage(ImportSong, ['middleWidth'])
 
@@ -29,7 +25,10 @@ export default SmartPage(ImportSong, ['middleWidth'])
  *
  * Arriving from the create menu, the menu has already said what it wants: a
  * picked file starts processing at once, "Vložit odkaz" puts the caret in the
- * link field. Otherwise the last result list comes back (from the editor, say).
+ * link field. Otherwise the found songs come back if none has been chosen yet
+ * (after a reload, say). Once one has been chosen ("Pokračovat"), that choice
+ * is final: coming back here shows the empty form, and the chosen song waits
+ * in the editor until it is saved — see `importStorage`.
  */
 function ImportSong() {
 	const navigate = useSmartNavigate()
@@ -111,15 +110,12 @@ function ImportSong() {
 				onContinue={(index) => {
 					const song = songAt(index)
 					if (!song || state.phase !== 'done') return
-					handOffToEditor({
+					chooseImportedSong({
 						title: song.title ?? '',
 						sheetData: song.sheetData,
 						sourceKind: state.result.source.kind,
 					})
-					// Final: the user goes on with this one song. Forget the list,
-					// so Back from the editor lands on an empty import page.
-					saveImportResult(null)
-					navigate('writeSong', {})
+					navigate('writeSong', { importovano: true })
 				}}
 				urlInputRef={urlInputRef}
 			/>

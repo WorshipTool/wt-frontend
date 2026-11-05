@@ -19,7 +19,9 @@ type ImportedSongCardProps = {
 
 /**
  * The chosen song's preview: its title and the whole sheet, rendered the way
- * the song page renders it (chords above the words), always in full. It has no buttons — the one way on, "Pokračovat s touto písní", sits
+ * the song page renders it (chords above the words), always in full.
+ *
+ * It has no buttons — the one way on, "Pokračovat s touto písní", sits
  * outside it (see ImportResults) and always means the song shown here. The
  * raw sheet text is never offered: the editor is where it gets touched.
  */

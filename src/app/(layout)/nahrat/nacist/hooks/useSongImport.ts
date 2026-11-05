@@ -14,6 +14,7 @@ import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import useAuth from '@/hooks/auth/useAuth'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
+	clearImport,
 	ImportSource,
 	saveImportResult,
 	StoredImportResult,
@@ -186,7 +187,7 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 	const reset = useCallback(() => {
 		abortRef.current?.abort()
 		abortRef.current = null
-		saveImportResult(null)
+		clearImport()
 		setState({ phase: 'idle' })
 	}, [])
 

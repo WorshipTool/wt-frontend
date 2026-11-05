@@ -97,6 +97,12 @@ export const routesSearchParams = {
 	contact: {
 		wantToJoin: false as boolean | undefined,
 	},
+	writeSong: {
+		// Opened from "Načíst píseň" with the chosen song. In the URL so a reload
+		// or Back/Forward reopens that song, while "Napsat ručně" from anywhere
+		// else (no parameter) starts blank even if an unsaved import is stored.
+		importovano: true as boolean | undefined,
+	},
 	songsList: {
 		s: 0 as number | undefined,
 		// The catalog's own search. It used to be a parameter of `home`, which is

@@ -334,9 +334,19 @@ there and type" door rather than focusing from an effect.
 **Work happens on the screen, not in a popup.** Parsing shows inline as a step
 list (done ✓ / active spinner / still to come) with Zrušit; results and every
 "no songs" outcome replace the form on the same screen, and each outcome
-offers *Napsat ručně* so none of them is a dead end. The result list lives in
-`sessionStorage`, so returning from the editor shows it again with the saved
-song marked *Uloženo*.
+offers *Napsat ručně* so none of them is a dead end.
+
+**A finished parse survives the tab.** Parsing can take a minute, and a phone
+kills background tabs, so the outcome lives in `sessionStorage`
+(`nahrat/nacist/tech/importStorage`), never only in React state. Found songs
+come back after a reload. *Pokračovat s touto písní* is final: the chosen song
+replaces the list and the editor opens it (`/vytvorit/napsat?importovano=true`)
+— on a reload too, and via Back/Forward. Back to the import screen shows the
+empty form, not the list: there is no picking a second song from the same
+parse. The stored import is deleted only when the song is **saved** in the
+editor, or when the user starts over with *Zkusit jiný odkaz nebo soubor*.
+Edits made in the editor since are not kept across a reload — the imported
+text is.
 
 ## Screens that hold unsaved work
 

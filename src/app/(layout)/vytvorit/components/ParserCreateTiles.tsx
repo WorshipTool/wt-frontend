@@ -35,7 +35,7 @@ export default function ParserCreateTiles() {
 			handOffImport({ kind: 'link' })
 			navigate('importSong', {})
 		},
-		write: () => navigate('writeSong', {}),
+		write: () => navigate('writeSong', { importovano: undefined }),
 	}
 
 	return (
