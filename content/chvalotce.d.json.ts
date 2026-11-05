@@ -940,6 +940,10 @@ declare const messages: {
 					"title": "Soubor je moc velký",
 					"text": "Nahrát jde soubor do 40 MB."
 				},
+				"unsupportedFile": {
+					"title": "Tenhle soubor neumíme přečíst",
+					"text": "Nahraj PDF nebo fotku (JPG, PNG, HEIC…)."
+				},
 				"service": {
 					"title": "Načítání je teď nedostupné",
 					"text": "Zkus to prosím za pár minut."

@@ -348,6 +348,16 @@ editor, or when the user starts over with *Zkusit jiný odkaz nebo soubor*.
 Edits made in the editor since are not kept across a reload — the imported
 text is.
 
+**The import screen is gated before it renders**, in its layout: signed out →
+login (and back), `enable_general_parser` off → the create menu. Never let a
+user fill in a form that the server is going to refuse.
+
+**Every file is checked in one place**, where the import starts
+(`checkImportFile`): by MIME type *or* extension (HEIC on Chrome/Windows has
+no MIME type), whether it came from the picker, a drop or the create menu. An
+unreadable file is a step-list outcome like any other (*Tenhle soubor neumíme
+přečíst* + *Vybrat jiný soubor*) — never silently ignored.
+
 ## Screens that hold unsaved work
 
 A screen keeping user work in local state (a song being written, a playlist

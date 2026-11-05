@@ -937,6 +937,10 @@
 					"title": "Plik jest za duży",
 					"text": "Można przesłać plik do 40 MB."
 				},
+				"unsupportedFile": {
+					"title": "Tego pliku nie umiemy odczytać",
+					"text": "Prześlij PDF albo zdjęcie (JPG, PNG, HEIC…)."
+				},
 				"service": {
 					"title": "Wczytywanie jest teraz niedostępne",
 					"text": "Spróbuj ponownie za kilka minut."

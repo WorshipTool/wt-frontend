@@ -67,6 +67,7 @@ const PROBLEMS: [ImportProblem, ImportSource, GeneralParserStep[]][] = [
 	['failed', link, ['detect', 'fetch']],
 	['badInput', link, []],
 	['tooLarge', file, []],
+	['unsupportedFile', { kind: 'file', label: 'zpevnik.docx' }, []],
 	['login', link, []],
 	['service', file, []],
 	['stream', file, ['detect', 'extract', 'ocr']],

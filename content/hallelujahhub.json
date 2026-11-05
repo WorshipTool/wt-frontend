@@ -676,6 +676,10 @@
 					"title": "The file is too large",
 					"text": "Files up to 40 MB can be uploaded."
 				},
+				"unsupportedFile": {
+					"title": "We can't read this file",
+					"text": "Upload a PDF or a photo (JPG, PNG, HEIC…)."
+				},
 				"service": {
 					"title": "Importing is unavailable right now",
 					"text": "Please try again in a few minutes."

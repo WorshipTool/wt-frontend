@@ -6,7 +6,6 @@ import { alpha } from '@/common/ui/mui'
 import { FileUploadRounded } from '@mui/icons-material'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
-import { isImportableFile } from './useFilePicker'
 
 type ImportSourceFormProps = {
 	url: string
@@ -30,7 +29,8 @@ export default function ImportSourceForm(props: ImportSourceFormProps) {
 	const onDrop = (e: React.DragEvent) => {
 		e.preventDefault()
 		setDragging(false)
-		const file = Array.from(e.dataTransfer.files).find(isImportableFile)
+		// any file goes on: the import checks it, and says so if it can't read it
+		const file = e.dataTransfer.files[0]
 		if (file) props.onDropFile(file)
 	}
 

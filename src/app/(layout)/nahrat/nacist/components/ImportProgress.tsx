@@ -33,6 +33,7 @@ const NOT_A_FAILURE: ImportProblem[] = [
 	'notFound',
 	'unavailable',
 	'tooLarge',
+	'unsupportedFile',
 	'login',
 ]
 
@@ -204,6 +205,7 @@ function NextActions(props: ImportProgressProps & { problem: ImportProblem }) {
 				</>
 			)
 		case 'tooLarge':
+		case 'unsupportedFile':
 			return otherFile
 		case 'login':
 			return (

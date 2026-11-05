@@ -1,9 +1,7 @@
 'use client'
 
 import {
-	GENERAL_PARSER_MAX_FILE_BYTES,
-	GeneralParserEvent,
-	GeneralParserHttpError,
+	GeneralParserError,
 	GeneralParserInput,
 	GeneralParserResultEvent,
 	GeneralParserStep,
@@ -13,6 +11,7 @@ import {
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import useAuth from '@/hooks/auth/useAuth'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { checkImportFile, FileProblem } from '../tech/importFile'
 import {
 	clearImport,
 	ImportSource,
@@ -27,10 +26,10 @@ export type ImportProblem =
 	| 'unavailable'
 	| 'failed'
 	| 'badInput'
-	| 'tooLarge'
 	| 'service'
 	| 'stream'
 	| 'login'
+	| FileProblem
 
 export type ImportState =
 	| { phase: 'idle' }
@@ -66,12 +65,27 @@ function problemForResult(
 	}
 }
 
-function problemForHttp(status: number, source: ImportSource): ImportProblem {
-	if (status === 400) return source.kind === 'link' ? 'badInput' : 'failed'
-	if (status === 401) return 'login'
-	if (status === 413) return 'tooLarge'
-	// 403 (flag off), 502, 503 and anything else: nothing the user can fix
-	return 'service'
+/** Where the request failed → what the user is told. The one place errors are read. */
+export function problemForError(
+	error: unknown,
+	source: ImportSource,
+): ImportProblem {
+	// the client turns every failure into a GeneralParserError; anything else
+	// broke while handling the stream, and the user can only try again
+	if (!(error instanceof GeneralParserError)) return 'stream'
+	switch (error.kind) {
+		case 'response':
+			if (error.status === 400)
+				return source.kind === 'link' ? 'badInput' : 'failed'
+			if (error.status === 401) return 'login'
+			if (error.status === 413) return 'tooLarge'
+			// 403 (flag off), 502, 503 and anything else: nothing the user can fix
+			return 'service'
+		case 'connection':
+			return 'service'
+		case 'stream':
+			return 'stream'
+	}
 }
 
 const newId = () =>
@@ -81,6 +95,10 @@ const newId = () =>
  * The import flow's state machine: idle → running (step by step, from the
  * parser's progress lines) → done with songs, or a problem. One request at a
  * time; starting another, cancelling or leaving the screen aborts the current one.
+ *
+ * `run` is the one way in: it checks the file (`checkImportFile`) before
+ * anything is sent, and every failure after that goes through
+ * `problemForError`.
  */
 export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 	const { user } = useAuth()
@@ -101,66 +119,58 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 			abortRef.current?.abort()
 			lastInputRef.current = { input, source }
 
-			if (!user?.token) {
-				setState({ phase: 'problem', source, problem: 'login', seen: [] })
-				return
-			}
-			if ('file' in input && input.file.size > GENERAL_PARSER_MAX_FILE_BYTES) {
-				setState({ phase: 'problem', source, problem: 'tooLarge', seen: [] })
-				return
-			}
+			const stopBefore = (problem: ImportProblem) =>
+				setState({ phase: 'problem', source, problem, seen: [] })
+			const token = user?.token
+			if (!token) return stopBefore('login')
+			const fileProblem = 'file' in input ? checkImportFile(input.file) : null
+			if (fileProblem) return stopBefore(fileProblem)
 
 			const controller = new AbortController()
 			abortRef.current = controller
 			setState({ phase: 'running', source, seen: [] })
 
-			let outcome: GeneralParserEvent | null = null
 			// kept here as well as in state: a problem carries where it stopped
 			let seen: GeneralParserStep[] = []
-			const onEvent = (event: GeneralParserEvent) => {
+			const finish = (next: ImportState) => {
 				if (controller.signal.aborted) return
-				if (event.event === 'progress') {
-					seen = addSeenStep(seen, event.step)
-					const next = seen
-					setState((s) => (s.phase === 'running' ? { ...s, seen: next } : s))
-				} else {
-					outcome = event
-				}
+				abortRef.current = null
+				setState(next)
 			}
 
-			let problem: ImportProblem | null = null
+			// Everything that can go wrong ends in the one catch below, so a
+			// failure always becomes a problem on screen — never a spinner left
+			// running by an unhandled rejection.
 			try {
-				await streamGeneralParse(input, {
-					token: user.token,
+				const result = await streamGeneralParse(input, {
+					token,
 					signal: controller.signal,
-					onEvent,
+					onProgress: (event) => {
+						if (controller.signal.aborted) return
+						seen = addSeenStep(seen, event.step)
+						const next = seen
+						setState((s) => (s.phase === 'running' ? { ...s, seen: next } : s))
+					},
 				})
-			} catch (error) {
-				if (isAbortError(error) || controller.signal.aborted) return
-				problem =
-					error instanceof GeneralParserHttpError
-						? problemForHttp(error.status, source)
-						: 'service' // network failure: fetch rejects with a TypeError
-			}
-			if (controller.signal.aborted) return
-			abortRef.current = null
-
-			const final = outcome as GeneralParserEvent | null
-			if (!problem && final?.event === 'result') {
-				problem = problemForResult(final)
-				if (!problem) {
-					const result: StoredImportResult = {
-						id: newId(),
-						source,
-						songs: final.songs,
-					}
-					saveImportResult(result)
-					setState({ phase: 'done', result })
-					return
+				if (controller.signal.aborted) return
+				const problem = problemForResult(result)
+				if (problem) return finish({ phase: 'problem', source, problem, seen })
+				const stored: StoredImportResult = {
+					id: newId(),
+					source,
+					songs: result.songs,
 				}
+				saveImportResult(stored)
+				finish({ phase: 'done', result: stored })
+			} catch (error) {
+				if (isAbortError(error)) return
+				finish({
+					phase: 'problem',
+					source,
+					problem: problemForError(error, source),
+					seen,
+				})
 			}
-			// an `error` line, or a stream that ended without a result
-			setState({ phase: 'problem', source, problem: problem ?? 'stream', seen })
 		},
 		[user?.token],
 	)
@@ -174,7 +184,9 @@ export function useSongImport(initial: ImportState = { phase: 'idle' }) {
 	)
 
 	const importFile = useCallback(
-		(file: File) => run({ file }, { kind: 'file', label: file.name }),
+		(file: File) => {
+			run({ file }, { kind: 'file', label: file.name })
+		},
 		[run],
 	)
 
