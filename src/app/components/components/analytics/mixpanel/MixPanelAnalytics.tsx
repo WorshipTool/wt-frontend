@@ -1,21 +1,23 @@
 'use client'
 import useAuth from '@/hooks/auth/useAuth'
 import { ROLES } from '@/interfaces/user'
-import { isDevelopment } from '@/tech/development.tech'
 import { useEffect, useRef } from 'react'
 
 type MixpanelType = typeof import('mixpanel-browser').default
+
+// Baked in at build time. Without it Mixpanel stays off.
+const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN
 
 export default function MixPanelAnalytics() {
 	const { user } = useAuth()
 	const mixpanelRef = useRef<MixpanelType | null>(null)
 
 	useEffect(() => {
-		if (isDevelopment) return
+		if (!MIXPANEL_TOKEN) return
 
 		import('mixpanel-browser').then((mod) => {
 			const mixpanel = mod.default
-			mixpanel.init('24badb161d131f1852a9a1e527030e04')
+			mixpanel.init(MIXPANEL_TOKEN)
 			mixpanelRef.current = mixpanel
 		})
 	}, [])

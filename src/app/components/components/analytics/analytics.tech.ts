@@ -7,6 +7,9 @@ const track = <T extends AnalyticsEventNameType>(
 	eventName: T,
 	data: AnalyticsTrackDataType<T>
 ) => {
+	// Mixpanel is intentionally disabled when no token is configured
+	if (!process.env.NEXT_PUBLIC_MIXPANEL_TOKEN) return
+
 	import('mixpanel-browser').then((mod) => {
 		const mixpanel = mod.default
 		if (!(mixpanel as any).__loaded) {
