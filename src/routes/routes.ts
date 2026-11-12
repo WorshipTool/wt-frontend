@@ -16,6 +16,8 @@ export const routesPaths = {
 	addMenu: '/vytvorit',
 	upload: '/nahrat',
 	uploadParse: '/nahrat/hledani',
+	// link or file → songs (general parser, flag enable_general_parser)
+	importSong: '/nahrat/nacist',
 	writeSong: '/vytvorit/napsat',
 	login: '/prihlaseni',
 	signup: '/registrace',
@@ -94,6 +96,12 @@ export const routesSearchParams = {
 	},
 	contact: {
 		wantToJoin: false as boolean | undefined,
+	},
+	writeSong: {
+		// Opened from "Načíst píseň" with the chosen song. In the URL so a reload
+		// or Back/Forward reopens that song, while "Napsat ručně" from anywhere
+		// else (no parameter) starts blank even if an unsaved import is stored.
+		importovano: true as boolean | undefined,
 	},
 	songsList: {
 		s: 0 as number | undefined,

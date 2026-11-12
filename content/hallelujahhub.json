@@ -603,6 +603,107 @@
 			"foundIn": "Found in <strong>{fileName}</strong>",
 			"titlePlaceholder": "Song title",
 			"contentPlaceholder": "Song content"
+		},
+		"import": {
+			"title": "Import a song",
+			"tiles": {
+				"uploadFile": "Upload a file",
+				"uploadFileSubtitle": "PDF or photo",
+				"pasteLink": "Paste a link",
+				"pasteLinkSubtitle": "Website or YouTube video",
+				"writeManually": "Write manually",
+				"writeManuallySubtitle": "Your own lyrics with chords"
+			},
+			"form": {
+				"urlLabel": "Link to the song",
+				"urlPlaceholder": "https://…",
+				"load": "Import",
+				"urlHint": "Songbook website, PDF or YouTube video",
+				"dropTitle": "Drop a PDF or photo here",
+				"dropActive": "Drop the file here",
+				"chooseFile": "Choose file"
+			},
+			"steps": {
+				"detect": "Checking what the link points to",
+				"detectFile": "Checking what's in the file",
+				"fetch": "Downloading",
+				"fetchFile": "Uploading the file",
+				"extract": "Looking for songs",
+				"ocr": "Reading text from the image",
+				"score": "Checking the result",
+				"slowHint": "this may take a moment"
+			},
+			"result": {
+				"found": "{count, plural, one {We found # song} other {We found # songs}}",
+				"foundFrom": "{count, plural, one {from {source}} other {from {source} · pick one to continue}}",
+				"untitled": "Untitled",
+				"needsCheck": "Check it",
+				"needsCheckHint": "Some chords or lines may be off – please go through them in the editor.",
+				"continue": "Continue with this song",
+				"loadAnother": "Try another link or file",
+				"resetConfirm": {
+					"title": "Discard the found songs?",
+					"text": "The found songs will be discarded and you'll start again with another link or file.",
+					"confirm": "Discard and start again"
+				}
+			},
+			"problem": {
+				"notFound": {
+					"title": "We found no song on that page",
+					"text": "Try a link straight to one song."
+				},
+				"notFoundFile": {
+					"title": "We found no song in that file",
+					"text": "There are no lyrics with chords in it."
+				},
+				"unavailable": {
+					"title": "We can't read this yet",
+					"text": "This kind of page or file isn't supported yet."
+				},
+				"failed": {
+					"title": "The page couldn't be opened",
+					"text": "Check that the link opens in your browser."
+				},
+				"failedFile": {
+					"title": "The file couldn't be read",
+					"text": "It may be damaged or password-protected."
+				},
+				"badInput": {
+					"title": "That doesn't look like a link",
+					"text": "A link should start with https://."
+				},
+				"tooLarge": {
+					"title": "The file is too large",
+					"text": "Files up to 40 MB can be uploaded."
+				},
+				"unsupportedFile": {
+					"title": "We can't read this file",
+					"text": "Upload a PDF or a photo (JPG, PNG, HEIC…)."
+				},
+				"service": {
+					"title": "Importing is unavailable right now",
+					"text": "Please try again in a few minutes."
+				},
+				"stream": {
+					"title": "The connection dropped",
+					"text": "Importing didn't finish."
+				},
+				"login": {
+					"title": "Sign in to import",
+					"text": "Importing from a link or file is for signed-in users only."
+				}
+			},
+			"actions": {
+				"otherLink": "Paste another link",
+				"uploadInstead": "Upload a PDF or photo",
+				"editLink": "Edit the link",
+				"otherFile": "Choose another file",
+				"login": "Sign in"
+			},
+			"editor": {
+				"fromLink": "<strong>Imported from a link</strong> — check the lyrics and chords.",
+				"fromFile": "<strong>Imported from a file</strong> — check the lyrics and chords."
+			}
 		}
 	},
 	"deleteDialog": {

@@ -11,7 +11,15 @@ smartTest('Link, routing', 'smoke', async ({ page }) => {
 	await test_tech_loginWithData(page)
 
 	await page.getByRole('button', { name: 'Přidat novou píseň' }).click()
-	await page.getByRole('link', { name: 'Sepsat ručně' }).click()
+
+	// The create menu has two shapes: the option list — a "Sepsat ručně" link —
+	// when the general parser is off or the viewer is signed out, and the three
+	// import tiles — "Napsat ručně" is a button — when it is on. Both lead to the
+	// write screen, so accept either.
+	await page
+		.getByRole('link', { name: 'Sepsat ručně' })
+		.or(page.getByRole('button', { name: 'Napsat ručně' }))
+		.click()
 
 	await page.waitForURL(/.*\/vytvorit\/napsat/)
 	await expect(

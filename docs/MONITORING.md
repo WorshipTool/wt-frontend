@@ -71,6 +71,13 @@ Vedle Sentry běží nezávisle i session replay přes Statsig
 
 ## Analytika (Mixpanel)
 
+Token projektu se bere z `NEXT_PUBLIC_MIXPANEL_TOKEN`. Bez něj je Mixpanel
+vypnutý (neinicializuje se a `Analytics.track` je no-op) — tak se vypíná
+v prostředích, kde data nechceme (lokál, dev, preview). Stejně jako Sentry DSN se token **zapéká
+při buildu**, takže v produkci musí být v `.env` souborech na deploy
+serveru (`/root/worshiptool/<web>/frontend/.env`, pro každý brand zvlášť).
+Lokálně a v docker-compose jde předat jako build argument.
+
 Eventy se trackují přes typovaný facade
 `src/app/components/components/analytics/analytics.tech.ts`:
 
@@ -86,8 +93,8 @@ v `analytics.types.ts` — název i payload jsou pak typově kontrolované.
 | Event | Kde se posílá |
 | --- | --- |
 | `VISIT_SONG` | zobrazení písně (`SongAnalyze.tsx`) |
-| `SEARCH` | vyhledávání po debounce, deduplikované proti poslednímu dotazu (`SearchedSongsList.tsx`) |
-| `SMART_SEARCH_TOGGLE` | přepnutí smart search (`MainSearchInput.tsx`) |
+| `SEARCH` | vyhledávání po debounce, deduplikované proti poslednímu dotazu (`SongSearchResults.tsx`) |
+| `SMART_SEARCH_TOGGLE` | přepnutí smart search (`pisne/page.tsx`) |
 | `LOGIN` / `SIGNUP` / `LOGOUT` | auth flow (`useAuth.tsx`), `method` rozlišuje heslo/Google; `LOGOUT.reason` rozlišuje odhlášení uživatelem vs. expiraci session |
 | `CREATE_PLAYLIST` | osobní playlist (`usePlaylistsGeneral.ts`, `source: 'personal'`) i týmový (`TeamNewPlaylistButton`, `UsersTeamPlaylistsAddButton`, `source: 'team'`) |
 | `ADD_SONG_TO_PLAYLIST` / `REMOVE_SONG_FROM_PLAYLIST` | práce s playlistem (`usePlaylistsGeneral.ts`) |
@@ -99,9 +106,8 @@ Poznámky k interpretaci dat:
   přihlášení je rovnou `LOGIN {method: 'google'}`).
 - Hromadné přidání N písní do playlistu pošle N eventů
   `ADD_SONG_TO_PLAYLIST` (jeden na píseň).
-- V development režimu se Mixpanel neinicializuje, lokální vývoj tedy
-  data neznečišťuje. E2E testy běžící proti nasazenému dev prostředí
-  (dev.chvalotce.cz) ale eventy posílají.
+- Mixpanel se zapíná výhradně podle přítomnosti tokenu — i lokální vývoj
+  posílá eventy, pokud má `NEXT_PUBLIC_MIXPANEL_TOKEN` v `.env`.
 
 Identifikace uživatele (identify + people.set) probíhá
 v `MixPanelAnalytics.tsx` po přihlášení.

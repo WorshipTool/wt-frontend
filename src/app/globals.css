@@ -6,7 +6,11 @@ body {
 	/* Never allow a horizontal scrollbar — content must fit the device width.
 	   `clip` (unlike `hidden`) doesn't create a scroll container, so
 	   position: sticky keeps working; `hidden` stays as a fallback for
-	   browsers without clip support. */
+	   browsers without clip support.
+	   Don't override this from a page's own stylesheet: global CSS a page
+	   imports stays in the document after you navigate away, so a
+	   `body { overflow-x: hidden }` there broke every sticky header on every
+	   page visited after it. */
 	overflow-x: hidden;
 	overflow-x: clip;
 }

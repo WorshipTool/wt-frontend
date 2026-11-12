@@ -20,6 +20,9 @@ services:
                 NEXT_PUBLIC_PREVIEW_PR_NUMBER: ${NEXT_PUBLIC_PREVIEW_PR_NUMBER:-}
                 NEXT_PUBLIC_PREVIEW_PR_TITLE: ${NEXT_PUBLIC_PREVIEW_PR_TITLE:-}
 
+                # Mixpanel (baked in at build time; empty = disabled)
+                NEXT_PUBLIC_MIXPANEL_TOKEN: ${NEXT_PUBLIC_MIXPANEL_TOKEN:-}
+
                 # Sentry (baked in at build time; empty = disabled)
                 NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
                 NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${NEXT_PUBLIC_SENTRY_ENVIRONMENT:-}

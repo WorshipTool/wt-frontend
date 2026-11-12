@@ -108,6 +108,7 @@ const TAB_BY_ROUTE: Partial<Record<RoutesKeys, Exclude<MobileTab, null>>> = {
 	addMenu: 'account',
 	writeSong: 'account',
 	upload: 'account',
+	importSong: 'account',
 	// playlist detail, not its sub-routes (prezentace / pdf)
 	playlist: 'account',
 	// Signing in and up are where the Account tab leads while signed out, so they
@@ -209,6 +210,7 @@ const APP_SHELL_SCREENS: RoutesKeys[] = [
 	'addMenu',
 	'writeSong',
 	'upload',
+	'importSong',
 ]
 
 /** Strip a trailing slash so `/seznam/` classifies the same as `/seznam`. */

@@ -333,6 +333,17 @@ const SongCardStory = () => {
 						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
 					/>
 				</Case>
+
+				<Case label="Soukromá (výsledky hledání)" width={ROW_WIDTH}>
+					<SongVariantCard
+						data={pack({ ...mine, public: false })}
+						dense
+						previewLines={2}
+						properties={['SHOW_PRIVATE_LABEL']}
+						leadingIcon={<SongLeadingIcon />}
+						trailingIcon={<ChevronRightRounded sx={{ color: 'grey.400' }} />}
+					/>
+				</Case>
 			</Section>
 		</Box>
 	)

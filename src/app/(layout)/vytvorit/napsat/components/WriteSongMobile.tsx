@@ -18,6 +18,8 @@ type WriteSongMobileProps = {
 	/** Show the "content isn't valid yet" hint (non-empty but invalid). */
 	showInvalidWarning: boolean
 	onCreate: () => void
+	startTitle?: string
+	startSheetData?: string
 }
 
 /**
@@ -53,6 +55,8 @@ export default function WriteSongMobile(props: WriteSongMobileProps) {
 			<MobileSongEditor
 				onTitleChange={props.onTitleChange}
 				onSheetDataChange={props.onSheetDataChange}
+				startTitle={props.startTitle}
+				startSheetData={props.startSheetData}
 			/>
 			{props.showInvalidWarning && <NotValidWarning />}
 		</MobileAppHeader>

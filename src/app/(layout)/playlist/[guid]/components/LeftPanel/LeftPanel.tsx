@@ -43,7 +43,6 @@ export default function LeftPanel(props: LeftPanelProps) {
 					// the toolbar hidden, so the last songs sat under the screen edge
 					display: 'flex',
 					flexDirection: 'column',
-					backgroundColor: 'surface.card',
 					...props.sx,
 				}}
 			>

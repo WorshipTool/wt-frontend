@@ -2,6 +2,11 @@
 import { useIsPhone } from '@/common/hooks/useIsPhone'
 import { CreatedType, VariantPackAlias } from '@/api/dtos'
 import { PostCreateVariantOutDto } from '@/api/generated'
+import {
+	clearImport,
+	EditorHandoff,
+	loadChosenSong,
+} from '@/app/(layout)/nahrat/nacist/tech/importStorage'
 import WrittenPreview from '@/app/(layout)/vytvorit/napsat/components/WrittenPreview'
 import { useBlockAppReload } from '@/app/components/appReloadGuard'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
@@ -13,12 +18,14 @@ import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import { parseVariantAlias } from '@/tech/song/variant/variant.utils'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTranslations } from 'next-intl'
+import { useSnackbar } from 'notistack'
 import { Sheet } from '@pepavlin/sheet-api'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApi } from '../../../../api/tech-and-hooks/useApi'
 import ContainerGrid from '../../../../common/components/ContainerGrid'
 import { Gap } from '../../../../common/ui/Gap'
 import { useSmartNavigate } from '../../../../routes/useSmartNavigate'
+import { useSmartParams } from '@/routes/useSmartParams'
 import { useApiState } from '../../../../tech/ApiState'
 import { isSheetDataValid } from '../../../../tech/sheet.tech'
 import NotValidWarning from './components/NotValidWarning'
@@ -50,6 +57,35 @@ function Create() {
 	const [title, setTitle] = useState('')
 	const [sheetData, setSheetData] = useState('')
 
+	// A song chosen in "Načíst píseň" (link / file import), when the URL says
+	// so. Read after mount — session storage does not exist on the server — and
+	// the editors are keyed on it, so they remount with the imported text as
+	// their start value. Reading leaves it stored, so a reload brings it back
+	// (the edits made since are not kept); saving the song clears it.
+	const { importovano } = useSmartParams('writeSong')
+	const [imported, setImported] = useState<EditorHandoff | null>(null)
+	const { enqueueSnackbar } = useSnackbar()
+	useEffect(() => {
+		const handoff = importovano ? loadChosenSong() : null
+		if (!handoff) return
+		setImported(handoff)
+		setTitle(handoff.title)
+		setSheetData(handoff.sheetData)
+		// A snackbar, not a banner: the editor's layout stays exactly as when
+		// writing by hand (a banner pushed the phone toolbar under the tab bar).
+		enqueueSnackbar(
+			t.rich(
+				handoff.sourceKind === 'link'
+					? 'import.editor.fromLink'
+					: 'import.editor.fromFile',
+				{ strong: (chunks) => <strong>{chunks}</strong> }
+			),
+			{ variant: 'info' }
+		)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+	const editorKey = imported ? 'imported' : 'blank'
+
 	// an auto-update reload here would throw away whatever they've written
 	useBlockAppReload(title !== '' || sheetData !== '', 'writing a song')
 
@@ -77,6 +113,7 @@ function Create() {
 				})
 			},
 			(result) => {
+				if (imported) clearImport()
 				const a = parseVariantAlias(result.alias as VariantPackAlias)
 				navigate(
 					'variant',
@@ -102,6 +139,9 @@ function Create() {
 	if (phoneVersion) {
 		return (
 			<WriteSongMobile
+				key={editorKey}
+				startTitle={imported?.title}
+				startSheetData={imported?.sheetData}
 				onTitleChange={setTitle}
 				onSheetDataChange={setSheetData}
 				canCreate={
@@ -140,6 +180,9 @@ function Create() {
 							}}
 						>
 							<SheetEditor
+								key={editorKey}
+								startTitle={imported?.title}
+								startSheetData={imported?.sheetData}
 								onTitleChange={setTitle}
 								onSheetDataChange={setSheetData}
 							/>
