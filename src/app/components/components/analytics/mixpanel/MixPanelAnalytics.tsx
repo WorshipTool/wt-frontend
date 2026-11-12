@@ -17,7 +17,9 @@ export default function MixPanelAnalytics() {
 
 		import('mixpanel-browser').then((mod) => {
 			const mixpanel = mod.default
-			mixpanel.init(MIXPANEL_TOKEN)
+			mixpanel.init(MIXPANEL_TOKEN, {
+				api_host: 'api-js-eu.mixpanel.com',
+			})
 			mixpanelRef.current = mixpanel
 		})
 	}, [])
