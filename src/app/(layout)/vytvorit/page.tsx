@@ -6,12 +6,10 @@ import ParserCreateTiles from '@/app/(layout)/vytvorit/components/ParserCreateTi
 import { MobileAppHeader } from '@/common/components/MobileAppHeader'
 import { SmartPage } from '@/common/components/app/SmartPage/SmartPage'
 import { useIsPhone } from '@/common/hooks/useIsPhone'
-import FlagProtected from '@/common/providers/FeatureFlags/FlagProtected'
 import { useFlag } from '@/common/providers/FeatureFlags/useFlag'
 import useAuth from '@/hooks/auth/useAuth'
 import { Box } from '@/common/ui'
 import { useTranslations } from 'next-intl'
-import { Fragment } from 'react'
 
 export default SmartPage(AddMenu)
 
@@ -20,8 +18,9 @@ function AddMenu() {
 
 	const phoneVersion = useIsPhone()
 
-	// The general parser replaces the option list with three tiles. Signed-out
-	// users keep the old list: the parser endpoint is for signed-in users only.
+	// The general parser replaces the create menu with three tiles. Signed-out
+	// users get the plain write-manually option: the parser endpoint is for
+	// signed-in users only.
 	const { isLoggedIn } = useAuth()
 	const parserTiles = useFlag('enable_general_parser') && isLoggedIn()
 
@@ -30,18 +29,9 @@ function AddMenu() {
 	const options = parserTiles ? (
 		<ParserCreateTiles />
 	) : (
-		CREATE_OPTIONS.map((option) => {
-			const item = <CreateOptionItem option={option} />
-			return (
-				<Fragment key={option.to}>
-					{'flag' in option ? (
-						<FlagProtected flag={option.flag}>{item}</FlagProtected>
-					) : (
-						item
-					)}
-				</Fragment>
-			)
-		})
+		CREATE_OPTIONS.map((option) => (
+			<CreateOptionItem key={option.to} option={option} />
+		))
 	)
 
 	if (phoneVersion) {

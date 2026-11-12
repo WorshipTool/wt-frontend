@@ -2,27 +2,15 @@ import {
 	EditRounded,
 	FileUploadRounded,
 	LinkRounded,
-	UploadFileRounded,
 } from '@mui/icons-material'
 import { SvgIconComponent } from '@mui/icons-material'
 
 /**
- * The ways to add a song, in the order they're offered.
- *
- * Single source of truth for the create menu: the phone list and the desktop
- * card grid render the same table, so an option can't exist on one surface and
- * not the other (the two had already drifted — desktop showed no description
- * for "write manually" while the phone did).
+ * The create menu without the general parser (flag off, or signed out): the
+ * one way in is to write a song by hand. Everything else — a file, a link —
+ * goes through the parser tiles below, which need a signed-in user.
  */
 export const CREATE_OPTIONS = [
-	{
-		to: 'upload',
-		icon: UploadFileRounded,
-		titleKey: 'uploadFile',
-		subtitleKey: 'uploadFileSubtitle',
-		/** Only offered when this feature flag is on. */
-		flag: 'enable_file_parser',
-	},
 	{
 		to: 'writeSong',
 		icon: EditRounded,
@@ -34,7 +22,6 @@ export const CREATE_OPTIONS = [
 	icon: SvgIconComponent
 	titleKey: string
 	subtitleKey: string
-	flag?: string
 }[]
 
 export type CreateOption = (typeof CREATE_OPTIONS)[number]
