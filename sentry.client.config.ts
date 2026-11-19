@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { sentryBeforeSend } from './src/tech/error/sentryFilter'
 
 const parseSampleRate = (value: string | undefined, fallback: number) => {
 	const parsed = Number(value)
@@ -12,6 +13,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 		dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 		environment:
 			process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? process.env.NODE_ENV,
+		beforeSend: sentryBeforeSend,
 		integrations: [Sentry.replayIntegration()],
 		replaysSessionSampleRate: parseSampleRate(
 			process.env.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE,

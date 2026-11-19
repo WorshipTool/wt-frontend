@@ -41,6 +41,7 @@ import { mapBasicVariantPackApiToDto } from '@/api/dtos'
 import { mapSearchSongPacksApiToDto } from '@/api/dtos/song/song.search.dto'
 import { mapCreatorAutocompleteApiToDto } from '@/api/map/creator.map'
 import { PlaylistGuid } from '@/interfaces/playlist/playlist.types'
+import { apiAxios } from './api-axios'
 import { wrapApi, wrapServerApi } from './api-wrapper'
 
 export type ApiClasses = ReturnType<typeof getInternalApiClasses>
@@ -56,39 +57,39 @@ const getInternalApiClasses = (
 	apiConfiguration: Configuration,
 	wrapFunc: typeof wrapApi
 ) => {
-	const playlistGettingApi = new PlaylistGettingApi(apiConfiguration)
-	const playlistEditingApi = new PlaylistEditingApi(apiConfiguration)
-	const songGettingApi = new SongGettingApi(apiConfiguration)
-	const songSearchingApi = new SongSearchingApi(apiConfiguration)
-	const songAddingApi = new SongAddingApi(apiConfiguration)
-	const songEditingApi = new SongEditingApi(apiConfiguration)
-	const songDeletingApi = new SongDeletingApi(apiConfiguration)
-	const songPublishingApi = new SongPublishingApi(apiConfiguration)
-	const songValidationApi = new SongValidationApi(apiConfiguration)
-	const songNotesApi = new SongNotesApi(apiConfiguration)
-	const songFavouritesApi = new SongFavouritesApi(apiConfiguration)
-	const authApi = new AuthApi(apiConfiguration)
-	const permissionApi = new PermissionsApi(apiConfiguration)
-	const mailApi = new MailApi(apiConfiguration)
-	const imagesApi = new ImagesApi(apiConfiguration)
-	const bridgeApi = new BridgeApi(apiConfiguration)
-	const parserApi = new ParserApi(apiConfiguration)
-	const packEmbeddingApi = new PackEmbeddingApi(apiConfiguration)
-	const songManagementApi = new SongManagementApi(apiConfiguration)
-	const songUserManagementApi = new SongUserManagementApi(apiConfiguration)
-	const songCreatorsApi = new SongCreatorsApi(apiConfiguration)
+	const playlistGettingApi = new PlaylistGettingApi(apiConfiguration, undefined, apiAxios)
+	const playlistEditingApi = new PlaylistEditingApi(apiConfiguration, undefined, apiAxios)
+	const songGettingApi = new SongGettingApi(apiConfiguration, undefined, apiAxios)
+	const songSearchingApi = new SongSearchingApi(apiConfiguration, undefined, apiAxios)
+	const songAddingApi = new SongAddingApi(apiConfiguration, undefined, apiAxios)
+	const songEditingApi = new SongEditingApi(apiConfiguration, undefined, apiAxios)
+	const songDeletingApi = new SongDeletingApi(apiConfiguration, undefined, apiAxios)
+	const songPublishingApi = new SongPublishingApi(apiConfiguration, undefined, apiAxios)
+	const songValidationApi = new SongValidationApi(apiConfiguration, undefined, apiAxios)
+	const songNotesApi = new SongNotesApi(apiConfiguration, undefined, apiAxios)
+	const songFavouritesApi = new SongFavouritesApi(apiConfiguration, undefined, apiAxios)
+	const authApi = new AuthApi(apiConfiguration, undefined, apiAxios)
+	const permissionApi = new PermissionsApi(apiConfiguration, undefined, apiAxios)
+	const mailApi = new MailApi(apiConfiguration, undefined, apiAxios)
+	const imagesApi = new ImagesApi(apiConfiguration, undefined, apiAxios)
+	const bridgeApi = new BridgeApi(apiConfiguration, undefined, apiAxios)
+	const parserApi = new ParserApi(apiConfiguration, undefined, apiAxios)
+	const packEmbeddingApi = new PackEmbeddingApi(apiConfiguration, undefined, apiAxios)
+	const songManagementApi = new SongManagementApi(apiConfiguration, undefined, apiAxios)
+	const songUserManagementApi = new SongUserManagementApi(apiConfiguration, undefined, apiAxios)
+	const songCreatorsApi = new SongCreatorsApi(apiConfiguration, undefined, apiAxios)
 
-	const teamAddingApi = new TeamAddingApi(apiConfiguration)
-	const teamGettingApi = new TeamGettingApi(apiConfiguration)
-	const teamEditingApi = new TeamEditingApi(apiConfiguration)
-	const teamJoiningApi = new TeamJoiningApi(apiConfiguration)
-	const teamMembersApi = new TeamMembersApi(apiConfiguration)
-	const teamEventsApi = new TeamEventsApi(apiConfiguration)
-	const teamPlaylistsApi = new TeamPlaylistsApi(apiConfiguration)
-	const teamSongNotesApi = new TeamSongNotesApi(apiConfiguration)
-	const teamStatisticsApi = new TeamStatisticsApi(apiConfiguration)
+	const teamAddingApi = new TeamAddingApi(apiConfiguration, undefined, apiAxios)
+	const teamGettingApi = new TeamGettingApi(apiConfiguration, undefined, apiAxios)
+	const teamEditingApi = new TeamEditingApi(apiConfiguration, undefined, apiAxios)
+	const teamJoiningApi = new TeamJoiningApi(apiConfiguration, undefined, apiAxios)
+	const teamMembersApi = new TeamMembersApi(apiConfiguration, undefined, apiAxios)
+	const teamEventsApi = new TeamEventsApi(apiConfiguration, undefined, apiAxios)
+	const teamPlaylistsApi = new TeamPlaylistsApi(apiConfiguration, undefined, apiAxios)
+	const teamSongNotesApi = new TeamSongNotesApi(apiConfiguration, undefined, apiAxios)
+	const teamStatisticsApi = new TeamStatisticsApi(apiConfiguration, undefined, apiAxios)
 
-	const newsApi = new NewsApi(apiConfiguration)
+	const newsApi = new NewsApi(apiConfiguration, undefined, apiAxios)
 
 	const wrappedClasses = {
 		playlistGettingApi: wrapFunc(playlistGettingApi, {
