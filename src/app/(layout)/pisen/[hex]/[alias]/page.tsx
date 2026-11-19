@@ -9,6 +9,7 @@ import { SURFACE_SHADOW } from '@/common/constants/surfaces'
 import ContainerGrid from '@/common/components/ContainerGrid'
 import { checkFlag } from '@/common/providers/FeatureFlags/flags.tech'
 import { Box } from '@/common/ui'
+import { isApiNotFoundError } from '@/tech/fetch/isApiNotFoundError'
 import DraggableSong from '@/hooks/dragsong/DraggableSong'
 import { VariantPackAlias } from '@/types/song'
 import {
@@ -17,6 +18,7 @@ import {
 	mapGetVariantDataApiToSongDto,
 } from '../../../../../api/dtos'
 import { SmartParams } from '../../../../../routes'
+import { notFound } from 'next/navigation'
 import { getVariantAliasFromParams, getVariantByAlias } from './tech'
 
 type SongRoutePageProps = {
@@ -28,7 +30,11 @@ export default SmartPage(SongRoutePage)
 async function SongRoutePage({ params }: SongRoutePageProps) {
 	const alias = getVariantAliasFromParams(params.hex, params.alias)
 
-	const v = await getVariantByAlias(alias)
+	const v = await getVariantByAlias(alias).catch((e) => {
+		// Missing song -> 404 page; anything else (backend down) stays an error
+		if (isApiNotFoundError(e)) notFound()
+		throw e
+	})
 	const mainPack = v.main
 
 	const song = mapGetVariantDataApiToSongDto(v)

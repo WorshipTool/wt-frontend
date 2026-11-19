@@ -5,6 +5,7 @@ import {
 } from '@/app/(layout)/pisen/[hex]/[alias]/tech'
 import { LayoutProps, MetadataProps } from '@/common/types'
 import { generateSmartMetadata } from '@/tech/metadata/metadata'
+import { isApiNotFoundError } from '@/tech/fetch/isApiNotFoundError'
 import { notFound } from 'next/navigation'
 
 export const generateMetadata = generateSmartMetadata(
@@ -21,7 +22,8 @@ export const generateMetadata = generateSmartMetadata(
 				title: title,
 			}
 		} catch (e) {
-			notFound()
+			if (isApiNotFoundError(e)) notFound()
+			throw e
 		}
 	}
 )

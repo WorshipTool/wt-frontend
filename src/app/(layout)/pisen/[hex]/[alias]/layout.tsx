@@ -2,6 +2,7 @@
 import { getRouteUrlWithParams } from '@/routes/tech/transformer.tech'
 import { generateSmartMetadata } from '@/tech/metadata/metadata'
 import { Sheet } from '@pepavlin/sheet-api'
+import { isApiNotFoundError } from '@/tech/fetch/isApiNotFoundError'
 import { notFound } from 'next/navigation'
 import { LayoutProps } from '../../../../../common/types'
 import { getVariantAliasFromParams, getVariantByAlias } from './tech'
@@ -27,8 +28,10 @@ export const generateMetadata = generateSmartMetadata(
 				},
 			}
 		} catch (e) {
-			console.error('Error generating metadata for variant:', e)
-			notFound()
+			// Only a real 404 means the song doesn't exist; an unavailable backend
+			// must not turn into 404 (search engines would drop the page).
+			if (isApiNotFoundError(e)) notFound()
+			throw e
 		}
 	}
 )
