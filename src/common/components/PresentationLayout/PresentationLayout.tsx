@@ -43,26 +43,43 @@ export default function PresentationLayout({
 	useEffect(() => {
 		if (items.length === 0) return
 
-		// Swipe events
-		const { swipeArea } = SwipeEventListener({
-			swipeArea: document.querySelector('body') as HTMLElement,
-		})
+		const swipeArea = document.querySelector('body') as HTMLElement
 
-		const remove = () => {
-			swipeArea.removeEventListener('swipeRight', right)
-			swipeArea.removeEventListener('swipeLeft', left)
-			swipeArea.removeEventListener('swipeUp', up)
-			swipeArea.removeEventListener('swipeDown', down)
-		}
+		// swipe-event-listener attaches its own raw touch/mouse listeners to
+		// swipeArea and exposes no way to tear them down. Since swipeArea is
+		// <body>, which Next.js keeps mounted across client-side navigation,
+		// those listeners would otherwise leak onto every other page for the
+		// rest of the session. Intercept addEventListener while the library
+		// wires itself up so every listener it (and we) register here can be
+		// removed again on cleanup.
+		const registered: {
+			type: string
+			listener: EventListenerOrEventListenerObject
+		}[] = []
+		const originalAddEventListener = swipeArea.addEventListener.bind(swipeArea)
+		swipeArea.addEventListener = ((
+			type: string,
+			listener: EventListenerOrEventListenerObject,
+			options?: boolean | AddEventListenerOptions,
+		) => {
+			registered.push({ type, listener })
+			originalAddEventListener(type, listener, options)
+		}) as typeof swipeArea.addEventListener
 
-		remove()
+		SwipeEventListener({ swipeArea })
 
 		swipeArea.addEventListener('swipeRight', right)
 		swipeArea.addEventListener('swipeLeft', left)
 		swipeArea.addEventListener('swipeUp', up)
 		swipeArea.addEventListener('swipeDown', down)
 
-		return remove
+		swipeArea.addEventListener = originalAddEventListener
+
+		return () => {
+			registered.forEach(({ type, listener }) =>
+				swipeArea.removeEventListener(type, listener),
+			)
+		}
 	}, [items])
 
 	const moveCurrent = (offset: number) => {
